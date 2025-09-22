@@ -1,4 +1,2 @@
-Externals
-Libs
-Tools/Game/*.ahk
-Configuration.ini
+externals/7zr.exe
+configuration.ini
