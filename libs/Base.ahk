@@ -111,8 +111,14 @@ Class Base {
      */
     downloadPackage(link, file, fileSize := 0, progressText := 0, progressBar := 0, update := 0) {
         if !update && FileExist(file) {
+            Return 1
+        }
+
+        If !This.getConnectedState() {
+            MsgboxEx('Make sure you are connected to the internet!', "Can't download!", , 0x30).result
             Return
         }
+
         SplitPath(file, &OutFileName)
         SetTimer(fileWatch, 1000)
         Download(link, file)
@@ -135,6 +141,7 @@ Class Base {
                 }
             }
         }
+        Return 1
     }
 
     /**
@@ -148,11 +155,12 @@ Class Base {
             SplitPath(package, &OutFileName)
             progressText.Text := 'Extracting "' OutFileName '"...'
         }
-        RunWait('"' This._7zrCsle '" x "' package '" -o"' destination '" -aoa', , hide ? 'Hide' : '', &PID)
+        RC := RunWait('"' This._7zrCsle '" x "' package '" -o"' destination '" -aoa', , hide ? 'Hide' : '', &PID)
         If progressText {
             SplitPath(package, &OutFileName)
             progressText.Text := 'Extracting "' OutFileName '" - Done'
         }
+        Return RC = 0
     }
 
     /**
@@ -417,4 +425,41 @@ Class Game {
             FileExist(Location '\Data\terrain.drs')
         )
     }
+}
+
+Class Patch {
+    workDirectory => Base().workDirectory
+    Fixs => This.getFixs()
+
+    getFixs() {
+        F := []
+        Loop Files, This.workDirectory '\*', 'D' {
+            F.Push(A_LoopFileFullPath)
+        }
+    }
+}
+
+Class Version {
+    requiredVersion => Map(
+        "aokCombine", Map(
+            "2.0b", [
+                "2.0a"
+            ]
+        ),
+        "aocCombine", Map(
+            "1.0e", [
+                "1.0c"
+            ],
+            "1.1", [
+                "1.0c"
+            ],
+            "1.5", [
+                "1.0c"
+            ],
+            "1.6", [
+                "1.0c",
+                "1.5"
+            ]
+        )
+    )
 }

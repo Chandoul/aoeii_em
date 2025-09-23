@@ -202,10 +202,6 @@ deleteGame(Ctrl, Info) {
 }
 
 downloadGame(Ctrl, Info) {
-    If !app.getConnectedState() {
-        MsgboxEx('Make sure you are connected to the internet!', "Can't download!", , 0x30).result
-        Return
-    }
     If (selectedDestination := FileSelect('D', , 'Game install location')) &&
         downloadAgree := 'Yes' == MsgboxEx(
             'Are you sure want to install at this location?`n' selectedDestination,
@@ -224,9 +220,12 @@ downloadGame(Ctrl, Info) {
 
             Ctrl.Enabled := False
 
-            app.downloadPackage(gameLink, Game().gamePackage, 269, PBT, PB)
+            If !app.downloadPackage(gameLink, Game().gamePackage, 269, PBT, PB)
+                || !app.extractPackage(Game().gamePackage, selectedDestination, , PBT) {
+                    Ctrl.Enabled := True
+                    Return
+            }
 
-            app.extractPackage(Game().gamePackage, selectedDestination, , PBT)
 
             updateGameRegInfo(selectedDestination)
 
