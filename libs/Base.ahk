@@ -18,6 +18,7 @@ Class Base {
     gameLocationHistory => this.readConfiguration('GameLocationHistory')
     gameRangerExecutable => A_AppData '\GameRanger\GameRanger\GameRanger.exe'
     gameRangerSetting => A_AppData '\GameRanger\GameRanger Prefs\Settings'
+    gameRegLocation => 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Age of Empires II AIO'
 
     /**
      * Initiate the class
@@ -34,8 +35,8 @@ Class Base {
         WorkDir := A_ScriptDir
         Loop 2
             SplitPath(WorkDir, , &WorkDir)
-        Until FileExist(WorkDir '\Configuration.ini')
-        Return FileExist(WorkDir '\Configuration.ini') ? WorkDir : A_ScriptDir
+        Until FileExist(WorkDir '\workDirectory')
+        Return FileExist(WorkDir '\workDirectory') ? WorkDir : A_ScriptDir
     }
 
     /**
@@ -47,6 +48,7 @@ Class Base {
             _7zrExist := This._7zrSHA256 == Hash.File('SHA256', This._7zrCsle)
         }
         If (!_7zrExist) {
+            Msgbox This._7zrCsle
             Download(This._7zrLink, This._7zrCsle)
         }
         _7zrExist := This._7zrSHA256 == Hash.File('SHA256', This._7zrCsle)
@@ -183,10 +185,12 @@ Class GuiEx extends Gui {
     transColor => 0xFFFFFE
     checkedImage => This.workDirectory '\assets\cb\checked.png'
     uncheckedImage => This.workDirectory '\assets\cb\unchecked.png'
-    initiate() {
+    click => This.workDirectory '\assets\wav\50300.wav'
+    initiate(qA := 1) {
         This.BackColor := 0xFFFFFF
-        This.OnEvent('Close', (*) => ExitApp())
-        This.MarginX := gameGui.MarginY := 20
+        If qA
+            This.OnEvent('Close', (*) => ExitApp())
+        This.MarginX := This.MarginY := 20
         This.SetFont('s10 Bold', 'Segoe UI')
         This.backGroundImage := This.AddPicture('xm-' This.MarginX ' ym-' This.MarginY)
     }
@@ -239,6 +243,9 @@ Class GuiEx extends Gui {
                 theme*
             )
         }
+
+        b.OnEvent('Click', (*) => SoundPlay(This.click))
+
         If clickCallBack {
             b.OnEvent('Click', clickCallBack)
         }
@@ -274,11 +281,120 @@ Class GuiEx extends Gui {
             T.cbValue := value ? 1 : 0
             P.Value := T.cbValue ? This.checkedImage : This.uncheckedImage
         }
-
         Return T
     }
-    checkBoxHbitmap(w, h, backColor) {
+}
 
+Class MsgBoxEx {
+    workDirectory => Base().workDirectory
+    errorIcon => this.workDirectory '\assets\error.png'
+    errorSound => this.workDirectory '\assets\mp3\error.mp3'
+    questionIcon => this.workDirectory '\assets\question.png'
+    questionSound => this.workDirectory '\assets\mp3\question.mp3'
+    exclamationIcon => this.workDirectory '\assets\exclamation.png'
+    exclamationSound => this.workDirectory '\assets\mp3\exclamation.mp3'
+    infoIcon => this.workDirectory '\assets\info.png'
+    infoSound => this.workDirectory '\assets\mp3\info.mp3'
+    btnWidth => 100
+    /**
+     * App specific message box theme
+     * @param Text 
+     * @param Title 
+     * @param {number} Function 
+     * @param {number} Icon 
+     * @param {number} TimeOut 
+     */
+    __New(Text := '', Title := A_ScriptName, Function := 0, Icon := 0, TimeOut := 0) {
+        This.msgGui := GuiEx(, Title)
+        This.msgGui.initiate(0)
+        This.hIcon := 0
+        Switch Icon {
+            Case 16:
+                This.hIcon := This.msgGui.AddPicture('xm w48 h48 BackgroundTrans', This.errorIcon)
+                SoundPlay(This.errorSound)
+            Case 32:
+                This.hIcon := This.msgGui.AddPicture('xm w48 h48 BackgroundTrans', This.questionIcon)
+                SoundPlay(This.questionSound)
+            Case 48:
+                This.hIcon := This.msgGui.AddPicture('xm w48 h48 BackgroundTrans', This.exclamationIcon)
+                SoundPlay(This.exclamationSound)
+            Case 64:
+                This.hIcon := This.msgGui.AddPicture('xm w48 h48 BackgroundTrans', This.infoIcon)
+                SoundPlay(This.infoSound)
+        }
+
+        If Text = '' {
+            Switch Function {
+                Default: Text := 'Press OK to continue'
+                Case 2: Text := 'Press Abort to stop'
+                Case 3, 4: Text := 'Press Yes to agree'
+                Case 5, 6: Text := 'Press Cancel to stop'
+            }
+        }
+
+        This.hText := This.msgGui.AddText('xm BackgroundTrans Center', Text)
+
+        Switch Function {
+            Case 0: This.msgGui.addButtonEx('xm w100', 'OK', , updateResult)
+            Case 1:
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'OK', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , updateResult)
+            Case 2:
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Abort', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Retry', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Ignore', , updateResult)
+            Case 3:
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Yes', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'No', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , updateResult)
+            Case 4:
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Yes', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'No', , updateResult)
+            Case 5:
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Retry', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , updateResult)
+            Case 6:
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Cancel', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Try Again', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Continue', , updateResult)
+        }
+
+        This.msgGui.showEx(, 1)
+        This.centerControls()
+        This.result := ''
+
+        (TimeOut) ? WinWaitClose(This.msgGui, , TimeOut) : WinWaitClose(This.msgGui)
+
+        If This.msgGui
+            This.msgGui.Destroy()
+
+        updateResult(Ctrl, Info) {
+            This.result := Ctrl.Text
+            If This.msgGui
+                This.msgGui.Destroy()
+        }
+    }
+    centerControls() {
+        This.msgGui.GetClientPos(&X, &Y, &Width, &Height)
+        If This.hIcon {
+            This.hIcon.GetPos(&cX, &cY, &cWidth, &cHeight)
+            This.hIcon.Move((Width - cWidth) // 2)
+        }
+        This.hText.GetPos(&cX, &cY, &cWidth, &cHeight)
+        This.hText.Move((Width - cWidth) // 2)
+
+        buttons := []
+        For Obj in This.msgGui {
+            If !InStr(Type(Obj), 'Gui.Button')
+                Continue
+            buttons.Push(Obj)
+        }
+        X := buttons.Length * This.btnWidth + (buttons.Length - 1) * This.msgGui.MarginX
+        X := (Width - X) // 2
+        For btn in buttons {
+            btn.Move(X + (A_Index - 1) * (This.msgGui.MarginX + This.btnWidth))
+            btn.Redraw()
+        }
     }
 }
 

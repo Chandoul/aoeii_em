@@ -338,7 +338,7 @@ CreateImageButton(GuiBtn, Mode, Options*) {
                 Case 1: DllCall("Gdiplus.dll\GdipCreateSolidFill", "UInt", 0xFFFFFFFF, "PtrP", &PBRUSH)
                 Case 2: DllCall("Gdiplus.dll\GdipCreateSolidFill", "UInt", 0xFFFFFF00, "PtrP", &PBRUSH)
                 Case 3: DllCall("Gdiplus.dll\GdipCreateSolidFill", "UInt", 0xFFFF0000, "PtrP", &PBRUSH)
-                Case 4: DllCall("Gdiplus.dll\GdipCreateSolidFill", "UInt", 0xFF000000, "PtrP", &PBRUSH)
+                Case 4: DllCall("Gdiplus.dll\GdipCreateSolidFill", "UInt", 0xFFE6E6E6, "PtrP", &PBRUSH)
             }
 
             ; Set the text's rectangle

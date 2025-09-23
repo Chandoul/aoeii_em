@@ -9,9 +9,8 @@ gameLocation := app.gameLocation
 gameLocationHistory := app.gameLocationHistory
 gameRangerExecutable := app.gameRangerExecutable
 gameRangerSetting := app.gameRangerSetting
-
+gameRegLocation := app.gameRegLocation
 gameLink := 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/Tools/Game/AGE%20OF%20EMPIRES%20II.7z'
-gameRegLocation := 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Age of Empires II AIO'
 
 gameGui := GuiEx(, Game().name)
 gameGui.initiate()
@@ -45,7 +44,7 @@ If !Game().isValidGameDirectory(userGameLocation) {
 }
 userGameLocation := app.gameLocation
 If !Game().isValidGameDirectory(userGameLocation) {
-    If 'Yes' = MsgBox('Do you want to select the game folder manually?', 'Game Location', 0x4 + 0x40)
+    If 'Yes' = MsgboxEx('Do you want to select the game folder manually?', 'Game Location', 0x4, 0x40).result
         selectDirectory(select, '')
 }
 
@@ -73,14 +72,14 @@ gameShortcuts(Ctrl, Info) {
 setDirectoryGR(Ctrl, Info) {
     Ctrl.Enabled := False
     If !Game().isValidGameDirectory(gameDirectory.Value) {
-        If 'Yes' != MsgBox('Game is not yet located!, want to select now?', 'Game', 0x4 + 0x40) {
+        If 'Yes' != MsgboxEx('Game is not yet located!, want to select now?', 'Game', 0x4, 0x40).result {
             Ctrl.Enabled := True
             Return
         }
         selectDirectory(select, '')
     }
     If !ProcessExist('GameRanger.exe') {
-        MsgBox('Make sure GameRanger is running!', 'Invalid', 0x30)
+        MsgboxEx('Make sure GameRanger is running!', 'Invalid', , 0x30)
         Ctrl.Enabled := True
         Return
     }
@@ -93,7 +92,7 @@ setDirectoryGR(Ctrl, Info) {
         Run(gameRangerExecutable)
         WinActivate('ahk_exe GameRanger.exe')
         If !WinWaitActive('ahk_exe GameRanger.exe', , 5) {
-            MsgBox('Unable to get the GameRanger window!', 'Invalid', 0x30)
+            MsgboxEx('Unable to get the GameRanger window!', 'Invalid', , 0x30)
             Ctrl.Enabled := True
             Return False
         }
@@ -101,7 +100,7 @@ setDirectoryGR(Ctrl, Info) {
         SendInput('^e')
         Sleep(500)
         If !WinWaitActive('Options ahk_exe GameRanger.exe', , 5) {
-            MsgBox('Unable to get the GameRanger option window!', 'Invalid', 0x30)
+            MsgboxEx('Unable to get the GameRanger option window!', 'Invalid', , 0x30)
             Ctrl.Enabled := True
             Return False
         }
@@ -112,7 +111,7 @@ setDirectoryGR(Ctrl, Info) {
         WinGetPos(&X, &Y, &W, &H, 'Options ahk_exe GameRanger.exe')
         MouseClick('Left', W - 115, H - 65)
         If !WinWaitActive('Choose ahk_exe GameRanger.exe', , 5) {
-            MsgBox('Unable to get the GameRanger selection window!', 'Invalid', 0x30)
+            MsgboxEx('Unable to get the GameRanger selection window!', 'Invalid', , 0x30)
             Ctrl.Enabled := True
             Return False
         }
@@ -125,11 +124,11 @@ setDirectoryGR(Ctrl, Info) {
     If !MacroSelect('empires2.exe', 12)
         || !MacroSelect('age2_x1\age2_x1.exe', 14)
         || !MacroSelect('age2_x1\age2_x2.exe', 11) {
-            MsgBox('No game was found!', 'Invalid', 0x30)
+            MsgboxEx('No game was found!', 'Invalid', , 0x30)
             Ctrl.Enabled := True
             Return False
     }
-    MsgBox('Game selected successfully!`n`nNow GameRanger must restart to unlock the game excutables`nRestarting in 5 seconds...', 'Game select', 0x40 ' T5')
+    MsgboxEx('Game selected successfully!`n`nNow GameRanger must restart to unlock the game excutables`nRestarting in 5 seconds...', 'Game select', , 0x40, 5)
     ProcessClose('GameRanger.exe')
     Run(gameRangerExecutable)
     Ctrl.Enabled := True
@@ -146,7 +145,7 @@ selectDirectoryGR(Ctrl, Info) {
     Locations := textGrabPath(Text, ['empires2.exe', 'age2_x1.exe', 'age2_x2.exe'])
     For Location in Locations {
         If RC := Game().isValidGameDirectory(Location) {
-            Choice := MsgBox('Do you want to select this location? (Grabbed from GameRanger setting)`n`n"' Location '"', 'Game Location', 0x4 + 0x40)
+            Choice := MsgboxEx('Do you want to select this location? (Grabbed from GameRanger setting)`n`n"' Location '"', 'Game Location', 0x4, 0x40).result
             If Choice = 'Yes' {
                 gameDirectory.Value := Location
                 writeNewLocation(Location)
@@ -166,7 +165,7 @@ selectDirectory(Ctrl, Info) {
             SelectedDirectory := ''
             SplitPath(SelectedDirectoryEx, &_, &ParentSelectedDirectory)
             If Valid := Game().isValidGameDirectory(ParentSelectedDirectory) {
-                Choice := MsgBox('Want to select this location?`n`n' ParentSelectedDirectory, 'Game Location', 0x4 + 0x40)
+                Choice := MsgboxEx('Want to select this location?`n`n' ParentSelectedDirectory, 'Game Location', 0x4, 0x40).result
                 If Choice = 'Yes' {
                     SelectedDirectory := ParentSelectedDirectory
                 }
@@ -175,7 +174,7 @@ selectDirectory(Ctrl, Info) {
         If !Valid {
             Loop Files, SelectedDirectoryEx '\*', 'D' {
                 If Game().isValidGameDirectory(A_LoopFileFullPath) {
-                    Choice := MsgBox('Want to select this location?`n`n' A_LoopFileFullPath, 'Game Location', 0x4 + 0x40)
+                    Choice := MsgboxEx('Want to select this location?`n`n' A_LoopFileFullPath, 'Game Location', 0x4, 0x40).result
                     If Choice = 'Yes' {
                         SelectedDirectory := A_LoopFileFullPath
                         Break
@@ -188,7 +187,7 @@ selectDirectory(Ctrl, Info) {
             writeNewLocation(SelectedDirectory)
             addGameShortcuts()
         } Else {
-            MsgBox("You seem to not select any location!", 'Game location', 0x30)
+            MsgboxEx("Game still not selected/found, please a valid location!", 'Game location', , 0x30)
         }
     }
     Ctrl.Enabled := True
@@ -196,25 +195,22 @@ selectDirectory(Ctrl, Info) {
 
 deleteGame(Ctrl, Info) {
     Ctrl.Enabled := False
-    Try {
-        Run('UninstallGame().ahk')
-    } Catch Error As Err {
-        MsgBox("Run failed!`n`n" Err.Message '`n' Err.Line '`n' Err.File, 'Fix', 0x10)
-        Ctrl.Enabled := True
+    If FileExist('UninstallGame.ahk') {
+        Run('UninstallGame.ahk "' gameDirectory.Value '"')
     }
     Ctrl.Enabled := True
 }
 
 downloadGame(Ctrl, Info) {
     If !app.getConnectedState() {
-        MsgBox('Make sure you are connected to the internet!', "Can't download!", 0x30)
+        MsgboxEx('Make sure you are connected to the internet!', "Can't download!", , 0x30).result
         Return
     }
     If (selectedDestination := FileSelect('D', , 'Game install location')) &&
-        downloadAgree := 'Yes' == MsgBox(
+        downloadAgree := 'Yes' == MsgboxEx(
             'Are you sure want to install at this location?`n' selectedDestination,
-            'Game install location', 0x40 + 0x4
-        )
+            'Game install location', 0x4, 0x40
+        ).result
         if downloadAgree {
             selectedDestination := RegExReplace(selectedDestination, "\$")
             selectedDestination := selectedDestination '\Age of Empires II'
@@ -222,7 +218,7 @@ downloadGame(Ctrl, Info) {
                 DirCreate(selectedDestination)
             }
 
-            If Game().isValidGameDirectory(selectedDestination) && ('Yes' != MsgBox('It seems like the game already installed at this location!`nWant continue?', 'Game location install', 0x30 + 0x4)) {
+            If Game().isValidGameDirectory(selectedDestination) && ('Yes' != MsgboxEx('It seems like the game already installed at this location!`nWant to continue? (overwite)', 'Game location install', 0x4, 0x30).result) {
                 Return
             }
 
@@ -234,12 +230,13 @@ downloadGame(Ctrl, Info) {
 
             updateGameRegInfo(selectedDestination)
 
-            If 'Yes' = MsgBox('Game exportation should be completed by now!`nWant to select this game?', 'Game install location', 0x4 + 0x40) {
+            If 'Yes' = MsgboxEx('Game exportation should be completed by now!`nDo you want to select this location "' selectedDestination '" ?', 'Game install location', 0x4, 0x40).result {
                 gameDirectory.Value := StrUpper(selectedDestination)
                 writeNewLocation(selectedDestination)
                 addGameShortcuts()
             }
             Ctrl.Enabled := True
+            PBT.Visible := False
         }
 }
 
@@ -328,7 +325,7 @@ addGameShortcuts() {
             }
         }
         If createShortcut {
-            If 'Yes' = MsgBox('Want to create the game desktop shortcuts?', 'Game', 0x4 + 0x40 ' T5') {
+            If 'Yes' = MsgboxEx('Want to create the game desktop shortcuts?', 'Game', 0x4, 0x40, 5).result {
                 FileCreateShortcut(location '\empires2.exe', A_Desktop '\The Age of Kings.lnk', location)
                 FileCreateShortcut(location '\age2_x1\age2_x1.exe', A_Desktop '\The Conquerors.lnk', location '\age2_x1')
                 FileCreateShortcut(location '\age2_x1\age2_x2.exe', A_Desktop '\Forgotten Empires.lnk', location '\age2_x1')
