@@ -9,9 +9,24 @@ Class Base {
     author => 'Smile'
     license => 'MIT'
     workDirectory => This.workDir()
-    configuration => This.workDirectory '\Configuration.ini'
+    configuration => This.workDirectory '\configuration.ini'
+    tools => {
+        game: {
+            title: 'My Game',
+            file: This.workDirectory '\tools\game\game.ahk'
+        },
+        version: {
+            title: 'Versions',
+            file: This.workDirectory '\tools\version\version.ahk'
+        },
+        fix: {
+            title: 'Patchs & Fixs',
+            file: This.workDirectory '\tools\fix\fix.ahk'
+        },
+    }
+    ddraw => This.workDirectory '\externals\cnc-ddraw.2'
     _7zrLink => 'https://www.7-zip.org/a/7zr.exe'
-    _7zrCsle => This.workDirectory '\Externals\7zr.exe'
+    _7zrCsle => This.workDirectory '\externals\7zr.exe'
     _7zrVersion => '25.01'
     _7zrSHA256 => '27cbe3d5804ad09e90bbcaa916da0d5c3b0be9462d0e0fb6cb54be5ed9030875'
     gameLocation => this.readConfiguration('GameLocation')
@@ -24,9 +39,26 @@ Class Base {
      * Initiate the class
      */
     __New() {
+        OnError(handleError)
         This.avoidVoobly()
         This._7zrGet()
+
+        handleError(Thrown, Mode) {
+            MsgBoxEx(
+                'An error occured:`n`nMessage: ' Thrown.Message .
+                '`n`nWhat: ' Thrown.What .
+                '`n`nExtra: ' Thrown.Extra .
+                '`n`nFile: ' Thrown.File .
+                '`n`nLine: ' Thrown.Line .
+                '`n`nStack: ' Thrown.Stack,
+                This.name,
+                0,
+                0x10
+            )
+            ExitApp()
+        }
     }
+
     /**
      * Gets the default app working directory
      * @returns {string} 
@@ -45,21 +77,31 @@ Class Base {
     _7zrGet() {
         _7zrExist := False
         If FileExist(This._7zrCsle) {
-            _7zrExist := This._7zrSHA256 == Hash.File('SHA256', This._7zrCsle)
+            _7zrExist := This._7zrSHA256 == This.hashFile('SHA256', This._7zrCsle)
         }
         If (!_7zrExist) {
             Msgbox This._7zrCsle
             Download(This._7zrLink, This._7zrCsle)
         }
-        _7zrExist := This._7zrSHA256 == Hash.File('SHA256', This._7zrCsle)
+        _7zrExist := This._7zrSHA256 == This.hashFile('SHA256', This._7zrCsle)
         If (!_7zrExist) {
             Msgbox(
-                'Unable to get the correct 7zr.exe (x86) : 7-Zip console executable v' This._7zrVersion ' from "https://www.7-zip.org/download.html"`nTo fix this, download it manually and place it, into the "Externals\" directory.'
+                'Unable to get the correct 7zr.exe (x86) : 7-Zip console executable v' This._7zrVersion ' from "https://www.7-zip.org/download.html"`nTo fix this, download it manually and place it, into the "externals\" directory.'
                 , '7-Zip console executable'
                 , 0x30
             )
             ExitApp()
         }
+    }
+
+    /**
+     * Return the hashsum of a file
+     * @param {string} Alg 
+     * @param {string} file 
+     * @returns {string} 
+     */
+    hashFile(Alg := 'MD5', file := '') {
+        Return FileExist(file) ? Hash.File(Alg, file) : ''
     }
 
     /**
@@ -176,6 +218,28 @@ Class Base {
         Return Size
     }
 
+    /**
+     * Verify is the game folder is correctly selected
+     */
+    isGameFolderSelected(wnd := 0) {
+        If !Game().isValidGameDirectory(gameLocation) {
+            If wnd {
+                wnd.Opt('Disabled')
+            }
+            If 'Yes' = MsgBoxEx('Game is not yet located!, want to select now?', 'Game', 0x4, 0x40).result
+                Try Run(This.tools.game.file)
+            ExitApp()
+        }
+    }
+
+    /**
+     * Apply the direct draw configuration to the game
+     */
+    applyDDrawFix() {
+        DirCopy(This.ddraw, This.gameLocation '\', 1)
+        If DirExist(gameLocation '\age2_x1')
+            DirCopy(This.ddraw, This.gameLocation '\age2_x1\', 1)
+    }
 }
 
 #Include ImageButton.ahk
@@ -260,23 +324,32 @@ Class GuiEx extends Gui {
         Return b
     }
     addCheckBoxEx(options := '', text := '', clickCallBack := 0) {
-        T := This.AddText(options, text)
+        T := This.AddText(options ' BackgroundTrans c4C4C4C', text)
         T.OnEvent('Click', toggleValue)
         T.GetPos(&X, &Y, &Width, &Height)
         T.Move(X + Height + 5, Y, Width, Height)
         T.cbValue := 0
 
         P := This.AddPicture('BackgroundTrans x' X ' y' Y ' h' Height ' w' Height, This.uncheckedImage)
+        P.cbValue := T.cbValue
+
         P.OnEvent('Click', toggleValue)
         toggleValue(*) {
             T.cbValue := !T.cbValue
-            P.Value := T.cbValue ? This.checkedImage : This.uncheckedImage
+            P.cbValue := T.cbValue
+            If T.cbValue {
+                T.Opt('cBlack')
+                P.Value := This.checkedImage
+            } Else {
+                P.Value := This.uncheckedImage
+                T.Opt('c4C4C4C')
+            }
+            T.Redraw()
         }
 
         If clickCallBack {
             T.OnEvent('Click', clickCallBack)
             P.OnEvent('Click', clickCallBack)
-            once := 0
         }
 
         T.DefineProp('Checked', { Get: getValue, Set: setValue })
@@ -287,9 +360,34 @@ Class GuiEx extends Gui {
         }
         setValue(ctrl, value) {
             T.cbValue := value ? 1 : 0
-            P.Value := T.cbValue ? This.checkedImage : This.uncheckedImage
+            P.cbValue := T.cbValue
+            If T.cbValue {
+                T.Opt('cBlack')
+                P.Value := This.checkedImage
+            } Else {
+                P.Value := This.uncheckedImage
+                T.Opt('c4C4C4C')
+            }
+            T.Redraw()
+            If clickCallBack {
+                clickCallBack.Call(T, '')
+            }
         }
         Return T
+    }
+
+    addPictureEx(options := '', filename := '', clickcallback := 0) {
+        If !FileExist(filename) {
+            filename := This.workDirectory '\assets\' filename
+        }
+        If !FileExist(filename) {
+            filename := ''
+        }
+        P := This.AddPicture(options ' BackgroundTrans', filename)
+        if clickcallback {
+            P.OnEvent('click', clickcallback)
+        }
+        Return P
     }
 }
 
@@ -340,31 +438,39 @@ Class MsgBoxEx {
             }
         }
 
-        This.hText := This.msgGui.AddText('xm BackgroundTrans Center', Text)
+        This.hText := This.msgGui.AddEdit('xm Center ReadOnly BackgroundE1B15A -E0x200 -VScroll Border', Text)
 
         Switch Function {
-            Case 0: This.msgGui.addButtonEx('xm w100', 'OK', , updateResult)
+            Case 0:
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'OK', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
             Case 1:
                 This.msgGui.addButtonEx('xm w' This.btnWidth, 'OK', , updateResult)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
             Case 2:
                 This.msgGui.addButtonEx('xm w' This.btnWidth, 'Abort', , updateResult)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Retry', , updateResult)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Ignore', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
             Case 3:
                 This.msgGui.addButtonEx('xm w' This.btnWidth, 'Yes', , updateResult)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'No', , updateResult)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
             Case 4:
                 This.msgGui.addButtonEx('xm w' This.btnWidth, 'Yes', , updateResult)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'No', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
             Case 5:
                 This.msgGui.addButtonEx('xm w' This.btnWidth, 'Retry', , updateResult)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
             Case 6:
                 This.msgGui.addButtonEx('xm w' This.btnWidth, 'Cancel', , updateResult)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Try Again', , updateResult)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Continue', , updateResult)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
         }
 
         This.msgGui.showEx(, 1)
@@ -378,6 +484,10 @@ Class MsgBoxEx {
 
         updateResult(Ctrl, Info) {
             This.result := Ctrl.Text
+            If This.result = 'Copy Message' {
+                A_Clipboard := This.hText.Value
+                Return
+            }
             If This.msgGui
                 This.msgGui.Destroy()
         }
@@ -406,11 +516,10 @@ Class MsgBoxEx {
     }
 }
 
-Class Game {
+Class Game extends Base {
     name => 'My Game'
-    workDirectory => Base().workDirectory
-    gamePackage => this.workDirectory '\Tools\Game\Age of Empires II.7z'
-    addShortcuts => Base().readConfiguration('AddShortcuts')
+    gamePackage => This.workDirectory '\Tools\Game\Age of Empires II.7z'
+    addShortcuts => This.readConfiguration('AddShortcuts')
     /**
      * Check if a location is really an aoe ii game
      * @param Location 
@@ -427,19 +536,28 @@ Class Game {
     }
 }
 
-Class Patch {
-    workDirectory => Base().workDirectory
+Class FixPatch extends Base {
+    fixLocation => This.workDirectory '\Tools\Fixs'
+    fixTool => This.fixLocation '\Fix.ahk'
     Fixs => This.getFixs()
 
     getFixs() {
         F := []
-        Loop Files, This.workDirectory '\*', 'D' {
+        Loop Files, This.fixLocation '\*', 'D' {
             F.Push(A_LoopFileFullPath)
         }
+        Return F
+    }
+
+    fixExist(name, location) {
+        Return 1
     }
 }
 
-Class Version {
+#Include LockCheck.ahk
+Class Version extends Base {
+    name => 'Game Versions'
+    versionLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/Tools/Version/Version.7z'
     requiredVersion => Map(
         "aokCombine", Map(
             "2.0b", [
@@ -462,4 +580,58 @@ Class Version {
             ]
         )
     )
+    versionLocation => This.workDirectory '\Tools\Version'
+    versionTool => This.fixLocation '\version.ahk'
+    forceDownload => This.readConfiguration('versionForceDownload')
+
+    __New() {
+        If This.forceDownload {
+            This.downloadPackage(This.versionLink, This.versionLocation '\Version.7z')
+            This.extractPackage(This.versionLocation '\Version.7z', This.versionLocation)
+        } Else {
+            If !FileExist(This.versionLocation '\Version.7z')
+            {
+                This.downloadPackage(This.versionLink, This.versionLocation '\Version.7z')
+                This.extractPackage(This.versionLocation '\Version.7z', This.versionLocation)
+            }
+            If !DirExist(This.versionLocation '\aok')
+                This.extractPackage(This.versionLocation '\Version.7z', This.versionLocation)
+
+        }
+    }
+
+    /**
+     * Check if it a command line call
+     */
+    isCommandLineCall(options) {
+        If A_Args.Length {
+            options.wnd.Hide()
+            For H in options.versionList['aok'] {
+                If H.Text = A_Args[1] {
+                    options.callback.Call(H, '')
+                    MsgBoxEx(H.Text ' version is applied successfully!', 'Version', , 0x40, 2)
+
+                }
+            }
+            For H in options.versionList['aoc'] {
+                If H.Text = A_Args[1] {
+                    options.callback.Call(H, '')
+                    MsgBoxEx(H.Text ' version is applied successfully!', 'Version', , 0x40, 2)
+                }
+            }
+            For H in options.versionList['fe'] {
+                If H.Text = A_Args[1] {
+                    options.callback.Call(H, '')
+                    MsgBoxEx(H.Text ' version is applied successfully!', 'Version', , 0x40, 2)
+                }
+            }
+            Quit()
+        }
+        /**
+         * Exit the app from a commandline call
+         * @returns {void} 
+         */
+        Quit() => ExitApp()
+
+    }
 }
