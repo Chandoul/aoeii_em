@@ -3,15 +3,15 @@
 
 #Include ..\..\Libs\Base.ahk
 
-app := Base()
+gamapp := Game()
 
-InstallRegKey := app.gameRegLocation
+InstallRegKey := gamapp.gameRegLocation
 
-If A_Args.Length < 1 || !Game().isValidGameDirectory(location := A_Args[1]) {
-    MsgBox('Please specify a game folder when you run this script as the first argument!', 'Uninstall', 0x30)
+If A_Args.Length < 1 || !gamapp.isValidGameDirectory(location := A_Args[1]) {
+    MsgBoxEx('Please specify a game folder when you run this script as the first argument!', 'Uninstall', , 0x30)
     ExitApp()
 }
-uninstallGui := GuiEx(, Game().name)
+uninstallGui := GuiEx(, gamapp.name)
 uninstallGui.initiate()
 
 uninstallGui.AddButtonEx(
@@ -28,8 +28,8 @@ UninstallGame(Ctrl, Info) {
     If InStr(Ctrl.Text, 'completed') {
         ExitApp()
     }
-    If !Game().isValidGameDirectory(Location) {
-        Msgbox('"' Location '" does not seems to be a valid game location`nUninstall aborted!', 'Uninstall', 0x30)
+    If !gamapp.isValidGameDirectory(Location) {
+        MsgboxEx('"' Location '" does not seems to be a valid game location`nUninstall aborted!', 'Uninstall', , 0x30)
         Return
     }
     Ctrl.TextEx := 'Uninstalling...'

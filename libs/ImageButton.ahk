@@ -316,7 +316,7 @@ CreateImageButton(GuiBtn, Mode, Options*) {
                     y := (A_Index - 1) * iHeight
                     Loop hDrawTimes {
                         x := (A_Index - 1) * iWidth
-                        Gdip_DrawImage(G, fBitmap, x, y, iWidth, iHeight, , , , , Idx = 4 ? MatrixGreyScale : 1)
+                        Gdip_DrawImage(G, fBitmap, x, y, iWidth, iHeight, , , , , (Idx = 4) ? MatrixGreyScale : 1)
                     }
                 }
 

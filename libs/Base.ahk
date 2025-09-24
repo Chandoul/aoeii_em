@@ -222,7 +222,7 @@ Class Base {
      * Verify is the game folder is correctly selected
      */
     isGameFolderSelected(wnd := 0) {
-        If !Game().isValidGameDirectory(gameLocation) {
+        If !Game().isValidGameDirectory(This.gameLocation) {
             If wnd {
                 wnd.Opt('Disabled')
             }
@@ -235,10 +235,86 @@ Class Base {
     /**
      * Apply the direct draw configuration to the game
      */
-    applyDDrawFix() {
-        DirCopy(This.ddraw, This.gameLocation '\', 1)
-        If DirExist(gameLocation '\age2_x1')
-            DirCopy(This.ddraw, This.gameLocation '\age2_x1\', 1)
+    applyDDrawFix(
+        locations := [
+            This.gameLocation '\',
+            This.gameLocation '\age2_x1\'
+        ]
+    ) {
+        For location in locations {
+            If DirExist(location)
+                DirCopy(This.ddraw, location, 1)
+            If FileExist(location '\wndmode.dll') {
+                FileDelete(location '\wndmode.dll')
+            }
+            If FileExist(location '\windmode.dll') {
+                FileDelete(location '\windmode.dll')
+            }
+        }
+    }
+
+    /**
+     * Apply a userpatch patch fix (made by katsuie/rohan)
+     * @param {array} locations 
+     * @param {string} fix 
+     * @returns {void} 
+     */
+    applyUserFix(
+        fix := 'None',
+        locations := [
+            This.gameLocation '\'
+        ]
+    ) {
+        If fix = 'None'
+            Return
+        For location in locations {
+            If DirExist(location)
+                DirCopy(fix, location, 1)
+            If FileExist(location '\ddraw.dll') {
+                FileDelete(location '\ddraw.dll')
+            }
+            If FileExist(location '\age2_x1\ddraw.dll') {
+                FileDelete(location '\age2_x1\ddraw.dll')
+            }
+        }
+    }
+
+    /**
+     * Enables a versions list
+     * @param controls 
+     */
+    enableOptions(controls, enabled := 1) {
+        For control in controls {
+            control.Enabled := enabled
+        }
+    }
+
+    /**
+     * Clears out a compatibility to an executable
+     * @param ValueName 
+     */
+    compatibilityClear(layers := [], valueName := '') {
+        If !valueName {
+            Return
+        }
+        For layer in layers {
+            If RegRead(layer, valueName, '')
+                RegDelete(layer, valueName)
+        }
+    }
+
+    /**
+     * Sets a compatibility to an executable
+     * @param ValueName 
+     * @param Value 
+     */
+    compatibilitySet(layers := [], valueName := '', value := '') {
+        If !valueName {
+            Return
+        }
+        For layer in layers {
+            RegWrite(value, 'REG_SZ', layer, valueName)
+        }
     }
 }
 
@@ -247,6 +323,12 @@ Class Button {
     workDirectory => Base().workDirectory
     default => [
         [This.workDirectory '\assets\000_50212.bmp', , 0xFFFFFF]
+    ]
+    checkedDisabled => [
+        [This.workDirectory '\assets\000_50212.bmp', , 0xFFFFFF],
+        [],
+        [],
+        [This.workDirectory '\assets\000_50212_check.bmp', , 0xFFFFFF]
     ]
 }
 
@@ -309,11 +391,17 @@ Class GuiEx extends Gui {
         b.DefineProp('TextEx', { Set: textEx })
         textEx(b, value, text := '', theme := Button().default) {
             b.text := value
+            update(b, theme)
+        }
+
+        b.DefineProp('update', { Call: update })
+        update(b, theme := Button().default) {
             CreateImageButton(
                 b,
                 0,
                 theme*
             )
+            b.Redraw()
         }
 
         b.OnEvent('Click', (*) => SoundPlay(This.click))
@@ -518,7 +606,7 @@ Class MsgBoxEx {
 
 Class Game extends Base {
     name => 'My Game'
-    gamePackage => This.workDirectory '\Tools\Game\Age of Empires II.7z'
+    gamePackage => This.workDirectory '\tools\Game\Age of Empires II.7z'
     addShortcuts => This.readConfiguration('AddShortcuts')
     /**
      * Check if a location is really an aoe ii game
@@ -536,28 +624,10 @@ Class Game extends Base {
     }
 }
 
-Class FixPatch extends Base {
-    fixLocation => This.workDirectory '\Tools\Fixs'
-    fixTool => This.fixLocation '\Fix.ahk'
-    Fixs => This.getFixs()
-
-    getFixs() {
-        F := []
-        Loop Files, This.fixLocation '\*', 'D' {
-            F.Push(A_LoopFileFullPath)
-        }
-        Return F
-    }
-
-    fixExist(name, location) {
-        Return 1
-    }
-}
-
 #Include LockCheck.ahk
 Class Version extends Base {
     name => 'Game Versions'
-    versionLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/Tools/Version/Version.7z'
+    versionLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/Version/Version.7z'
     requiredVersion => Map(
         "aokCombine", Map(
             "2.0b", [
@@ -580,7 +650,7 @@ Class Version extends Base {
             ]
         )
     )
-    versionLocation => This.workDirectory '\Tools\Version'
+    versionLocation => This.workDirectory '\tools\Version'
     versionTool => This.fixLocation '\version.ahk'
     forceDownload => This.readConfiguration('versionForceDownload')
 
@@ -605,7 +675,6 @@ Class Version extends Base {
      */
     isCommandLineCall(options) {
         If A_Args.Length {
-            options.wnd.Hide()
             For H in options.versionList['aok'] {
                 If H.Text = A_Args[1] {
                     options.callback.Call(H, '')
@@ -625,6 +694,44 @@ Class Version extends Base {
                     MsgBoxEx(H.Text ' version is applied successfully!', 'Version', , 0x40, 2)
                 }
             }
+            Quit()
+        }
+        /**
+         * Exit the app from a commandline call
+         * @returns {void} 
+         */
+        Quit() => ExitApp()
+
+    }
+}
+
+Class FixPatch extends Base {
+    fixLocation => This.workDirectory '\tools\Fix'
+    fixTool => This.fixLocation '\fix.ahk'
+    fixs => This.getFixs()
+    fixRegKey => 'HKEY_CURRENT_USER\SOFTWARE\Microsoft\Microsoft Games\Age of Empires'
+    fixRegName => 'Aoe2Patch'
+    userRegLayer => "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
+    machineRegLayer => "HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
+    getFixs() {
+        F := ['None']
+        Loop Files, This.fixLocation '\*', 'D' {
+            F.Push(A_LoopFileName)
+        }
+        Return F
+    }
+
+    fixExist(name) {
+        Return DirExist(This.fixLocation '\' name)
+    }
+
+    /**
+     * Check if it a command line call
+     */
+    isCommandLineCall(options) {
+        If A_Args.Length {
+            If options.callback.Call(A_Args[1], '')
+                MsgBoxEx(A_Args[1] ' fix is applied successfully!', options.wnd.Title, , 0x40, 2)
             Quit()
         }
         /**

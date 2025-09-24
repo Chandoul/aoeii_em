@@ -4,15 +4,15 @@
 #Include ..\..\libs\Base.ahk
 #Include ..\..\libs\LockCheck.ahk
 
-ver := Version()
-fix := FixPatch()
+verapp := Version()
+fixapp := FixPatch()
 
-fixs := fix.Fixs
-requiredVersions := ver.requiredVersion
-gameLocation := ver.gameLocation
-versionLink := ver.versionLink
+fixs := fixapp.Fixs
+requiredVersions := verapp.requiredVersion
+gameLocation := verapp.gameLocation
+versionLink := verapp.versionLink
 
-versionGui := GuiEx(, ver.name)
+versionGui := GuiEx(, verapp.name)
 versionGui.initiate()
 
 versionGui.AddText('BackgroundTrans xm cRed w150 Center h30', 'The Age of Kings').SetFont('Bold s12')
@@ -24,8 +24,8 @@ versions := Map(
 )
 
 requiredVersions['aok'] := Map()
-Loop Files, ver.versionLocation '\aok\*', 'D' {
-    H := versionGui.AddButtonEx('w150', AOK := A_LoopFileName, , applyVersion)
+Loop Files, verapp.versionLocation '\aok\*', 'D' {
+    H := versionGui.AddButtonEx('w150', AOK := A_LoopFileName, Button().checkedDisabled, applyVersion)
     requiredVersions['aok'][H] := 1
     versions['Version'].Push(H)
 }
@@ -35,8 +35,8 @@ versionGui.AddPictureEx('xp+59 yp+30', 'aoc.png', launchGame)
 versionGui.AddText('BackgroundTrans xp-59 yp+35 w1 h1')
 
 requiredVersions['aoc'] := Map()
-Loop Files, ver.versionLocation '\aoc\*', 'D' {
-    H := versionGui.addButtonEx('w150', AOC := A_LoopFileName, , applyVersion)
+Loop Files, verapp.versionLocation '\aoc\*', 'D' {
+    H := versionGui.addButtonEx('w150', AOC := A_LoopFileName, Button().checkedDisabled, applyVersion)
     requiredVersions['aoc'][H] := 2
     versions['Version'].Push(H)
 }
@@ -46,8 +46,8 @@ versionGui.AddPictureEx('xp+59 yp+30', 'fe.png', launchGame)
 versionGui.AddText('BackgroundTrans xp-59 yp+35 w1 h1')
 
 requiredVersions['fe'] := Map()
-Loop Files, ver.versionLocation '\fe\*', 'D' {
-    H := versionGui.addButtonEx('w150', FE := A_LoopFileName, , applyVersion)
+Loop Files, verapp.versionLocation '\fe\*', 'D' {
+    H := versionGui.addButtonEx('w150', FE := A_LoopFileName, Button().checkedDisabled, applyVersion)
     requiredVersions['fe'][H] := 3
     versions['Version'].Push(H)
 }
@@ -57,19 +57,19 @@ versionGui.SetFont('s8')
 autoFix := versionGui.addCheckBoxEx('xm', 'Auto enable a fix after each change:', patchEnable)
 versionGui.MarginY := 5
 
-fixChoice := versionGui.AddDropDownList('xm w200 Disabled', fixs)
-autoFix.Checked := ver.readConfiguration('autoFix')
+fixChoice := versionGui.AddDropDownList('xm w200 Disabled Choose6', fixs)
+autoFix.Checked := verapp.readConfiguration('autoFix')
 
 versionGui.MarginY := 10
 
 ddrAuto := versionGui.addCheckBoxEx('xm', 'Auto enable direct draw fix after each change', ddrEnable)
-ddrAuto.Checked := ver.readConfiguration('ddrAuto')
+ddrAuto.Checked := verapp.readConfiguration('ddrAuto')
 
 versionGui.showEx(, 1)
 
-ver.isGameFolderSelected(versionGui)
+verapp.isGameFolderSelected(versionGui)
 
-ver.isCommandLineCall({
+verapp.isCommandLineCall({
     wnd: versionGui,
     versionList: requiredVersions,
     callback: applyVersion
@@ -93,10 +93,10 @@ findGame(ctrl) {
 }
 
 cleansUp(fGame) {
-    Loop Files, ver.versionLocation '\' fGame '\*', 'D' {
+    Loop Files, verapp.versionLocation '\' fGame '\*', 'D' {
         version := A_LoopFileName
-        Loop Files, ver.versionLocation '\' fGame '\' version '\*.*', 'R' {
-            pathFile := StrReplace(A_LoopFileDir '\' A_LoopFileName, ver.versionLocation '\' fGame '\' version '\')
+        Loop Files, verapp.versionLocation '\' fGame '\' version '\*.*', 'R' {
+            pathFile := StrReplace(A_LoopFileDir '\' A_LoopFileName, verapp.versionLocation '\' fGame '\' version '\')
             If FileExist(gameLocation '\' pathFile) {
                 FileDelete(gameLocation '\' pathFile)
             }
@@ -107,70 +107,64 @@ cleansUp(fGame) {
 applyReqVersion(ctrl, fGame) {
     If requiredVersions.Has(fGame 'Combine') && requiredVersions[fGame 'Combine'].Has(ctrl.Text) {
         For version in requiredVersions[fGame 'Combine'][ctrl.Text] {
-            If DirExist(ver.versionLocation '\' fGame '\' version) {
-                DirCopy(ver.versionLocation '\' fGame '\' version, gameLocation, 1)
+            If DirExist(verapp.versionLocation '\' fGame '\' version) {
+                DirCopy(verapp.versionLocation '\' fGame '\' version, gameLocation, 1)
             }
         }
     }
-    If DirExist(ver.versionLocation '\' fGame '\' ctrl.Text) {
-        DirCopy(ver.versionLocation '\' fGame '\' ctrl.Text, gameLocation, 1)
+    If DirExist(verapp.versionLocation '\' fGame '\' ctrl.Text) {
+        DirCopy(verapp.versionLocation '\' fGame '\' ctrl.Text, gameLocation, 1)
     }
 }
 
 applyVersion(ctrl, info) {
-    disableOptions(FGame := findGame(ctrl))
+    verapp.enableOptions(requiredVersions[FGame := findGame(ctrl)], 0)
     Try {
         cleansUp(FGame)
         applyReqVersion(ctrl, FGame)
         If autoFix.cbValue && fixChoice.Text != ''
-            Try RunWait('"' fix.fixTool '" "' fixChoice.Text '"')
+            Try RunWait('"' fixapp.fixTool '" "' fixChoice.Text '"')
         If ddrAuto.cbValue {
-            ver.applyDDrawFix()
+            verapp.applyDDrawFix()
         }
     } Catch {
         If !lockCheck(gameLocation) {
-            enableOptions(FGame)
+            verapp.enableOptions(requiredVersions[FGame])
             Return
         }
         cleansUp(FGame)
         applyReqVersion(ctrl, FGame)
         If autoFix.cbValue && fixChoice.Text != ''
-            Try RunWait('"' fix.fixTool '" "' fixChoice.Text '"')
+            Try RunWait('"' fixapp.fixTool '" "' fixChoice.Text '"')
         If ddrAuto.cbValue {
-            ver.applyDDrawFix()
+            verapp.applyDDrawFix()
         }
     }
     analyzeVersion()
-    SoundPlay(ver.workDirectory '\assets\mp3\30 Wololo.mp3')
-}
-
-; Enables a versions list
-enableOptions(Game) {
-    For Item in requiredVersions[Game] {
-        Item.Enabled := True
-    }
-}
-; Disables a versions list
-disableOptions(Game) {
-    For item in requiredVersions[Game] {
-        item.Enabled := False
-    }
+    SoundPlay(verapp.workDirectory '\assets\mp3\30 Wololo.mp3')
 }
 
 ; Return a game version based on the available versions
-appliedVersionLookUp(location) {
+appliedVersionLookUp(
+    location,
+    ignoreFiles := Map(
+        'wndmode.dll', 1
+    )
+) {
     matchVersion := ''
-    Loop Files, ver.versionLocation '\' location '\*', 'D' {
+    Loop Files, verapp.versionLocation '\' location '\*', 'D' {
         version := A_LoopFileName
         match := True
-        Loop Files, ver.versionLocation '\' location '\' version '\*.*', 'R' {
-            pathFile := StrReplace(A_LoopFileDir '\' A_LoopFileName, ver.versionLocation '\' location '\' version '\')
+        Loop Files, verapp.versionLocation '\' location '\' version '\*.*', 'R' {
+            If ignoreFiles.Has(A_LoopFileName)
+                Continue
+            pathFile := StrReplace(A_LoopFileDir '\' A_LoopFileName, verapp.versionLocation '\' location '\' version '\')
             If !FileExist(gameLocation '\' pathFile) && match {
                 match := False
                 Break
             }
-            currentHash := ver.hashFile(, A_LoopFileFullPath)
-            foundHash := ver.hashFile(, gameLocation '\' pathFile)
+            currentHash := verapp.hashFile(, A_LoopFileFullPath)
+            foundHash := verapp.hashFile(, gameLocation '\' pathFile)
             If (currentHash != foundHash) && match {
                 match := False
                 Break
@@ -195,27 +189,21 @@ analyzeVersion() {
     If FileExist(gameLocation '\empires2.exe') {
         version := appliedVersionLookUp('aok')
         If Type(version) = 'Array' {
-            For game, version in requiredVersions['aok'] {
-                game.Enabled := True
-            }
+            verapp.enableOptions(requiredVersions['aok'])
             version[2].Enabled := False
         }
     }
     If FileExist(gameLocation '\age2_x1\age2_x1.exe') {
         version := appliedVersionLookUp('aoc')
         If Type(version) = 'Array' {
-            For game, version in requiredVersions['aoc'] {
-                game.Enabled := True
-            }
+            verapp.enableOptions(requiredVersions['aoc'])
             version[2].Enabled := False
         }
     }
     If FileExist(gameLocation '\age2_x1\age2_x2.exe') {
         version := appliedVersionLookUp('fe')
         If Type(version) = 'Array' {
-            For game, version in requiredVersions['fe'] {
-                game.Enabled := True
-            }
+            verapp.enableOptions(requiredVersions['fe'])
             version[2].Enabled := False
         }
     }
@@ -235,9 +223,9 @@ launchGame(Ctrl, Info) {
 
 patchEnable(Ctrl, Info) {
     fixChoice.Enabled := Ctrl.cbValue
-    ver.writeConfiguration('autoFix', Ctrl.cbValue)
+    verapp.writeConfiguration('autoFix', Ctrl.cbValue)
 }
 
 ddrEnable(Ctrl, Info) {
-    ver.writeConfiguration('ddrAuto', Ctrl.cbValue)
+    verapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
 }

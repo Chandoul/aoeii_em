@@ -3,16 +3,16 @@
 
 #Include ..\..\Libs\Base.ahk
 
-gam := Game()
+gameapp := Game()
 
-gameLocation := gam.gameLocation
-gameLocationHistory := gam.gameLocationHistory
-gameRangerExecutable := gam.gameRangerExecutable
-gameRangerSetting := gam.gameRangerSetting
-gameRegLocation := gam.gameRegLocation
+gameLocation := gameapp.gameLocation
+gameLocationHistory := gameapp.gameLocationHistory
+gameRangerExecutable := gameapp.gameRangerExecutable
+gameRangerSetting := gameapp.gameRangerSetting
+gameRegLocation := gameapp.gameRegLocation
 gameLink := 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/Tools/Game/AGE%20OF%20EMPIRES%20II.7z'
 
-gameGui := GuiEx(, gam.name)
+gameGui := GuiEx(, gameapp.name)
 gameGui.initiate()
 
 select := gameGui.addButtonEx('xm w200', 'Select', , selectDirectory)
@@ -38,40 +38,40 @@ PB := gameGui.AddProgress('-Smooth wp Hidden')
 
 gameGui.showEx(, 1)
 
-userGameLocation := gam.gameLocation
-If !gam.isValidGameDirectory(userGameLocation) {
+userGameLocation := gameapp.gameLocation
+If !gameapp.isValidGameDirectory(userGameLocation) {
     selectDirectoryGR(selectFromGR, '')
 }
-userGameLocation := gam.gameLocation
-If !gam.isValidGameDirectory(userGameLocation) {
+userGameLocation := gameapp.gameLocation
+If !gameapp.isValidGameDirectory(userGameLocation) {
     If 'Yes' = MsgboxEx('Do you want to select the game folder manually?', 'Game Location', 0x4, 0x40).result
         selectDirectory(select, '')
 }
 
-userGameLocation := gam.gameLocation
-If !gam.isValidGameDirectory(userGameLocation) {
+userGameLocation := gameapp.gameLocation
+If !gameapp.isValidGameDirectory(userGameLocation) {
     Return
 }
 
 gameDirectory.Value := userGameLocation
-If gam.addShortcuts && gam.gameLocation {
+If gameapp.addShortcuts && gameapp.gameLocation {
     desktopShortcuts.Checked := 1
     addGameShortcuts()
     Return
 } Else desktopShortcuts.Checked := 0
 
 gameShortcuts(Ctrl, Info) {
-    gam.writeConfiguration('AddShortcuts', desktopShortcuts.Checked)
+    gameapp.writeConfiguration('AddShortcuts', desktopShortcuts.Checked)
     If !desktopShortcuts.Checked
         Return
-    If gam.isValidGameDirectory(gameDirectory.Value) {
+    If gameapp.isValidGameDirectory(gameDirectory.Value) {
         addGameShortcuts()
     }
 }
 
 setDirectoryGR(Ctrl, Info) {
     Ctrl.Enabled := False
-    If !gam.isValidGameDirectory(gameDirectory.Value) {
+    If !gameapp.isValidGameDirectory(gameDirectory.Value) {
         If 'Yes' != MsgboxEx('Game is not yet located!, want to select now?', 'Game', 0x4, 0x40).result {
             Ctrl.Enabled := True
             Return
@@ -136,7 +136,7 @@ setDirectoryGR(Ctrl, Info) {
 
 writeNewLocation(Location) {
     Location := StrUpper(Location)
-    gam.writeConfiguration('GameLocation', Location)
+    gameapp.writeConfiguration('GameLocation', Location)
 }
 
 selectDirectoryGR(Ctrl, Info) {
@@ -144,7 +144,7 @@ selectDirectoryGR(Ctrl, Info) {
     Text := binGrabText(gameRangerSetting)
     Locations := textGrabPath(Text, ['empires2.exe', 'age2_x1.exe', 'age2_x2.exe'])
     For Location in Locations {
-        If RC := gam.isValidGameDirectory(Location) {
+        If RC := gameapp.isValidGameDirectory(Location) {
             Choice := MsgboxEx('Do you want to select this location? (Grabbed from GameRanger setting)`n`n"' Location '"', 'Game Location', 0x4, 0x40).result
             If Choice = 'Yes' {
                 gameDirectory.Value := Location
@@ -160,11 +160,11 @@ selectDirectoryGR(Ctrl, Info) {
 selectDirectory(Ctrl, Info) {
     Ctrl.Enabled := False
     If SelectedDirectory := FileSelect('D') {
-        If !Valid := gam.isValidGameDirectory(SelectedDirectory) {
+        If !Valid := gameapp.isValidGameDirectory(SelectedDirectory) {
             SelectedDirectoryEx := SelectedDirectory
             SelectedDirectory := ''
             SplitPath(SelectedDirectoryEx, &_, &ParentSelectedDirectory)
-            If Valid := gam.isValidGameDirectory(ParentSelectedDirectory) {
+            If Valid := gameapp.isValidGameDirectory(ParentSelectedDirectory) {
                 Choice := MsgboxEx('Want to select this location?`n`n' ParentSelectedDirectory, 'Game Location', 0x4, 0x40).result
                 If Choice = 'Yes' {
                     SelectedDirectory := ParentSelectedDirectory
@@ -173,7 +173,7 @@ selectDirectory(Ctrl, Info) {
         }
         If !Valid {
             Loop Files, SelectedDirectoryEx '\*', 'D' {
-                If gam.isValidGameDirectory(A_LoopFileFullPath) {
+                If gameapp.isValidGameDirectory(A_LoopFileFullPath) {
                     Choice := MsgboxEx('Want to select this location?`n`n' A_LoopFileFullPath, 'Game Location', 0x4, 0x40).result
                     If Choice = 'Yes' {
                         SelectedDirectory := A_LoopFileFullPath
@@ -214,14 +214,14 @@ downloadGame(Ctrl, Info) {
                 DirCreate(selectedDestination)
             }
 
-            If gam.isValidGameDirectory(selectedDestination) && ('Yes' != MsgboxEx('It seems like the game already installed at this location!`nWant to continue? (overwite)', 'Game location install', 0x4, 0x30).result) {
+            If gameapp.isValidGameDirectory(selectedDestination) && ('Yes' != MsgboxEx('It seems like the game already installed at this location!`nWant to continue? (overwite)', 'Game location install', 0x4, 0x30).result) {
                 Return
             }
 
             Ctrl.Enabled := False
 
-            If !gam.downloadPackage(gameLink, gam.gamePackage, 269, PBT, PB)
-                || !gam.extractPackage(gam.gamePackage, selectedDestination, , PBT) {
+            If !gameapp.downloadPackage(gameLink, gameapp.gamePackage, 269, PBT, PB)
+                || !gameapp.extractPackage(gameapp.gamePackage, selectedDestination, , PBT) {
                     Ctrl.Enabled := True
                     Return
             }
@@ -246,7 +246,7 @@ updateGameRegInfo(location, description := '20.10.22') {
     RegWrite(location, 'REG_SZ', gameRegLocation, 'InstallLocation')
     RegWrite(1, 'REG_DWORD', gameRegLocation, 'NoModify')
     RegWrite(1, 'REG_DWORD', gameRegLocation, 'NoRepair')
-    RegWrite(gam.folderGetSize(location), 'REG_DWORD', gameRegLocation, 'EstimatedSize')
+    RegWrite(gameapp.folderGetSize(location), 'REG_DWORD', gameRegLocation, 'EstimatedSize')
     RegWrite('Microsoft Corporation', 'REG_SZ', gameRegLocation, 'Publisher')
     RegWrite('"' A_AhkPath '" "' A_ScriptDir '\UninstallGame.ahk" "' location '"', 'REG_SZ', gameRegLocation, 'UninstallString')
 }
@@ -283,9 +283,9 @@ textGrabPath(textFound, executables) {
 }
 
 addGameShortcuts() {
-    location := gam.gameLocation
-    addShortcuts := gam.addShortcuts
-    If addShortcuts && gam.isValidGameDirectory(location) {
+    location := gameapp.gameLocation
+    addShortcuts := gameapp.addShortcuts
+    If addShortcuts && gameapp.isValidGameDirectory(location) {
         createShortcut := False
         If FileExist(location '\empires2.exe') {
             If !FileExist(A_Desktop '\The Age of Kings.lnk') {
