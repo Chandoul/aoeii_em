@@ -38,7 +38,9 @@ Class Base {
     gameRegLocation => 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Age of Empires II AIO'
     userRegLayer => "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
     machineRegLayer => "HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
-
+    drsBuild => This.workDirectory '\externals\drsbuild.exe'
+    mgxfix => This.workDirectory '\externals\mgxfix.exe'
+    revealfix => This.workDirectory '\externals\revealfix.exe'
     /**
      * Initiate the class
      */
@@ -90,15 +92,14 @@ Class Base {
             _7zrExist := This._7zrSHA256 == This.hashFile('SHA256', This._7zrCsle)
         }
         If (!_7zrExist) {
-            Msgbox This._7zrCsle
             Download(This._7zrLink, This._7zrCsle)
         }
         _7zrExist := This._7zrSHA256 == This.hashFile('SHA256', This._7zrCsle)
         If (!_7zrExist) {
-            Msgbox(
+            MsgboxEx(
                 'Unable to get the correct 7zr.exe (x86) : 7-Zip console executable v' This._7zrVersion ' from "https://www.7-zip.org/download.html"`nTo fix this, download it manually and place it, into the "externals\" directory.'
                 , '7-Zip console executable'
-                , 0x30
+                , , 0x30
             )
             ExitApp()
         }
@@ -170,7 +171,6 @@ Class Base {
             MsgboxEx('Make sure you are connected to the internet!', "Can't download!", , 0x30).result
             Return
         }
-
         SplitPath(file, &OutFileName)
         SetTimer(fileWatch, 1000)
         Download(link, file)
@@ -205,20 +205,37 @@ Class Base {
      * @param {string} overwrite 
      * @returns {number} 
      */
-    extractPackage(package, destination, hide := 0, progressText := 0, overwrite := 'aoa') {
-        If progressText {
-            progressText.Visible := True
-            SplitPath(package, &OutFileName)
-            progressText.Text := 'Extracting "' OutFileName '"...'
+    extractPackage(package, destination, hide := 1, informMe := 1, overwrite := 'aoa') {
+        Static infoGui := 0
+        RC := 0
+        If hide && informMe {
+            If !infoGui {
+                infoGui := GuiEx('-SysMenu', This.name)
+                infoGui.initiate(0)
+                infoGui.addGif('xm+90', 'bored.gif')
+                infoGui.AddText(
+                    'BackgroundTrans xm w400 Center cRed',
+                    'Please Wait...`nThe archive is being extracted!')
+                infoGui.SetFont('s9')
+                infoGui.AddText(
+                    'BackgroundTrans xm w400 Center',
+                    '`nPackage: ' package .
+                    '`nDestination: ' destination
+                )
+                infoGui.OnEvent('Close', terminate)
+                terminate(*) {
+                    If ProcessExist(PID) {
+                        ProcessClose(PID)
+                    }
+                }
+            }
+            infoGui.showEx(, 1)
         }
         RC := RunWait('"' This._7zrCsle '" x "' package '" -o"' destination '" -' overwrite, , hide ? 'Hide' : '', &PID)
-        If progressText {
-            SplitPath(package, &OutFileName)
-            progressText.Text := 'Extracting "' OutFileName '" - Done'
-        }
-        If RC && 'Yes' = MsgBoxEx('An error occured while trying to extract the package`nError code: ' RC, This.name, 0x4, 0x10).result {
+        If RC && 'Yes' = MsgBoxEx('An error occured while trying to extract the package`nError code: ' RC '`nDo you wish to exit now?', This.name, 0x4, 0x10).result {
             ExitApp()
         }
+        infoGui.Hide()
         Return RC = 0
     }
 
@@ -398,6 +415,9 @@ Class Button {
 }
 
 #Include Gdip.ahk
+#Include ScrollBars.ahk
+#Include ImagePut.ahk
+
 Class GuiEx extends Gui {
     workDirectory => Base().workDirectory
     backImage => This.workDirectory '\assets\000_50127.bmp'
@@ -405,13 +425,35 @@ Class GuiEx extends Gui {
     checkedImage => This.workDirectory '\assets\cb\checked.png'
     uncheckedImage => This.workDirectory '\assets\cb\unchecked.png'
     click => This.workDirectory '\assets\wav\50300.wav'
-    initiate(qA := 1) {
+    initiate(qA := 1, Scrollable := 0) {
         This.BackColor := 0xFFFFFF
         If qA
             This.OnEvent('Close', (*) => ExitApp())
         This.MarginX := This.MarginY := 20
         This.SetFont('s10 Bold', 'Segoe UI')
         This.backGroundImage := This.AddPicture('xm-' This.MarginX ' ym-' This.MarginY)
+        If Scrollable {
+            This.scrollableGui()
+        }
+    }
+    scrollableGui() {
+        vmGuiSB := ScrollBar(This, 200, 400)
+        HotIfWinActive("ahk_id " This.Hwnd)
+        Hotkey("WheelUp", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("WheelDown", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("+WheelUp", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("+WheelDown", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("Up", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("Down", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("+Up", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("+Down", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 1 : 0, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("PgUp", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 3 : 2, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("PgDn", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 3 : 2, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("+PgUp", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 3 : 2, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("+PgDn", (*) => vmGuiSB.ScrollMsg((InStr(A_ThisHotkey, "Down") || InStr(A_ThisHotkey, "Dn")) ? 3 : 2, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("Home", (*) => vmGuiSB.ScrollMsg(6, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        Hotkey("End", (*) => vmGuiSB.ScrollMsg(7, 0, GetKeyState("Shift") ? 0x114 : 0x115, This.Hwnd))
+        HotIfWinActive
     }
     showEx(options := '', backImage := 0) {
         This.Show(options)
@@ -551,7 +593,7 @@ Class GuiEx extends Gui {
         Return T
     }
 
-    addPictureEx(options := '', filename := '', clickcallback := 0) {
+    addPictureEx(options := '', filename := 'blankmod.png', clickcallback := 0) {
         If !FileExist(filename) {
             filename := This.workDirectory '\assets\' filename
         }
@@ -563,6 +605,15 @@ Class GuiEx extends Gui {
             P.OnEvent('click', clickcallback)
         }
         Return P
+    }
+
+    addGif(options := '', gif := '') {
+        If !FileExist(gif) {
+            gif := This.workDirectory '\assets\' gif
+        }
+        pic := This.addPictureEx(options, gif)
+        gif := ImageShow(gif, , [0, 0], 0x40000000 | 0x10000000 | 0x8000000, , pic.Hwnd)
+        Return pic
     }
 }
 
@@ -755,7 +806,8 @@ Class Version extends Base {
     versionTool => This.versionLocation '\version.ahk'
     packageLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/Version/Version.7z'
     packageName => 'Version.7z'
-    packagePath => This.versionLocation '\' This.packageName
+    packageLocation => This.workDirectory '\tools\Version'
+    packagePath => This.packageLocation '\' This.packageName
 
     /**
      * Ensure the required package is correctly exist
@@ -763,9 +815,9 @@ Class Version extends Base {
     ensurePackage() {
         If !FileExist(This.packagePath) {
             This.downloadPackage(This.packageLink, This.packagePath)
-            This.extractPackage(This.packagePath, This.versionLocation)
+            This.extractPackage(This.packagePath, This.packageLocation)
         }
-        ;This.extractPackage(This.packagePath, This.versionLocation, 0, , 'aos')
+        ;This.extractPackage(This.packagePath, This.packageLocation, 0, , 'aos')
     }
 
     /**
@@ -811,8 +863,9 @@ Class FixPatch extends Base {
     fixRegKey => 'HKEY_CURRENT_USER\SOFTWARE\Microsoft\Microsoft Games\Age of Empires'
     fixRegName => 'Aoe2Patch'
     packageLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/fix/Fix.7z'
+    packageLocation => This.workDirectory '\tools\fix'
     packageName => 'Fix.7z'
-    packagePath => This.fixLocation '\' This.packageName
+    packagePath => This.packageLocation '\' This.packageName
 
     /**
      * Ensure the required package is correctly exist
@@ -820,7 +873,7 @@ Class FixPatch extends Base {
     ensurePackage() {
         If !FileExist(This.packagePath) {
             This.downloadPackage(This.packageLink, This.packagePath)
-            This.extractPackage(This.packagePath, This.fixLocation)
+            This.extractPackage(This.packagePath, This.packageLocation)
         }
         ;This.extractPackage(This.packagePath, This.fixLocation, 1, , 'aos')
     }
@@ -866,7 +919,20 @@ Class VisualMod extends Base {
         "int", "interfac.drs",
         "ter", "terrain.drs"
     )
-    vmLocation => This.workDirectory '\tools\vm'
-    vmLink => ''
-    vmPackage => This.vmLocation '\VisualMod.7z'
+    vmLocation => This.workDirectory '\tools\vm\VisualMods'
+    packageLocation => This.workDirectory '\tools\vm'
+    packageLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/vm/VisualMods.7z'
+    packageName => 'VisualMods.7z'
+    packagePath => This.packageLocation '\' This.packageName
+
+    /**
+     * Ensure the required package is correctly exist
+     */
+    ensurePackage() {
+        If !FileExist(This.packagePath) {
+            This.downloadPackage(This.packageLink, This.packagePath)
+        }
+        If !DirExist(This.vmLocation)
+            This.extractPackage(This.packagePath, This.packageLocation)
+    }
 }

@@ -33,8 +33,8 @@ gameGui.SetFont('s9')
 
 desktopShortcuts := gameGui.AddCheckBoxEx('BackgroundTrans', 'Notify to add the game desktop shortcuts', gameShortcuts)
 
-PBT := gameGui.AddText('Center w410 Hidden BackgroundTrans')
-PB := gameGui.AddProgress('-Smooth wp Hidden')
+progressText := gameGui.AddText('Center w410 Hidden BackgroundTrans')
+progressBar := gameGui.AddProgress('-Smooth wp Hidden')
 
 gameGui.showEx(, 1)
 
@@ -201,7 +201,7 @@ deleteGame(Ctrl, Info) {
     Ctrl.Enabled := True
 }
 
-downloadGame(Ctrl, Info) {
+downloadGame(ctrl, Info) {
     If (selectedDestination := FileSelect('D', , 'Game install location')) &&
         downloadAgree := 'Yes' == MsgboxEx(
             'Are you sure want to install at this location?`n' selectedDestination,
@@ -218,14 +218,19 @@ downloadGame(Ctrl, Info) {
                 Return
             }
 
-            Ctrl.Enabled := False
+            ctrl.Enabled := False
 
-            If !gameapp.downloadPackage(gameLink, gameapp.gamePackage, 269, PBT, PB)
-                || !gameapp.extractPackage(gameapp.gamePackage, selectedDestination, , PBT) {
-                    Ctrl.Enabled := True
+            If !gameapp.downloadPackage(gameLink, gameapp.gamePackage, 269, progressText, progressBar)
+                || !gameapp.extractPackage(gameapp.gamePackage, selectedDestination, , progressText) {
+                    ctrl.Enabled := True
                     Return
             }
 
+            If !gameapp.isValidGameDirectory(selectedDestination) {
+                MsgBoxEx('Something went wrong, the location "' selectedDestination '" is not a valid game folder', gameapp.name, , 0x10)
+                ctrl.Enabled := True
+                Return
+            }
 
             updateGameRegInfo(selectedDestination)
 
@@ -234,8 +239,8 @@ downloadGame(Ctrl, Info) {
                 writeNewLocation(selectedDestination)
                 addGameShortcuts()
             }
-            Ctrl.Enabled := True
-            PBT.Visible := False
+            ctrl.Enabled := True
+            progressText.Visible := False
         }
 }
 
