@@ -24,7 +24,9 @@ Class Base {
             file: This.workDirectory '\tools\fix\fix.ahk'
         },
     }
-    ddraw => This.workDirectory '\externals\cnc-ddraw.2'
+    ddrawLocation => This.workDirectory '\externals\cnc-ddraw.2'
+    ddrawLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/externals/cnc-ddraw.2.7z'
+    ddrawPackage => This.workDirectory '\externals\cnc-ddraw.2.7z'
     _7zrLink => 'https://www.7-zip.org/a/7zr.exe'
     _7zrCsle => This.workDirectory '\externals\7zr.exe'
     _7zrVersion => '25.01'
@@ -248,6 +250,17 @@ Class Base {
     }
 
     /**
+     * Ensure the required package is correctly exist
+     */
+    ensureDDrawPackage() {
+        If !FileExist(This.ddrawPackage) {
+            This.downloadPackage(This.ddrawLink, This.ddrawPackage)
+        }
+        If !DirExist(this.ddrawLocation)
+            This.extractPackage(This.packagePath, This.versionLocation)
+    }
+
+    /**
      * Apply the direct draw configuration to the game
      */
     applyDDrawFix(
@@ -256,9 +269,10 @@ Class Base {
             This.gameLocation '\age2_x1\'
         ]
     ) {
+        This.ensureDDrawPackage()
         For location in locations {
             If DirExist(location)
-                DirCopy(This.ddraw, location, 1)
+                DirCopy(This.ddrawLocation, location, 1)
             If FileExist(location '\wndmode.dll') {
                 FileDelete(location '\wndmode.dll')
             }
@@ -356,6 +370,16 @@ Class Base {
             }
         }
         Return 1
+    }
+
+    /**
+     * Allow a single choice from group of checkboxs
+     * @param {array} group 
+     */
+    groupCheckBoxs(group := []) {
+        For cb in group {
+            cb.group := group
+        }
     }
 }
 
@@ -469,8 +493,10 @@ Class GuiEx extends Gui {
         P.OnEvent('Click', toggleValue)
         toggleValue(*) {
             T.cbValue := !T.cbValue
-            If T.cbValue
+            If T.cbValue {
                 T.cbValue := defaultValue
+                linkedCheck()
+            }
             P.cbValue := T.cbValue
             If T.cbValue {
                 T.Opt('cBlack')
@@ -495,8 +521,10 @@ Class GuiEx extends Gui {
         }
         setValue(ctrl, value) {
             T.cbValue := value ? 1 : 0
-            If T.cbValue
+            If T.cbValue {
                 T.cbValue := defaultValue
+                linkedCheck()
+            }
             P.cbValue := T.cbValue
             If T.cbValue {
                 T.Opt('cBlack')
@@ -510,7 +538,16 @@ Class GuiEx extends Gui {
                 clickCallBack.Call(T, '')
             }
         }
-        This.AddText('x' X ' y' y + Height - This.MarginY ' w1 h1 BackgroundTrans')
+
+        linkedCheck() {
+            If T.HasProp('group') {
+                For cb in T.group {
+                    If cb != T
+                        cb.Checked := 0
+                }
+            }
+        }
+        This.AddText('x' X ' y' Y + Height - This.MarginY ' w1 h1 BackgroundTrans')
         Return T
     }
 

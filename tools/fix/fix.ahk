@@ -32,14 +32,14 @@ fixGui.SetFont('s9')
 fixGui.AddText('xm+250 ym+5 BackgroundTrans', 'Options to enable along with the widescreen patch:').SetFont('Bold')
 fixGui.MarginY := 10
 
-; 1
+; Water animation
 waterAni := fixGui.addCheckBoxEx(, 'Water animation', waterAnimation)
 waterAni.Checked := RegRead(fixRegKey, 'WaterAnnimation', 0) = 1 ? 1 : 0
 waterAnimation(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'WaterAnnimation')
 }
 
-; 2
+; Advanced interface
 resInt := fixGui.addCheckBoxEx(, 'Show villagers count on each resource`nShow civilizations upgrades levels`nShow civlization next to score names', resourceInterface)
 If RegRead(fixRegKey, 'Aoe2Patch', 0) = 1 {
     resInt.Checked := 1
@@ -48,7 +48,7 @@ resourceInterface(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'Aoe2Patch')
 }
 
-; 3
+; Widescreen
 centerInt := fixGui.addCheckBoxEx(, 'Centered widescreen', centeredlayInterface, 4)
 If RegRead(fixRegKey, 'Aoe2Patch', 0) = 4 {
     centerInt.Checked := 4
@@ -57,7 +57,12 @@ centeredlayInterface(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'Aoe2Patch')
 }
 
-; 4
+fixapp.groupCheckBoxs([
+    resInt,
+    centerInt
+])
+
+; Zooming functionality
 zoomFunc := fixGui.addCheckBoxEx(, '(Fix v5 and above required) Zoom functionality`n[Note] Set the hotkey in the game commands!', zoomFunctionality)
 If RegRead(fixRegKey, 'Zoom', 0) = 1 {
     zoomFunc.Checked := 1
@@ -66,7 +71,7 @@ zoomFunctionality(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'Zoom')
 }
 
-; 5
+; Fog of war 1
 nativeFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Native Fog of war', nativeFog, -1)
 If RegRead(fixRegKey, 'FogOfWar', 0) = 1 {
     nativeFow.Checked := 1
@@ -75,7 +80,7 @@ nativeFog(Ctrl, Info) {
     RegWrite(Ctrl.cbValue = -1 ? 0 : 0, 'REG_DWORD', fixRegKey, 'FogOfWar')
 }
 
-; 6
+; Fog of war 2
 gridFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Grid Fog of war', gridFog)
 If RegRead(fixRegKey, 'FogOfWar', 0) = 1 {
     nativeFow.Checked := 1
@@ -84,7 +89,7 @@ gridFog(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 }
 
-; 7
+; Fog of war 3
 lightFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Light Fog of war ', lightFog, 2)
 If RegRead(fixRegKey, 'FogOfWar', 0) = 2 {
     lightFow.Checked := 1
@@ -93,7 +98,7 @@ lightFog(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 }
 
-; 8
+; Fog of war 4
 lightgridFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Light grid Fog of war ', lightgridFog, 3)
 If RegRead(fixRegKey, 'FogOfWar', 0) = 3 {
     lightgridFow.Checked := 1
@@ -102,7 +107,7 @@ lightgridFog(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 }
 
-; 9
+; Fog of war 5
 ultraLightGridFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Ultra light grid Fog of war ', ultraLightGridFog, 4)
 If RegRead(fixRegKey, 'FogOfWar', 0) = 4 {
     ultraLightGridFow.Checked := 1
@@ -111,7 +116,7 @@ ultraLightGridFog(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 }
 
-; 10
+; Fog of war 6
 hatchGridFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Hatching Fog of war ', ultraLightGridFog, 5)
 If RegRead(fixRegKey, 'FogOfWar', 0) = 5 {
     hatchGridFow.Checked := 1
@@ -120,7 +125,7 @@ hatchGridFog(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 }
 
-; 11
+; Fog of war 7
 noFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - No Fog of war ', noFog, 6)
 If RegRead(fixRegKey, 'FogOfWar', 0) = 6 {
     noFow.Checked := 1
@@ -128,6 +133,18 @@ If RegRead(fixRegKey, 'FogOfWar', 0) = 6 {
 noFog(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 }
+
+fixapp.groupCheckBoxs([
+    nativeFow,
+    gridFow,
+    lightFow,
+    lightgridFow,
+    ultraLightGridFow,
+    hatchGridFow,
+    noFow
+])
+
+;Msgbox noFow.HasProp('group')
 
 ; 12
 ;newCastl := fixGui.addCheckBoxEx(, '(Fix v7 required) - New castle', newCastle)

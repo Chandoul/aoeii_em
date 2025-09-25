@@ -56,8 +56,6 @@ versionGui.AddText('xm+550 ym+85 BackgroundTrans', 'Options to apply after each 
 versionGui.MarginY := 10
 
 autoFix := versionGui.addCheckBoxEx(, 'Auto enable a fix:', patchEnable)
-versionGui.MarginY := 5
-
 fixChoice := versionGui.AddDropDownList('w200 Disabled Choose6', fixs)
 autoFix.Checked := verapp.readConfiguration('autoFix')
 
