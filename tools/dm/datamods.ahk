@@ -83,7 +83,6 @@ updateDM(Ctrl, Info) {
                 dmapp.enableOptions([dmInstall, dmUninstall])
                 Return
             }
-            msgbox
             dmapp.downloadPackage(dmPackageLink, dmPackagePath, dmPackageSize, progressText, progressBar)
         }
         If !DirExist(gameLocation '\Games\' dmGameName)
