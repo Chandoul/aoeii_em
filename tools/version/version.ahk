@@ -10,7 +10,6 @@ fixapp := FixPatch()
 fixs := fixapp.Fixs
 requiredVersions := verapp.requiredVersion
 gameLocation := verapp.gameLocation
-versionLink := verapp.versionLink
 
 versionGui := GuiEx(, verapp.name)
 versionGui.initiate()
@@ -52,18 +51,20 @@ Loop Files, verapp.versionLocation '\fe\*', 'D' {
     versions['Version'].Push(H)
 }
 
-versionGui.SetFont('s8')
-
-autoFix := versionGui.addCheckBoxEx('xm', 'Auto enable a fix after each change:', patchEnable)
-versionGui.MarginY := 5
-
-fixChoice := versionGui.AddDropDownList('xm w200 Disabled Choose6', fixs)
-autoFix.Checked := verapp.readConfiguration('autoFix')
-
+versionGui.SetFont('s9')
+versionGui.AddText('xm+550 ym+85 BackgroundTrans', 'Options to apply after each change:').SetFont('Bold')
 versionGui.MarginY := 10
 
-ddrAuto := versionGui.addCheckBoxEx('xm', 'Auto enable direct draw fix after each change', ddrEnable)
+autoFix := versionGui.addCheckBoxEx(, 'Auto enable a fix:', patchEnable)
+versionGui.MarginY := 5
+
+fixChoice := versionGui.AddDropDownList('w200 Disabled Choose6', fixs)
+autoFix.Checked := verapp.readConfiguration('autoFix')
+
+ddrAuto := versionGui.addCheckBoxEx(, 'Auto enable direct draw fix', ddrEnable)
 ddrAuto.Checked := verapp.readConfiguration('ddrAuto')
+
+versionGui.MarginY := 20
 
 versionGui.showEx(, 1)
 
@@ -154,30 +155,11 @@ appliedVersionLookUp(
     matchVersion := ''
     Loop Files, verapp.versionLocation '\' location '\*', 'D' {
         version := A_LoopFileName
-        match := True
-        Loop Files, verapp.versionLocation '\' location '\' version '\*.*', 'R' {
-            If ignoreFiles.Has(A_LoopFileName)
-                Continue
-            pathFile := StrReplace(A_LoopFileDir '\' A_LoopFileName, verapp.versionLocation '\' location '\' version '\')
-            If !FileExist(gameLocation '\' pathFile) && match {
-                match := False
-                Break
-            }
-            currentHash := verapp.hashFile(, A_LoopFileFullPath)
-            foundHash := verapp.hashFile(, gameLocation '\' pathFile)
-            If (currentHash != foundHash) && match {
-                match := False
-                Break
-            }
-        }
-        If match {
-            matchVersion := version
-        }
-    }
-    If matchVersion {
-        For control in requiredVersions[location] {
-            If control.Text = matchVersion {
-                Return [matchVersion, control]
+        If fixapp.folderMatch(A_LoopFileFullPath, gameLocation, ignoreFiles) {
+            For control in requiredVersions[location] {
+                If control.Text = version {
+                    Return [matchVersion, control]
+                }
             }
         }
     }

@@ -6,3 +6,4 @@ tools/version/aok
 tools/version/aoc
 tools/version/fe
 tools/fix/fix v*
+tests/

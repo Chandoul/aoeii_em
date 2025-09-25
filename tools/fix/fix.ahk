@@ -5,7 +5,7 @@
 
 fixapp := FixPatch()
 
-fixGui := GuiEx(, 'GAME FIXS')
+fixGui := GuiEx(, fixapp.name)
 fixGui.initiate()
 
 fixs := fixapp.fixs
@@ -15,44 +15,130 @@ userRegLayer := fixapp.userRegLayer
 machineRegLayer := fixapp.machineRegLayer
 gameLocation := fixapp.gameLocation
 
-SetRegView(A_Is64bitOS ? 64 : 32)
-
 fixOptions := Map(
     'Fixs', [],
     'FIXHandle', Map()
 )
-fixGui.AddText('xm w350 Center h25 BackgroundTrans', 'Select one of the fixes below').SetFont('Bold')
+fixGui.AddText('xm w200 Center h25 BackgroundTrans', 'Select one of the fixes below').SetFont('Bold')
 fixGui.SetFont('s9')
 For each, fix in fixs {
-    fixName := fixGui.addButtonEx('w350', fix)
+    fixName := fixGui.addButtonEx('w200', fix, Button().checkedDisabled)
     fixName.OnEvent('Click', applyFix)
     fixOptions['Fixs'].Push(fixName)
     fixOptions['FIXHandle'][fix] := fixName
 }
 
-fixGui.AddText('ym w300 BackgroundTrans', 'Options').SetFont('Bold')
-GeneralOptions := fixGui.AddListView('r4 -Hdr Checked -E0x200 wp BackgroundE1B15A', [' ', ' '])
-For Option in StrSplit(IniRead(fixapp.fixLocation '\general.ini', 'General', , ''), '`n') {
-    OptionValue := StrSplit(Option, '=')
-    CurrentValue := RegRead(fixRegKey, fixRegName, 0)
-    GeneralOptions.Add(CurrentValue = OptionValue[2] ? 'Check' : '', IniRead(fixapp.fixLocation '\general.ini', 'Description', OptionValue[1], ''), OptionValue[1])
-    GeneralOptions.ModifyCol(1, 'AutoHdr')
-}
-GeneralOptions.ModifyCol(2, '0')
-GeneralOptions.OnEvent('ItemCheck', UpdateAoe2Patch)
-UpdateAoe2Patch(Ctrl, Item, Checked) {
-    Loop GeneralOptions.GetCount() {
-        GeneralOptions.Modify(A_Index, '-Check')
-    }
-    GeneralOptions.Modify(Item, 'Check')
-    RegWrite(Item, 'REG_DWORD', fixRegKey, fixRegName)
-}
-waterAni := fixGui.AddCheckBoxEx(, ' Water animation', updateAoe2PatchOptions)
+fixGui.SetFont('s9')
+fixGui.AddText('xm+250 ym+5 BackgroundTrans', 'Options to enable along with the widescreen patch:').SetFont('Bold')
+fixGui.MarginY := 10
 
-updateAoe2PatchOptions(Ctrl, Info) {
+; 1
+waterAni := fixGui.addCheckBoxEx(, 'Water animation', waterAnimation)
+waterAni.Checked := RegRead(fixRegKey, 'WaterAnnimation', 0) = 1 ? 1 : 0
+waterAnimation(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'WaterAnnimation')
 }
 
+; 2
+resInt := fixGui.addCheckBoxEx(, 'Show villagers count on each resource`nShow civilizations upgrades levels`nShow civlization next to score names', resourceInterface)
+If RegRead(fixRegKey, 'Aoe2Patch', 0) = 1 {
+    resInt.Checked := 1
+}
+resourceInterface(Ctrl, Info) {
+    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'Aoe2Patch')
+}
+
+; 3
+centerInt := fixGui.addCheckBoxEx(, 'Centered widescreen', centeredlayInterface, 4)
+If RegRead(fixRegKey, 'Aoe2Patch', 0) = 4 {
+    centerInt.Checked := 4
+}
+centeredlayInterface(Ctrl, Info) {
+    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'Aoe2Patch')
+}
+
+; 4
+zoomFunc := fixGui.addCheckBoxEx(, '(Fix v5 and above required) Zoom functionality`n[Note] Set the hotkey in the game commands!', zoomFunctionality)
+If RegRead(fixRegKey, 'Zoom', 0) = 1 {
+    zoomFunc.Checked := 1
+}
+zoomFunctionality(Ctrl, Info) {
+    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'Zoom')
+}
+
+; 5
+nativeFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Native Fog of war', nativeFog, -1)
+If RegRead(fixRegKey, 'FogOfWar', 0) = 1 {
+    nativeFow.Checked := 1
+}
+nativeFog(Ctrl, Info) {
+    RegWrite(Ctrl.cbValue = -1 ? 0 : 0, 'REG_DWORD', fixRegKey, 'FogOfWar')
+}
+
+; 6
+gridFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Grid Fog of war', gridFog)
+If RegRead(fixRegKey, 'FogOfWar', 0) = 1 {
+    nativeFow.Checked := 1
+}
+gridFog(Ctrl, Info) {
+    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
+}
+
+; 7
+lightFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Light Fog of war ', lightFog, 2)
+If RegRead(fixRegKey, 'FogOfWar', 0) = 2 {
+    lightFow.Checked := 1
+}
+lightFog(Ctrl, Info) {
+    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
+}
+
+; 8
+lightgridFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Light grid Fog of war ', lightgridFog, 3)
+If RegRead(fixRegKey, 'FogOfWar', 0) = 3 {
+    lightgridFow.Checked := 1
+}
+lightgridFog(Ctrl, Info) {
+    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
+}
+
+; 9
+ultraLightGridFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Ultra light grid Fog of war ', ultraLightGridFog, 4)
+If RegRead(fixRegKey, 'FogOfWar', 0) = 4 {
+    ultraLightGridFow.Checked := 1
+}
+ultraLightGridFog(Ctrl, Info) {
+    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
+}
+
+; 10
+hatchGridFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - Hatching Fog of war ', ultraLightGridFog, 5)
+If RegRead(fixRegKey, 'FogOfWar', 0) = 5 {
+    hatchGridFow.Checked := 1
+}
+hatchGridFog(Ctrl, Info) {
+    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
+}
+
+; 11
+noFow := fixGui.addCheckBoxEx(, '(Fix v7 required) - No Fog of war ', noFog, 6)
+If RegRead(fixRegKey, 'FogOfWar', 0) = 6 {
+    noFow.Checked := 1
+}
+noFog(Ctrl, Info) {
+    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
+}
+
+; 12
+;newCastl := fixGui.addCheckBoxEx(, '(Fix v7 required) - New castle', newCastle)
+;If RegRead(fixRegKey, 'New Castle', 0) = 1 {
+;    newCastl.Checked := 1
+;}
+;newCastle(Ctrl, Info) {
+;    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'New Castle')
+;}
+
+fixGui.MarginY := 20
 fixGui.showEx(, 1)
 
 fixapp.isGameFolderSelected(gameLocation)
@@ -65,13 +151,12 @@ analyzeFix()
 
 /**
  * Applys fixes
- * @param Ctrl 
- * @param Info 
- * @returns {void|number} 
+ * @param Ctrl
+ * @param Info
+ * @returns {number} 
  */
 applyFix(Ctrl, Info) {
     fixVersion := Type(Ctrl) = 'String' ? Ctrl : Ctrl.Text
-
     If fixVersion = 'None' {
         cleansUp()
         analyzeFix()
@@ -79,12 +164,12 @@ applyFix(Ctrl, Info) {
         SoundPlay(fixapp.workDirectory '\assets\mp3\30 Wololo.mp3')
         fixapp.compatibilityClear([userRegLayer, machineRegLayer], gameLocation '\empires2.exe')
         fixapp.compatibilityClear([userRegLayer, machineRegLayer], gameLocation '\age2_x1\age2_x1.exe')
-        Return
+        Return 1
     }
 
     If !fixapp.fixExist(fixVersion) {
         MsgBoxEx('The fix you requested to apply does not exist!', fixapp.name, , 0x30)
-        Return
+        Return 0
     }
 
     fixapp.enableOptions(fixOptions['Fixs'], 0)
@@ -117,53 +202,27 @@ applyFix(Ctrl, Info) {
         ;}
         cleansUp()
         fixapp.applyUserFix(fixapp.fixLocation '\' fixVersion)
-        fixapp.compatibilitySet([userRegLayer, machineRegLayer], gameLocation '\empires2.exe', 'WINXPSP3')
-        fixapp.compatibilitySet([userRegLayer, machineRegLayer], gameLocation '\age2_x1\age2_x1.exe', 'WINXPSP3')
     } Catch {
         If !LockCheck(gameLocation) {
             fixapp.enableOptions(fixOptions['Fixs'])
-            Return
+            Return 0
         }
         cleansUp()
         fixapp.applyUserFix(fixapp.fixLocation '\' fixVersion)
-        fixapp.compatibilitySet([userRegLayer, machineRegLayer], gameLocation '\empires2.exe', 'WINXPSP3')
-        fixapp.compatibilitySet([userRegLayer, machineRegLayer], gameLocation '\age2_x1\age2_x1.exe', 'WINXPSP3')
     }
     analyzeFix()
     SoundPlay(fixapp.workDirectory '\assets\mp3\30 Wololo.mp3')
     Return 1
 }
-analyzeFix(
-    ignoreFiles := Map(
-        'wndmode.dll', 1
-    )
-) {
+analyzeFix(ignoreFiles := Map('wndmode.dll', 1, 'windmode.dll', 1)) {
     fixapp.enableOptions(fixOptions['Fixs'])
     matchFix := ''
     Loop Files, fixapp.fixLocation '\*', 'D' {
         fix := A_LoopFileName
-        match := True
-        Loop Files, fixapp.fixLocation '\' fix '\*.*', 'R' {
-            If ignoreFiles.Has(A_LoopFileName)
-                Continue
-            PathFile := StrReplace(A_LoopFileDir '\' A_LoopFileName, fixapp.fixLocation '\' fix '\')
-            If !FileExist(gameLocation '\' PathFile) && match {
-                match := False
-                Break
-            }
-            currentHash := fixapp.hashFile(A_LoopFileFullPath)
-            foundHash := fixapp.hashFile(gameLocation '\' PathFile)
-            If (currentHash != foundHash) && match {
-                match := False
-                Break
-            }
+        If fixapp.folderMatch(A_LoopFileFullPath, gameLocation, ignoreFiles) {
+            fixOptions['FIXHandle'][fix].Enabled := False
+            Return
         }
-        If match {
-            matchFix := fix
-        }
-    }
-    If matchFix {
-        fixOptions['FIXHandle'][matchFix].Enabled := False
     }
 }
 

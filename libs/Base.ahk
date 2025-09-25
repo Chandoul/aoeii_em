@@ -34,6 +34,8 @@ Class Base {
     gameRangerExecutable => A_AppData '\GameRanger\GameRanger\GameRanger.exe'
     gameRangerSetting => A_AppData '\GameRanger\GameRanger Prefs\Settings'
     gameRegLocation => 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Age of Empires II AIO'
+    userRegLayer => "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
+    machineRegLayer => "HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
 
     /**
      * Initiate the class
@@ -57,6 +59,12 @@ Class Base {
             )
             ExitApp()
         }
+
+        If This.HasMethod('ensurePackage') {
+            This.ensurePackage()
+        }
+
+        SetRegView(A_Is64bitOS ? 64 : 32)
     }
 
     /**
@@ -188,19 +196,26 @@ Class Base {
 
     /**
      * Extract a 7zip package into a specified location
-     * @param package 
-     * @param destination 
+     * @param package
+     * @param destination
+     * @param {number} hide 
+     * @param {number} progressText 
+     * @param {string} overwrite 
+     * @returns {number} 
      */
-    extractPackage(package, destination, hide := 0, progressText := 0) {
+    extractPackage(package, destination, hide := 0, progressText := 0, overwrite := 'aoa') {
         If progressText {
             progressText.Visible := True
             SplitPath(package, &OutFileName)
             progressText.Text := 'Extracting "' OutFileName '"...'
         }
-        RC := RunWait('"' This._7zrCsle '" x "' package '" -o"' destination '" -aoa', , hide ? 'Hide' : '', &PID)
+        RC := RunWait('"' This._7zrCsle '" x "' package '" -o"' destination '" -' overwrite, , hide ? 'Hide' : '', &PID)
         If progressText {
             SplitPath(package, &OutFileName)
             progressText.Text := 'Extracting "' OutFileName '" - Done'
+        }
+        If RC && 'Yes' = MsgBoxEx('An error occured while trying to extract the package`nError code: ' RC, This.name, 0x4, 0x10).result {
+            ExitApp()
         }
         Return RC = 0
     }
@@ -251,6 +266,8 @@ Class Base {
                 FileDelete(location '\windmode.dll')
             }
         }
+        This.compatibilityClear([This.userRegLayer, This.machineRegLayer], This.gameLocation '\empires2.exe')
+        This.compatibilityClear([This.userRegLayer, This.machineRegLayer], This.gameLocation '\age2_x1\age2_x1.exe')
     }
 
     /**
@@ -277,6 +294,8 @@ Class Base {
                 FileDelete(location '\age2_x1\ddraw.dll')
             }
         }
+        This.compatibilitySet([This.userRegLayer, This.machineRegLayer], This.gameLocation '\empires2.exe', 'RUNASADMIN WINXPSP3')
+        This.compatibilitySet([This.userRegLayer, This.machineRegLayer], This.gameLocation '\age2_x1\age2_x1.exe', 'RUNASADMIN WINXPSP3')
     }
 
     /**
@@ -315,6 +334,28 @@ Class Base {
         For layer in layers {
             RegWrite(value, 'REG_SZ', layer, valueName)
         }
+    }
+
+    /**
+     * Check if folder files exists in another folder
+     * @param folder
+     * @param anotherFolder 
+     */
+    folderMatch(folder, anotherFolder, ignoreFiles := Map()) {
+        Loop Files, folder '\*.*', 'R' {
+            If ignoreFiles.Has(A_LoopFileName)
+                Continue
+            PathFile := StrReplace(A_LoopFileFullPath, folder '\')
+            If !FileExist(anotherFolder '\' PathFile) {
+                Return 0
+            }
+            currentHash := This.hashFile(, A_LoopFileFullPath)
+            foundHash := This.hashFile(, anotherFolder '\' PathFile)
+            If (currentHash != foundHash) {
+                Return 0
+            }
+        }
+        Return 1
     }
 }
 
@@ -411,19 +452,25 @@ Class GuiEx extends Gui {
         }
         Return b
     }
-    addCheckBoxEx(options := '', text := '', clickCallBack := 0) {
+    addCheckBoxEx(options := '', text := '', clickCallBack := 0, defaultValue := 1) {
         T := This.AddText(options ' BackgroundTrans c4C4C4C', text)
         T.OnEvent('Click', toggleValue)
         T.GetPos(&X, &Y, &Width, &Height)
-        T.Move(X + Height + 5, Y, Width, Height)
+
+        StrReplace(text, '`n', , , &Count)
+        nHeight := Height / (Count + 1)
+
+        T.Move(X + nHeight + 5, Y, Width, Height)
         T.cbValue := 0
 
-        P := This.AddPicture('BackgroundTrans x' X ' y' Y ' h' Height ' w' Height, This.uncheckedImage)
+        P := This.AddPicture('BackgroundTrans x' X ' y' Y ' h' nHeight ' w' nHeight, This.uncheckedImage)
         P.cbValue := T.cbValue
 
         P.OnEvent('Click', toggleValue)
         toggleValue(*) {
             T.cbValue := !T.cbValue
+            If T.cbValue
+                T.cbValue := defaultValue
             P.cbValue := T.cbValue
             If T.cbValue {
                 T.Opt('cBlack')
@@ -448,6 +495,8 @@ Class GuiEx extends Gui {
         }
         setValue(ctrl, value) {
             T.cbValue := value ? 1 : 0
+            If T.cbValue
+                T.cbValue := defaultValue
             P.cbValue := T.cbValue
             If T.cbValue {
                 T.Opt('cBlack')
@@ -461,6 +510,7 @@ Class GuiEx extends Gui {
                 clickCallBack.Call(T, '')
             }
         }
+        This.AddText('x' X ' y' y + Height - This.MarginY ' w1 h1 BackgroundTrans')
         Return T
     }
 
@@ -526,56 +576,71 @@ Class MsgBoxEx {
             }
         }
 
-        This.hText := This.msgGui.AddEdit('xm Center ReadOnly BackgroundE1B15A -E0x200 -VScroll Border', Text)
+        This.hText := This.msgGui.AddEdit('xm Center ReadOnly BackgroundE1B15A -E0x200 -VScroll Border', '`n' Text '`n`n')
 
         Switch Function {
             Case 0:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'OK', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'OK', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 1:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'OK', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'OK', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 2:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Abort', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Retry', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Ignore', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Abort', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Retry', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Ignore', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 3:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Yes', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'No', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Yes', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'No', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 4:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Yes', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'No', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Yes', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'No', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 5:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Retry', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Retry', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 6:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Cancel', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Try Again', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Continue', , updateResult)
-                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , updateResult).Focus()
+                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Cancel', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Try Again', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Continue', , takeAction)
+                This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
         }
 
         This.msgGui.showEx(, 1)
         This.centerControls()
         This.result := ''
 
-        (TimeOut) ? WinWaitClose(This.msgGui, , TimeOut) : WinWaitClose(This.msgGui)
+        If TimeOut {
+            This.hText.Value := '`n' text '`nQuitting in ' (TimeOut) ' second' ((TimeOut > 1) ? 's' : '')
+            SetTimer(countdown, 1000)
+            countdown() {
+                This.hText.Value := '`n' text '`nQuitting in ' (--TimeOut) ' second' ((TimeOut > 1) ? 's' : '')
+            }
+            WinWaitClose(This.msgGui, , TimeOut)
+        } Else WinWaitClose(This.msgGui)
 
+        SetTimer(countdown, 0)
         If This.msgGui
             This.msgGui.Destroy()
 
-        updateResult(Ctrl, Info) {
+        /**
+         * Take action according to the result
+         * @param Ctrl 
+         * @param Info 
+         * @returns {void} 
+         */
+        takeAction(Ctrl, Info) {
             This.result := Ctrl.Text
             If This.result = 'Copy Message' {
                 A_Clipboard := This.hText.Value
                 Return
             }
+            SetTimer(countdown, 0)
             If This.msgGui
                 This.msgGui.Destroy()
         }
@@ -627,7 +692,6 @@ Class Game extends Base {
 #Include LockCheck.ahk
 Class Version extends Base {
     name => 'Game Versions'
-    versionLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/Version/Version.7z'
     requiredVersion => Map(
         "aokCombine", Map(
             "2.0b", [
@@ -651,27 +715,24 @@ Class Version extends Base {
         )
     )
     versionLocation => This.workDirectory '\tools\Version'
-    versionTool => This.fixLocation '\version.ahk'
-    forceDownload => This.readConfiguration('versionForceDownload')
+    versionTool => This.versionLocation '\version.ahk'
+    packageLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/Version/Version.7z'
+    packageName => 'Version.7z'
+    packagePath => This.versionLocation '\' This.packageName
 
-    __New() {
-        If This.forceDownload {
-            This.downloadPackage(This.versionLink, This.versionLocation '\Version.7z')
-            This.extractPackage(This.versionLocation '\Version.7z', This.versionLocation)
-        } Else {
-            If !FileExist(This.versionLocation '\Version.7z')
-            {
-                This.downloadPackage(This.versionLink, This.versionLocation '\Version.7z')
-                This.extractPackage(This.versionLocation '\Version.7z', This.versionLocation)
-            }
-            If !DirExist(This.versionLocation '\aok')
-                This.extractPackage(This.versionLocation '\Version.7z', This.versionLocation)
-
+    /**
+     * Ensure the required package is correctly exist
+     */
+    ensurePackage() {
+        If !FileExist(This.packagePath) {
+            This.downloadPackage(This.packageLink, This.packagePath)
+            This.extractPackage(This.packagePath, This.versionLocation)
         }
+        ;This.extractPackage(This.packagePath, This.versionLocation, 0, , 'aos')
     }
 
     /**
-     * Check if it a command line call
+     * Check there is a commandline call
      */
     isCommandLineCall(options) {
         If A_Args.Length {
@@ -706,13 +767,31 @@ Class Version extends Base {
 }
 
 Class FixPatch extends Base {
-    fixLocation => This.workDirectory '\tools\Fix'
+    name => 'Game Patchs/Fixs'
+    fixLocation => This.workDirectory '\tools\fix'
     fixTool => This.fixLocation '\fix.ahk'
     fixs => This.getFixs()
     fixRegKey => 'HKEY_CURRENT_USER\SOFTWARE\Microsoft\Microsoft Games\Age of Empires'
     fixRegName => 'Aoe2Patch'
-    userRegLayer => "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
-    machineRegLayer => "HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
+    packageLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/fix/Fix.7z'
+    packageName => 'Fix.7z'
+    packagePath => This.fixLocation '\' This.packageName
+
+    /**
+     * Ensure the required package is correctly exist
+     */
+    ensurePackage() {
+        If !FileExist(This.packagePath) {
+            This.downloadPackage(This.packageLink, This.packagePath)
+            This.extractPackage(This.packagePath, This.fixLocation)
+        }
+        ;This.extractPackage(This.packagePath, This.fixLocation, 1, , 'aos')
+    }
+
+    /**
+     * Return a list of the available fixs
+     * @returns {array} 
+     */
     getFixs() {
         F := ['None']
         Loop Files, This.fixLocation '\*', 'D' {
