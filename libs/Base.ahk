@@ -949,7 +949,7 @@ Class DataMod extends Base {
             'packagePath', This.packageLocation '\DEBalance-6.1.2.7z',
             'packageVersion', '6.1.2',
             'packageSizeMB', '81',
-            'packageLink', '',
+            'packageLink', 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/dm/DEBalance-6.1.2.7z',
             'description', "by _everaoc_`n'The Conquerors Updated' mod with shared allies' line of sight.",
         )
     )
