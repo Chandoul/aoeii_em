@@ -257,7 +257,7 @@ Class Base {
             This.downloadPackage(This.ddrawLink, This.ddrawPackage)
         }
         If !DirExist(this.ddrawLocation)
-            This.extractPackage(This.packagePath, This.versionLocation)
+            This.extractPackage(This.ddrawPackage, This.ddrawLocation)
     }
 
     /**
@@ -857,4 +857,16 @@ Class FixPatch extends Base {
         Quit() => ExitApp()
 
     }
+}
+
+Class VisualMod extends Base {
+    name => 'Visual Mods'
+    drsMap => Map(
+        "gra", "graphics.drs",
+        "int", "interfac.drs",
+        "ter", "terrain.drs"
+    )
+    vmLocation => This.workDirectory '\tools\vm'
+    vmLink => ''
+    vmPackage => This.vmLocation '\VisualMod.7z'
 }

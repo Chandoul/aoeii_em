@@ -7,3 +7,5 @@ tools/version/aoc
 tools/version/fe
 tools/fix/fix v*
 tests/
+tools/vm/visualmods/
+tools/vm/vm.ahk
