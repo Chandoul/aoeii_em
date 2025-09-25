@@ -11,9 +11,6 @@ drsMap := vmapp.drsMap
 vmGui := GuiEx('Resize', vmapp.name)
 vmGui.initiate()
 
-features := Map('VM', [])
-vmList := vmListH := Map()
-
 vmGui.AddText('xm w200 BackgroundTrans', 'Search')
 search := vmGui.AddEdit('Border -E0x200 w200')
 search.OnEvent('Change', quickSearch)

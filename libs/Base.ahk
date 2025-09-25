@@ -42,7 +42,7 @@ Class Base {
     mgxfix => This.workDirectory '\externals\mgxfix.exe'
     revealfix => This.workDirectory '\externals\revealfix.exe'
     /**
-     * Initiate the class
+     * Make sure the app base is correctly found
      */
     __New() {
         OnError(handleError)
@@ -935,4 +935,22 @@ Class VisualMod extends Base {
         If !DirExist(This.vmLocation)
             This.extractPackage(This.packagePath, This.packageLocation)
     }
+}
+
+Class DataMod extends Base {
+    name => 'Data Mods'
+    vmLocation => This.workDirectory '\tools\dm'
+    packageLocation => This.workDirectory '\tools\dm'
+    dmPackages => Map(
+        'The Conquerors Updated', Map(
+            'gameName', 'The Conquerors Updated',
+            'gameLinker', 'age2_up',
+            'packageName', 'DEBalance-6.1.2.7z',
+            'packagePath', This.packageLocation '\DEBalance-6.1.2.7z',
+            'packageVersion', '6.1.2',
+            'packageSizeMB', '81',
+            'packageLink', '',
+            'description', "by _everaoc_`n'The Conquerors Updated' mod with shared allies' line of sight.",
+        )
+    )
 }
