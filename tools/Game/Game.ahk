@@ -34,6 +34,7 @@ gameGui.SetFont('s9')
 desktopShortcuts := gameGui.AddCheckBoxEx('BackgroundTrans', 'Notify to add the game desktop shortcuts', gameShortcuts)
 
 progressText := gameGui.AddText('Center w410 Hidden BackgroundTrans')
+
 progressBar := gameGui.AddProgress('-Smooth wp Hidden')
 
 gameGui.showEx(, 1)

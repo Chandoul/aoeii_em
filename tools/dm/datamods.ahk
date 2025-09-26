@@ -52,9 +52,10 @@ showInfo(modsList, '')
 
 showInfo(ctrl, info) {
     modName := ctrl.Text
-    dmThumbnail.Value := FileExist(dmapp.vmLocation '\' modName '\img.png') ? dmapp.vmLocation '\' modName '\img.png' : dmThumbnail.Value
     description := dmapp.dmPackages[modName]['description']
     version := dmapp.dmPackages[modName]['packageVersion']
+    thumbnail := dmapp.dmPackages[modName]['thumbnail']
+    dmThumbnail.Value := thumbnail
     dmDescription.Value := description '`n`nVersion: ' version
 }
 
@@ -87,6 +88,9 @@ updateDM(Ctrl, Info) {
         }
         If !DirExist(gameLocation '\Games\' dmGameName)
             dmapp.extractPackage(dmPackagePath, gameLocation '\')
+
+        ; Change aoc version to 1.5
+        RunWait(dmapp.tools.version.file ' 1.5')
 
         ; Update the linker in the game executable
         age2_x1 := FileOpen(gameLocation '\age2_x1\age2_x1.exe', 'rw')

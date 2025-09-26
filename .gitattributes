@@ -1,3 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-Tools/Game/AGE[[:space:]]OF[[:space:]]EMPIRES[[:space:]]II.7z filter=lfs diff=lfs merge=lfs -text
+tools/game/AGE[[:space:]]OF[[:space:]]EMPIRES[[:space:]]II.7z filter=lfs diff=lfs merge=lfs -text
+tools/dm/DEBalance-6.1.2.7z filter=lfs diff=lfs merge=lfs -text
+tools/dm/WololoKingdoms-5.8.1.7z filter=lfs diff=lfs merge=lfs -text

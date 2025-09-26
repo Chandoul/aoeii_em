@@ -951,6 +951,18 @@ Class DataMod extends Base {
             'packageSizeMB', '81',
             'packageLink', 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/dm/DEBalance-6.1.2.7z',
             'description', "by _everaoc_`n'The Conquerors Updated' mod with shared allies' line of sight.",
+            'thumbnail', This.workDirectory '\assets\DE Balance.png'
+        ),
+        'WololoKingdoms', Map(
+            'gameName', 'WololoKingdoms',
+            'gameLinker', 'age2_x1_wk',
+            'packageName', 'WololoKingdoms-5.8.1.7z',
+            'packagePath', This.packageLocation '\WololoKingdoms-5.8.1.7z',
+            'packageVersion', '5.8.1',
+            'packageSizeMB', '225',
+            'packageLink', 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/dm/WololoKingdoms-5.8.1.7z',
+            'description', "by Tails8521, Jineapple, TriRem, TWest\nPlay the HD Expansions on Voobly.",
+            'thumbnail', This.workDirectory '\assets\WololoKingdoms.png'
         )
     )
 }
