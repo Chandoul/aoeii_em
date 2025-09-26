@@ -93,7 +93,8 @@ updateDM(Ctrl, Info) {
         RunWait(dmapp.tools.version.file ' 1.5')
 
         ; Update the linker in the game executable
-        age2_x1 := FileOpen(gameLocation '\age2_x1\age2_x1.exe', 'rw')
+        FileCopy(gameLocation '\age2_x1\age2_x1.exe', dmapp.dmLocation '\', 1)
+        age2_x1 := FileOpen(dmapp.dmLocation '\age2_x1.exe', 'rw')
         age2_x1.Pos := 2821668
         Loop 28 {
             age2_x1.WriteChar(0)
@@ -104,6 +105,7 @@ updateDM(Ctrl, Info) {
             age2_x1.WriteChar(Ord(c))
         }
         age2_x1.Close()
+        FileMove(dmapp.dmLocation '\age2_x1.exe', gameLocation '\age2_x1\', 1)
     } Else {
         If FileExist(gameLocation '\Games\' dmGameLinker '.xml')
             FileDelete(gameLocation '\Games\' dmGameLinker '.xml')

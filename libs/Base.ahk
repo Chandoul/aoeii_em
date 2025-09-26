@@ -28,7 +28,7 @@ Class Base {
     ddrawLink => 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/externals/cnc-ddraw.2.7z'
     ddrawPackage => This.workDirectory '\externals\cnc-ddraw.2.7z'
     _7zrLink => 'https://www.7-zip.org/a/7zr.exe'
-    _7zrCsle => This.workDirectory '\externals\7zr.exe'
+    _7zrCsle => This.workDirectory '\externals\7za.exe'
     _7zrVersion => '25.01'
     _7zrSHA256 => '27cbe3d5804ad09e90bbcaa916da0d5c3b0be9462d0e0fb6cb54be5ed9030875'
     gameLocation => this.readConfiguration('GameLocation')
@@ -41,6 +41,8 @@ Class Base {
     drsBuild => This.workDirectory '\externals\drsbuild.exe'
     mgxfix => This.workDirectory '\externals\mgxfix.exe'
     revealfix => This.workDirectory '\externals\revealfix.exe'
+    lngLoader => This.workDirectory '\externals\language_x1_p1.dll'
+    mmodsDLL => This.workDirectory '\externals\mmods'
     /**
      * Make sure the app base is correctly found
      */
@@ -939,12 +941,13 @@ Class VisualMod extends Base {
 
 Class DataMod extends Base {
     name => 'Data Mods'
-    vmLocation => This.workDirectory '\tools\dm'
+    dmLocation => This.workDirectory '\tools\dm'
     packageLocation => This.workDirectory '\tools\dm'
     dmPackages => Map(
         'The Conquerors Updated', Map(
+            'type', 'xml',
             'gameName', 'The Conquerors Updated',
-            'gameLinker', 'age2_up',
+            'gameLinker', 'age2_x1_up',
             'packageName', 'DEBalance-6.1.2.7z',
             'packagePath', This.packageLocation '\DEBalance-6.1.2.7z',
             'packageVersion', '6.1.2',
@@ -954,6 +957,7 @@ Class DataMod extends Base {
             'thumbnail', This.workDirectory '\assets\DE Balance.png'
         ),
         'WololoKingdoms', Map(
+            'type', 'xml',
             'gameName', 'WololoKingdoms',
             'gameLinker', 'age2_x1_wk',
             'packageName', 'WololoKingdoms-5.8.1.7z',
@@ -963,6 +967,18 @@ Class DataMod extends Base {
             'packageLink', 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/dm/WololoKingdoms-5.8.1.7z',
             'description', "by Tails8521, Jineapple, TriRem, TWest\nPlay the HD Expansions on Voobly.",
             'thumbnail', This.workDirectory '\assets\WololoKingdoms.png'
+        ),
+        'Elemental TD', Map(
+            'type', 'xml',
+            'gameName', 'Elemental TD',
+            'gameLinker', 'age2_x1_e_td',
+            'packageName', 'ElementalTD-2.02.7z',
+            'packagePath', This.packageLocation '\ElementalTD-2.02.7z',
+            'packageVersion', '2.02',
+            'packageSizeMB', '46',
+            'packageLink', 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/dm/ElementalTD-2.02.7z',
+            'description', "by BinaryPotka\nNew 2023 TD mod with Elemental Towers.",
+            'thumbnail', This.workDirectory '\assets\Elemental TD.png'
         )
     )
 }
