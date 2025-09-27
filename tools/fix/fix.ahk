@@ -156,7 +156,6 @@ fixapp.groupCheckBoxs([
 ;}
 
 fixGui.MarginY := 20
-fixGui.showEx(, 1)
 
 fixapp.isGameFolderSelected(fixGui)
 fixapp.isCommandLineCall({
@@ -164,10 +163,11 @@ fixapp.isCommandLineCall({
     callback: applyFix
 })
 
+fixGui.showEx(, 1)
 analyzeFix()
 
 /**
- * Applys fixes
+ * Apply the fix
  * @param Ctrl
  * @param Info
  * @returns {number} 

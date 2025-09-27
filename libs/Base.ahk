@@ -213,7 +213,7 @@ Class Base {
         If hide && informMe {
             If !infoGui {
                 infoGui := GuiEx('-SysMenu', This.name)
-                infoGui.initiate(0)
+                infoGui.initiate(0, , 0)
                 infoGui.addGif('xm+90', 'bored.gif')
                 infoGui.AddText(
                     'BackgroundTrans xm w400 Center cRed',
@@ -400,6 +400,10 @@ Class Base {
             cb.group := group
         }
     }
+
+    reloadApp() {
+        Reload()
+    }
 }
 
 #Include ImageButton.ahk
@@ -427,7 +431,7 @@ Class GuiEx extends Gui {
     checkedImage => This.workDirectory '\assets\cb\checked.png'
     uncheckedImage => This.workDirectory '\assets\cb\unchecked.png'
     click => This.workDirectory '\assets\wav\50300.wav'
-    initiate(qA := 1, Scrollable := 0) {
+    initiate(qA := 1, Scrollable := 0, footer := 1) {
         This.BackColor := 0xFFFFFF
         If qA
             This.OnEvent('Close', (*) => ExitApp())
@@ -437,6 +441,7 @@ Class GuiEx extends Gui {
         If Scrollable {
             This.scrollableGui()
         }
+        This.footer := footer
     }
     scrollableGui() {
         vmGuiSB := ScrollBar(This, 200, 400)
@@ -458,6 +463,8 @@ Class GuiEx extends Gui {
         HotIfWinActive
     }
     showEx(options := '', backImage := 0) {
+        If This.footer
+            This.addAOEFooter()
         This.Show(options)
 
         ; Handling the background image (repeat x, y)
@@ -617,6 +624,23 @@ Class GuiEx extends Gui {
         gif := ImageShow(gif, , [0, 0], 0x40000000 | 0x10000000 | 0x8000000, , pic.Hwnd)
         Return pic
     }
+
+    /**
+     * Add a footer that displays some (important) info
+     */
+    addAOEFooter() {
+        This.SetFont('s9')
+        This.addText('xm w500 0x10')
+        This.MarginY := 0
+        This.addPictureEx('xm', 'aok_c.png').OnEvent('Click', (*) => FileExist(gameLocation '\empires2.exe') ? Run(gameLocation '\empires2.exe', gameLocation) : '')
+        This.addPictureEx('yp', 'aoc_c.png').OnEvent('Click', (*) => FileExist(gameLocation '\age2_x1\age2_x1.exe') ? Run(gameLocation '\age2_x1\age2_x1.exe', gameLocation) : '')
+        This.addPictureEx('yp', 'fe_c.png').OnEvent('Click', (*) => FileExist(gameLocation '\age2_x1\age2_x2.exe') ? Run(gameLocation '\age2_x1\age2_x2.exe', gameLocation) : '')
+        gameLocation := Base().gameLocation
+        If Game().isValidGameDirectory(gameLocation)
+            ft := This.AddText('BackgroundTrans yp+3 x+20', 'The app is currently using the game located at:`n' Base().gameLocation)
+        Else ft := This.AddText('BackgroundTrans yp+3 x+20 cRed', 'The game folder is not selected yet!')
+        This.MarginY := 5
+    }
 }
 
 Class MsgBoxEx {
@@ -640,7 +664,7 @@ Class MsgBoxEx {
      */
     __New(Text := '', Title := A_ScriptName, Function := 0, Icon := 0, TimeOut := 0) {
         This.msgGui := GuiEx(, Title)
-        This.msgGui.initiate(0)
+        This.msgGui.initiate(0, , 0)
         This.hIcon := 0
         Switch Icon {
             Case 16:
@@ -853,8 +877,99 @@ Class Version extends Base {
          * @returns {void} 
          */
         Quit() => ExitApp()
-
     }
+
+    getGameVersions() {
+        versions := Map(
+            'aok', '',
+            'aoc', '',
+            'fe', ''
+        )
+        lookFor := 'interfac.drs'
+
+        If FileExist(This.gameLocation '\empires2.exe') {
+            empires2 := FileOpen(This.gameLocation '\empires2.exe', 'r')
+
+            ; 2.0
+            If This.readString(empires2, 2479120, 12) = lookFor {
+                versions['aok'] := '2.0'
+            }
+
+            ; 2.0a
+            If This.readString(empires2, 2475120, 12) = lookFor {
+                versions['aok'] := '2.0a'
+            }
+
+            ; 2.0b
+            If versions['aok'] = '2.0a'
+                && FileExist(This.gameLocation '\on.ini')
+                && FileRead(This.gameLocation '\on.ini') = 'on' {
+                    versions['aok'] := '2.0b'
+            }
+            empires2.Close()
+        }
+
+        If FileExist(This.gameLocation '\age2_x1\age2_x1.exe') {
+            age2_x1 := FileOpen(This.gameLocation '\age2_x1\age2_x1.exe', 'r')
+
+            ; 1.0
+            If This.readString(age2_x1, 2604688, 12) = lookFor {
+                versions['aoc'] := '1.0'
+            }
+
+            ; 1.0c
+            If This.readString(age2_x1, 2551448, 12) = lookFor {
+                versions['aoc'] := '1.0c'
+            }
+
+            ; 1.0e
+            If versions['aoc'] = '1.0c'
+                && FileExist(This.gameLocation '\age2_x1\on.ini')
+                && FileRead(This.gameLocation '\age2_x1\on.ini') = 'onon' {
+                    versions['aoc'] := '1.0e'
+            }
+
+            ; 1.1
+            If age2_x1.Length = 2969600 {
+                versions['aoc'] := '1.1'
+            }
+
+            ; 1.5
+            If age2_x1.Length = 3145728 {
+                versions['aoc'] := '1.5'
+            }
+            age2_x1.Close()
+        }
+
+        If FileExist(This.gameLocation '\age2_x1\age2_x2.exe') {
+            age2_x2 := FileOpen(This.gameLocation '\age2_x1\age2_x2.exe', 'r')
+            age2_x2.Pos := 278
+            ; 2.2
+            If age2_x2.ReadChar() = 39 {
+                versions['fe'] := '2.2'
+            }
+            age2_x2.Close()
+        }
+
+        Return versions
+    }
+    /**
+     * Read string from buffer
+     * @param {buffer} buff 
+     * @param {number} pos
+     * @param {number} len
+     * @returns {string} 
+     */
+    readString(buff, pos := 0, len := 1) {
+        str := ''
+        buff.Pos := pos
+        Loop len {
+            Try str .= Chr(buff.ReadChar())
+        }
+
+        Return str
+    }
+
 }
 
 Class FixPatch extends Base {
@@ -979,6 +1094,18 @@ Class DataMod extends Base {
             'packageLink', 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/dm/ElementalTD-2.02.7z',
             'description', "by BinaryPotka\nNew 2023 TD mod with Elemental Towers.",
             'thumbnail', This.workDirectory '\assets\Elemental TD.png'
+        ),
+        'Sheep vs Wolf 3', Map(
+            'type', 'xml',
+            'gameName', 'Sheep vs Wolf 3',
+            'gameLinker', 'age2_x1_svw3',
+            'packageName', 'SheepVSWolf-3.0.7.7z',
+            'packagePath', This.packageLocation '\SheepVSWolf-3.0.7.7z',
+            'packageVersion', '3.0.7',
+            'packageSizeMB', '13.2',
+            'packageLink', 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/dm/SheepVSWolf-3.0.7.7z',
+            'description', "by Gallas`nSheep vs Wolf 3 is a random map based hunter / prey game with unique UP v1.5 RC mechanics. Hide in forest and build a fortress, or hunt for animals and search for Sheep as the Wolf!.",
+            'thumbnail', This.workDirectory '\assets\svsw3mini.jpg'
         )
     )
 }

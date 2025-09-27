@@ -8,7 +8,7 @@ verapp := Version()
 fixapp := FixPatch()
 
 fixs := fixapp.Fixs
-requiredVersions := verapp.requiredVersion
+availableVersions := verapp.requiredVersion
 gameLocation := verapp.gameLocation
 
 versionGui := GuiEx(, verapp.name)
@@ -22,10 +22,10 @@ versions := Map(
     'Version', []
 )
 
-requiredVersions['aok'] := Map()
+availableVersions['aok'] := Map()
 Loop Files, verapp.versionLocation '\aok\*', 'D' {
     H := versionGui.AddButtonEx('w150', AOK := A_LoopFileName, Button().checkedDisabled, applyVersion)
-    requiredVersions['aok'][H] := 1
+    availableVersions['aok'][H] := 1
     versions['Version'].Push(H)
 }
 
@@ -33,10 +33,10 @@ versionGui.AddText('BackgroundTrans cBlue ym w150 Center h30', 'The Conquerors')
 versionGui.AddPictureEx('xp+59 yp+30', 'aoc.png', launchGame)
 versionGui.AddText('BackgroundTrans xp-59 yp+35 w1 h1')
 
-requiredVersions['aoc'] := Map()
+availableVersions['aoc'] := Map()
 Loop Files, verapp.versionLocation '\aoc\*', 'D' {
     H := versionGui.addButtonEx('w150', AOC := A_LoopFileName, Button().checkedDisabled, applyVersion)
-    requiredVersions['aoc'][H] := 2
+    availableVersions['aoc'][H] := 2
     versions['Version'].Push(H)
 }
 
@@ -44,10 +44,10 @@ versionGui.AddText('BackgroundTrans cGreen ym w150 Center h30', 'Forgotten Empir
 versionGui.AddPictureEx('xp+59 yp+30', 'fe.png', launchGame)
 versionGui.AddText('BackgroundTrans xp-59 yp+35 w1 h1')
 
-requiredVersions['fe'] := Map()
+availableVersions['fe'] := Map()
 Loop Files, verapp.versionLocation '\fe\*', 'D' {
     H := versionGui.addButtonEx('w150', FE := A_LoopFileName, Button().checkedDisabled, applyVersion)
-    requiredVersions['fe'][H] := 3
+    availableVersions['fe'][H] := 3
     versions['Version'].Push(H)
 }
 
@@ -64,28 +64,28 @@ ddrAuto.Checked := verapp.readConfiguration('ddrAuto')
 
 versionGui.MarginY := 20
 
-versionGui.showEx(, 1)
 
 verapp.isGameFolderSelected(versionGui)
 
 verapp.isCommandLineCall({
     wnd: versionGui,
-    versionList: requiredVersions,
+    versionList: availableVersions,
     callback: applyVersion
 }
 )
 
+versionGui.showEx(, 1)
 analyzeVersion()
 
 findGame(ctrl) {
     fGame := ''
-    If requiredVersions['aok'].Has(ctrl) {
+    If availableVersions['aok'].Has(ctrl) {
         fGame := 'aok'
     }
-    If requiredVersions['aoc'].Has(ctrl) {
+    If availableVersions['aoc'].Has(ctrl) {
         fGame := 'aoc'
     }
-    If requiredVersions['fe'].Has(ctrl) {
+    If availableVersions['fe'].Has(ctrl) {
         fGame := 'fe'
     }
     Return fGame
@@ -104,8 +104,8 @@ cleansUp(fGame) {
 }
 
 applyReqVersion(ctrl, fGame) {
-    If requiredVersions.Has(fGame 'Combine') && requiredVersions[fGame 'Combine'].Has(ctrl.Text) {
-        For version in requiredVersions[fGame 'Combine'][ctrl.Text] {
+    If availableVersions.Has(fGame 'Combine') && availableVersions[fGame 'Combine'].Has(ctrl.Text) {
+        For version in availableVersions[fGame 'Combine'][ctrl.Text] {
             If DirExist(verapp.versionLocation '\' fGame '\' version) {
                 DirCopy(verapp.versionLocation '\' fGame '\' version, gameLocation, 1)
             }
@@ -117,7 +117,7 @@ applyReqVersion(ctrl, fGame) {
 }
 
 applyVersion(ctrl, info) {
-    verapp.enableOptions(requiredVersions[FGame := findGame(ctrl)], 0)
+    verapp.enableOptions(availableVersions[FGame := findGame(ctrl)], 0)
     Try {
         cleansUp(FGame)
         applyReqVersion(ctrl, FGame)
@@ -128,7 +128,7 @@ applyVersion(ctrl, info) {
         }
     } Catch {
         If !lockCheck(gameLocation) {
-            verapp.enableOptions(requiredVersions[FGame])
+            verapp.enableOptions(availableVersions[FGame])
             Return
         }
         cleansUp(FGame)
@@ -154,7 +154,7 @@ appliedVersionLookUp(
     Loop Files, verapp.versionLocation '\' location '\*', 'D' {
         version := A_LoopFileName
         If fixapp.folderMatch(A_LoopFileFullPath, gameLocation, ignoreFiles) {
-            For control in requiredVersions[location] {
+            For control in availableVersions[location] {
                 If control.Text = version {
                     Return [matchVersion, control]
                 }
@@ -166,25 +166,23 @@ appliedVersionLookUp(
 
 ; Analyzes game versions
 analyzeVersion() {
+    result := verapp.getGameVersions()
     If FileExist(gameLocation '\empires2.exe') {
-        version := appliedVersionLookUp('aok')
-        If Type(version) = 'Array' {
-            verapp.enableOptions(requiredVersions['aok'])
-            version[2].Enabled := False
+        verapp.enableOptions(availableVersions['aok'])
+        For verButton in availableVersions['aok'] {
+            verButton.Enabled := result['aok'] != verButton.Text
         }
     }
     If FileExist(gameLocation '\age2_x1\age2_x1.exe') {
-        version := appliedVersionLookUp('aoc')
-        If Type(version) = 'Array' {
-            verapp.enableOptions(requiredVersions['aoc'])
-            version[2].Enabled := False
+        verapp.enableOptions(availableVersions['aoc'])
+        For verButton in availableVersions['aoc'] {
+            verButton.Enabled := result['aoc'] != verButton.Text
         }
     }
     If FileExist(gameLocation '\age2_x1\age2_x2.exe') {
-        version := appliedVersionLookUp('fe')
-        If Type(version) = 'Array' {
-            verapp.enableOptions(requiredVersions['fe'])
-            version[2].Enabled := False
+        verapp.enableOptions(availableVersions['fe'])
+        For verButton in availableVersions['fe'] {
+            verButton.Enabled := result['fe'] != verButton.Text
         }
     }
 }

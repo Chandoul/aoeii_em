@@ -4,6 +4,7 @@
 #Include ..\..\libs\Base.ahk
 
 dmapp := DataMod()
+verapp := Version()
 
 gameLocation := dmapp.gameLocation
 dmPackages := dmapp.dmPackages
@@ -64,6 +65,7 @@ updateDM(Ctrl, Info) {
 
     dmName := modsList.Text
 
+    dmType := dmapp.dmPackages[dmName]['type']
     dmPackagePath := dmapp.dmPackages[dmName]['packagePath']
     dmPackageLink := dmapp.dmPackages[dmName]['packageLink']
     dmPackageSize := dmapp.dmPackages[dmName]['packageSizeMB']
@@ -77,35 +79,40 @@ updateDM(Ctrl, Info) {
         ctrl.TextEx := 'Uninstalling...'
     }
     If apply {
-        dmapp.enableOptions([dmInstall, dmUninstall], 0)
-        If !FileExist(dmPackagePath) {
-            If !dmapp.getConnectedState() {
-                MsgBoxEx('Unable to install, you does not seem to be connected to the internet!', dmapp.name, , 0x30)
-                dmapp.enableOptions([dmInstall, dmUninstall])
-                Return
-            }
-            dmapp.downloadPackage(dmPackageLink, dmPackagePath, dmPackageSize, progressText, progressBar)
-        }
-        If !DirExist(gameLocation '\Games\' dmGameName)
-            dmapp.extractPackage(dmPackagePath, gameLocation '\')
+        Switch dmType {
+            Case 'xml':
+                dmapp.enableOptions([dmInstall, dmUninstall], 0)
+                If !FileExist(dmPackagePath) {
+                    If !dmapp.getConnectedState() {
+                        MsgBoxEx('Unable to install, you does not seem to be connected to the internet!', dmapp.name, , 0x30)
+                        dmapp.enableOptions([dmInstall, dmUninstall])
+                        Return
+                    }
+                    dmapp.downloadPackage(dmPackageLink, dmPackagePath, dmPackageSize, progressText, progressBar)
+                }
+                If !DirExist(gameLocation '\Games\' dmGameName)
+                    dmapp.extractPackage(dmPackagePath, gameLocation '\')
 
-        ; Change aoc version to 1.5
-        RunWait(dmapp.tools.version.file ' 1.5')
+                ; Change aoc version to 1.5
+                If verapp.getGameVersions()['aoc'] != '1.5'
+                    RunWait(dmapp.tools.version.file ' 1.5')
 
-        ; Update the linker in the game executable
-        FileCopy(gameLocation '\age2_x1\age2_x1.exe', dmapp.dmLocation '\', 1)
-        age2_x1 := FileOpen(dmapp.dmLocation '\age2_x1.exe', 'rw')
-        age2_x1.Pos := 2821668
-        Loop 28 {
-            age2_x1.WriteChar(0)
+                ; Update the linker in the game executable
+                FileCopy(gameLocation '\age2_x1\age2_x1.exe', dmapp.dmLocation '\', 1)
+                age2_x1 := FileOpen(dmapp.dmLocation '\age2_x1.exe', 'rw')
+                age2_x1.Pos := 2821668
+                Loop 28 {
+                    age2_x1.WriteChar(0)
+                }
+                age2_x1.Pos := 2821668
+                Loop StrLen(dmGameLinker) {
+                    c := SubStr(dmGameLinker, A_Index, 1)
+                    age2_x1.WriteChar(Ord(c))
+                }
+                age2_x1.Close()
+                FileMove(dmapp.dmLocation '\age2_x1.exe', gameLocation '\age2_x1\', 1)
+                ;Case 'file':
         }
-        age2_x1.Pos := 2821668
-        Loop StrLen(dmGameLinker) {
-            c := SubStr(dmGameLinker, A_Index, 1)
-            age2_x1.WriteChar(Ord(c))
-        }
-        age2_x1.Close()
-        FileMove(dmapp.dmLocation '\age2_x1.exe', gameLocation '\age2_x1\', 1)
     } Else {
         If FileExist(gameLocation '\Games\' dmGameLinker '.xml')
             FileDelete(gameLocation '\Games\' dmGameLinker '.xml')
