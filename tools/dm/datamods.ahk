@@ -111,7 +111,12 @@ updateDM(Ctrl, Info) {
                 }
                 age2_x1.Close()
                 FileMove(dmapp.dmLocation '\age2_x1.exe', gameLocation '\age2_x1\', 1)
-                ;Case 'file':
+            Case 'rpl':
+                ; Change aoc version to 1.5
+                ;If verapp.getGameVersions()['aoc'] != '1.5'
+                ;    RunWait(dmapp.tools.version.file ' 1.5')
+                ;
+                ;dmapp.extractPackage(dmPackagePath, gameLocation '\')
         }
     } Else {
         If FileExist(gameLocation '\Games\' dmGameLinker '.xml')
@@ -125,7 +130,10 @@ updateDM(Ctrl, Info) {
 clearDM(Ctrl, Info) {
     dmName := modsList.Text
     dmPackage := dmapp.dmPackages[dmName]['packagePath']
+    dmGameName := dmapp.dmPackages[dmName]['gameName']
     If FileExist(dmPackage)
         FileDelete(dmPackage)
-    updateDM(modsList, Info)
+    If DirExist(gameLocation '\Games\' dmGameName)
+        DirDelete(gameLocation '\Games\' dmGameName, 1)
+    updateDM(dmInstall, Info)
 }

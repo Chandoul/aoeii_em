@@ -12,13 +12,13 @@ vmGui := GuiEx('Resize', vmapp.name)
 vmGui.initiate()
 
 vmGui.AddText('xm w200 BackgroundTrans', 'Search')
-search := vmGui.AddEdit('Border -E0x200 w200')
-search.OnEvent('Change', quickSearch)
+search := vmGui.AddEdit('BackgroundBlack cWhite -E0x200 w200')
+search.OnEvent('Change', vmQuickSearch)
 
 modsList := vmGui.AddListBox('wp r20 BackgroundE1B15A -E0x200')
-modsList.OnEvent('Change', showInfo)
+modsList.OnEvent('Change', showVMInfo)
 
-quickSearch(ctrl, info) {
+vmQuickSearch(ctrl, info) {
     modsList.Delete()
     searchValue := ctrl.Text
     Loop Files, vmapp.vmLocation '\*', 'D' {
@@ -43,9 +43,9 @@ vmGui.showEx(, 1)
 vmapp.isGameFolderSelected(vmGui)
 
 modsList.Choose(1)
-showInfo(modsList, '')
+showVMInfo(modsList, '')
 
-showInfo(ctrl, info) {
+showVMInfo(ctrl, info) {
     modName := ctrl.Text
     vmThumbnail.Value := FileExist(vmapp.vmLocation '\' modName '\img.png') ? vmapp.vmLocation '\' modName '\img.png' : vmThumbnail.Value
     vmDescription.Value := FileExist(vmapp.vmLocation '\' modName '\info.txt') ? FileRead(vmapp.vmLocation '\' modName '\info.txt') : ''

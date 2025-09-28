@@ -175,7 +175,7 @@ analyzeFix()
 applyFix(Ctrl, Info) {
     fixVersion := Type(Ctrl) = 'String' ? Ctrl : Ctrl.Text
     If fixVersion = 'None' {
-        cleansUp()
+        fixCleanUp()
         analyzeFix()
         fixapp.enableOptions(fixOptions['Fixs'])
         SoundPlay(fixapp.workDirectory '\assets\mp3\30 Wololo.mp3')
@@ -217,14 +217,14 @@ applyFix(Ctrl, Info) {
         ;    SoundPlay('DB\Base\30 Wololo.mp3')
         ;    Return
         ;}
-        cleansUp()
+        fixCleanUp()
         fixapp.applyUserFix(fixapp.fixLocation '\' fixVersion)
     } Catch {
         If !LockCheck(gameLocation) {
             fixapp.enableOptions(fixOptions['Fixs'])
             Return 0
         }
-        cleansUp()
+        fixCleanUp()
         fixapp.applyUserFix(fixapp.fixLocation '\' fixVersion)
     }
     analyzeFix()
@@ -246,7 +246,7 @@ analyzeFix(ignoreFiles := Map('wndmode.dll', 1, 'windmode.dll', 1)) {
 /**
  * Cleans up a fix if found any
  */
-cleansUp() {
+fixCleanUp() {
     Loop Files, fixapp.fixLocation '\*', 'D' {
         Fix := A_LoopFileName
         Loop Files, fixapp.fixLocation '\' Fix '\*.*', 'R' {

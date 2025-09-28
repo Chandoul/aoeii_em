@@ -43,6 +43,7 @@ userGameLocation := gameapp.gameLocation
 If !gameapp.isValidGameDirectory(userGameLocation) {
     selectDirectoryGR(selectFromGR, '')
 }
+
 userGameLocation := gameapp.gameLocation
 If !gameapp.isValidGameDirectory(userGameLocation) {
     If 'Yes' = MsgboxEx('Do you want to select the game folder manually?', 'Game Location', 0x4, 0x40).result
@@ -55,9 +56,8 @@ If !gameapp.isValidGameDirectory(userGameLocation) {
 }
 
 gameDirectory.Value := userGameLocation
-If gameapp.addShortcuts && gameapp.gameLocation {
+If gameapp.addShortcuts {
     desktopShortcuts.Checked := 1
-    addGameShortcuts()
     Return
 } Else desktopShortcuts.Checked := 0
 

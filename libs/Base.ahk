@@ -13,15 +13,18 @@ Class Base {
     tools => {
         game: {
             title: 'My Game',
-            file: This.workDirectory '\tools\game\game.ahk'
+            file: This.workDirectory '\tools\game\game.ahk',
+            workdir: This.workDirectory '\tools\game'
         },
         version: {
             title: 'Versions',
-            file: This.workDirectory '\tools\version\version.ahk'
+            file: This.workDirectory '\tools\version\version.ahk',
+            workdir: This.workDirectory '\tools\version'
         },
         fix: {
             title: 'Patchs & Fixs',
-            file: This.workDirectory '\tools\fix\fix.ahk'
+            file: This.workDirectory '\tools\fix\fix.ahk',
+            workdir: This.workDirectory '\tools\fix'
         },
     }
     ddrawLocation => This.workDirectory '\externals\cnc-ddraw.2'
@@ -177,6 +180,8 @@ Class Base {
         SetTimer(fileWatch, 1000)
         Download(link, file)
         SetTimer(fileWatch, 0)
+        progressBar.value := 100
+        progressText.Text := 'Download complete! "' OutFileName '" [ ' progressBar.value ' % ]...'
         fileWatch() {
             if FileExist(file) {
                 currentSize := FileGetSize(file, 'M')
@@ -630,15 +635,15 @@ Class GuiEx extends Gui {
      */
     addAOEFooter() {
         This.SetFont('s9')
-        This.addText('xm w500 0x10')
+        This.addText('xm w420 0x10')
         This.MarginY := 0
         This.addPictureEx('xm', 'aok_c.png').OnEvent('Click', (*) => FileExist(gameLocation '\empires2.exe') ? Run(gameLocation '\empires2.exe', gameLocation) : '')
         This.addPictureEx('yp', 'aoc_c.png').OnEvent('Click', (*) => FileExist(gameLocation '\age2_x1\age2_x1.exe') ? Run(gameLocation '\age2_x1\age2_x1.exe', gameLocation) : '')
         This.addPictureEx('yp', 'fe_c.png').OnEvent('Click', (*) => FileExist(gameLocation '\age2_x1\age2_x2.exe') ? Run(gameLocation '\age2_x1\age2_x2.exe', gameLocation) : '')
         gameLocation := Base().gameLocation
         If Game().isValidGameDirectory(gameLocation)
-            ft := This.AddText('BackgroundTrans yp+3 x+20', 'The app is currently using the game located at:`n' Base().gameLocation)
-        Else ft := This.AddText('BackgroundTrans yp+3 x+20 cRed', 'The game folder is not selected yet!')
+            ft := This.AddEdit('BackgroundBlack yp+3 x+20 cWhite w280 -E0x200 r1', Base().gameLocation)
+        Else ft := This.AddEdit('BackgroundBlack yp+3 x+20 cRed w280 -E0x200 r1', Base().gameLocation)
         This.MarginY := 5
     }
 }
@@ -662,9 +667,10 @@ Class MsgBoxEx {
      * @param {number} Icon 
      * @param {number} TimeOut 
      */
-    __New(Text := '', Title := A_ScriptName, Function := 0, Icon := 0, TimeOut := 0) {
+    __New(Text := '', Title := A_ScriptName, Function := 0, Icon := 0, TimeOut := 0, minWidth := 400) {
         This.msgGui := GuiEx(, Title)
         This.msgGui.initiate(0, , 0)
+        This.msgGui.AddText('x0 y0 h1 BackgroundTrans w' minWidth)
         This.hIcon := 0
         Switch Icon {
             Case 16:
@@ -726,7 +732,7 @@ Class MsgBoxEx {
         }
 
         This.msgGui.showEx(, 1)
-        This.centerControls()
+        centerControls()
         This.result := ''
 
         If TimeOut {
@@ -758,27 +764,29 @@ Class MsgBoxEx {
             If This.msgGui
                 This.msgGui.Destroy()
         }
-    }
-    centerControls() {
-        This.msgGui.GetClientPos(&X, &Y, &Width, &Height)
-        If This.hIcon {
-            This.hIcon.GetPos(&cX, &cY, &cWidth, &cHeight)
-            This.hIcon.Move((Width - cWidth) // 2)
-        }
-        This.hText.GetPos(&cX, &cY, &cWidth, &cHeight)
-        This.hText.Move((Width - cWidth) // 2)
 
-        buttons := []
-        For Obj in This.msgGui {
-            If !InStr(Type(Obj), 'Gui.Button')
-                Continue
-            buttons.Push(Obj)
-        }
-        X := buttons.Length * This.btnWidth + (buttons.Length - 1) * This.msgGui.MarginX
-        X := (Width - X) // 2
-        For btn in buttons {
-            btn.Move(X + (A_Index - 1) * (This.msgGui.MarginX + This.btnWidth))
-            btn.Redraw()
+        centerControls() {
+            This.msgGui.GetClientPos(&X, &Y, &Width, &Height)
+            If This.hIcon {
+                This.hIcon.GetPos(&cX, &cY, &cWidth, &cHeight)
+                This.hIcon.Move((Width - cWidth) // 2)
+            }
+            This.hText.GetPos(&cX, &cY, &cWidth, &cHeight)
+            cWidth := cWidth > minWidth ? cWidth : minWidth
+            This.hText.Move((Width - cWidth) // 2, , cWidth)
+
+            buttons := []
+            For Obj in This.msgGui {
+                If !InStr(Type(Obj), 'Gui.Button')
+                    Continue
+                buttons.Push(Obj)
+            }
+            X := buttons.Length * This.btnWidth + (buttons.Length - 1) * This.msgGui.MarginX
+            X := (Width - X) // 2
+            For btn in buttons {
+                btn.Move(X + (A_Index - 1) * (This.msgGui.MarginX + This.btnWidth))
+                btn.Redraw()
+            }
         }
     }
 }
@@ -1092,7 +1100,7 @@ Class DataMod extends Base {
             'packageVersion', '2.02',
             'packageSizeMB', '46',
             'packageLink', 'https://github.com/Chandoul/aoeii_em/raw/refs/heads/master/tools/dm/ElementalTD-2.02.7z',
-            'description', "by BinaryPotka\nNew 2023 TD mod with Elemental Towers.",
+            'description', "by BinaryPotka`nNew 2023 TD mod with Elemental Towers.",
             'thumbnail', This.workDirectory '\assets\Elemental TD.png'
         ),
         'Sheep vs Wolf 3', Map(
@@ -1108,4 +1116,8 @@ Class DataMod extends Base {
             'thumbnail', This.workDirectory '\assets\svsw3mini.jpg'
         )
     )
+}
+
+Class Language extends Base {
+
 }
