@@ -145,14 +145,12 @@ fixapp.groupCheckBoxs([
     noFow
 ])
 
-; Water animation
+; New castle foundation
 nCastle := fixGui.addCheckBoxEx(, 'New Castle Mod + Fundation Mod', newCastle)
 nCastle.Checked := RegRead(fixRegKey, 'New Castle', 0) = 1 ? 1 : 0
 newCastle(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'New Castle')
 }
-
-;Msgbox noFow.HasProp('group')
 
 ; 12
 ;newCastl := fixGui.addCheckBoxEx(, '(Fix v7 required) - New castle', newCastle)
