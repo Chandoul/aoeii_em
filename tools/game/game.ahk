@@ -143,6 +143,9 @@ writeNewLocation(Location) {
 }
 
 selectDirectoryGR(Ctrl, Info) {
+    If !FileExist(gameRangerSetting) {
+        Return
+    }
     Ctrl.Enabled := False
     Text := binGrabText(gameRangerSetting)
     Locations := textGrabPath(Text, ['empires2.exe', 'age2_x1.exe', 'age2_x2.exe'])
