@@ -214,6 +214,4 @@ patchEnable(Ctrl, Info) {
     verapp.writeConfiguration('autoFix', Ctrl.cbValue)
 }
 
-ddrEnable(Ctrl, Info) {
-    verapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
-}
+ddrEnable(Ctrl, Info) => verapp.writeConfiguration('ddrAuto', Ctrl.cbValue)

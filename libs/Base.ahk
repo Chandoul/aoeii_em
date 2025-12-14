@@ -626,16 +626,8 @@ Class GuiEx extends Gui {
         HotIfWinActive
     }
     showEx(options := '', backImage := 0, app := 0) {
-        If app && app.HasMethod('ensurePackage') {
-            This.SetFont('s8')
-            updatePackage := This.addButtonEx('xm w200', 'Update Package', , update)
-            update(*) {
-                app.ensurePackage(1)
-                Reload()
-            }
-        }
         If This.footer
-            This.addAOEFooter()
+            This.addAOEFooter(app)
         This.Show(options)
 
         ; Handling the background image (repeat x, y)
@@ -683,6 +675,8 @@ Class GuiEx extends Gui {
                 This.GetPos(, , &W, &H)
                 This.split.Move(, , W - 60)
                 This.ft.Move(, , W - 188)
+                This.updatePackage.Move(, , W - 55)
+                This.updatePackage.Update()
             }
         }
     }
@@ -837,7 +831,7 @@ Class GuiEx extends Gui {
     /**
      * Add a footer that displays some (important) info
      */
-    addAOEFooter() {
+    addAOEFooter(app := 0) {
         This.SetFont('s10')
         This.split := This.addText('xm w420 0x10')
         This.MarginY := 0
@@ -849,6 +843,14 @@ Class GuiEx extends Gui {
             This.ft := This.AddEdit('BackgroundBlack yp+10 x+20 cWhite w280 -E0x200 h20 Center ReadOnly', Base().gameLocation)
         Else This.ft := This.AddEdit('Backgroundff0000 yp+10 x+20 cWhite w280 -E0x200 h20 Center ReadOnly', Base().gameLocation)
         This.MarginY := 20
+        If app && app.HasMethod('ensurePackage') {
+            This.SetFont('s8')
+            This.updatePackage := This.addButtonEx('xm w280', 'Update Package', , update)
+            update(*) {
+                app.ensurePackage(1)
+                Reload()
+            }
+        }
     }
 }
 
