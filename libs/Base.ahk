@@ -675,8 +675,10 @@ Class GuiEx extends Gui {
                 This.GetPos(, , &W, &H)
                 This.split.Move(, , W - 60)
                 This.ft.Move(, , W - 188)
-                This.updatePackage.Move(, , W - 55)
-                This.updatePackage.Update()
+                If This.HasProp('updatePackage') {
+                    This.updatePackage.Move(, , W - 55)
+                    This.updatePackage.Update()
+                }
             }
         }
     }
