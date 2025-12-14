@@ -32,7 +32,7 @@ For each, fix in fixs {
 if !fixapp.configurationExists() {
     fixapp.writeConfiguration('ddrAuto', 1)
 }
-ddrAuto := fixGui.addCheckBoxEx(, 'Auto enable direct draw fix', ddrEnable)
+ddrAuto := fixGui.addCheckBoxEx(, 'Auto enable direct draw fix', fixDDREnable)
 ddrAuto.Checked := fixapp.readConfiguration('ddrAuto')
 
 fixGui.SetFont('s9')
@@ -169,7 +169,7 @@ fixapp.isCommandLineCall({
 fixGui.showEx(, 1, fixapp)
 analyzeFix()
 
-ddrEnable(Ctrl, Info) => fixapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
+fixDDREnable(Ctrl, Info) => fixapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
 
 /**
  * Apply the fix

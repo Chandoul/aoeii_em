@@ -67,7 +67,7 @@ autoFix.Checked := verapp.readConfiguration('autoFix')
 if !verapp.configurationExists() {
     verapp.writeConfiguration('ddrAuto', 1)
 }
-ddrAuto := versionGui.addCheckBoxEx(, 'Auto enable direct draw fix', ddrEnable)
+ddrAuto := versionGui.addCheckBoxEx(, 'Auto enable direct draw fix', verDDREnable)
 ddrAuto.Checked := verapp.readConfiguration('ddrAuto')
 
 versionGui.MarginY := 20
@@ -214,4 +214,4 @@ patchEnable(Ctrl, Info) {
     verapp.writeConfiguration('autoFix', Ctrl.cbValue)
 }
 
-ddrEnable(Ctrl, Info) => verapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
+verDDREnable(Ctrl, Info) => verapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
