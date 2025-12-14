@@ -29,6 +29,12 @@ For each, fix in fixs {
     fixOptions['FIXHandle'][fix] := fixName
 }
 
+if !fixapp.configurationExists() {
+    fixapp.writeConfiguration('ddrAuto', 1)
+}
+ddrAuto := fixGui.addCheckBoxEx(, 'Auto enable direct draw fix', ddrEnable)
+ddrAuto.Checked := fixapp.readConfiguration('ddrAuto')
+
 fixGui.SetFont('s9')
 fixGui.AddText('xm+250 ym+5 BackgroundTrans', 'Options to enable along with the widescreen patch:').SetFont('Bold')
 fixGui.MarginY := 10
@@ -152,15 +158,6 @@ newCastle(Ctrl, Info) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'New Castle')
 }
 
-; 12
-;newCastl := fixGui.addCheckBoxEx(, '(Fix v7 required) - New castle', newCastle)
-;If RegRead(fixRegKey, 'New Castle', 0) = 1 {
-;    newCastl.Checked := 1
-;}
-;newCastle(Ctrl, Info) {
-;    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'New Castle')
-;}
-
 fixGui.MarginY := 20
 
 fixapp.isGameFolderSelected(fixGui)
@@ -171,6 +168,8 @@ fixapp.isCommandLineCall({
 
 fixGui.showEx(, 1, fixapp)
 analyzeFix()
+
+ddrEnable(Ctrl, Info) => fixapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
 
 /**
  * Apply the fix
@@ -225,6 +224,9 @@ applyFix(Ctrl, Info) {
         ;}
         fixCleanUp()
         fixapp.applyUserFix(fixapp.fixLocation '\' fixVersion)
+        If ddrAuto.cbValue {
+            fixapp.applyDDrawFix()
+        }
     } Catch {
         If !LockCheck(gameLocation) {
             fixapp.enableOptions(fixOptions['Fixs'])
@@ -232,6 +234,9 @@ applyFix(Ctrl, Info) {
         }
         fixCleanUp()
         fixapp.applyUserFix(fixapp.fixLocation '\' fixVersion)
+        If ddrAuto.cbValue {
+            fixapp.applyDDrawFix()
+        }
     }
     analyzeFix()
     SoundPlay(fixapp.workDirectory '\assets\mp3\30 Wololo.mp3')
