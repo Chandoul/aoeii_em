@@ -4,8 +4,9 @@
 #Include ..\libs\Base.ahk
 
 appver := Base().version
+rc := RunWait(A_ComSpec ' /c iscc aoeii_em_setup.iss /DAPP_VERSION=' appver)
 
-If !RunWait('iscc aoeii_em_setup.iss /DAPP_VERSION=' appver) {
+If !rc {
     Size := FileGetSize('aoeii_em_setup_latest.exe')
     Size /= 1024
     Size /= 1024

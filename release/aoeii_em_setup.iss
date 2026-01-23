@@ -112,11 +112,31 @@ Name: "Tamil"; MessagesFile: "compiler:Languages\Tamil.isl"
 Name: "Ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
 [code]
-// Some color update
+function GetTickCount(): Cardinal; external 'GetTickCount@kernel32.dll';
+function GetTickCount64(): Int64; external 'GetTickCount64@kernel32.dll stdcall';
+
+function WaitForWindow(const WindowTitle: string; TimeoutMS: Integer): Boolean;
+var
+    StartTick: DWORD;
+begin
+    Result := False;
+    StartTick := GetTickCount();
+
+    while GetTickCount - StartTick < DWORD(TimeoutMS) do
+    begin
+        if FindWindowByWindowName(WindowTitle) <> 0 then
+        begin
+            Result := True;
+            Exit;
+        end;
+        Sleep(200);
+    end;
+end;
+
 procedure InitializeWizard();
 begin
-  WizardForm.MainPanel.Color := $71A6CB;
-  WizardForm.Color := $97DAF4;
+    WizardForm.MainPanel.Color := $71A6CB;
+    WizardForm.Color := $97DAF4;
 end;
 
 function IsAppInstalled(): Boolean;
@@ -147,7 +167,7 @@ begin
         begin
             ExtractTemporaryFile(ExpandConstant('{#SETUP_AHK_NAME}'));
             ExecAsOriginalUser(ExpandConstant('{tmp}\{#SETUP_AHK_NAME}'), '', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);
-            if not IsAppInstalled()
+            if not WaitForWindow('AutoHotkey Dash', 10000) and not IsAppInstalled()
             then begin
                 if IDYES = MsgBox('Unabled to find AutoHotkey on your system!, do you wish to continue anyway?', mbError, MB_YESNO)
                 then Result := True
@@ -158,3 +178,7 @@ begin
     end 
     else Result := True;
 end;
+
+// AutoHotkey Dash
+// ahk_class AutoHotkeyGUI
+// ahk_exe AutoHotkeyUX.exe
