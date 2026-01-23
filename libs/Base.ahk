@@ -245,15 +245,17 @@ Class Base {
             infoGui.ShowEx(, 1)
         }
 
-        if !progressText.Visible {
-            progressText.Visible := 1
-            progressBar.Visible := 1
+        If !fileSize {
+            Try {
+                fileSize := This.fileSizeLink(link)
+                fileSize /= 1024
+                fileSize /= 1024
+            }
         }
 
-        If !fileSize {
-            fileSize := This.fileSizeLink(link)
-            fileSize /= 1024
-            fileSize /= 1024
+        if fileSize && !progressText.Visible {
+            progressText.Visible := 1
+            progressBar.Visible := 1
         }
 
         SplitPath(file, &OutFileName)
@@ -277,6 +279,8 @@ Class Base {
                     if progressBar {
                         progressBar.Value := progress
                     }
+                } Else if progressText {
+                    progressText.Text := 'Downloading "' OutFileName '" [ ' currentSize ' MB ]...'
                 }
             }
         }
@@ -522,12 +526,17 @@ Class Base {
     }
 
     rawTextContent(link) {
-        whr := ComObject("WinHttp.WinHttpRequest.5.1")
-        whr.Open("GET", link, True)
-        whr.Send()
-        whr.WaitForResponse()
-        response := whr.ResponseText
-        whr := ''
+        Try {
+            whr := ComObject("WinHttp.WinHttpRequestt.5.1")
+            whr.Open("GET", link, True)
+            whr.Send()
+            whr.WaitForResponse()
+            response := whr.ResponseText
+            whr := ''
+        } Catch {
+            Download(link, A_Temp '\link.txt')
+            response := FileRead(A_Temp '\link.txt')
+        }
         Return response
     }
 
