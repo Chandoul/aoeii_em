@@ -527,7 +527,7 @@ Class Base {
 
     rawTextContent(link) {
         Try {
-            whr := ComObject("WinHttp.WinHttpRequestt.5.1")
+            whr := ComObject("WinHttp.WinHttpRequest.5.1")
             whr.Open("GET", link, True)
             whr.Send()
             whr.WaitForResponse()
