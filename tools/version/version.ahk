@@ -70,6 +70,9 @@ if !verapp.configurationExists() {
 ddrAuto := versionGui.addCheckBoxEx(, 'Auto enable direct draw fix', verDDREnable)
 ddrAuto.Checked := verapp.readConfiguration('ddrAuto')
 
+center := versionGui.addCheckBoxEx(, 'Center the game window', verCenterGameWindow)
+center.Checked := fixapp.readConfiguration('center')
+
 versionGui.MarginY := 20
 
 verapp.isGameFolderSelected(versionGui)
@@ -131,7 +134,7 @@ applyVersion(ctrl, info) {
         If autoFix.cbValue && fixChoice.Text != ''
             Try RunWait(fixapp.tools['02_fix']['file'] ' "' fixChoice.Text '"')
         If ddrAuto.cbValue {
-            verapp.applyDDrawFix()
+            verapp.applyDDrawFix(, center.cbValue ? 1 : 0)
         }
         verapp.reviewWindowModeCompatibility()
     } Catch {
@@ -144,7 +147,7 @@ applyVersion(ctrl, info) {
         If autoFix.cbValue && fixChoice.Text != ''
             Try RunWait(fixapp.tools['02_fix']['file'] ' "' fixChoice.Text '"')
         If ddrAuto.cbValue {
-            verapp.applyDDrawFix()
+            verapp.applyDDrawFix(, center.cbValue ? 1 : 0)
         }
         verapp.reviewWindowModeCompatibility()
     }
@@ -215,3 +218,4 @@ patchEnable(Ctrl, Info) {
 }
 
 verDDREnable(Ctrl, Info) => verapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
+verCenterGameWindow(Ctrl, Info) => fixapp.writeConfiguration('center', Ctrl.cbValue)

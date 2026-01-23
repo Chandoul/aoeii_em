@@ -383,11 +383,16 @@ Class Base {
         locations := [
             This.gameLocation '\',
             This.gameLocation '\age2_x1\'
-        ]
+        ], centerWindow := 0
     ) {
         For location in locations {
-            If DirExist(location)
+            If DirExist(location) {
                 DirCopy(This.ddrawLocation, location, 1)
+                If centerWindow {
+                    IniWrite(-32000, location '\ddraw.ini', 'ddraw', 'posX')
+                    IniWrite(-32000, location '\ddraw.ini', 'ddraw', 'posY')
+                }
+            }
         }
         This.reviewWindowModeCompatibility()
         This.compatibilityClear(, This.gameLocation '\empires2.exe')

@@ -35,6 +35,9 @@ if !fixapp.configurationExists() {
 ddrAuto := fixGui.addCheckBoxEx(, 'Auto enable direct draw fix', fixDDREnable)
 ddrAuto.Checked := fixapp.readConfiguration('ddrAuto')
 
+center := fixGui.addCheckBoxEx(, 'Center the game window', centerGameWindow)
+center.Checked := fixapp.readConfiguration('center')
+
 fixGui.SetFont('s9')
 fixGui.AddText('xm+250 ym+5 BackgroundTrans', 'Options to enable along with the widescreen patch:').SetFont('Bold')
 fixGui.MarginY := 10
@@ -170,6 +173,7 @@ fixGui.showEx(, 1, fixapp)
 analyzeFix()
 
 fixDDREnable(Ctrl, Info) => fixapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
+centerGameWindow(Ctrl, Info) => fixapp.writeConfiguration('center', Ctrl.cbValue)
 
 /**
  * Apply the fix
@@ -225,7 +229,7 @@ applyFix(Ctrl, Info) {
         fixCleanUp()
         fixapp.applyUserFix(fixapp.fixLocation '\' fixVersion)
         If ddrAuto.cbValue {
-            fixapp.applyDDrawFix()
+            fixapp.applyDDrawFix(, center.cbValue ? 1 : 0)
         }
     } Catch {
         If !LockCheck(gameLocation) {
@@ -235,7 +239,7 @@ applyFix(Ctrl, Info) {
         fixCleanUp()
         fixapp.applyUserFix(fixapp.fixLocation '\' fixVersion)
         If ddrAuto.cbValue {
-            fixapp.applyDDrawFix()
+            fixapp.applyDDrawFix(, center.cbValue ? 1 : 0)
         }
     }
     analyzeFix()
