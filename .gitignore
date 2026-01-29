@@ -12,6 +12,7 @@ tools/vm/*
 !tools/ahk/ahk.ahk
 !tools/dm/datamods.ahk
 !tools/fix/fix.ahk
+!tools/fix/features.txt
 !tools/game/game.ahk
 !tools/game/uninstallgame.ahk
 !tools/lng/language.ahk

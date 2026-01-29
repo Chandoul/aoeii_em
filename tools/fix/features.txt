@@ -1,0 +1,42 @@
+The lastest updates can be found at: [ https://www.moddb.com/games/age-of-empires-2-the-conquerors/downloads/aoe2-patch-wide-screen-1010c2020a20b20c ]
+
+Aoe2 patch widescreen + many features -WideScreen.
+
+Aoe2 patch wide screen 1.0 1.0c 2.0 2.0a 2.0b 20c
+
+->  WideScreen
+->  Select all hotkeys
+->  Technology Hotkey
+->  Auto Farms
+->  Advanced interface (Villagers per ressources)
+->  Zoom (cnc-ddraw by FunkyFr3sh)
+->  Fog of war options
+->  Water animations
+->  windowed mod
+->  Tech tree logo
+->  Fix overlay lag
+->  Add Castle mod (2.0 1.0 1.0c Aofe)
+->  Add fundation mod (2.0 1.0 1.0c Aofe)
+->  Add mgxfix-0.4 biegleux
+->  Add watch record +/- changing player hotkey
+->  Fix F1 diasble overlay
+->  Always start MQ when game lunch
+->  Add select next Idle monk with faith
+->  Aok 2.0 start with showing score (F4) and time (F11)
+->  fix aok 2.0a watch record button + chat color
+->  Add language ini read instead of language dll
+->  Add taunt 43-105
+->  Fix franks castle player color instead blue
+->  Fix new fundation outline bug + castle (only for standart game, for scenario we still issue sprit address not the same ...)
+->  Add Record post game data Statistics for Aoc 1.0c , 1.0 and 2.0 like we have for 1.5 .
+->  Initialize the Chess Board foundation when progress is at 0% for 1.0c 1.0 and 2.0: (Work with new castle mod + new fundation only)
+->  Add Cba Overlay all credit to DrenX__ for Aoc 1.0c and 1.0
+->  Add Record Custom Zoom Screen Resolution :
+    HKEY_CURRENT_USER\SOFTWARE\Microsoft\Microsoft Games\Age of Empires II: The Conquerors Expansion\1.0
+    HKEY_CURRENT_USER\SOFTWARE\Microsoft\Microsoft Games\Age of Empires\2.0
+    "Zoom Screen Height" and "Zoom Screen Width" will be load when game will start (no need all time to unZoom) -> chose the installer option Record Zoom screen Res.
+    ...
+
+If you have issue to install + configure try with Age of Empires II Easy Manager All creadit to _Smile.
+Record Analyser you can uplaod yours record here: Aoe2recanalyst.byethost16.com
+Or use classic exe tool AoERecAnalyzer
