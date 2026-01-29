@@ -33,9 +33,8 @@ gameGui.SetFont('s9')
 
 desktopShortcuts := gameGui.AddCheckBoxEx('BackgroundTrans', 'Notify to add the game desktop shortcuts', gameShortcuts)
 
-progressText := gameGui.AddText('Center w410 Hidden BackgroundTrans')
-
-progressBar := gameGui.AddProgress('-Smooth wp Hidden')
+;progressText := gameGui.AddText('Center w410 Hidden BackgroundTrans')
+;progressBar := gameGui.AddProgress('-Smooth wp Hidden')
 
 gameGui.showEx(, 1)
 
@@ -125,9 +124,9 @@ setDirectoryGR(Ctrl, Info) {
     If !MacroSelect('empires2.exe', 12)
         || !MacroSelect('age2_x1\age2_x1.exe', 14)
         || !MacroSelect('age2_x1\age2_x2.exe', 11) {
-            MsgboxEx('No game was found!', 'Invalid', , 0x30)
-            Ctrl.Enabled := True
-            Return False
+        MsgboxEx('No game was found!', 'Invalid', , 0x30)
+        Ctrl.Enabled := True
+        Return False
     }
     MsgboxEx('Game selected successfully!`n`nNow GameRanger must restart to unlock the game excutables`nRestarting in 5 seconds...', 'Game select', , 0x40, 5)
     ProcessClose('GameRanger.exe')
@@ -219,10 +218,10 @@ downloadGame(ctrl, Info) {
 
             ctrl.Enabled := False
 
-            If !gameapp.downloadPackage(gameLink, gameapp.gamePackage, 269, progressText, progressBar, 1)
-                || !gameapp.extractPackage(gameapp.gamePackage, selectedDestination, , progressText) {
-                    ctrl.Enabled := True
-                    Return
+            If !gameapp.downloadPackage(gameLink, gameapp.gamePackage)
+                || !gameapp.extractPackage(gameapp.gamePackage, selectedDestination) {
+                ctrl.Enabled := True
+                Return
             }
 
             If !gameapp.isValidGameDirectory(selectedDestination) {
@@ -239,7 +238,6 @@ downloadGame(ctrl, Info) {
                 addGameShortcuts()
             }
             ctrl.Enabled := True
-            progressText.Visible := False
         }
 }
 

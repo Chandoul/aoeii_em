@@ -225,7 +225,7 @@ Class Base {
     downloadPackage(link, file, fileSize := 0, progressText := 0, progressBar := 0, update := 0) {
         Static infoGui := 0
         if !update && FileExist(file) {
-            Return
+            Return 1
         }
         If !This.getConnectedState() {
             MsgboxEx('Make sure you are connected to the internet!', "Can't download!", , 0x30).result
@@ -918,7 +918,7 @@ Class MsgBoxEx {
         ;msgbox Text
         If Text = '' {
             Switch Function {
-                Default: Text := 'Press OK to continue'
+Default:Text := 'Press OK to continue'
                 Case 2: Text := 'Press Abort to stop'
                 Case 3, 4: Text := 'Press Yes to agree'
                 Case 5, 6: Text := 'Press Cancel to stop'
@@ -1139,7 +1139,7 @@ Class Version extends Base {
             If versions['aok'] = '2.0a'
                 && FileExist(This.gameLocation '\on.ini')
                 && FileRead(This.gameLocation '\on.ini') = 'on' {
-                    versions['aok'] := '2.0b'
+                versions['aok'] := '2.0b'
             }
             empires2.Close()
         }
@@ -1161,7 +1161,7 @@ Class Version extends Base {
             If versions['aoc'] = '1.0c'
                 && FileExist(This.gameLocation '\age2_x1\on.ini')
                 && FileRead(This.gameLocation '\age2_x1\on.ini') = 'onon' {
-                    versions['aoc'] := '1.0e'
+                versions['aoc'] := '1.0e'
             }
 
             ; 1.1
