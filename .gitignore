@@ -18,4 +18,4 @@ tools/vm/*
 !tools/rec/closephp.ahk
 !tools/version/version.ahk
 !tools/vm/visualmods.ahk
-
+.vscode/
