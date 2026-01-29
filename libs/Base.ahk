@@ -642,7 +642,7 @@ Class GuiEx extends Gui {
     showEx(options := '', backImage := 0, app := 0) {
         If This.footer
             This.addAOEFooter(app)
-        This.Show(options)
+        This.Show(options ' AutoSize')
 
         ; Handling the background image (repeat x, y)
         If backImage {
@@ -894,7 +894,7 @@ Class MsgBoxEx {
      * @param {number} Icon 
      * @param {number} TimeOut 
      */
-    __New(Text := '', Title := A_ScriptName, Function := 0, Icon := 0, TimeOut := 0, minWidth := 400) {
+    __New(Text := '', Title := A_ScriptName, Function := 0, Icon := 0, TimeOut := 0, minWidth := 400, maxHeight := A_ScreenHeight - 250, descOption := '') {
 
         This.msgGui := GuiEx(, Title)
         This.msgGui.initiate(0, , 0)
@@ -915,53 +915,57 @@ Class MsgBoxEx {
                 This.hIcon := This.msgGui.AddPicture('xm w48 h48 BackgroundTrans', This.infoIcon)
                 SoundPlay(This.infoSound)
         }
-        ;msgbox Text
         If Text = '' {
             Switch Function {
-Default:Text := 'Press OK to continue'
                 Case 2: Text := 'Press Abort to stop'
                 Case 3, 4: Text := 'Press Yes to agree'
                 Case 5, 6: Text := 'Press Cancel to stop'
+                Default: Text := 'Press OK to continue'
             }
         }
 
-        This.hText := This.msgGui.AddEdit('xm Center ReadOnly BackgroundE1B15A -E0x200 -VScroll Border', '`n' Text '`n`n')
+        This.hText := This.msgGui.AddEdit('xm Center ReadOnly BackgroundE1B15A -E0x200 Border ' descOption, '`n' Text '`n`n')
+        This.hText.GetPos(&cX, &cY, &cWidth, &cHeight)
+
+        If cHeight > maxHeight {
+            This.hText.Move(, , , maxHeight)
+        }
 
         Switch Function {
             Case 0:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'OK', , takeAction)
+                This.msgGui.addButtonEx('xm y+20 w' This.btnWidth, 'OK', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 1:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'OK', , takeAction)
+                This.msgGui.addButtonEx('xm y+20 w' This.btnWidth, 'OK', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 2:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Abort', , takeAction)
+                This.msgGui.addButtonEx('xm y+20 w' This.btnWidth, 'Abort', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Retry', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Ignore', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 3:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Yes', , takeAction)
+                This.msgGui.addButtonEx('xm y+20 w' This.btnWidth, 'Yes', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'No', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 4:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Yes', , takeAction)
+                This.msgGui.addButtonEx('xm y+20 w' This.btnWidth, 'Yes', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'No', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 5:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Retry', , takeAction)
+                This.msgGui.addButtonEx('xm y+20 w' This.btnWidth, 'Retry', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Cancel', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
             Case 6:
-                This.msgGui.addButtonEx('xm w' This.btnWidth, 'Cancel', , takeAction)
+                This.msgGui.addButtonEx('xm y+20 w' This.btnWidth, 'Cancel', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Try Again', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Continue', , takeAction)
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
         }
 
+        arrangeControls()
         This.msgGui.showEx(, 1)
-        centerControls()
         This.result := ''
 
         If TimeOut {
@@ -994,12 +998,14 @@ Default:Text := 'Press OK to continue'
                 This.msgGui.Destroy()
         }
 
-        centerControls() {
+        arrangeControls() {
+            This.msgGui.Show('AutoSize')
             This.msgGui.GetClientPos(&X, &Y, &Width, &Height)
             If This.hIcon {
                 This.hIcon.GetPos(&cX, &cY, &cWidth, &cHeight)
                 This.hIcon.Move((Width - cWidth) // 2)
             }
+
             This.hText.GetPos(&cX, &cY, &cWidth, &cHeight)
             cWidth := cWidth > minWidth ? cWidth : minWidth
             This.hText.Move((Width - cWidth) // 2, , cWidth)
@@ -1013,7 +1019,7 @@ Default:Text := 'Press OK to continue'
             X := buttons.Length * This.btnWidth + (buttons.Length - 1) * This.msgGui.MarginX
             X := (Width - X) // 2
             For btn in buttons {
-                btn.Move(X + (A_Index - 1) * (This.msgGui.MarginX + This.btnWidth))
+                btn.Move(X + (A_Index - 1) * (This.msgGui.MarginX + This.btnWidth), cY + cHeight + 20)
                 btn.Redraw()
             }
         }
