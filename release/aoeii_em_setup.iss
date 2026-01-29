@@ -47,6 +47,7 @@ Source: "..\tools\ahk\default.json"; DestDir: "{app}\tools\ahk"; Flags: ignoreve
 Source: "..\tools\dm\datamods.ahk"; DestDir: "{app}\tools\dm"; Flags: ignoreversion
 // Fixs
 Source: "..\tools\fix\fix.ahk"; DestDir: "{app}\tools\fix"; Flags: ignoreversion 
+Source: "..\tools\fix\features.txt"; DestDir: "{app}\tools\fix"; Flags: ignoreversion 
 // game
 Source: "..\tools\game\game.ahk"; DestDir: "{app}\tools\game"; Flags: ignoreversion
 Source: "..\tools\game\uninstallgame.ahk"; DestDir: "{app}\tools\game"; Flags: ignoreversion
