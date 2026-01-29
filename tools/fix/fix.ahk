@@ -23,7 +23,7 @@ fixOptions := Map(
 fixGui.AddText('xm w200 Center h25 BackgroundTrans', 'Select one of the fixes below').SetFont('Bold')
 fixGui.SetFont('s9')
 For each, fix in fixs {
-    fixName := fixGui.addButtonEx('w200', fix, Button().checkedDisabled)
+    fixName := fixGui.addButtonEx((!Mod(each, 6) ? 'ym+45 ' : '') 'w200', fix, Button().checkedDisabled)
     fixName.OnEvent('Click', applyFix)
     fixOptions['Fixs'].Push(fixName)
     fixOptions['FIXHandle'][fix] := fixName
@@ -32,14 +32,14 @@ For each, fix in fixs {
 if !fixapp.configurationExists() {
     fixapp.writeConfiguration('ddrAuto', 1)
 }
-ddrAuto := fixGui.addCheckBoxEx(, 'Auto enable direct draw fix', fixDDREnable)
+ddrAuto := fixGui.addCheckBoxEx('xm', 'Auto enable direct draw fix', fixDDREnable)
 ddrAuto.Checked := fixapp.readConfiguration('ddrAuto')
 
 center := fixGui.addCheckBoxEx(, 'Center the game window', centerGameWindow)
 center.Checked := fixapp.readConfiguration('center')
 
 fixGui.SetFont('s9')
-fixGui.AddText('xm+250 ym+5 BackgroundTrans', 'Options to enable along with the widescreen patch:').SetFont('Bold')
+fixGui.AddText('xm+450 ym+5 BackgroundTrans', 'Options to enable along with the widescreen patch:').SetFont('Bold')
 fixGui.MarginY := 10
 
 ; Water animation
