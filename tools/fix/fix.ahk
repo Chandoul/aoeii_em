@@ -4,6 +4,8 @@
 #Include ..\..\libs\Base.ahk
 
 fixapp := FixPatch()
+fixapp.__Startup()
+
 fixapp.ensurePackage()
 
 fixGui := GuiEx(, fixapp.name)

@@ -4,6 +4,8 @@
 #Include ..\..\libs\Base.ahk
 
 dmapp := DataMod()
+dmapp.__Startup()
+
 verapp := Version()
 
 gameLocation := dmapp.gameLocation

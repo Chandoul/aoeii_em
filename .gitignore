@@ -17,6 +17,7 @@ tools/vm/*
 !tools/game/uninstallgame.ahk
 !tools/lng/language.ahk
 !tools/rec/closephp.ahk
+!tools/rec/recanalyst.ahk
 !tools/version/version.ahk
 !tools/vm/visualmods.ahk
 .vscode/

@@ -5,6 +5,8 @@
 #Include ..\..\libs\LockCheck.ahk
 
 verapp := Version()
+verapp.__Startup()
+
 verapp.ensurePackage()
 
 fixapp := FixPatch()

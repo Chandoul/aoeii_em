@@ -4,6 +4,8 @@
 #Include ..\..\libs\Base.ahk
 
 vmapp := VisualMod()
+vmapp.__Startup()
+
 vmapp.ensurePackage()
 
 gameLocation := vmapp.gameLocation

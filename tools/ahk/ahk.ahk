@@ -5,6 +5,7 @@
 #Include ..\..\libs\JSON.ahk
 
 ahkapp := AHK()
+ahkapp.__Startup()
 
 ahkGui := GuiEx(, ahkapp.name)
 ahkGui.initiate()

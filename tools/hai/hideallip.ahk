@@ -4,6 +4,8 @@
 #Include ..\..\libs\Base.ahk
 
 haiapp := Base()
+haiapp.__Startup()
+
 osVers := Map(
     '13_WIN95', { version: '4.00', title: 'Windows 95' },
     '12_WINNT4SP5', { version: '4.0', title: 'Windows NT4' },

@@ -4,6 +4,7 @@
 #Include ..\..\Libs\Base.ahk
 
 gameapp := Game()
+gameapp.__Startup()
 
 gameLocation := gameapp.gameLocation
 gameLocationHistory := gameapp.gameLocationHistory

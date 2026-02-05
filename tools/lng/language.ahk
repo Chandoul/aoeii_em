@@ -4,6 +4,8 @@
 #Include ..\..\libs\Base.ahk
 
 lngapp := Language()
+lngapp.__Startup()
+
 lngapp.ensurePackage()
 
 gameLocation := lngapp.gameLocation
