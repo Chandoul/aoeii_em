@@ -177,8 +177,14 @@ fixapp.isCommandLineCall({
 fixGui.showEx(, 1, fixapp)
 analyzeFix()
 
-fixDDREnable(Ctrl, Info) => fixapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
-centerGameWindow(Ctrl, Info) => fixapp.writeConfiguration('center', Ctrl.cbValue)
+fixDDREnable(Ctrl, Info) {
+    fixapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
+    fixapp.applyDDrawFix(, Ctrl.cbValue ? 1 : 0)
+}
+centerGameWindow(Ctrl, Info) {
+    fixapp.writeConfiguration('center', Ctrl.cbValue)
+    fixapp.applyDDrawFix(, Ctrl.cbValue ? 1 : 0)
+}
 
 /**
  * Apply the fix
