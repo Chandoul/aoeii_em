@@ -6,7 +6,7 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '5.3'
+    version => '5.4'
     author => 'Smile'
     license => 'MIT'
     workDirectory => This.workDir()
@@ -642,7 +642,7 @@ Class GuiEx extends Gui {
     showEx(options := '', backImage := 0, app := 0) {
         If This.footer
             This.addAOEFooter(app)
-        This.Show(options ' AutoSize')
+        This.Show(options)
 
         ; Handling the background image (repeat x, y)
         If backImage {
@@ -894,7 +894,7 @@ Class MsgBoxEx {
      * @param {number} Icon 
      * @param {number} TimeOut 
      */
-    __New(Text := '', Title := A_ScriptName, Function := 0, Icon := 0, TimeOut := 0, minWidth := 400, maxHeight := A_ScreenHeight - 250, descOption := '') {
+    __New(Text := '', Title := A_ScriptName, Function := 0, Icon := 0, TimeOut := 0, minWidth := 400) {
 
         This.msgGui := GuiEx(, Title)
         This.msgGui.initiate(0, , 0)
@@ -924,12 +924,7 @@ Class MsgBoxEx {
             }
         }
 
-        This.hText := This.msgGui.AddEdit('xm Center ReadOnly BackgroundE1B15A -E0x200 Border ' descOption, '`n' Text '`n`n')
-        This.hText.GetPos(&cX, &cY, &cWidth, &cHeight)
-
-        If cHeight > maxHeight {
-            This.hText.Move(, , , maxHeight)
-        }
+        This.hText := This.msgGui.AddEdit('xm Center ReadOnly BackgroundE1B15A -E0x200 Border', '`n' Text '`n')
 
         Switch Function {
             Case 0:
@@ -964,9 +959,9 @@ Class MsgBoxEx {
                 This.msgGui.addButtonEx('yp w' This.btnWidth, 'Copy Message', , takeAction).Focus()
         }
 
-        arrangeControls()
         This.msgGui.showEx(, 1)
         This.result := ''
+        arrangeControls()
 
         If TimeOut {
             This.hText.Value := '`n' text '`nQuitting in ' (TimeOut) ' second' ((TimeOut > 1) ? 's' : '')
@@ -999,7 +994,6 @@ Class MsgBoxEx {
         }
 
         arrangeControls() {
-            This.msgGui.Show('AutoSize')
             This.msgGui.GetClientPos(&X, &Y, &Width, &Height)
             If This.hIcon {
                 This.hIcon.GetPos(&cX, &cY, &cWidth, &cHeight)

@@ -40,8 +40,8 @@ ddrAuto.Checked := fixapp.readConfiguration('ddrAuto')
 center := fixGui.addCheckBoxEx(, 'Center the game window', centerGameWindow)
 center.Checked := fixapp.readConfiguration('center')
 
-features := fixGui.addButtonEx('xm w200', 'Features list', , showFeatures)
-showFeatures(*) => MsgBoxEx(FileRead('features.txt'), 'katsuie`'s patch features', , 64, , , 300, ' -Center')
+;features := fixGui.addButtonEx('xm w200', 'Features list', , showFeatures)
+;showFeatures(*) => MsgBoxEx(FileRead('features.txt'), 'katsuie`'s patch features', , 64)
 
 fixGui.SetFont('s9')
 fixGui.AddText('xm+450 ym+5 BackgroundTrans', 'Options to enable along with the widescreen patch:').SetFont('Bold')

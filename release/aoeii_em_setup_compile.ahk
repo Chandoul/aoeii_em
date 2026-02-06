@@ -3,7 +3,9 @@
 
 #Include ..\libs\Base.ahk
 
-appver := Base().version
+app := Base()
+
+appver := app.version
 rc := RunWait(A_ComSpec ' /c iscc aoeii_em_setup.iss /DAPP_VERSION=' appver)
 
 If !rc {
