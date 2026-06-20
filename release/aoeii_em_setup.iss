@@ -64,6 +64,7 @@ Source: "..\tools\vm\visualmods.ahk"; DestDir: "{app}\tools\vm"; Flags: ignoreve
 Source: "..\tools\hai\hideallip.ahk"; DestDir: "{app}\tools\hai"; Flags: ignoreversion
 // main
 Source: "..\tools\aoeii_em.ahk"; DestDir: "{app}\tools"; Flags: ignoreversion
+Source: "..\tools\gamefiles.json"; DestDir: "{app}\tools"; Flags: ignoreversion
 Source: "..\workDirectory"; DestDir: "{app}"; Flags: ignoreversion
 // other files
 Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
