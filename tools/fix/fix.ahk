@@ -282,6 +282,8 @@ analyzeFix(ignoreFiles := Map('wndmode.dll', 1, 'windmode.dll', 1)) {
     fixapp.enableOptions(fixOptions['Fixs'])
     matchFix := ''
     Loop Files, fixapp.fixLocation '\*', 'D' {
+        If InStr(A_LoopFileName, 'Fix')
+            Continue
         fix := A_LoopFileName
         If fixapp.folderMatch(A_LoopFileFullPath, gameLocation, ignoreFiles) {
             fixOptions['FIXHandle'][fix].Enabled := False
@@ -295,6 +297,8 @@ analyzeFix(ignoreFiles := Map('wndmode.dll', 1, 'windmode.dll', 1)) {
  */
 fixCleanUp() {
     Loop Files, fixapp.fixLocation '\*', 'D' {
+        If InStr(A_LoopFileName, 'Fix')
+            Continue
         Fix := A_LoopFileName
         Loop Files, fixapp.fixLocation '\' Fix '\*.*', 'R' {
             PathFile := StrReplace(A_LoopFileDir '\' A_LoopFileName, fixapp.fixLocation '\' Fix '\')
