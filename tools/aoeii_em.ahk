@@ -2,17 +2,20 @@
 #SingleInstance Force
 
 #Include ..\Libs\Base.ahk
+#Include ..\libs\JSON.ahk
 
 aoeiiapp := Base()
 aoeiiapp.__Startup()
+gameapp := Game()
 
 features := Map()
 
 aoeiiGui := GuiEx(, aoeiiapp.name)
+aoeiiGui.aoemain := true
 aoeiiGui.initiate()
 
 about := aoeiiGui.AddButtonEx(
-    'xm w100', 'About', , (*) => MsgBoxEx(
+    'xm ym+20 w100', 'About', , (*) => MsgBoxEx(
         'A homemade tool humbly made by Smile, enjoy!'
         . '`n> Description: ' aoeiiapp.description
         . '`n> Scripting Language: AutoHotkey'
@@ -21,23 +24,27 @@ about := aoeiiGui.AddButtonEx(
         . '`n> License: ' aoeiiapp.license
         , aoeiiapp.name, , 0x40
     ))
-gameLocation := aoeiiGui.AddButtonEx('x+20', '...', , (*) => Run(aoeiiapp.gameLocation))
+
 aoeiiGui.SetFont('Bold s10 Bold')
+
+gameLocation := aoeiiGui.AddText('x+20 yp Center ReadOnly -E0x200 BackgroundTrans h35', '...')
+gameLocation.OnEvent('Click', (*) => Run(aoeiiapp.gameLocation))
+
+aoeiiGui.SetFont('s10')
+
 reloadApp := aoeiiGui.AddButtonEx('yp w100', 'Reload', , (*) => Reload())
 
 aoeiiGui.SetFont('Bold s18')
 title := aoeiiGui.AddText('xm c522800 Center BackgroundTrans y70', aoeiiapp.name ' v' aoeiiapp.version)
 
 aoeiiGui.SetFont('Bold s8')
-appUpdate := aoeiiGui.addButtonEx('x+5', 'Check for updates', , updateCheck)
+perform := aoeiiGui.addButtonEx('xm y+10', 'Game Repair', , performGameAnalyze)
+appUpdate := aoeiiGui.addButtonEx('x+5 w70', 'Update?', , updateCheck)
 
-gamepicaok := aoeiiGui.AddPictureEx('xm+90 y+50', 'aoklogo.png')
+gamepicaok := aoeiiGui.AddPictureEx('xm+90 y+5', 'aoklogo.png')
 gamepicaoc := aoeiiGui.AddPictureEx('x+20', 'aoclogo.png')
 gamepichd := aoeiiGui.AddPictureEx('x+20', 'hdlogo.png')
 ; gamepicde := aoeiiGui.AddPictureEx('x+20', 'delogo.png')
-
-aoeiiGui.SetFont('Bold s8')
-perform := aoeiiGui.addButtonEx('xm w200 y+10', 'Game Status Check', , performGameAnalyze)
 
 aoeiiGui.SetFont('Bold s10')
 
@@ -53,7 +60,7 @@ For key, tool in aoeiiapp.tools {
 }
 aoeiiGui.MarginY := 20
 
-launchSubApp(h, *) => Run(features[h].run, features[h].workdir)
+launchSubApp(h, *) => Run(Format('{}', features[h].run), features[h].workdir)
 
 aoeiiGui.ShowEx(, 1)
 
@@ -65,7 +72,9 @@ title.GetPos(&tX, &tY, &tWidth)
 title.Move((W - tWidth - 20) / 2)
 title.Redraw()
 title.GetPos(&tX, &tY, &tWidth)
-appUpdate.Move(tX + tWidth - 110, tY + 35)
+perform.Move(tX, tY + 35)
+appUpdate.Move(tX + tWidth - 70, tY + 35)
+appUpdate.Redraw()
 
 gamepicX := (W - 424 - 20) / 2
 gamepicaok.Move(gamepicX)
@@ -80,9 +89,8 @@ gamepichd.Redraw()
 gameLocation.Move(, , W - 56 - 240)
 gameLocation.GetPos(&X, &Y, &Width)
 reloadApp.Move(X + Width + 20, Y)
-perform.Move(X + ((Width - 200) / 2))
 
-gameLocation.TextEx := 'Selected Game: "' aoeiiapp.gameLocation '"'
+gameLocation.Text := 'The Selected Game @ "' aoeiiapp.gameLocation '"'
 
 ; Game folder check
 MatrixGreyScale := "0.299|0.299|0.299|0|0|0.587|0.587|0.587|0|0|0.114|0.114|0.114|0|0|0|0|0|1|0|0|0|0|0|1"
@@ -115,6 +123,7 @@ If !FileExist(aoeiiapp.gameLocation '\age2_x1\age2_x2.exe') {
     Gdip_DeleteGraphics(graphic)
     Gdip_DisposeImage(pBitmap)
 } Else gamepichd.OnEvent('click', (*) => Run(aoeiiapp.gameLocation '\age2_x1\age2_x2.exe', aoeiiapp.gameLocation))
+
 ; If !FileExist(aoeiiapp.gameLocation '\age2_x1\age2_x1.exe') {
 ;     pBitmap := Gdip_CreateBitmapFromFile(aoeiiapp.workDirectory '\assets\delogo.png')
 ;     graphic := Gdip_GraphicsFromImage(pBitmap)
@@ -129,19 +138,26 @@ If !FileExist(aoeiiapp.gameLocation '\age2_x1\age2_x2.exe') {
 updateCheck(*) {
     appUpdate.TextEx := 'Checking...'
     aoeiiapp.appUpdateCheck()
-    appUpdate.TextEx := 'Check for updates'
+    appUpdate.TextEx := 'Update?'
     MsgBoxEx('You are up to date!, no newer versions found.', 'Update Check', , 0x40)
 }
 
 performGameAnalyze(*) {
-    issueList := Map(
-        "exist", 0,
-        "01gameux", 0,
-        "02corrupteddll", 0,
-        "03age2_x1", 0,
-        "04multi", 0,
-        "05fix", 0
-    )
+    choice := MsgBoxEx(
+        Format(
+            'Check list:`n`n{}`n{}`n{}`n{}`n{}`n{}`n`n{}',
+            '1 - Delayed start (Windows Vista/7)',
+            '2 - Corrupted file',
+            '3 - The Conquerors Application location',
+            '4 - The Game Save Folder',
+            '5 - The Game Update',
+            '6 - The Game Corrupted Files',
+            'The app will try to fix these issues, do you wish to continue?'
+        ), 'Check list', 1, 0x40
+    ).result
+
+    If choice != 'OK'
+        return
 
     ; Gameux Win7/Vista auto fix
     GEs := [
@@ -152,33 +168,33 @@ performGameAnalyze(*) {
         Switch SubStr(A_OSVersion, 1, 3) {
             Case '6.0', '6.1':
                 If FileExist(GE) {
-                    issueList['exist'] := 1
-                    issueList['01gameux'] := 1
+                    RunWait(Format(A_ComSpec ' /c takeown /f {}', GE), , 'Hide')
+                    RunWait(Format(A_ComSpec ' /c cacls {} /E /P %username%:F', GE), , 'Hide')
+                    RunWait(Format(A_ComSpec ' /c ren {} gameux_renamed.dll', GE), , 'Hide')
                 }
         }
     }
 
-    ; Check for corrupted file
+    ; Check for a corrupted file
     md5 := '7c1ae22e8f9d385d51b4f2eadd2a6d76'
     dlltargets := [aoeiiapp.gameLocation '\dsound.dll', aoeiiapp.gameLocation '\age2_x1\dsound.dll']
     For target in dlltargets {
         if FileExist(target) && md5 = aoeiiapp.hashFile(, target) {
-            issueList['exist'] := 1
-            issueList['02corrupteddll'] := 1
+            FileDelete(target)
         }
     }
 
     ; Fix aoc wrong exe location
     aocexe := aoeiiapp.gameLocation '\age2_x1.exe'
     If FileExist(aocexe) {
-        issueList['exist'] := 1
-        issueList['03age2_x1'] := 1
+        if !DirExist(aoeiiapp.gameLocation '\Age2_x1')
+            DirCreate(aoeiiapp.gameLocation '\Age2_x1')
+        FileMove(aocexe, aoeiiapp.gameLocation '\Age2_x1\', 1)
     }
 
     ; Create Multi folder in SaveGame if not exist
     If !DirExist(aoeiiapp.gameLocation '\SaveGame\Multi') {
-        issueList['exist'] := 1
-        issueList['04multi'] := 1
+        DirCreate(aoeiiapp.gameLocation '\SaveGame\Multi')
     }
 
     ; Check if no fix exists
@@ -190,80 +206,26 @@ performGameAnalyze(*) {
         }
     }
     If fix = '' {
-        issueList['exist'] := 1
-        issueList['05fix'] := 1
-
+        RunWait(aoeiiapp.tools['02_fix']['run'] ' "Update v05"')
+        aoeiiapp.applyDDrawFix()
     }
 
-    ; Issues checkement
-    If issueList['exist'] {
-        issuesGui := GuiEx(, 'Issues Report')
-        issuesGui.initiate(0, , 0)
-        For issue, value in issueList {
-            if issue = 'exist'
-                Continue
-            p := issuesGui.addPictureEx('xm w24 h-1', (value ? 'error.png' : 'success.png'))
-            if value
-                issueList[issue] := p
-            Switch issue {
-                Case "01gameux": issuesGui.AddText('x+10 BackgroundTrans', 'Fix delayed start of the game (Windows Vista / Windows7).')
-                Case "02corrupteddll": issuesGui.AddText('x+10 BackgroundTrans', 'Unwanted/Corrupted file found in your game.')
-                Case "03age2_x1": issuesGui.AddText('x+10 BackgroundTrans', 'The Conquerors executable found at a wrong location.')
-                Case "04multi": issuesGui.AddText('x+10 BackgroundTrans', 'Fix no restore game found issue.')
-                Case "05fix": issuesGui.AddText('x+10 BackgroundTrans', 'Important game enhancement.')
-            }
+    ; Check for missing files
+    gameLink := 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/Age%20of%20Empires%20II.7z'
+    files := JSON.LoadFile('gamefiles.json')
+    
+    For file in files {
+        if !FileExist(aoeiiapp.gameLocation '\' file['path']) {
+            If !aoeiiapp.downloadPackage(gameLink, gameapp.gamePackage)
+                Return
+            RunWait(Format('"{}" x "{}" "{}" -o"{}"', aoeiiapp._7zrCsle, gameapp.gamePackage, file['path'], aoeiiapp.gameLocation))
         }
-        applyChanges := issuesGui.addButtonEx('xm w240', 'Apply Now!', , agreeToApplyFixs)
-        issuesGui.showEx(, 1)
-        issuesGui.GetPos(, , &W, &H)
-        applyChanges.Move(, , W - 55)
-        applyChanges.TextEx := applyChanges.Text
-    } Else MsgboxEx('All are set!, no issue found so far.', aoeiiapp.name, , 0x40)
-
-    agreeToApplyFixs(Ctrl, *) {
-        ; gameux
-        If issueList['01gameux'] {
-            For GE in GEs {
-                If FileExist(GE) {
-                    RunWait(A_ComSpec ' /c takeown /f ' A_WinDir '\System32\gameux.dll && cacls ' A_WinDir '\System32\gameux.dll /E /P %username%:F && ren ' A_WinDir '\System32\gameux.dll gameux_renamed.dll', , 'Hide')
-                }
-            }
-            issueList['01gameux'].ValueEx := 'success.png'
-        }
-        ; corruption
-        If issueList['02corrupteddll'] {
-            For target in dlltargets {
-                if FileExist(target) && md5 = aoeiiapp.hashFile(, target) {
-                    FileDelete(target)
-                }
-            }
-            issueList['02corrupteddll'].ValueEx := 'success.png'
-        }
-
-        ; age2_x1
-        If issueList['03age2_x1'] {
-            if !DirExist(aoeiiapp.gameLocation '\Age2_x1')
-                DirCreate(aoeiiapp.gameLocation '\Age2_x1')
-            If FileExist(aocexe)
-                FileMove(aocexe, aoeiiapp.gameLocation '\Age2_x1\', 1)
-            issueList['03age2_x1'].ValueEx := 'success.png'
-        }
-
-        ; restoring
-        If issueList['04multi'] {
-            DirCreate(aoeiiapp.gameLocation '\SaveGame\Multi')
-            issueList['04multi'].ValueEx := 'success.png'
-        }
-
-        ; fix
-        If issueList['05fix'] {
-            RunWait(aoeiiapp.tools['02_fix']['run'] ' "Fix v5"')
-            aoeiiapp.applyDDrawFix()
-            issueList['05fix'].ValueEx := 'success.png'
-        }
-        Ctrl.Enabled := False
-        MsgboxEx('All are set!, all the changed should be applied by now.', aoeiiapp.name, , 0x40)
     }
+
+    MsgBoxEx(
+        'Verification is done, you should be able to play your game normally by now!'
+        , aoeiiapp.name, , 0x40
+    )
 }
 
 ; Multiline chat send

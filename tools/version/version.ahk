@@ -18,7 +18,7 @@ gameLocation := verapp.gameLocation
 versionGui := GuiEx(, verapp.name)
 versionGui.initiate()
 
-versionGui.AddText('BackgroundTrans xm cRed w150 Center h30', 'The Age of Kings').SetFont('Bold s12')
+versionGui.AddText('BackgroundTrans xm ym+10 cRed w150 Center h30', 'The Age of Kings').SetFont('Bold s12')
 versionGui.AddPictureEx('xp+59 yp+30', 'aok.png', launchGame)
 versionGui.AddText('BackgroundTrans xp-59 yp+35 w1 h1')
 
@@ -36,7 +36,7 @@ For AOK in avVerions['aok'] {
     versions['Version'].Push(H)
 }
 
-versionGui.AddText('BackgroundTrans cBlue ym w150 Center h30', 'The Conquerors').SetFont('Bold s12')
+versionGui.AddText('BackgroundTrans cBlue ym+10 w150 Center h30', 'The Conquerors').SetFont('Bold s12')
 versionGui.AddPictureEx('xp+59 yp+30', 'aoc.png', launchGame)
 versionGui.AddText('BackgroundTrans xp-59 yp+35 w1 h1')
 
@@ -47,7 +47,7 @@ For AOC in avVerions['aoc'] {
     versions['Version'].Push(H)
 }
 
-versionGui.AddText('BackgroundTrans cGreen ym w150 Center h30', 'Forgotten Empires').SetFont('Bold s12')
+versionGui.AddText('BackgroundTrans cGreen ym+10 w150 Center h30', 'Forgotten Empires').SetFont('Bold s12')
 versionGui.AddPictureEx('xp+59 yp+30', 'fe.png', launchGame)
 versionGui.AddText('BackgroundTrans xp-59 yp+35 w1 h1')
 
@@ -58,22 +58,22 @@ For FE in avVerions['fe'] {
     versions['Version'].Push(H)
 }
 
-versionGui.SetFont('s9')
-versionGui.AddText('xm BackgroundTrans', 'Options to apply after each change:').SetFont('Bold')
-versionGui.MarginY := 10
-
-autoFix := versionGui.addCheckBoxEx(, 'Auto enable a fix:', patchEnable)
-fixChoice := versionGui.AddDropDownList('w200 Disabled Choose6', fixs)
-autoFix.Checked := verapp.readConfiguration('autoFix')
-
-if !verapp.configurationExists() {
-    verapp.writeConfiguration('ddrAuto', 1)
-}
-ddrAuto := versionGui.addCheckBoxEx(, 'Auto enable direct draw fix', verDDREnable)
-ddrAuto.Checked := verapp.readConfiguration('ddrAuto')
-
-center := versionGui.addCheckBoxEx(, 'Center the game window', verCenterGameWindow)
-center.Checked := fixapp.readConfiguration('center')
+;versionGui.SetFont('s9')
+;versionGui.AddText('xm BackgroundTrans', 'Options to apply after each change:').SetFont('Bold')
+;versionGui.MarginY := 10
+;
+;autoFix := versionGui.addCheckBoxEx(, 'Auto enable a fix:', patchEnable)
+;fixChoice := versionGui.AddDropDownList('w200 Disabled Choose6', fixs)
+;autoFix.Checked := verapp.readConfiguration('autoFix')
+;
+;if !verapp.configurationExists() {
+;    verapp.writeConfiguration('ddrAuto', 1)
+;}
+;ddrAuto := versionGui.addCheckBoxEx(, 'Auto enable direct draw fix', verDDREnable)
+;ddrAuto.Checked := verapp.readConfiguration('ddrAuto')
+;
+;center := versionGui.addCheckBoxEx(, 'Center the game window', verCenterGameWindow)
+;center.Checked := fixapp.readConfiguration('center')
 
 versionGui.MarginY := 20
 
@@ -133,11 +133,11 @@ applyVersion(ctrl, info) {
     Try {
         cleansUp(FGame)
         applyReqVersion(ctrl, FGame)
-        If autoFix.cbValue && fixChoice.Text != ''
-            Try RunWait(fixapp.tools['02_fix']['file'] ' "' fixChoice.Text '"')
-        If ddrAuto.cbValue {
-            verapp.applyDDrawFix(, center.cbValue ? 1 : 0)
-        }
+        ;If autoFix.cbValue && fixChoice.Text != ''
+        ;    Try RunWait(fixapp.tools['02_fix']['file'] ' "' fixChoice.Text '"')
+        ;If ddrAuto.cbValue {
+        ;    verapp.applyDDrawFix(, center.cbValue ? 1 : 0)
+        ;}
         verapp.reviewWindowModeCompatibility()
     } Catch {
         If !lockCheck(gameLocation) {
@@ -146,11 +146,11 @@ applyVersion(ctrl, info) {
         }
         cleansUp(FGame)
         applyReqVersion(ctrl, FGame)
-        If autoFix.cbValue && fixChoice.Text != ''
-            Try RunWait(fixapp.tools['02_fix']['file'] ' "' fixChoice.Text '"')
-        If ddrAuto.cbValue {
-            verapp.applyDDrawFix(, center.cbValue ? 1 : 0)
-        }
+        ;If autoFix.cbValue && fixChoice.Text != ''
+        ;    Try RunWait(fixapp.tools['02_fix']['file'] ' "' fixChoice.Text '"')
+        ;If ddrAuto.cbValue {
+        ;    verapp.applyDDrawFix(, center.cbValue ? 1 : 0)
+        ;}
         verapp.reviewWindowModeCompatibility()
     }
     analyzeVersion()
@@ -214,10 +214,10 @@ launchGame(Ctrl, Info) {
     }
 }
 
-patchEnable(Ctrl, Info) {
-    fixChoice.Enabled := Ctrl.cbValue
-    verapp.writeConfiguration('autoFix', Ctrl.cbValue)
-}
+;patchEnable(Ctrl, Info) {
+;    fixChoice.Enabled := Ctrl.cbValue
+;    verapp.writeConfiguration('autoFix', Ctrl.cbValue)
+;}
 
 verDDREnable(Ctrl, Info) => verapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
 verCenterGameWindow(Ctrl, Info) => fixapp.writeConfiguration('center', Ctrl.cbValue)

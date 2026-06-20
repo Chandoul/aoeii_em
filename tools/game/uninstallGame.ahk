@@ -15,7 +15,7 @@ uninstallGui := GuiEx(, gamapp.name)
 uninstallGui.initiate()
 
 unintall := uninstallGui.AddButtonEx(
-    'xm w300 h150',
+    'xm ym+20 w300 h150',
     'By clicking on this button you agree to delete your game forever'
     . '`n`nGame location:`n"' location '"'
     ,

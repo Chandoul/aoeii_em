@@ -16,7 +16,7 @@ gameLink := 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages
 gameGui := GuiEx(, gameapp.name)
 gameGui.initiate()
 
-select := gameGui.addButtonEx('xm w200', 'Select', , selectDirectory)
+select := gameGui.addButtonEx('xm ym+20 w200', 'Select', , selectDirectory)
 
 gameGui.addButtonEx('w200 yp', 'Open the selected', , (*) => DirExist(gameDirectory.Value) ? Run(gameDirectory.Value '\') : '')
 
@@ -38,6 +38,11 @@ desktopShortcuts := gameGui.AddCheckBoxEx('BackgroundTrans', 'Notify to add the 
 ;progressBar := gameGui.AddProgress('-Smooth wp Hidden')
 
 gameGui.showEx(, 1)
+
+try {
+    WinWaitClose(A_Args[1])
+    ExitApp()
+}
 
 userGameLocation := gameapp.gameLocation
 If !gameapp.isValidGameDirectory(userGameLocation) {

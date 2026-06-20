@@ -11,7 +11,7 @@ recapp.ensurePackage()
 recGui := GuiEx(, recapp.name)
 recGui.initiate()
 
-vr := recGui.addButtonEx('xm w450 Disabled', 'View Record Details', , viewRecordDetails)
+vr := recGui.addButtonEx('xm ym+20 w450 Disabled', 'View Record Details', , viewRecordDetails)
 
 recList := recGui.AddListView('xm wp r20 BackgroundE1B15A -E0x200', ['Record'])
 

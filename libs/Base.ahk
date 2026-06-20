@@ -6,7 +6,7 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '5.4'
+    version => '6.0'
     author => 'Smile'
     license => 'MIT'
     workDirectory => This.workDir()
@@ -75,13 +75,13 @@ Class Base {
             'workdir', This.workDirectory '\tools\ahk\',
             'pid', 0
         ),
-        '08_hai', Map(
-            'title', 'Hide ALL IP Reset',
-            'file', This.workDirectory '\tools\hai\hideallip.ahk',
-            'run', cmdJoin(A_AhkPath, This.workDirectory '\tools\hai\hideallip.ahk'),
-            'workdir', This.workDirectory '\tools\hai\',
-            'pid', 0
-        ),
+        ;'08_hai', Map(
+        ;    'title', 'Hide ALL IP Reset',
+        ;    'file', This.workDirectory '\tools\hai\hideallip.ahk',
+        ;    'run', cmdJoin(A_AhkPath, This.workDirectory '\tools\hai\hideallip.ahk'),
+        ;    'workdir', This.workDirectory '\tools\hai\',
+        ;    'pid', 0
+        ;),
     )
     ddrawLocation => This.workDirectory '\externals\cnc-ddraw.2'
     ddrawLink => 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/externals/cnc-ddraw.2.7z'
@@ -121,6 +121,11 @@ Class Base {
                 0,
                 0x10
             )
+            ExitApp()
+        }
+
+        If !(A_IsAdmin || RegExMatch(DllCall("GetCommandLine", "str"), " /restart(?!\S)")) {
+            Run '*RunAs "' A_AhkPath '" /restart "' A_ScriptFullPath '"'
             ExitApp()
         }
 
@@ -214,14 +219,6 @@ Class Base {
      */
     getConnectedState() => DllCall("Wininet.dll\InternetGetConnectedState", "Str", Flag := 0x40, "Int", 0)
 
-    /**
-     * Download a file with some progress info
-     * @param link 
-     * @param file 
-     * @param {number} fileSize 
-     * @param {number} progressText 
-     * @param {number} progressBar 
-     */
     downloadPackage(link, file, fileSize := 0, progressText := 0, progressBar := 0, update := 0) {
         Static infoGui := 0
         if !update && FileExist(file) {
@@ -235,7 +232,8 @@ Class Base {
         If !infoGui {
             infoGui := GuiEx(, 'Package Download')
             infoGui.initiate(, , 0)
-            infoText := infoGui.AddText('BackgroundTrans xm w300 Center', '...')
+            infoGui.OnEvent('Close', (*) => Reload())
+            infoText := infoGui.AddEdit('-E0x200 Border ReadOnly xm ym+20 w350 Center -VScroll BackgroundFFAD59', '...')
             InfoBar := infoGui.AddProgress('-smooth wp h18')
         }
 
@@ -287,44 +285,37 @@ Class Base {
         Return 1
     }
 
-    /**
-     * Extract a 7zip package into a specified location
-     * @param {string} package
-     * @param {string} destination
-     * @param {number} hide 
-     * @param {string} progressText 
-     * @param {string} overwrite 
-     * @returns {number} 
-     */
     extractPackage(
         package, destination, hide := 1, informMe := 1, overwrite := 'aoa',
         info := { text: '', subtext: '' }
     ) {
         Static infoGui := 0
+        If !infoGui {
+            infoGui := GuiEx(, 'Package Extraction')
+            infoGui.OnEvent('Close', terminate)
+            infoGui.initiate(, , 0)
+            SplitPath(package, &name)
+            size := FileGetSize(package, 'M')
+            infoText := infoGui.AddEdit('-E0x200 Border ReadOnly xm ym+20 w350 Center r3 -VScroll BackgroundFFAD59',
+                (!info.text) ? 'Please Wait...`nExtracting ' name '`n( ' size ' MB )' : info.text
+            )
+            InfoBar := infoGui.AddProgress('wp h18 0x00000008')
+            InfoBar.Focus()
+            DllCall("User32.dll\SendMessage", "Ptr", InfoBar.Hwnd, "Int", 0x00000400 + 10, "Ptr", 1, "Ptr", 50)
+        }
         RC := 0
         If hide && informMe {
-            info.text := (!info.text) ? 'Please Wait...`nThe archive is being extracted!' : info.text
-            info.subtext := (!info.subtext) ? '`nPackage: ' package '`nDestination: ' destination : info.subtext
-            If infoGui {
-                infoGui.Destroy()
-            }
-            infoGui := GuiEx('-SysMenu', This.name)
-            infoGui.initiate(0, , 0, 0)
-            infoGui.BackColor := '0xE1B15A'
-            infoGui.addGif('xm+90', 'bored.gif').Focus()
-            infoGui.AddEdit('-E0x200 xm w400 Center cRed Backgroundc0923b', info.text)
-            infoGui.SetFont('s9')
-            cap := infoGui.AddEdit('-E0x200 y+0 w400 Center Backgroundc0923b ', info.subtext)
-            infoGui.OnEvent('Close', terminate)
-            terminate(*) {
-                If ProcessExist(PID) {
-                    ProcessClose(PID)
-                }
-            }
-            infoGui.showEx()
+            infoGui.showEx(, 1)
         }
-        RC := RunWait('"' This._7zrCsle '" x "' package '" -o"' destination '" -' overwrite, , hide ? 'Hide' : '', &PID)
-        If RC {
+        closed := 0
+        terminate(*) {
+            If ProcessExist(PID)
+                ProcessClose(PID)
+            infoGui.Destroy()
+            infoGui := 0
+            closed := 1
+        }
+        If RC := RunWait(Format('"{}" x "{}" -o"{}" -{}', This._7zrCsle, package, destination, overwrite), , hide ? 'Hide' : '', &PID) {
             choice := MsgBoxEx('An error occured while trying to extract the package`nError code: ' RC '`nDo you wish to cancel now?', This.name, 0x5, 0x10).result
             If 'Cancel' = choice
                 ExitApp()
@@ -333,9 +324,11 @@ Class Base {
                 Reload()
             }
         }
-        infoGui.Destroy()
-        infoGui := 0
-        Return RC = 0
+        If infoGui {
+            infoGui.Destroy()
+            infoGui := 0
+        }
+        Return (RC || closed) = 0
     }
 
     /**
@@ -640,10 +633,10 @@ Class GuiEx extends Gui {
         HotIfWinActive
     }
     showEx(options := '', backImage := 0, app := 0) {
+        This.Opt('-Caption')
         If This.footer
             This.addAOEFooter(app)
         This.Show(options)
-
         ; Handling the background image (repeat x, y)
         If backImage {
             This.GetPos(&X, &Y, &bWidth, &bHeight)
@@ -677,6 +670,38 @@ Class GuiEx extends Gui {
                     x := (A_Index - 1) * iWidth
                     Gdip_DrawImage(G, fBitmap, x, y, iWidth, iHeight)
                 }
+            }
+
+            pBrush := Gdip_BrushCreateSolid(0xff480000)
+
+            Gdip_FillRectangle(G, pBrush, 0, 0, bWidth, 3)
+            Gdip_FillRectangle(G, pBrush, bWidth - 3, 0, 3, bHeight)
+            Gdip_FillRectangle(G, pBrush, 0, 0, 3, bHeight)
+            Gdip_FillRectangle(G, pBrush, 0, bHeight - 3, bWidth, 3)
+
+            pBrush2 := Gdip_CreateLineBrushFromRect(0, 0, bWidth, 25, 0xff804000, 0xffDB6D00, 0)
+            Gdip_FillRectangle(G, pBrush2, 3, 3, bWidth - 6, 25)
+
+            OnMessage(0x0201, WM_LBUTTONDOWN)
+            WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
+                X := lParam & 0xFFFF
+                Y := lParam >> 16
+                ;
+                if (X > 3 && X < bWidth - 6 && Y > 3 && Y < 28) {
+                    PostMessage(0xA1, 2, 0, , "ahk_id " . hwnd)
+                    return
+                }
+            }
+
+            This.SetFont('s10')
+            This.addButtonEx(Format('x{} y{} w20 h18', bWidth - 27, 7), 'X', , (*) => WinClose(This.hwnd))
+
+            If !This.HasProp('aoemain') && !This.HasProp('aoemsg')
+                This.addButtonEx(Format('x{} y{} w60 h18', bWidth - 90, 7), '◄ Back', , (*) => goMain())
+
+            goMain() {
+                Run(Base().workDirectory '\tools\aoeii_em.ahk')
+                WinClose(This.hwnd)
             }
 
             hBitmap := Gdip_CreateHBITMAPFromBitmap(bBitmap)
@@ -785,9 +810,9 @@ Class GuiEx extends Gui {
                 T.Opt('c4C4C4C')
             }
             T.Redraw()
-            If clickCallBack {
-                clickCallBack.Call(T, '')
-            }
+            ;If clickCallBack {
+            ;    clickCallBack.Call(T, '')
+            ;}
         }
 
         linkedCheck() {
@@ -897,22 +922,23 @@ Class MsgBoxEx {
     __New(Text := '', Title := A_ScriptName, Function := 0, Icon := 0, TimeOut := 0, minWidth := 400) {
 
         This.msgGui := GuiEx(, Title)
+        This.msgGui.aoemsg := true
         This.msgGui.initiate(0, , 0)
         This.msgGui.AddText('x0 y0 h1 BackgroundTrans w' minWidth)
         This.hIcon := 0
 
         Switch Icon {
             Case 16:
-                This.hIcon := This.msgGui.AddPicture('xm w48 h48 BackgroundTrans', This.errorIcon)
+                This.hIcon := This.msgGui.AddPicture('xm ym+20 w48 h48 BackgroundTrans', This.errorIcon)
                 SoundPlay(This.errorSound)
             Case 32:
-                This.hIcon := This.msgGui.AddPicture('xm w48 h48 BackgroundTrans', This.questionIcon)
+                This.hIcon := This.msgGui.AddPicture('xm ym+20 w48 h48 BackgroundTrans', This.questionIcon)
                 SoundPlay(This.questionSound)
             Case 48:
-                This.hIcon := This.msgGui.AddPicture('xm w48 h48 BackgroundTrans', This.exclamationIcon)
+                This.hIcon := This.msgGui.AddPicture('xm ym+20 w48 h48 BackgroundTrans', This.exclamationIcon)
                 SoundPlay(This.exclamationSound)
             Case 64:
-                This.hIcon := This.msgGui.AddPicture('xm w48 h48 BackgroundTrans', This.infoIcon)
+                This.hIcon := This.msgGui.AddPicture('xm ym+20 w48 h48 BackgroundTrans', This.infoIcon)
                 SoundPlay(This.infoSound)
         }
         If Text = '' {
@@ -1006,7 +1032,7 @@ Class MsgBoxEx {
 
             buttons := []
             For Obj in This.msgGui {
-                If !InStr(Type(Obj), 'Gui.Button')
+                If !InStr(Type(Obj), 'Gui.Button') || Obj.Text = 'X'
                     Continue
                 buttons.Push(Obj)
             }
@@ -1120,18 +1146,18 @@ Class Version extends Base {
             'aoc', '',
             'fe', ''
         )
-        lookFor := 'interfac.drs'
+        lookFor := 'gamedata.drs'
 
         If FileExist(This.gameLocation '\empires2.exe') {
             empires2 := FileOpen(This.gameLocation '\empires2.exe', 'r')
 
             ; 2.0
-            If This.readString(empires2, 2479120, 12) = lookFor {
+            If This.readString(empires2, 2479104, 12) = lookFor {
                 versions['aok'] := '2.0'
             }
 
             ; 2.0a
-            If This.readString(empires2, 2475120, 12) = lookFor {
+            If This.readString(empires2, 2475104, 12) = lookFor {
                 versions['aok'] := '2.0a'
             }
 
@@ -1139,7 +1165,7 @@ Class Version extends Base {
             If versions['aok'] = '2.0a'
                 && FileExist(This.gameLocation '\on.ini')
                 && FileRead(This.gameLocation '\on.ini') = 'on' {
-                versions['aok'] := '2.0b'
+                    versions['aok'] := '2.0b'
             }
             empires2.Close()
         }
@@ -1148,12 +1174,12 @@ Class Version extends Base {
             age2_x1 := FileOpen(This.gameLocation '\age2_x1\age2_x1.exe', 'r')
 
             ; 1.0
-            If This.readString(age2_x1, 2604688, 12) = lookFor {
+            If This.readString(age2_x1, 2604672, 12) = lookFor {
                 versions['aoc'] := '1.0'
             }
 
             ; 1.0c
-            If This.readString(age2_x1, 2551448, 12) = lookFor {
+            If This.readString(age2_x1, 2551432, 12) = lookFor {
                 versions['aoc'] := '1.0c'
             }
 
@@ -1161,7 +1187,7 @@ Class Version extends Base {
             If versions['aoc'] = '1.0c'
                 && FileExist(This.gameLocation '\age2_x1\on.ini')
                 && FileRead(This.gameLocation '\age2_x1\on.ini') = 'onon' {
-                versions['aoc'] := '1.0e'
+                    versions['aoc'] := '1.0e'
             }
 
             ; 1.1
@@ -1229,6 +1255,7 @@ Class FixPatch extends Base {
     fixTool => This.fixLocation '\fix.ahk'
     fixs => This.getFixs()
     fixRegKey => 'HKEY_CURRENT_USER\SOFTWARE\Microsoft\Microsoft Games\Age of Empires'
+    fixRegKey2 => 'HKEY_CURRENT_USER\SOFTWARE\Microsoft\Microsoft Games\Age of Empires II: The Conquerors Expansion\1.0'
     fixRegName => 'Aoe2Patch'
     packageLink => 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/Fix.7z'
     packageLocation => This.workDirectory '\packages'

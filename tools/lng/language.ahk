@@ -11,16 +11,23 @@ lngapp.ensurePackage()
 gameLocation := lngapp.gameLocation
 
 lngGui := GuiEx(, lngapp.name)
-lngGui.initiate(, 1)
+lngGui.initiate()
 
-lngGui.AddText('xm BackgroundTrans', 'Change the game interface language by selecting one of the options below:')
+lngGui.AddText('xm BackgroundTrans', 'Change the game interface language below:')
 btnMap := Map()
+lngGui.MarginY := 5
+idx := 0
 Loop Files, lngapp.lngLocation '\*', 'D' {
+    If !FileExist(A_LoopFileFullPath '\language.dll')
+        Continue
     btnMap[A_LoopFileName] := {
-        btn: lngGui.AddButtonEx('xm w400', A_LoopFileName, , applyLanguage),
-        img: lngGui.AddPictureEx('xp+410 yp+1 Border', lngapp.lngLocation '\' A_LoopFileName '\Flag\' A_LoopFileName '.png', applyLanguage)
+        btn: lngGui.AddButtonEx(Format('xm+{} ym+{} w150', (idx // 10) * 220, (Mod(idx, 10) + 1) * 30 + 10), A_LoopFileName, , applyLanguage),
+        img: lngGui.AddPictureEx('xp+160 yp+1 Border', lngapp.lngLocation '\' A_LoopFileName '\Flag\' A_LoopFileName '.png', applyLanguage)
     }
+    idx += 1
 }
+
+lngGui.MarginY := 20
 
 lngapp.isGameFolderSelected()
 
@@ -29,7 +36,7 @@ lngapp.isCommandLineCall({
     callback: applyLanguage
 })
 
-lngGui.showEx('h600', 1, lngapp)
+lngGui.showEx(, 1, lngapp)
 analyzeLanguage()
 
 /**
@@ -37,6 +44,8 @@ analyzeLanguage()
  */
 analyzeLanguage() {
     Loop Files, lngapp.lngLocation '\*', 'D' {
+        If !FileExist(A_LoopFileFullPath '\language.dll')
+            Continue
         btnMap[A_LoopFileName].btn.Enabled := 1
         btnMap[A_LoopFileName].img.Enabled := 1
         If lngapp.folderMatch(A_LoopFileFullPath, gameLocation) {
@@ -47,6 +56,8 @@ analyzeLanguage() {
 }
 cleanUp() {
     Loop Files, lngapp.lngLocation '\*', 'D' {
+        If !FileExist(A_LoopFileFullPath '\language.dll')
+            Continue
         Language := A_LoopFileName
         Loop Files, lngapp.lngLocation '\' Language '\*.*', 'R' {
             pathFile := StrReplace(A_LoopFileDir '\' A_LoopFileName, 'DB\Lng\' Language '\')
