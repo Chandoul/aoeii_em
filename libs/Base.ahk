@@ -520,7 +520,7 @@ Class Base {
             This.downloadPackage('https://github.com/chandoul/aoeii_em/raw/refs/heads/master/release/aoeii_em_setup_latest.exe', 'aoeii_em_setup_latest.exe', , , , 1)
             Try Run('aoeii_em_setup_latest.exe')
             ExitApp()
-        }
+        } Else MsgBoxEx('You are up to date!, no newer versions found.', 'Update Check', , 0x40)
     }
 
     rawTextContent(link) {

@@ -139,7 +139,6 @@ updateCheck(*) {
     appUpdate.TextEx := 'Checking...'
     aoeiiapp.appUpdateCheck()
     appUpdate.TextEx := 'Update?'
-    MsgBoxEx('You are up to date!, no newer versions found.', 'Update Check', , 0x40)
 }
 
 performGameAnalyze(*) {
