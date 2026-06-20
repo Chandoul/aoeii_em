@@ -6,7 +6,7 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '6.2'
+    version => '6.3'
     author => 'Smile'
     license => 'MIT'
     workDirectory => This.workDir()
@@ -1278,7 +1278,7 @@ Class FixPatch extends Base {
      */
     getFixs() {
         F := ['None']
-        Loop Files, This.fixLocation '\*', 'D' {
+        Loop Files, This.fixLocation '\Update*', 'D' {
             F.Push(A_LoopFileName)
         }
         Return F
