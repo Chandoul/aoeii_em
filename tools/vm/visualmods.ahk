@@ -14,7 +14,7 @@ drsMap := vmapp.drsMap
 vmGui := GuiEx(, vmapp.name)
 vmGui.initiate()
 
-vmGui.AddText('xm w200 BackgroundTrans', 'Search')
+vmGui.AddText('xm ym+20 w200 BackgroundTrans', 'Search')
 search := vmGui.AddEdit('BackgroundBlack cWhite -E0x200 w200')
 search.OnEvent('Change', vmQuickSearch)
 

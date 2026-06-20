@@ -13,7 +13,7 @@ gameLocation := lngapp.gameLocation
 lngGui := GuiEx(, lngapp.name)
 lngGui.initiate()
 
-lngGui.AddText('xm BackgroundTrans', 'Change the game interface language below:')
+lngGui.AddText('xm ym+20 BackgroundTrans', 'Change the game interface language below:')
 btnMap := Map()
 lngGui.MarginY := 5
 idx := 0
@@ -21,7 +21,7 @@ Loop Files, lngapp.lngLocation '\*', 'D' {
     If !FileExist(A_LoopFileFullPath '\language.dll')
         Continue
     btnMap[A_LoopFileName] := {
-        btn: lngGui.AddButtonEx(Format('xm+{} ym+{} w150', (idx // 10) * 220, (Mod(idx, 10) + 1) * 30 + 10), A_LoopFileName, , applyLanguage),
+        btn: lngGui.AddButtonEx(Format('xm+{} ym+{} w150', (idx // 10) * 220, (Mod(idx, 10) + 1) * 30 + 30), A_LoopFileName, , applyLanguage),
         img: lngGui.AddPictureEx('xp+160 yp+1 Border', lngapp.lngLocation '\' A_LoopFileName '\Flag\' A_LoopFileName '.png', applyLanguage)
     }
     idx += 1

@@ -14,7 +14,7 @@ dmPackages := dmapp.dmPackages
 dmGui := GuiEx(, dmapp.name)
 dmGui.initiate()
 
-dmGui.AddText('xm w200 BackgroundTrans', 'Search')
+dmGui.AddText('xm ym+20 w200 BackgroundTrans', 'Search')
 search := dmGui.AddEdit('BackgroundBlack cWhite -E0x200 w200')
 search.OnEvent('Change', quickSearch)
 
