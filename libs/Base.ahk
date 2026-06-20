@@ -6,7 +6,7 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '6.0'
+    version => '6.1'
     author => 'Smile'
     license => 'MIT'
     workDirectory => This.workDir()
