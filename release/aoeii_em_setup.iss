@@ -5,9 +5,9 @@
 #define SETUP_ICON "resources\aoeii_em-icon-2.png"
 #define SHORTCUT_ICON "resources\aoeii_em-icon-2.ico"
 #define SETUP_IMG "resources\aoeii_em-side.png"
-#define SETUP_AHK_NAME "AutoHotkey_2.0.19_setup.exe"
+#define SETUP_AHK_NAME "AutoHotkey_2.0.26_setup.exe"
 #define SETUP_AHK "resources\" + SETUP_AHK_NAME
-#define INTERPRETER_AHK "resources\AutoHotkey32_2.0.19.exe"
+#define INTERPRETER_AHK "resources\AutoHotkey32_2.0.26.exe"
 #define SETUP_NAME "aoeii_em"
 //#define APP_VERSION "1.0"
 
