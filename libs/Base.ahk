@@ -1381,6 +1381,18 @@ Class DataMod extends Base {
             'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/SheepVSWolf-3.0.7.7z',
             'description', "by Gallas`nSheep vs Wolf 3 is a random map based hunter / prey game with unique UP v1.5 RC mechanics. Hide in forest and build a fortress, or hunt for animals and search for Sheep as the Wolf!.",
             'thumbnail', This.workDirectory '\assets\svsw3mini.jpg'
+        ),
+        'Vampire Revenge', Map(
+            'type', 'xml',
+            'gameName', 'Vampire Revenge',
+            'gameLinker', 'age2_x1_vr',
+            'packageName', 'VampireRevenge-1.8.7z',
+            'packagePath', This.packageLocation '\VampireRevenge-1.8.7z',
+            'packageVersion', '1.8',
+            'packageSizeMB', '18.1',
+            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/VampireRevenge-1.8.7z',
+            'description', "This mod is an undead/demon themed, random map based hunter / prey game. New civ bonuses, units, buildings, graphics, sounds and gameplay! Must have Userpatch 1.5!.",
+            'thumbnail', This.workDirectory '\assets\Vampire.png'
         )
     )
 }
