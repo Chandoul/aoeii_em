@@ -9,6 +9,7 @@ tools/lng/*
 tools/rec/*
 tools/version/*
 tools/vm/*
+tools/scenario/*
 !tools/ahk/ahk.ahk
 !tools/dm/datamods.ahk
 !tools/fix/fix.ahk
