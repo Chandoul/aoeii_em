@@ -11,7 +11,7 @@ vmapp.ensurePackage()
 gameLocation := vmapp.gameLocation
 drsMap := vmapp.drsMap
 
-vmGui := GuiEx('Resize', vmapp.name)
+vmGui := GuiEx(, vmapp.name)
 vmGui.initiate()
 
 vmGui.AddText('xm w200 BackgroundTrans', 'Search')
