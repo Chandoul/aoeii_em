@@ -32,7 +32,7 @@ gameGui.addButtonEx('xm w420', 'Delete the game').OnEvent('Click', deleteGame)
 
 gameGui.SetFont('s9')
 
-desktopShortcuts := gameGui.AddCheckBoxEx('BackgroundTrans', 'Notify to add the game desktop shortcuts', gameShortcuts)
+desktopShortcuts := gameGui.AddCheckBoxEx('', 'Notify to add the game desktop shortcuts', gameShortcuts)
 
 ;progressText := gameGui.AddText('Center w410 Hidden BackgroundTrans')
 ;progressBar := gameGui.AddProgress('-Smooth wp Hidden')
@@ -66,9 +66,9 @@ If gameapp.addShortcuts {
     Return
 } Else desktopShortcuts.Checked := 0
 
-gameShortcuts(Ctrl, Info) {
-    gameapp.writeConfiguration('AddShortcuts', desktopShortcuts.Checked)
-    If !desktopShortcuts.Checked
+gameShortcuts(Ctrl, *) {
+    gameapp.writeConfiguration('AddShortcuts', Ctrl.Checked)
+    If !Ctrl.Checked
         Return
     If gameapp.isValidGameDirectory(gameDirectory.Value) {
         addGameShortcuts()

@@ -6,7 +6,7 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '6.4'
+    version => '6.5'
     author => 'Smile'
     license => 'MIT'
     workDirectory => This.workDir()
@@ -561,6 +561,12 @@ Class Button {
         [],
         [This.workDirectory '\assets\000_50212_check.bmp', , 0xFFFFFF]
     ]
+    cbChecked => [
+        [This.workDirectory '\assets\cb2\checked.png']
+    ]
+    cbUnChecked => [
+        [This.workDirectory '\assets\cb2\unchecked.png']
+    ]
 }
 
 
@@ -568,8 +574,8 @@ Class GuiEx extends Gui {
     workDirectory => Base().workDirectory
     backImage => This.workDirectory '\assets\000_50127.bmp'
     transColor => 0xFFFFFE
-    checkedImage => This.workDirectory '\assets\cb\checked.png'
-    uncheckedImage => This.workDirectory '\assets\cb\unchecked.png'
+    checkedImage => This.workDirectory '\assets\cb2\checked.png'
+    uncheckedImage => This.workDirectory '\assets\cb2\unchecked.png'
     click => This.workDirectory '\assets\wav\50300.wav'
     initiate(qA := 1, Scrollable := 0, footer := 1, header := 0) {
         This.BackColor := 0xFFFFFF
@@ -686,9 +692,9 @@ Class GuiEx extends Gui {
             WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
                 X := lParam & 0xFFFF
                 Y := lParam >> 16
-                ;
+                
                 if (X > 3 && X < bWidth - 6 && Y > 3 && Y < 28) {
-                    PostMessage(0xA1, 2, 0, , "ahk_id " . hwnd)
+                    PostMessage(0xA1, 2, 0, , hwnd)
                     return
                 }
             }
@@ -731,7 +737,7 @@ Class GuiEx extends Gui {
         b.DefineProp('TextEx', { Set: textEx })
         textEx(b, value, text := '', theme := Button().default) {
             b.text := value
-            update(b, theme)
+            update(b, theme*)
         }
 
         b.DefineProp('update', { Call: update })
@@ -753,68 +759,45 @@ Class GuiEx extends Gui {
         Return b
     }
     addCheckBoxEx(options := '', text := '', clickCallBack := 0, defaultValue := 1) {
-        T := This.AddText(options ' BackgroundTrans c4C4C4C', text)
-        T.OnEvent('Click', toggleValue)
-        T.GetPos(&X, &Y, &Width, &Height)
+        B := This.addButtonEx('h28 w24 ' options, , Button().cbUnChecked)
+        B.GetPos(&X1, &Y1, , &Height1)
 
-        StrReplace(text, '`n', , , &Count)
-        nHeight := Height / (Count + 1)
+        T := This.AddText('BackgroundTrans c4C4C4C x+5', text)
+        T.GetPos(&X2, &Y2, , &Height2)
 
-        T.Move(X + nHeight + 5, Y, Width, Height)
-        T.cbValue := 0
+        B.cbValue := 0
 
-        P := This.AddPicture('BackgroundTrans x' X ' y' Y ' h' nHeight ' w' nHeight, This.uncheckedImage)
-        P.cbValue := T.cbValue
+        B.OnEvent('Click', (*) => toggleValue())
 
-        P.OnEvent('Click', toggleValue)
         toggleValue(*) {
-            T.cbValue := !T.cbValue
-            If T.cbValue {
-                T.cbValue := defaultValue
-                linkedCheck()
+            B.cbValue := (B.cbValue := !B.cbValue) ? defaultValue : B.cbValue
+            If clickCallBack {
+                clickCallBack(B)
             }
-            P.cbValue := T.cbValue
-            If T.cbValue {
-                T.Opt('cBlack')
-                P.Value := This.checkedImage
-            } Else {
-                P.Value := This.uncheckedImage
-                T.Opt('c4C4C4C')
-            }
-            T.Redraw()
+            ;linkedCheck()
+            updateStatus()
         }
 
-        If clickCallBack {
-            T.OnEvent('Click', clickCallBack)
-            P.OnEvent('Click', clickCallBack)
-        }
+        B.DefineProp('Checked', { Get: getValue, Set: setValue })
 
-        T.DefineProp('Checked', { Get: getValue, Set: setValue })
-        P.DefineProp('Checked', { Get: getValue, Set: setValue })
+        getValue(ctrl) => B.cbValue
 
-        getValue(ctrl) {
-            Return T.cbValue
-        }
         setValue(ctrl, value) {
-            T.cbValue := value ? 1 : 0
-            If T.cbValue {
-                T.cbValue := defaultValue
-                linkedCheck()
-            }
-            P.cbValue := T.cbValue
-            If T.cbValue {
+            B.cbValue := value ? defaultValue : value
+            ;linkedCheck()
+            updateStatus()
+        }
+        updateStatus() {
+            If B.cbValue {
                 T.Opt('cBlack')
-                P.Value := This.checkedImage
+                B.Update(Button().cbChecked)
             } Else {
-                P.Value := This.uncheckedImage
+                B.Update(Button().cbUnChecked)
                 T.Opt('c4C4C4C')
             }
             T.Redraw()
-            ;If clickCallBack {
-            ;    clickCallBack.Call(T, '')
-            ;}
+            B.Redraw()
         }
-
         linkedCheck() {
             If T.HasProp('group') {
                 For cb in T.group {
@@ -823,8 +806,7 @@ Class GuiEx extends Gui {
                 }
             }
         }
-        This.AddText('x' X ' y' Y + Height - This.MarginY ' w1 h1 BackgroundTrans')
-        Return T
+        Return B
     }
 
     addPictureEx(options := '', filename := 'blankmod.png', clickcallback := 0) {

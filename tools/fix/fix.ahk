@@ -41,7 +41,7 @@ if !fixapp.configurationExists() {
 ddrAuto := fixGui.addCheckBoxEx('xm', 'Enable direct draw fix', fixDDREnable)
 ddrAuto.Checked := fixapp.readConfiguration('ddrAuto')
 
-center := fixGui.addCheckBoxEx(, 'Center the game window', centerGameWindow)
+center := fixGui.addCheckBoxEx('xm y+15', 'Center the game window', centerGameWindow)
 center.Checked := fixapp.readConfiguration('center')
 
 ;features := fixGui.addButtonEx('xm w200', 'Features list', , showFeatures)
@@ -52,27 +52,27 @@ fixGui.AddText('xm+450 ym+15 BackgroundTrans', 'Options to enable along with the
 fixGui.MarginY := 10
 
 ; Water animation
-waterAni := fixGui.addCheckBoxEx(, 'Water animation', waterAnimation)
+waterAni := fixGui.addCheckBoxEx('xm+450 yp+30', 'Water animation', (waterAni) => waterAnimation(waterAni))
 waterAni.Checked := RegRead(fixRegKey, 'WaterAnnimation', 0) = 1 ? 1 : 0
-waterAnimation(Ctrl, Info) {
+waterAnimation(Ctrl, *) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'WaterAnnimation')
 }
 
 ; Advanced interface
-resInt := fixGui.addCheckBoxEx(, 'Show villagers count on each resource`nShow civilizations upgrades levels`nShow civlization next to score names', resourceInterface, 2)
+resInt := fixGui.addCheckBoxEx('xm+450 y+15', 'Show villagers count on each resource`nShow civilizations upgrades levels`nShow civlization next to score names', resourceInterface, 2)
 If RegRead(fixRegKey, 'Aoe2Patch', 0) = 2 {
     resInt.Checked := 1
 }
-resourceInterface(Ctrl, Info) {
+resourceInterface(Ctrl, *) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'Aoe2Patch')
 }
 
 ; Widescreen
-centerInt := fixGui.addCheckBoxEx(, 'Centered widescreen', centeredlayInterface, 4)
+centerInt := fixGui.addCheckBoxEx('xm+450 y+5', 'Centered widescreen', centeredlayInterface, 4)
 If RegRead(fixRegKey, 'Aoe2Patch', 0) = 4 {
     centerInt.Checked := 4
 }
-centeredlayInterface(Ctrl, Info) {
+centeredlayInterface(Ctrl, *) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'Aoe2Patch')
 }
 
@@ -82,7 +82,7 @@ fixapp.groupCheckBoxs([
 ])
 
 ; Zooming functionality
-zoomFunc := fixGui.addCheckBoxEx(, 'Zoom functionality`n[Note] Set the hotkey in the game hotkeys!`n(Fix v5 and above required) ', (Ctrl, *) => RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'Zoom'))
+zoomFunc := fixGui.addCheckBoxEx('xm+450 y+15', 'Zoom functionality`n[Note] Set the hotkey in the game hotkeys!`n(Fix v5 and above required) ', (Ctrl, *) => RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'Zoom'))
 If RegRead(fixRegKey, 'Zoom', 0) = 1 {
     zoomFunc.Checked := 1
 }
@@ -93,7 +93,7 @@ If RegRead(fixRegKey, 'Zoom', 0) = 1 {
 ;If RegRead(fixRegKey, 'FogOfWar', 0) = 1 {
 ;    nativeFow.Checked := 1
 ;}
-;nativeFog(Ctrl, Info) {
+;nativeFog(Ctrl, *) {
 ;    RegWrite(Ctrl.cbValue = -1 ? 0 : 0, 'REG_DWORD', fixRegKey, 'FogOfWar')
 ;}
 ;
@@ -102,7 +102,7 @@ If RegRead(fixRegKey, 'Zoom', 0) = 1 {
 ;If RegRead(fixRegKey, 'FogOfWar', 0) = 1 {
 ;    nativeFow.Checked := 1
 ;}
-;gridFog(Ctrl, Info) {
+;gridFog(Ctrl, *) {
 ;    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 ;}
 ;
@@ -111,7 +111,7 @@ If RegRead(fixRegKey, 'Zoom', 0) = 1 {
 ;If RegRead(fixRegKey, 'FogOfWar', 0) = 2 {
 ;    lightFow.Checked := 1
 ;}
-;lightFog(Ctrl, Info) {
+;lightFog(Ctrl, *) {
 ;    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 ;}
 ;
@@ -120,7 +120,7 @@ If RegRead(fixRegKey, 'Zoom', 0) = 1 {
 ;If RegRead(fixRegKey, 'FogOfWar', 0) = 3 {
 ;    lightgridFow.Checked := 1
 ;}
-;lightgridFog(Ctrl, Info) {
+;lightgridFog(Ctrl, *) {
 ;    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 ;}
 ;
@@ -129,7 +129,7 @@ If RegRead(fixRegKey, 'Zoom', 0) = 1 {
 ;If RegRead(fixRegKey, 'FogOfWar', 0) = 4 {
 ;    ultraLightGridFow.Checked := 1
 ;}
-;ultraLightGridFog(Ctrl, Info) {
+;ultraLightGridFog(Ctrl, *) {
 ;    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 ;}
 ;
@@ -138,7 +138,7 @@ If RegRead(fixRegKey, 'Zoom', 0) = 1 {
 ;If RegRead(fixRegKey, 'FogOfWar', 0) = 5 {
 ;    hatchGridFow.Checked := 1
 ;}
-;hatchGridFog(Ctrl, Info) {
+;hatchGridFog(Ctrl, *) {
 ;    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 ;}
 ;
@@ -147,7 +147,7 @@ If RegRead(fixRegKey, 'Zoom', 0) = 1 {
 ;If RegRead(fixRegKey, 'FogOfWar', 0) = 6 {
 ;    noFow.Checked := 1
 ;}
-;noFog(Ctrl, Info) {
+;noFog(Ctrl, *) {
 ;    RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'FogOfWar')
 ;}
 
@@ -163,13 +163,13 @@ If RegRead(fixRegKey, 'Zoom', 0) = 1 {
 
 ; New castle foundation
 
-nCastle := fixGui.addCheckBoxEx(, 'New Castle Mod + Fundation Mod`n(Fix v7 and above required)', newCastle)
+nCastle := fixGui.addCheckBoxEx('xm+450 y+5', 'New Castle Mod + Fundation Mod`n(Fix v7 and above required)', newCastle)
 nCastle.Checked := RegRead(fixRegKey, 'New Castle', 0) = 1 ? 1 : 0
-newCastle(Ctrl, Info) {
+newCastle(Ctrl, *) {
     RegWrite(Ctrl.cbValue, 'REG_DWORD', fixRegKey, 'New Castle')
 }
 
-darkenMinimap := fixGui.addCheckBoxEx(, 'Darken mini-map colors [ Gray, Red, Orange ]`n(Fix v10 required)', darkMinimap, 34)
+darkenMinimap := fixGui.addCheckBoxEx('xm+450 y+5', 'Darken mini-map colors [ Gray, Red, Orange ]`n(Fix v10 required)', darkMinimap, 34)
 darkenMinimap.Checked := RegRead(fixRegKey, 'Mini-map Colors', 64) = 34 && RegRead(fixRegKey2, 'Mini-map Colors', 64) = 34
 darkMinimap(Ctrl, *) {
     value := Ctrl.cbValue ? Ctrl.cbValue : 64
@@ -188,18 +188,18 @@ fixapp.isCommandLineCall({
 fixGui.showEx(, 1, fixapp)
 analyzeFix()
 
-fixDDREnable(Ctrl, Info) {
+fixDDREnable(Ctrl, *) {
     fixapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
     fixapp.applyDDrawFix(, Ctrl.cbValue ? 1 : 0)
     SoundPlay(fixapp.workDirectory '\assets\mp3\30 Wololo.mp3')
 }
-centerGameWindow(Ctrl, Info) {
+centerGameWindow(Ctrl, *) {
     fixapp.writeConfiguration('center', Ctrl.cbValue)
     fixapp.applyDDrawFix(, Ctrl.cbValue ? 1 : 0)
     SoundPlay(fixapp.workDirectory '\assets\mp3\30 Wololo.mp3')
 }
 
-applyFix(Ctrl, Info) {
+applyFix(Ctrl, *) {
     fixVersion := Type(Ctrl) = 'String' ? Ctrl : Ctrl.Text
     If fixVersion = 'None' {
         fixCleanUp()
