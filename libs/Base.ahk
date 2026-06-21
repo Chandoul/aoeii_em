@@ -6,7 +6,7 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '6.5'
+    version => '6.6'
     author => 'Smile'
     license => 'MIT'
     workDirectory => This.workDir()
@@ -692,7 +692,7 @@ Class GuiEx extends Gui {
             WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
                 X := lParam & 0xFFFF
                 Y := lParam >> 16
-                
+
                 if (X > 3 && X < bWidth - 6 && Y > 3 && Y < 28) {
                     PostMessage(0xA1, 2, 0, , hwnd)
                     return
@@ -729,15 +729,11 @@ Class GuiEx extends Gui {
     }
     addButtonEx(options := '', text := '', theme := Button().default, clickCallBack := 0) {
         b := This.AddButton(options, text)
-        CreateImageButton(
-            b,
-            0,
-            theme*
-        )
+        CreateImageButton(b, 0, theme*)
         b.DefineProp('TextEx', { Set: textEx })
         textEx(b, value, text := '', theme := Button().default) {
             b.text := value
-            update(b, theme*)
+            update(b, theme)
         }
 
         b.DefineProp('update', { Call: update })
