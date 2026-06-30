@@ -9,6 +9,7 @@ Class Base {
     version => '6.6'
     author => 'Smile'
     license => 'MIT'
+    packageHash => JSON.LoadFile(This.workDirectory '\tools\package.json')
     workDirectory => This.workDir()
     configuration => This.workDirectory '\configuration.ini'
     tools => Map(
@@ -1075,6 +1076,8 @@ Class Version extends Base {
     packageLocation => This.workDirectory '\packages'
     packagePath => This.packageLocation '\' This.packageName
 
+    __New() => this.ensurePackage()
+
     /**
      * Ensure the required package is correctly exist
      */
@@ -1318,11 +1321,11 @@ Class DataMod extends Base {
             'type', 'xml',
             'gameName', 'The Conquerors Updated',
             'gameLinker', 'age2_x1_up',
-            'packageName', 'DEBalance-6.1.2.7z',
-            'packagePath', This.packageLocation '\DEBalance-6.1.2.7z',
+            'packageName', 'DEBalance.7z',
+            'packagePath', This.packageLocation '\DEBalance.7z',
             'packageVersion', '6.1.2',
             'packageSizeMB', '81',
-            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/DEBalance-6.1.2.7z',
+            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/DEBalance.7z',
             'description', "by _everaoc_`n'The Conquerors Updated' mod with shared allies' line of sight.",
             'thumbnail', This.workDirectory '\assets\DE Balance.png'
         ),
@@ -1330,11 +1333,11 @@ Class DataMod extends Base {
             'type', 'xml',
             'gameName', 'WololoKingdoms',
             'gameLinker', 'age2_x1_wk',
-            'packageName', 'WololoKingdoms-5.8.1.7z',
-            'packagePath', This.packageLocation '\WololoKingdoms-5.8.1.7z',
+            'packageName', 'WololoKingdoms.7z',
+            'packagePath', This.packageLocation '\WololoKingdoms.7z',
             'packageVersion', '5.8.1',
             'packageSizeMB', '225',
-            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/WololoKingdoms-5.8.1.7z',
+            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/WololoKingdoms.7z',
             'description', "by Tails8521, Jineapple, TriRem, TWest\nPlay the HD Expansions on Voobly.",
             'thumbnail', This.workDirectory '\assets\WololoKingdoms.png'
         ),
@@ -1342,11 +1345,11 @@ Class DataMod extends Base {
             'type', 'xml',
             'gameName', 'Elemental TD',
             'gameLinker', 'age2_x1_e_td',
-            'packageName', 'ElementalTD-2.13.7z',
-            'packagePath', This.packageLocation '\ElementalTD-2.13.7z',
+            'packageName', 'ElementalTD.7z',
+            'packagePath', This.packageLocation '\ElementalTD.7z',
             'packageVersion', '2.13',
             'packageSizeMB', '65.7',
-            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/ElementalTD-2.13.7z',
+            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/ElementalTD.7z',
             'description', "by BinaryPotka`nNew 2023 TD mod with Elemental Towers.",
             'thumbnail', This.workDirectory '\assets\Elemental TD.png'
         ),
@@ -1354,11 +1357,11 @@ Class DataMod extends Base {
             'type', 'xml',
             'gameName', 'Sheep vs Wolf 3',
             'gameLinker', 'age2_x1_svw3',
-            'packageName', 'SheepVSWolf-3.0.7.7z',
-            'packagePath', This.packageLocation '\SheepVSWolf-3.0.7.7z',
+            'packageName', 'SheepVSWolf.7z',
+            'packagePath', This.packageLocation '\SheepVSWolf.7z',
             'packageVersion', '3.0.7',
             'packageSizeMB', '13.2',
-            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/SheepVSWolf-3.0.7.7z',
+            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/SheepVSWolf.7z',
             'description', "by Gallas`nSheep vs Wolf 3 is a random map based hunter / prey game with unique UP v1.5 RC mechanics. Hide in forest and build a fortress, or hunt for animals and search for Sheep as the Wolf!.",
             'thumbnail', This.workDirectory '\assets\svsw3mini.jpg'
         ),
@@ -1366,11 +1369,11 @@ Class DataMod extends Base {
             'type', 'xml',
             'gameName', 'Vampire Revenge',
             'gameLinker', 'age2_x1_vr',
-            'packageName', 'VampireRevenge-1.8.7z',
-            'packagePath', This.packageLocation '\VampireRevenge-1.8.7z',
+            'packageName', 'VampireRevenge.7z',
+            'packagePath', This.packageLocation '\VampireRevenge.7z',
             'packageVersion', '1.8',
             'packageSizeMB', '18.1',
-            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/VampireRevenge-1.8.7z',
+            'packageLink', 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/VampireRevenge.7z',
             'description', "This mod is an undead/demon themed, random map based hunter / prey game. New civ bonuses, units, buildings, graphics, sounds and gameplay! Must have Userpatch 1.5!.",
             'thumbnail', This.workDirectory '\assets\Vampire.png'
         )
@@ -1481,3 +1484,4 @@ cmdJoin(args*) {
 #Include Gdip.ahk
 #Include ScrollBars.ahk
 #Include LockCheck.ahk
+#Include JSON.ahk

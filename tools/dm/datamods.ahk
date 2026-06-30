@@ -84,7 +84,8 @@ updateDM(Ctrl, Info) {
         Switch dmType {
             Case 'xml':
                 dmapp.enableOptions([dmInstall, dmUninstall], 0)
-                If !FileExist(dmPackagePath) {
+                hashOK := dmapp.hashFile(, dmPackagePath) = dmapp.packageHash[dmGameName]
+                If !FileExist(dmPackagePath) || !hashOK {
                     If !dmapp.getConnectedState() {
                         MsgBoxEx('Unable to install, you does not seem to be connected to the internet!', dmapp.name, , 0x30)
                         dmapp.enableOptions([dmInstall, dmUninstall])

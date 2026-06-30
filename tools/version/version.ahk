@@ -7,8 +7,6 @@
 verapp := Version()
 verapp.__Startup()
 
-verapp.ensurePackage()
-
 fixapp := FixPatch()
 
 fixs := fixapp.Fixs
