@@ -6,8 +6,6 @@
 fixapp := FixPatch()
 fixapp.__Startup()
 
-fixapp.ensurePackage()
-
 verapp := Version()
 
 fixGui := GuiEx(, fixapp.name)

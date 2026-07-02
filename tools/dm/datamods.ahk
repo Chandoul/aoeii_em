@@ -40,8 +40,8 @@ dmThumbnail := dmGui.addPictureEx('ym+37 Border')
 dmGui.SetFont('s8')
 dmDescription := dmGui.addEdit('ym+37 w300 hp Backgrounddcb670 ReadOnly -E0x200')
 dmGui.SetFont('s10')
-dmInstall := dmGui.addButtonEx('xp-170 yp+140 w143', 'Install', , updateDM)
-dmUpdateInstall := dmGui.addButtonEx('wp yp', 'Update and Install', , clearDM)
+dmInstall := dmGui.addButtonEx('xp-170 yp+140 w225', 'Install', , updateDM)
+;dmUpdateInstall := dmGui.addButtonEx('wp yp', 'Update and Install', , clearDM)
 dmUninstall := dmGui.addButtonEx('wp yp', 'Uninstall', , updateDM)
 
 progressText := dmGui.AddText('xp-326 yp+70 Center w469 Hidden BackgroundTrans')
@@ -63,11 +63,12 @@ showInfo(ctrl, info) {
 }
 
 updateDM(Ctrl, Info) {
-    dmapp.enableOptions([dmInstall, dmUpdateInstall, dmUninstall], 0)
+    dmapp.enableOptions([dmInstall, dmUninstall], 0)
 
     dmName := modsList.Text
 
     dmType := dmapp.dmPackages[dmName]['type']
+    dmPackageName := dmapp.dmPackages[dmName]['packageName']
     dmPackagePath := dmapp.dmPackages[dmName]['packagePath']
     dmPackageLink := dmapp.dmPackages[dmName]['packageLink']
     dmPackageSize := dmapp.dmPackages[dmName]['packageSizeMB']
@@ -84,7 +85,11 @@ updateDM(Ctrl, Info) {
         Switch dmType {
             Case 'xml':
                 dmapp.enableOptions([dmInstall, dmUninstall], 0)
-                hashOK := dmapp.hashFile(, dmPackagePath) = dmapp.packageHash[dmGameName]
+                if !dmapp.packageHash.Has(dmPackageName) {
+                    MsgBoxEx('Unable to install, the package hashing is not found!', dmapp.name, , 0x30)
+                    return
+                }
+                hashOK := dmapp.hashFile(, dmPackagePath) = dmapp.packageHash[dmPackageName]
                 If !FileExist(dmPackagePath) || !hashOK {
                     If !dmapp.getConnectedState() {
                         MsgBoxEx('Unable to install, you does not seem to be connected to the internet!', dmapp.name, , 0x30)
@@ -97,7 +102,11 @@ updateDM(Ctrl, Info) {
                     DirDelete(gameLocation '\Games\' dmGameName, 1)
 
                 ; Extract the data mod files
-                dmapp.extractPackage(dmPackagePath, gameLocation '\')
+                if !dmapp.extractPackage(dmPackagePath, gameLocation '\') {
+                    ctrl.TextEx := StrReplace(ctrl.Text, 'ing...')
+                    dmapp.enableOptions([dmInstall, dmUninstall])
+                    return
+                }
 
                 ; Change aoc version to 1.5
                 If verapp.getGameVersions()['aoc'] != '1.5'
@@ -129,12 +138,12 @@ updateDM(Ctrl, Info) {
             FileDelete(gameLocation '\Games\' dmGameLinker '.xml')
     }
     ctrl.TextEx := StrReplace(ctrl.Text, 'ing...')
-    dmapp.enableOptions([dmInstall, dmUpdateInstall, dmUninstall])
+    dmapp.enableOptions([dmInstall, dmUninstall])
     MsgBoxEx(dmName ' should be ' ctrl.Text 'ed by now!', dmapp.name, , 0x40, 5)
 }
 
 clearDM(Ctrl, Info) {
-    dmapp.enableOptions([dmInstall, dmUpdateInstall, dmUninstall], 0)
+    dmapp.enableOptions([dmInstall, dmUninstall], 0)
     dmName := modsList.Text
     dmPackage := dmapp.dmPackages[dmName]['packagePath']
     dmGameName := dmapp.dmPackages[dmName]['gameName']
@@ -143,5 +152,5 @@ clearDM(Ctrl, Info) {
     If DirExist(gameLocation '\Games\' dmGameName)
         DirDelete(gameLocation '\Games\' dmGameName, 1)
     updateDM(dmInstall, Info)
-    dmapp.enableOptions([dmInstall, dmUpdateInstall, dmUninstall])
+    dmapp.enableOptions([dmInstall, dmUninstall])
 }

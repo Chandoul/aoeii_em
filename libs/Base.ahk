@@ -6,10 +6,12 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '6.6'
+    version => '6.7'
     author => 'Smile'
     license => 'MIT'
-    packageHash => JSON.LoadFile(This.workDirectory '\tools\package.json')
+    packageHashLink => 'https://raw.githubusercontent.com/chandoul/aoeii_em/refs/heads/master/tools/package.json'
+    packageHash => this.packageHashGet()
+    localPackageHash => JSON.LoadFile(This.workDirectory '\tools\package.json')
     workDirectory => This.workDir()
     configuration => This.workDirectory '\configuration.ini'
     tools => Map(
@@ -219,6 +221,11 @@ Class Base {
      * @returns {bool}
      */
     getConnectedState() => DllCall("Wininet.dll\InternetGetConnectedState", "Str", Flag := 0x40, "Int", 0)
+
+    cleanUp(location) {
+        Loop Files, location '\*', 'D'
+            DirDelete(A_LoopFileFullPath, 1)
+    }
 
     downloadPackage(link, file, fileSize := 0, progressText := 0, progressBar := 0, update := 0) {
         Static infoGui := 0
@@ -548,6 +555,12 @@ Class Base {
         whr := ''
         Return size
     }
+
+    packageHashGet() {
+        try return JSON.Load(this.rawTextContent(this.packageHashLink))
+        catch
+            return JSON.LoadFile(This.workDirectory '\tools\package.json')
+    }
 }
 
 
@@ -721,10 +734,10 @@ Class GuiEx extends Gui {
                 This.GetPos(, , &W, &H)
                 This.split.Move(, , W - 60)
                 This.ft.Move(, , W - 188)
-                If This.HasProp('updatePackage') {
-                    This.updatePackage.Move(, , W - 55)
-                    This.updatePackage.Update()
-                }
+                ;If This.HasProp('updatePackage') {
+                ;    This.updatePackage.Move(, , W - 55)
+                ;    This.updatePackage.Update()
+                ;}
             }
         }
     }
@@ -863,14 +876,14 @@ Class GuiEx extends Gui {
             This.ft := This.AddEdit('BackgroundBlack yp+10 x+20 cWhite w280 -E0x200 h20 Center ReadOnly', Base().gameLocation)
         Else This.ft := This.AddEdit('Backgroundff0000 yp+10 x+20 cWhite w280 -E0x200 h20 Center ReadOnly', Base().gameLocation)
         This.MarginY := 20
-        If app && app.HasMethod('ensurePackage') {
-            This.SetFont('s8')
-            This.updatePackage := This.addButtonEx('xm w280', 'Update Package', , update)
-            update(*) {
-                app.ensurePackage(1)
-                Reload()
-            }
-        }
+        ;If app && app.HasMethod('ensurePackage') {
+        ;    This.SetFont('s8')
+        ;    This.updatePackage := This.addButtonEx('xm w280', 'Update Package', , update)
+        ;    update(*) {
+        ;        app.ensurePackage(1)
+        ;        Reload()
+        ;    }
+        ;}
     }
 }
 
@@ -970,6 +983,8 @@ Class MsgBoxEx {
 
         If TimeOut {
             This.hText.Value := '`n' text '`nQuitting in ' (TimeOut) ' second' ((TimeOut > 1) ? 's' : '')
+            This.hText.GetPos(, , , &H)
+            This.hText.Move(, , , H + 10)
             SetTimer(countdown, 1000)
             countdown() {
                 This.hText.Value := '`n' text '`nQuitting in ' (--TimeOut) ' second' ((TimeOut > 1) ? 's' : '')
@@ -1076,7 +1091,18 @@ Class Version extends Base {
     packageLocation => This.workDirectory '\packages'
     packagePath => This.packageLocation '\' This.packageName
 
-    __New() => this.ensurePackage()
+    __New() {
+        hashs := this.packageHash
+        if !FileExist(This.packagePath)
+            || !DirExist(this.versionLocation '\aok')
+            || !DirExist(this.versionLocation '\aoc')
+            || !DirExist(this.versionLocation '\fe')
+            || hashs[this.packageName] != this.hashFile(, This.packagePath) {
+                This.cleanUp(this.versionLocation)
+                This.downloadPackage(This.packageLink, This.packagePath, , , , true)
+                This.extractPackage(This.packagePath, This.versionLocation)
+        }
+    }
 
     /**
      * Ensure the required package is correctly exist
@@ -1243,6 +1269,16 @@ Class FixPatch extends Base {
     packageName => 'Fix.7z'
     packagePath => This.packageLocation '\' This.packageName
 
+    __New() {
+        hashs := this.packageHash
+        if !FileExist(This.packagePath)
+            || !DirExist(this.fixLocation '\Update v*')
+            || hashs[this.packageName] != this.hashFile(, This.packagePath) {
+                This.cleanUp(this.fixLocation)
+                This.downloadPackage(This.packageLink, This.packagePath, , , , true)
+                This.extractPackage(This.packagePath, This.fixLocation)
+        }
+    }
     /**
      * Ensure the required package is correctly exist
      */
@@ -1301,14 +1337,15 @@ Class VisualMod extends Base {
     packageName => 'VisualMods.7z'
     packagePath => This.packageLocation '\' This.packageName
 
-    /**
-     * Ensure the required package is correctly exist
-     */
-    ensurePackage(update := 0) {
-        If !FileExist(This.packagePath) || update {
-            This.downloadPackage(This.packageLink, This.packagePath, , , , update)
-            This.extractPackage(This.packagePath, This.vmLocation)
-        } ;Else This.extractPackage(This.packagePath, This.vmLocation, , , 'aos', { text: 'Verifying the files', subtext: 'Making sure all necessary files are correctly exist before startup!' })
+    __New() {
+        hashs := this.packageHash
+        if !FileExist(This.packagePath)
+            || !DirExist(this.vmLocation '\999 Taunts')
+            || hashs[this.packageName] != this.hashFile(, This.packagePath) {
+                This.cleanUp(this.vmLocation)
+                This.downloadPackage(This.packageLink, This.packagePath, , , , true)
+                This.extractPackage(This.packagePath, This.vmLocation)
+        }
     }
 }
 
@@ -1387,16 +1424,17 @@ Class Language extends Base {
     packagePath => This.packageLocation '\' This.packageName
     packageLocation => This.workDirectory '\packages'
     packageLink => 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/Language.7z'
-    /**
-     * Ensure the required package is correctly exist
-     */
-    ensurePackage(update := 0) {
-        If !FileExist(This.packagePath) || update {
-            This.downloadPackage(This.packageLink, This.packagePath, , , , update)
-            This.extractPackage(This.packagePath, This.lngLocation)
-        } ;Else This.extractPackage(This.packagePath, This.lngLocation, , , 'aos', { text: 'Verifying the files', subtext: 'Making sure all necessary files are correctly exist before startup!' })
-    }
 
+    __New() {
+        hashs := this.packageHash
+        if !FileExist(This.packagePath)
+            || !DirExist(this.lngLocation '\English')
+            || hashs[this.packageName] != this.hashFile(, This.packagePath) {
+                This.cleanUp(this.lngLocation)
+                This.downloadPackage(This.packageLink, This.packagePath, , , , true)
+                This.extractPackage(This.packagePath, This.lngLocation)
+        }
+    }
     /**
      * Check if it a command line call
      */
@@ -1430,12 +1468,18 @@ Class Recanalyst extends Base {
     packageLocation => This.workDirectory '\packages'
     packagePath => This.packageLocation '\' This.packageName
     packageLink => 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/Rec.7z'
-    ensurePackage(update := 0) {
-        If !FileExist(This.packagePath) || update {
-            This.downloadPackage(This.packageLink, This.packagePath, , , , update)
-            This.extractPackage(This.packagePath, This.recLocation)
-        } ;Else This.extractPackage(This.packagePath, This.recLocation, , , 'aos', { text: 'Verifying the files', subtext: 'Making sure all necessary files are correctly exist before startup!' })
+
+    __New() {
+        hashs := this.packageHash
+        if !FileExist(This.packagePath)
+            || !DirExist(this.recLocation '\php')
+            || hashs[this.packageName] != this.hashFile(, This.packagePath) {
+                This.cleanUp(this.recLocation)
+                This.downloadPackage(This.packageLink, This.packagePath, , , , true)
+                This.extractPackage(This.packagePath, This.recLocation)
+        }
     }
+
     /**
      * Start the php server and return it PID
      * @returns {number} 

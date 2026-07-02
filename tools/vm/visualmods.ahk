@@ -6,8 +6,6 @@
 vmapp := VisualMod()
 vmapp.__Startup()
 
-vmapp.ensurePackage()
-
 gameLocation := vmapp.gameLocation
 drsMap := vmapp.drsMap
 
@@ -43,8 +41,9 @@ vmInstall := vmGui.addButtonEx('xp-170 yp+140 w225', 'Install', , updateVM)
 vmUninstall := vmGui.addButtonEx('wp yp', 'Uninstall', , updateVM)
 vmGui.SetFont('s9')
 gamesApply := vmGui.addCheckBoxEx('xp-245 y+20', 'Apply the modification to the following data mod:', vmDataEnable)
-dataModName := vmGui.AddDropDownList('xp yp+25 w470')
+dataModName := vmGui.AddDropDownList('xp-30 yp+35 w470')
 gamesApply.Checked := vmapp.readConfiguration('vmDataMod')
+dataModName.Enabled := gamesApply.Checked
 
 vmGui.showEx(, 1, vmapp)
 
@@ -120,7 +119,7 @@ populateDMList() {
     }
 }
 
-vmDataEnable(Ctrl, Info) {
+vmDataEnable(Ctrl, *) {
     vmapp.writeConfiguration('vmDataMod', Ctrl.cbValue)
     dataModName.Enabled := Ctrl.Checked
 }

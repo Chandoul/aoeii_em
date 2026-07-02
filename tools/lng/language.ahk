@@ -6,8 +6,6 @@
 lngapp := Language()
 lngapp.__Startup()
 
-lngapp.ensurePackage()
-
 gameLocation := lngapp.gameLocation
 
 lngGui := GuiEx(, lngapp.name)

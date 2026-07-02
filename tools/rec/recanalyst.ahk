@@ -6,14 +6,13 @@
 recapp := Recanalyst()
 recapp.__Startup()
 
-recapp.ensurePackage()
-
 recGui := GuiEx(, recapp.name)
 recGui.initiate()
 
 vr := recGui.addButtonEx('xm ym+20 w450 Disabled', 'View Record Details', , viewRecordDetails)
+vrdetails := recGui.AddEdit('xp y+5 wp Center BackgroundE1B15A -E0x200')
 
-recList := recGui.AddListView('xm wp r20 BackgroundE1B15A -E0x200', ['Record'])
+recList := recGui.AddListView('xm y+5 wp r20 BackgroundE1B15A -E0x200', ['Record'])
 
 recapp.isGameFolderSelected()
 
@@ -41,6 +40,7 @@ loadRecord() {
         records[creationDate] := A_LoopFileFullPath
     }
     For time, record in records {
+        vrdetails.Text := 'Loaded records - [ ' A_Index ' ]'
         mgxFixCheck(record)
         SplitPath(record, &outFileName)
         recordsList.Push(record)

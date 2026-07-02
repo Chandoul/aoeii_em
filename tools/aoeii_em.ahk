@@ -4,6 +4,7 @@
 #Include ..\Libs\Base.ahk
 #Include ..\libs\JSON.ahk
 
+
 aoeiiapp := Base()
 aoeiiapp.__Startup()
 gameapp := Game()
