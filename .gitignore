@@ -22,3 +22,4 @@ tools/scenario/*
 !tools/version/version.ahk
 !tools/vm/visualmods.ahk
 .vscode/
+release/Errors.txt

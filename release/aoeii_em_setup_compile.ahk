@@ -5,6 +5,11 @@
 
 app := Base()
 
+; take screenshots
+;RunWait('"' app.workDirectory '\tools\aoeii_em.ahk"')
+;WinWaitActive('Age of Empires II Easy Manager')
+;Msgbox
+
 appver := app.version
 rc := RunWait(A_ComSpec ' /c iscc aoeii_em_setup.iss /DAPP_VERSION=' appver)
 

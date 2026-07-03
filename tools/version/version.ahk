@@ -131,11 +131,6 @@ applyVersion(ctrl, info) {
     Try {
         cleansUp(FGame)
         applyReqVersion(ctrl, FGame)
-        ;If autoFix.cbValue && fixChoice.Text != ''
-        ;    Try RunWait(fixapp.tools['02_fix']['file'] ' "' fixChoice.Text '"')
-        ;If ddrAuto.cbValue {
-        ;    verapp.applyDDrawFix(, center.cbValue ? 1 : 0)
-        ;}
         verapp.reviewWindowModeCompatibility()
     } Catch {
         If !lockCheck(gameLocation) {
@@ -144,11 +139,6 @@ applyVersion(ctrl, info) {
         }
         cleansUp(FGame)
         applyReqVersion(ctrl, FGame)
-        ;If autoFix.cbValue && fixChoice.Text != ''
-        ;    Try RunWait(fixapp.tools['02_fix']['file'] ' "' fixChoice.Text '"')
-        ;If ddrAuto.cbValue {
-        ;    verapp.applyDDrawFix(, center.cbValue ? 1 : 0)
-        ;}
         verapp.reviewWindowModeCompatibility()
     }
     analyzeVersion()

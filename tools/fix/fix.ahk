@@ -188,7 +188,9 @@ analyzeFix()
 
 fixDDREnable(Ctrl, *) {
     fixapp.writeConfiguration('ddrAuto', Ctrl.cbValue)
-    fixapp.applyDDrawFix(, Ctrl.cbValue ? 1 : 0)
+    if Ctrl.cbValue
+        fixapp.applyDDrawFix(, center.cbValue ? 1 : 0)
+    else fixapp.clearDDrawFix()
     SoundPlay(fixapp.workDirectory '\assets\mp3\30 Wololo.mp3')
 }
 centerGameWindow(Ctrl, *) {
@@ -228,19 +230,19 @@ applyFix(Ctrl, *) {
                 RunWait(Format('"{}" "{}" "{}"', workdir '\patcher.exe', gameLocation '\empires2.exe', workdir '\AoK_' gameVersions['aok'] '.patch'), , 'Hide')
                 FileDelete('*.ws')
                 FileMove(gameLocation '\empires2_' A_ScreenWidth 'x' A_ScreenHeight '.exe', gameLocation '\empires2.exe', 1)
-            } 
+            }
             If gameVersions['aoc'] ~= '1.0|1.0c|1.0e' {
                 RunWait(Format('"{}" "{}" "{}"', workdir '\patcher.exe', gameLocation '\age2_x1\age2_x1.exe', workdir '\AoC_' gameVersions['aoc'] '.patch'), , 'Hide')
                 FileDelete('*.ws')
                 FileMove(gameLocation '\age2_x1\age2_x1_' A_ScreenWidth 'x' A_ScreenHeight '.exe', gameLocation '\age2_x1\age2_x1.exe', 1)
-            } 
-            
+            }
+
             DirCopy(workdir '\Bmp', workdir '\', 1)
             RunWait(workdir "\ResizeFrames.exe", workdir '\', 'Hide')
 
             Loop Files workdir '\int*.bmp'
                 RunWait(Format('"{}" "{}"', workdir '\Bmp2Slp.exe', A_LoopFileFullPath), , 'Hide')
-            
+
             drsbuild := fixapp.workDirectory '\externals\drsbuild.exe'
             drsref := Format('{:05}', A_ScreenWidth) Format('{:04}', A_ScreenHeight)
 
@@ -258,6 +260,7 @@ applyFix(Ctrl, *) {
         }
         fixCleanUp()
         fixapp.applyUserFix(fixapp.fixLocation '\' fixVersion)
+
         If ddrAuto.cbValue {
             fixapp.applyDDrawFix(, center.cbValue ? 1 : 0)
         }

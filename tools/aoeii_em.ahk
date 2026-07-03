@@ -4,7 +4,6 @@
 #Include ..\Libs\Base.ahk
 #Include ..\libs\JSON.ahk
 
-
 aoeiiapp := Base()
 aoeiiapp.__Startup()
 gameapp := Game()
@@ -213,7 +212,7 @@ performGameAnalyze(*) {
     ; Check for missing files
     gameLink := 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/Age%20of%20Empires%20II.7z'
     files := JSON.LoadFile('gamefiles.json')
-    
+
     For file in files {
         if !FileExist(aoeiiapp.gameLocation '\' file['path']) {
             If !aoeiiapp.downloadPackage(gameLink, gameapp.gamePackage)

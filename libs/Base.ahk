@@ -6,7 +6,7 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '6.7'
+    version => '6.9'
     author => 'Smile'
     license => 'MIT'
     packageHashLink => 'https://raw.githubusercontent.com/chandoul/aoeii_em/refs/heads/master/tools/package.json'
@@ -228,7 +228,7 @@ Class Base {
     }
 
     downloadPackage(link, file, fileSize := 0, progressText := 0, progressBar := 0, update := 0) {
-        Static infoGui := 0
+        Static infoGui := InfoBar := infoText := 0
         if !update && FileExist(file) {
             Return 1
         }
@@ -237,7 +237,7 @@ Class Base {
             Return
         }
 
-        If !infoGui {
+        If !infoGui || !InfoBar || !infoText {
             infoGui := GuiEx(, 'Package Download')
             infoGui.initiate(, , 0)
             infoGui.OnEvent('Close', (*) => Reload())
@@ -398,6 +398,19 @@ Class Base {
         This.reviewWindowModeCompatibility()
         This.compatibilityClear(, This.gameLocation '\empires2.exe')
         This.compatibilityClear(, This.gameLocation '\age2_x1\age2_x1.exe')
+    }
+
+    clearDDrawFix(
+        paths := [
+            This.gameLocation '\ddraw.dll',
+            This.gameLocation '\age2_x1\ddraw.dll'
+        ]
+    ) {
+        For path in paths {
+            If FileExist(path) {
+                FileDelete(path)
+            }
+        }
     }
 
     reviewWindowModeCompatibility(
