@@ -133,6 +133,7 @@ updateDM(Ctrl, Info) {
         If FileExist(gameLocation '\Games\' dmGameLinker '.xml')
             FileDelete(gameLocation '\Games\' dmGameLinker '.xml')
     }
+    dmapp.applyDDrawFix()
     dmapp.reviewWindowModeCompatibility()
     ctrl.TextEx := StrReplace(ctrl.Text, 'ing...')
     dmapp.enableOptions([dmInstall, dmUninstall])
