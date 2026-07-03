@@ -6,7 +6,7 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '6.9'
+    version => '7.0'
     author => 'Smile'
     license => 'MIT'
     packageHashLink => 'https://raw.githubusercontent.com/chandoul/aoeii_em/refs/heads/master/tools/package.json'
@@ -239,7 +239,7 @@ Class Base {
 
         If !infoGui || !InfoBar || !infoText {
             infoGui := GuiEx(, 'Package Download')
-            infoGui.initiate(, , 0)
+            infoGui.initiate(0, , 0)
             infoGui.OnEvent('Close', (*) => Reload())
             infoText := infoGui.AddEdit('-E0x200 Border ReadOnly xm ym+20 w350 Center -VScroll BackgroundFFAD59', '...')
             InfoBar := infoGui.AddProgress('-smooth wp h18')
@@ -301,7 +301,7 @@ Class Base {
         If !infoGui {
             infoGui := GuiEx(, 'Package Extraction')
             infoGui.OnEvent('Close', terminate)
-            infoGui.initiate(, , 0)
+            infoGui.initiate(0, , 0)
             SplitPath(package, &name)
             size := FileGetSize(package, 'M')
             infoText := infoGui.AddEdit('-E0x200 Border ReadOnly xm ym+20 w350 Center r3 -VScroll BackgroundFFAD59',
@@ -420,7 +420,7 @@ Class Base {
         ]
     ) {
         For location in locations {
-            If !FileExist(location '\dsound.dll') || !FileExist(location '\ddraw.dll') {
+            If !FileExist(location '\ddraw.dll') {
                 Continue
             }
             If FileExist(location '\wndmode.dll') {

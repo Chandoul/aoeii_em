@@ -44,10 +44,6 @@ dmInstall := dmGui.addButtonEx('xp-170 yp+140 w225', 'Install', , updateDM)
 ;dmUpdateInstall := dmGui.addButtonEx('wp yp', 'Update and Install', , clearDM)
 dmUninstall := dmGui.addButtonEx('wp yp', 'Uninstall', , updateDM)
 
-progressText := dmGui.AddText('xp-326 yp+70 Center w469 Hidden BackgroundTrans')
-
-progressBar := dmGui.AddProgress('-Smooth wp Hidden')
-
 dmGui.showEx(, 1, dmapp)
 
 modsList.Choose(1)
@@ -96,7 +92,7 @@ updateDM(Ctrl, Info) {
                         dmapp.enableOptions([dmInstall, dmUninstall])
                         Return
                     }
-                    dmapp.downloadPackage(dmPackageLink, dmPackagePath, dmPackageSize, progressText, progressBar)
+                    dmapp.downloadPackage(dmPackageLink, dmPackagePath, dmPackageSize, , , 1)
                 }
                 If DirExist(gameLocation '\Games\' dmGameName)
                     DirDelete(gameLocation '\Games\' dmGameName, 1)
@@ -137,6 +133,7 @@ updateDM(Ctrl, Info) {
         If FileExist(gameLocation '\Games\' dmGameLinker '.xml')
             FileDelete(gameLocation '\Games\' dmGameLinker '.xml')
     }
+    dmapp.reviewWindowModeCompatibility()
     ctrl.TextEx := StrReplace(ctrl.Text, 'ing...')
     dmapp.enableOptions([dmInstall, dmUninstall])
     MsgBoxEx(dmName ' should be ' ctrl.Text 'ed by now!', dmapp.name, , 0x40, 5)
