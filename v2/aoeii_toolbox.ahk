@@ -3,6 +3,7 @@
 
 #Include <WebView2\WebView2>
 #Include <cJson>
+#Include <CNG>
 
 class aoeii_toolbox {
     static name => 'Age of Empires II Tools Box'
@@ -29,10 +30,12 @@ class aoeii_toolbox {
         about: 'Version: ' this.package['version'] ' | Humbly made by Smile 💚',
         tools: JSON.Dump(this.tools),
         click: (*) => SoundPlay('renderer\assets\50300.wav'),
-        loadPage: (name) => this.loadPage(name),
         message: (params*) => MsgBox(params*)
     }
 
+    /**
+     * contruct the webview2 interface and run the application
+     */
     static __New() {
         this.webUI.OnEvent('Close', (*) => (this.wvCore := this.wvController := this.wv := 0, ExitApp()))
         this.webUI.OnEvent('Size', (*) => this.wvController.Fill())
@@ -41,5 +44,18 @@ class aoeii_toolbox {
         this.wvCore.Navigate(A_ScriptDir '\renderer\index.html')
     }
 
-    static loadPage(name) => this.wvCore.Navigate(Format('{}\renderer\{}\index.html', A_ScriptDir, name))
+    /**
+     * generate a files hashing of a selected folder
+     */
+    static hashData() {
+        files := []
+        dir := FileSelect('D')
+        SplitPath(dir, &dirname, &parentdir)
+        Loop Files, dir '\*.*', 'R' {
+            path := StrReplace(A_LoopFileFullPath, dir '\')
+            md5 := Hash.File('MD5', A_LoopFileFullPath)
+            files.Push({ path: path, md5: md5 })
+        }
+        JSON.DumpFile(files, parentdir '\' dirname '.json', '`t')
+    }
 }
