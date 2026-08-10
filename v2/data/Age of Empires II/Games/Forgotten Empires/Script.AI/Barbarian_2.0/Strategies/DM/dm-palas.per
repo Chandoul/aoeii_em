@@ -1,0 +1,29 @@
+(defrule
+	(true)
+=>
+	(set-goal gl-strategy dm-palas)
+	(set-goal gl-dm-barracks-number 0)
+	(set-goal gl-dm-range-number 0)
+	(set-goal gl-dm-stable-number 12)
+	(set-goal gl-dm-workshop-number 0)
+	(set-goal gl-dm-food-to-sell 1000)
+	(set-goal gl-dm-wood-to-sell 4000)
+	(set-goal gl-dm-stone-to-sell 2000)
+	(set-goal gl-dm-allow-counter-halbs 1)
+	(set-goal gl-dm-allow-counter-skirms 0)
+	(set-goal gl-dm-main-unit paladin)
+	(disable-self)
+)
+
+#load-if-defined SPANISH-CIV
+(defrule
+	(game-time > 500)
+=>
+	(set-goal gl-strategy dm-pala-turtle)
+	(set-goal gl-dm-barracks-number 6)
+	(set-goal gl-dm-allow-counter-halbs 1)
+	(set-goal gl-dm-allow-counter-skirms 1)
+	(set-goal gl-dm-main-unit paladin)
+	(disable-self)
+)
+#end-if

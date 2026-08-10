@@ -1,0 +1,186 @@
+(defrule
+	(true)
+=>
+	(set-goal Team-milgoal 0)
+	(set-goal Team-tempgoal-1 0)
+	(set-goal Team-tempgoal-2 0)
+	(set-goal Team-mathgoal-1 0)
+	(set-goal Team-mathgoal-2 0))
+
+(defrule
+	(true)
+=>
+	(up-get-player-fact my-player-number military-population 0 Team-tempgoal-1)
+	(up-modify-goal Team-mathgoal-1 g:+ Team-tempgoal-1))
+(defrule
+	(player-valid 1)
+	(stance-toward 1 ally)
+(not	(player-number 1))
+=>
+	(up-get-player-fact 1 military-population 0 Team-tempgoal-1)
+	(up-modify-goal Team-mathgoal-1 g:+ Team-tempgoal-1))
+(defrule
+	(player-valid 2)
+	(stance-toward 2 ally)
+(not	(player-number 2))
+=>
+	(up-get-player-fact 2 military-population 0 Team-tempgoal-1)
+	(up-modify-goal Team-mathgoal-1 g:+ Team-tempgoal-1))
+(defrule
+	(player-valid 3)
+	(stance-toward 3 ally)
+(not	(player-number 3))
+=>
+	(up-get-player-fact 3 military-population 0 Team-tempgoal-1)
+	(up-modify-goal Team-mathgoal-1 g:+ Team-tempgoal-1))
+(defrule
+	(player-valid 4)
+	(stance-toward 4 ally)
+(not	(player-number 4))
+=>
+	(up-get-player-fact 4 military-population 0 Team-tempgoal-1)
+	(up-modify-goal Team-mathgoal-1 g:+ Team-tempgoal-1))
+(defrule
+	(player-valid 5)
+	(stance-toward 5 ally)
+(not	(player-number 5))
+=>
+	(up-get-player-fact 5 military-population 0 Team-tempgoal-1)
+	(up-modify-goal Team-mathgoal-1 g:+ Team-tempgoal-1))
+(defrule
+	(player-valid 6)
+	(stance-toward 6 ally)
+(not	(player-number 6))
+=>
+	(up-get-player-fact 6 military-population 0 Team-tempgoal-1)
+	(up-modify-goal Team-mathgoal-1 g:+ Team-tempgoal-1))
+(defrule
+	(player-valid 7)
+	(stance-toward 7 ally)
+(not	(player-number 7))
+=>
+	(up-get-player-fact 7 military-population 0 Team-tempgoal-1)
+	(up-modify-goal Team-mathgoal-1 g:+ Team-tempgoal-1))
+(defrule
+	(player-valid 8)
+	(stance-toward 8 ally)
+(not	(player-number 8))
+=>
+	(up-get-player-fact 8 military-population 0 Team-tempgoal-1)
+	(up-modify-goal Team-mathgoal-1 g:+ Team-tempgoal-1))
+
+(defrule
+	(player-valid 1)
+	(stance-toward 1 enemy)
+(not	(player-number 1))
+=>
+	(up-get-player-fact 1 military-population 0 Team-tempgoal-2)
+	(up-modify-goal Team-mathgoal-2 g:+ Team-tempgoal-2))
+(defrule
+	(player-valid 2)
+	(stance-toward 2 enemy)
+(not	(player-number 2))
+=>
+	(up-get-player-fact 2 military-population 0 Team-tempgoal-2)
+	(up-modify-goal Team-mathgoal-2 g:+ Team-tempgoal-2))
+(defrule
+	(player-valid 3)
+	(stance-toward 3 enemy)
+(not	(player-number 3))
+=>
+	(up-get-player-fact 3 military-population 0 Team-tempgoal-2)
+	(up-modify-goal Team-mathgoal-2 g:+ Team-tempgoal-2))
+(defrule
+	(player-valid 4)
+	(stance-toward 4 enemy)
+(not	(player-number 4))
+=>
+	(up-get-player-fact 2 military-population 0 Team-tempgoal-2)
+	(up-modify-goal Team-mathgoal-2 g:+ Team-tempgoal-2))
+(defrule
+	(player-valid 5)
+	(stance-toward 5 enemy)
+(not	(player-number 5))
+=>
+	(up-get-player-fact 5 military-population 0 Team-tempgoal-2)
+	(up-modify-goal Team-mathgoal-2 g:+ Team-tempgoal-2))
+(defrule
+	(player-valid 6)
+	(stance-toward 6 enemy)
+(not	(player-number 6))
+=>
+	(up-get-player-fact 6 military-population 0 Team-tempgoal-2)
+	(up-modify-goal Team-mathgoal-2 g:+ Team-tempgoal-2))
+(defrule
+	(player-valid 7)
+	(stance-toward 7 enemy)
+(not	(player-number 7))
+=>
+	(up-get-player-fact 7 military-population 0 Team-tempgoal-2)
+	(up-modify-goal Team-mathgoal-2 g:+ Team-tempgoal-2))
+(defrule
+	(player-valid 8)
+	(stance-toward 8 enemy)
+(not	(player-number 8))
+=>
+	(up-get-player-fact 8 military-population 0 Team-tempgoal-2)
+	(up-modify-goal Team-mathgoal-2 g:+ Team-tempgoal-2))
+
+(defrule
+	(true)
+=>
+	(up-modify-goal Team-mathgoal-1 g:- Team-mathgoal-2)
+	(up-modify-goal Team-milgoal g:= Team-mathgoal-1))
+
+(defrule
+	(strategic-number teamsuperiority != 0)
+	(up-compare-goal Team-milgoal <= 7)
+	(up-compare-goal Team-milgoal >= -7)
+=>
+	(set-strategic-number teamsuperiority 0))
+
+(defrule
+	(strategic-number teamsuperiority != 1)
+	(up-compare-goal Team-milgoal >= 8)
+ (or	(and	(current-age >= castle-age)
+		(up-compare-goal Team-milgoal <= 19))
+	(and	(current-age <= feudal-age)
+		(up-compare-goal Team-milgoal <= 11)))
+=>
+	(set-strategic-number teamsuperiority 1))
+
+(defrule
+	(strategic-number teamsuperiority != 2)
+	(up-compare-goal Team-milgoal <= 39)
+(or	(and	(current-age >= castle-age)
+		(up-compare-goal Team-milgoal >= 20))
+	(and	(current-age <= feudal-age)
+		(up-compare-goal Team-milgoal >= 12)))
+=>
+	(set-strategic-number teamsuperiority 2))
+
+(defrule
+	(strategic-number teamsuperiority != 3)
+	(up-compare-goal Team-milgoal >= 40)
+=>
+	(set-strategic-number teamsuperiority 3))
+
+(defrule
+	(strategic-number teamsuperiority != -1)
+	(up-compare-goal Team-milgoal <= -8)
+	(up-compare-goal Team-milgoal >= -19)
+=>
+	(set-strategic-number teamsuperiority -1))
+
+(defrule
+	(strategic-number teamsuperiority != -2)
+	(up-compare-goal Team-milgoal <= -20)
+	(up-compare-goal Team-milgoal >= -39)
+=>
+	(set-strategic-number teamsuperiority -2))
+
+(defrule
+	(strategic-number teamsuperiority != -3)
+	(up-compare-goal Team-milgoal <= -40)
+=>
+	(set-strategic-number teamsuperiority -3))

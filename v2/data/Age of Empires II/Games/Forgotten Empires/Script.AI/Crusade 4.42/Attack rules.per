@@ -1,0 +1,187 @@
+;******************************************************************************
+;
+; Attack Rules 
+;
+;******************************************************************************
+
+
+
+(defrule
+	(true)
+=>
+	(set-goal G-JOLLYGOAL 0)
+)
+
+; Enemy castles and towers make attacks harder
+(defrule
+	;(strategic-number G-MILITARY-SUPERIORITY < 2)
+	(military-population < 50)
+	(population < SUB-TOP-POPULATION) ; I've added this to play in low pop cap games
+	(or	(building-type-count siege-workshop == 0)
+		(current-age < castle-age)
+	)
+	(unit-type-count battering-ram-line == 0)
+	(unit-type-count bombard-cannon == 0)
+	(strategic-number G-TREBUCHET == 0)
+	(or	(players-building-type-count any-enemy castle >= 1)
+		(or	(players-building-type-count any-enemy bombard-tower >= 1)
+			(and	(military-population < 10)
+				(players-building-type-count any-enemy watch-tower >= 1)
+			)
+		)
+	)
+=>
+	(set-goal G-JOLLYGOAL 1)
+)
+
+; Our own forward towers make attacks easier
+(defrule
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(goal G-JOLLYGOAL 0)
+	(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	)
+	(military-population >= 10)
+	(players-military-population every-enemy < 30)
+	(building-type-count-total watch-tower-line >= 2)
+	(or	(building-type-count-total watch-tower-line >= 3)
+		(players-military-population every-enemy < 20)
+	)
+	(goal G-TRUSH-AGRESSIVENESS 1)
+=>
+	(set-goal G-TSA 1)
+)
+
+; I'll avoid to attack in age transitions or early ages to wait to army upgrades
+(defrule
+	(strategic-number G-MILITARY-SUPERIORITY >= 1)
+	(or	(goal G-JOLLYGOAL 0)
+		(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	)
+	(or	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+		(or	(goal G-TSA 1)
+			(nor	(or	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-FEUDAL)
+					(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-CASTLE)
+				)
+				(or	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-IMPERIAL)
+					(current-age-time < 90)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-TSA 1)
+)
+
+(defrule
+	(game-time > 5)
+	(taunt-detected any-ally 12) ; Taunt: "I'm being attacked"
+	(strategic-number G-WEAKER-ENEMY >= -1)
+	(or	(strategic-number G-AGE-SUPERIORITY > GV-AGE-SUPERIORITY-EQUAL)
+		(strategic-number G-WEAKER-ENEMY >= 0)
+	)
+	(or	(military-population >= 10)
+		(players-military-population any-enemy < 2)
+	)
+=>
+	(acknowledge-taunt this-any-ally 12)
+	(chat-to-player my-player-number "Telling my ally that I'll help its defense")
+	(chat-to-player every-ally "1Ok, I'll attack your invader to help your defense.")
+	(set-goal G-TSA 1)
+	(set-goal G-COOPERATION 1)
+)
+
+(defrule
+	(game-time > 5)
+	(taunt-detected any-ally 31) ; Taunt: "Attack our enemy"
+	(strategic-number G-WEAKER-ENEMY >= -1)
+	(or	(strategic-number G-AGE-SUPERIORITY > GV-AGE-SUPERIORITY-EQUAL)
+		(strategic-number G-WEAKER-ENEMY >= 0)
+	)
+	(or	(military-population >= 10)
+		(players-military-population any-enemy < 2)
+	)
+=>
+	(acknowledge-taunt this-any-ally 31)
+	(chat-to-player my-player-number "Telling my ally that I'll help its attack")
+	(chat-to-player every-ally "1Ok, I'll attack your invader to help your attack.")
+	(set-goal G-TSA 1)
+	(set-goal G-COOPERATION 1)
+)
+
+(defrule
+	(game-time > 5)
+	(taunt-detected any-ally 222) ; Taunt: "Attack our enemy"
+	(strategic-number G-WEAKER-ENEMY >= -1)
+	(or	(strategic-number G-AGE-SUPERIORITY > GV-AGE-SUPERIORITY-EQUAL)
+		(strategic-number G-WEAKER-ENEMY >= 0)
+	)
+	(or	(military-population >= 10)
+		(players-military-population any-enemy < 2)
+	)
+=>
+	(acknowledge-taunt this-any-ally 222)
+	(chat-to-player my-player-number "Telling my ally that I'll help its attack")
+	(chat-to-player every-ally "1Ok, I'll attack your invader to help your attack.")
+	(set-goal G-TSA 1)
+	(set-goal G-COOPERATION 1)
+)
+
+
+(defrule
+	(or	(taunt-detected any-ally 12)
+		(or	(taunt-detected any-ally 31)
+			(taunt-detected any-ally 222)
+		)
+	)
+=>
+	(acknowledge-taunt this-any-ally 12)
+	(acknowledge-taunt this-any-ally 31)
+	(acknowledge-taunt this-any-ally 222)
+	(chat-to-player my-player-number "Telling my ally that I can't hep it for the moment")
+	(chat-to-player every-ally "2I'm sorry, but I'm not too strong now to help you. Request my help again later if you wish.")
+)
+
+
+(defrule
+	(strategic-number G-MILITARY-SUPERIORITY <= 0)
+	(or	(strategic-number G-WEAKER-ENEMY < -1)
+		(goal G-COOPERATION 0)
+	)
+	(goal G-TSA 1)
+=>
+	(set-goal G-TSA 0)
+	(set-goal G-ATTACK-PHASE GV-ATTACK-PHASE-0)
+	(set-goal G-COOPERATION 0)
+	(set-strategic-number sn-number-attack-groups 0)
+	(set-strategic-number sn-minimum-attack-group-size 0)
+   	(set-strategic-number sn-maximum-attack-group-size 0)
+	(set-strategic-number sn-maximum-town-size 11)
+	;(set-strategic-number sn-percent-attack-soldiers 0)
+	(chat-to-allies "We lost military superiority.  Stopping Attack.")
+)
+
+(defrule
+	(not(goal G-TSA 1))
+	(or	(town-under-attack)
+		(enemy-buildings-in-town)
+	)
+	(timer-triggered T-ATTACK-TEAM)
+=>
+	;(disable-timer T-ATTACK-TEAM)
+	(enable-timer T-ATTACK-TEAM TV-ATTACK-TEAM)
+	(chat-to-player my-player-number "Request my allies to defend my town")
+	(chat-to-player every-ally "12I'm being attacked now. Please, defend me or attack our enemy's base.")
+	(chat-to-player every-ally "222")
+)
+
+(defrule
+	(goal G-TSA 1)
+	(timer-triggered T-ATTACK-TEAM)
+=>
+	;(disable-timer T-ATTACK-TEAM)
+	(enable-timer T-ATTACK-TEAM TV-ATTACK-TEAM)
+	(chat-to-player my-player-number "Request my allies to coordinate attacks against our enemies.")
+	(chat-to-player every-ally "31I'm attacking an enemy. My attack will be stronger if you coordinate your army with mine.")
+	(chat-to-player every-ally "222")
+)

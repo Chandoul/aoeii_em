@@ -1,0 +1,1408 @@
+;starting goals
+(defrule
+	(true)
+=>
+	(set-goal military-parity YES)	;goal 3
+	(set-goal attack-control NO)	;goal 4
+	(set-goal resource-needed NO)	;goal 5
+
+	(set-goal rush-control NOTICE)	;goal 6
+	(set-goal secondary-build NO)	;goal 8
+	(set-goal combat-arm NOTICE)	;goal 11
+
+	(set-goal soldiers-available NO);goal 10
+	(set-goal combat-supp UNIT20)	;goal 12
+	(set-goal attack-enabled YES)	;goal 13
+	(set-goal age-advancement NO)	;goal 14
+
+	(disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(set-goal upgrade-conflict NO)	;goal 16
+	(set-goal wonder-attempt MAYBE)	;goal 20
+	(set-goal sea-owner NO)			;goal 23
+	(set-goal enemy-soldiers NO)	;goal 26
+
+	(set-goal get-mad NO)			;goal 28
+	(set-goal siege-available YES)	;goal 34
+	(disable-self)
+)
+
+;=================================================================================
+; fix for attacking groups not responding - Elite Raider
+;=================================================================================
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-ignore-attack-group-under-attack 0)
+	(disable-self)
+)
+
+;starting loads
+
+(load "STD AI DM FIX\elite petersen civ loads")
+(load "STD AI DM FIX\elite petersen difficulty loads")
+(load "STD AI DM FIX\elite petersen gather")
+
+(load "STD AI DM FIX\elite petersen upgrades")
+(load "STD AI DM FIX\elite petersen castle")
+(load "STD AI DM FIX\elite petersen full tech")
+
+(load "STD AI DM FIX\elite petersen rush")
+
+
+;========================DARK AGE RULES
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-coop-share-information 1)
+	(set-strategic-number sn-coop-share-attacking 1)
+	(set-strategic-number sn-maximum-town-size 15)
+
+	(set-strategic-number sn-task-ungrouped-soldiers 0)
+	(set-strategic-number sn-zero-priority-distance 250)
+	(set-strategic-number sn-blot-exploration-map 0)
+
+	(set-strategic-number sn-attack-intelligence 1)
+	(set-strategic-number sn-gather-defense-units 1)
+	(set-strategic-number sn-defense-distance 2)
+
+	(set-strategic-number sn-maximum-gaia-attack-response 2)
+
+;=================================================================================
+; fix for attacking groups not responding - Elite Raider
+;=================================================================================
+
+;	(set-strategic-number sn-ignore-attack-group-under-attack 0)
+
+;	(set-strategic-number sn-minimum-boar-hunt-group-size 5)
+	(disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(set-strategic-number sn-gold-dropsite-distance 3)
+	(set-strategic-number sn-retask-gather-amount 20)
+	(set-strategic-number sn-camp-max-distance 20)
+
+	(set-strategic-number sn-mill-max-distance 20)
+	(set-strategic-number sn-enemy-sighted-response-distance 10)
+	(set-strategic-number sn-group-form-distance 10)
+
+	(set-strategic-number sn-allow-civilian-defense 1)
+	(set-strategic-number sn-garrison-rams 1)
+	(disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-town-defend-priority 1)
+	(set-strategic-number sn-gold-defend-priority 2)
+	(set-strategic-number sn-stone-defend-priority 3)
+
+	(set-strategic-number sn-forage-defend-priority 0)
+	(set-strategic-number sn-relic-defend-priority 0)
+	(set-strategic-number sn-cap-civilian-builders 8)
+
+	(set-strategic-number sn-cap-civilian-gatherers 100)
+	(disable-self)
+)
+
+(defrule
+	(not (map-type nomad) )
+=>
+	(set-strategic-number sn-minimum-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-maximum-wood-drop-distance 20)
+	(set-strategic-number sn-maximum-food-drop-distance 8)
+	(set-strategic-number sn-maximum-hunt-drop-distance 30)
+
+	(set-strategic-number sn-maximum-fish-boat-drop-distance 30)
+	(set-strategic-number sn-maximum-gold-drop-distance 20)
+	(set-strategic-number sn-maximum-stone-drop-distance 20)
+	(disable-self)
+)
+
+#load-if-defined KING-OF-THE-HILL
+
+(defrule
+	(hold-koh-ruin)
+=>
+	(set-strategic-number sn-gather-idle-soldiers-at-center 1)
+)
+
+(defrule
+	(not (hold-koh-ruin) )
+	(military-population < twenty-percent-pop)
+=>
+	(set-strategic-number sn-gather-idle-soldiers-at-center 0)
+)
+
+(defrule
+	(not (hold-koh-ruin) )
+	(military-population > thirty-percent-pop)
+=>
+	(set-strategic-number sn-gather-idle-soldiers-at-center 1)
+)
+
+#load-if-not-defined DIFFICULTY-EASIEST
+#load-if-not-defined DIFFICULTY-EASY
+#load-if-not-defined DIFFICULTY-MODERATE
+(defrule
+	(current-age == dark-age)
+=>
+	(cc-add-resource wood 100)
+	(cc-add-resource food 100)
+	(cc-add-resource gold 100)
+	(cc-add-resource stone 100)
+	(disable-self)
+)	
+
+(defrule
+	(current-age == feudal-age)
+=>
+	(cc-add-resource wood 200)
+	(cc-add-resource food 200)
+	(cc-add-resource gold 200)
+	(cc-add-resource stone 200)
+	(disable-self)
+)	
+
+(defrule
+	(current-age == castle-age)
+=>
+	(cc-add-resource wood 500)
+	(cc-add-resource food 500)
+	(cc-add-resource gold 500)
+	(cc-add-resource stone 500)
+	(disable-self)
+)	
+
+(defrule
+	(current-age == imperial-age)
+=>
+	(cc-add-resource wood 1000)
+	(cc-add-resource food 1000)
+	(cc-add-resource gold 1000)
+	(cc-add-resource stone 1000)
+	(disable-timer t-chatmore)
+	(enable-timer t-chatmore 1800)
+	(disable-self)
+)	
+
+(defrule
+	(timer-triggered t-chatmore)
+=>
+	(cc-add-resource wood 500)
+	(cc-add-resource food 500)
+	(cc-add-resource gold 500)
+	(cc-add-resource stone 500)
+	(disable-timer t-chatmore)
+	(enable-timer t-chatmore 1200)
+)
+
+#end-if
+#end-if
+#end-if
+#end-if
+
+;start exploring
+(defrule
+	(not (map-type nomad) )
+	(or
+		(game-time > 600)
+		(and
+			(starting-resources < high-resources)
+			(difficulty > hardest)
+		)
+	)
+=>
+	(set-strategic-number sn-percent-civilian-builders 15)
+	(set-strategic-number sn-percent-civilian-gatherers 85)
+	(disable-self)
+)
+
+(defrule
+	(not (map-type nomad) )
+	(or
+		(starting-resources == high-resources)
+		(difficulty == hardest)
+	)
+=>
+	(set-strategic-number sn-percent-civilian-builders 85)
+	(set-strategic-number sn-percent-civilian-gatherers 15)
+	(disable-self)
+)
+
+; explore a bit at need
+(defrule
+	(not (map-type nomad) )
+	(game-time < 600)
+	(military-population == 0)
+	(civilian-population < 15)
+	(or
+		(dropsite-min-distance food == -1)
+		(civilian-population > 10)
+	)
+=>
+	(set-strategic-number sn-minimum-civilian-explorers 1)
+	(set-strategic-number sn-cap-civilian-explorers 1)
+	(set-strategic-number sn-percent-civilian-explorers 5)
+	(set-strategic-number sn-percent-civilian-builders 15)
+	(set-strategic-number sn-percent-civilian-gatherers 80)
+)
+
+; Shut the explorers off when we get enough food
+(defrule
+	(not (map-type nomad) )
+	(strategic-number sn-percent-civilian-explorers > 0)
+	(or
+		(or
+			(game-time > 900)
+			(dropsite-min-distance food > -1)
+		)
+		(military-population > 0)
+	)
+=>
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-minimum-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-builders 15)
+	(set-strategic-number sn-percent-civilian-gatherers 85)
+)
+
+(defrule
+	(or
+		(players-current-age any-enemy > feudal-age)
+		(players-military-population any-enemy > 2)
+	)
+=>
+	(set-strategic-number sn-allow-civilian-defense 0)
+	(disable-self)
+)
+
+; villager count
+(defrule
+	(current-age == dark-age)
+	(difficulty <= hard)
+	(unit-type-count-total villager < 27)
+	(or
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(current-age == dark-age)
+	(difficulty <= hard)
+	(civilian-population < civ-dark)
+	(nor
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(current-age == dark-age)
+	(difficulty == moderate)
+	(civilian-population < civ-dark-mod)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+;maintain housing
+(defrule
+	(building-type-count house == 0)
+	(building-type-count town-center > 0)
+	(can-build house)
+=>
+	(build house)
+)
+
+(defrule
+	(building-type-count town-center > 0)
+	(difficulty <= moderate)
+	(housing-headroom < 5)
+	(population-headroom > 0)
+	(can-build house)
+=>
+	(build house)
+)
+
+#load-if-defined DIFFICULTY-EASIEST
+(defrule
+	(building-type-count town-center > 0)
+	(military-population < 10)
+	(housing-headroom < 5)
+	(population-headroom > 0)
+	(can-build house)
+=>
+	(build house)
+)
+
+(defrule
+	(unit-type-count-total villager <= 5)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+#end-if
+
+#load-if-defined DIFFICULTY-EASY
+(defrule
+	(building-type-count town-center > 0)
+	(military-population < civ-dark-rush)
+	(housing-headroom < 5)
+	(population-headroom > 0)
+	(can-build house)
+=>
+	(build house)
+)
+
+(defrule
+	(unit-type-count-total villager <= 10)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+#end-if
+
+;maintain a town center
+(defrule
+	(not (map-type nomad) )
+	(building-type-count town-center < 1)
+	(can-build town-center)
+=>
+	(build town-center)
+)
+
+; Build a mill when we find food
+(defrule
+	(building-type-count-total mill == 0)
+	(building-type-count town-center > 0)
+	(or
+		(building-type-count-total house > 0)
+		(civ-selected hun)
+	)
+	(or
+		(resource-found food)
+		(or
+			(map-type scandanavia)
+			(game-time > 450)
+		)
+	)
+	(can-build mill)
+=>
+	(build mill)
+)
+
+(defrule
+	(game-time > 90)
+	(resource-found wood)
+	(building-type-count town-center > 0)
+	(building-type-count-total mill > 0)
+	(or
+		(or
+			(building-type-count-total house > 1)
+			(civ-selected chinese)
+		)
+		(or
+			(civ-selected hun)
+			(building-type-count castle > 0)
+		)
+	)
+	(building-type-count-total lumber-camp == 0)
+	(can-build lumber-camp)
+=>
+	(build lumber-camp)
+)
+
+;build farms
+(defrule
+	(building-type-count-total lumber-camp > 0)
+	(building-type-count-total mill > 0)
+	(idle-farm-count <= 1)
+	(sheep-and-forage-too-far)
+	(can-build farm)
+	(not (goal wonder-attempt YES) )
+	(or
+		(wood-amount > 400)
+		(and
+			(building-type-count-total market > 0)
+			(building-type-count-total blacksmith > 0)
+		)
+	)
+=>
+	(build farm)
+)
+
+(defrule
+	(building-type-count-total lumber-camp > 0)
+	(building-type-count-total mill > 0)
+	(can-build farm)
+	(building-type-count-total farm < 10)
+	(not (goal wonder-attempt YES) )
+	(or
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(build farm)
+)
+
+(defrule
+	(building-type-count-total barracks == 0)
+	(can-build-with-escrow barracks)
+	(building-type-count-total lumber-camp > 0)
+	(building-type-count-total mill > 0)
+	(nor
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(release-escrow wood)
+	(build barracks)
+)
+
+(defrule
+	(building-type-count-total barracks == 1)
+	(can-build-with-escrow barracks)
+	(goal rush-control RUSHING)
+	(unit-type-count villager > civ-dark-mod)
+	(not (goal 1 10) )
+=>
+	(release-escrow wood)
+	(build-forward barracks)
+)
+
+(defrule
+	(current-age == dark-age)
+	(building-type-count-total mining-camp == 0)
+	(resource-found gold)
+	(current-age == dark-age)
+	(civilian-population >= 10)
+	(can-build mining-camp)
+	(nor 
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(build mining-camp)
+)
+
+
+;=======================FEUDAL AGE RULES
+(defrule
+	(current-age >= feudal-age)
+=>
+	(set-strategic-number sn-maximum-town-size feudal-town-size)
+	(set-strategic-number sn-percent-civilian-builders 15)
+	(set-strategic-number sn-percent-civilian-gatherers 85)
+
+	(set-strategic-number sn-camp-max-distance 35)
+	(set-strategic-number sn-mill-max-distance 35)
+	(set-strategic-number sn-group-form-distance 20)
+
+	(set-strategic-number sn-enemy-sighted-response-distance 10)
+
+;=================================================================================
+; fix for attacking groups not responding - Elite Raider
+;=================================================================================
+
+;	(set-strategic-number sn-ignore-attack-group-under-attack 1)
+	(disable-self)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(gold-amount < 200)
+	(can-sell-commodity stone)
+	(commodity-selling-price stone >= 50)
+	(or
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(sell-commodity stone)
+)
+
+(defrule
+	(current-age >= feudal-age)
+=>
+	(set-goal combat-supp UNIT20)
+	(set-goal age-advancement NO)
+	(enable-timer t-production 1)
+	(enable-timer t-lumbercamp 1)
+	(disable-timer t-ageup)
+	(disable-self)
+)
+
+(defrule
+	(building-type-count-total barracks == 0)
+	(building-type-count-total lumber-camp > 0)
+	(building-type-count-total mill > 0)
+	(can-build-with-escrow barracks)
+	(or
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+	(or
+		(difficulty > moderate)
+		(building-type-count-total town-center > 1)
+	)
+=>
+	(release-escrow wood)
+	(build barracks)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(current-age-time < 600)
+	(wood-amount > 500)
+=>
+	(set-strategic-number sn-percent-civilian-builders 50)
+	(set-strategic-number sn-percent-civilian-gatherers 50)
+	(disable-self)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(current-age-time >= 600)
+=>
+	(set-strategic-number sn-percent-civilian-builders 15)
+	(set-strategic-number sn-percent-civilian-gatherers 85)
+	(disable-self)
+)
+
+; villager count
+(defrule
+	(current-age == feudal-age)
+	(difficulty <= hard)
+	(unit-type-count-total villager < 29)
+	(or
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(difficulty <= hard)
+	(civilian-population < civ-feudal)
+	(nor
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(difficulty == moderate)
+	(civilian-population < civ-feudal-mod)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+;periodically task idle guys, so they don't clog up production
+(defrule
+	(timer-triggered t-lumbercamp)
+	(strategic-number sn-task-ungrouped-soldiers == 0)
+=>
+	(set-strategic-number sn-task-ungrouped-soldiers 1)
+)
+
+(defrule
+	(timer-triggered t-lumbercamp)
+	(strategic-number sn-task-ungrouped-soldiers == 1)
+=>
+	(set-strategic-number sn-task-ungrouped-soldiers 0)
+)
+
+; Build camps at need
+(defrule
+	(timer-triggered t-lumbercamp)
+	(current-age >= feudal-age)
+	(resource-found wood)
+	(dropsite-min-distance wood > 5)
+	(can-build lumber-camp)
+=>
+	(build lumber-camp)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(resource-found gold)
+	(building-type-count-total mining-camp == 0)
+	(can-build-with-escrow mining-camp)
+	(stone-amount < 100)
+	(gold-amount < 200)
+	(or
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(release-escrow wood)
+	(build mining-camp)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(resource-found gold)
+	(building-type-count-total mining-camp == 0)
+	(can-build-with-escrow mining-camp)
+	(or
+		(goal age-advancement NOTICE)
+		(nor
+			(goal rush-control CASTLE)
+			(goal rush-control IMPERIAL)
+		)
+	)
+=>
+	(release-escrow wood)
+	(build mining-camp)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(resource-found stone)
+	(building-type-count-total mining-camp == 1)
+	(can-build-with-escrow mining-camp)
+	(or
+		(goal age-advancement NOTICE)
+		(nor
+			(goal rush-control CASTLE)
+			(goal rush-control IMPERIAL)
+		)
+	)
+=>
+	(release-escrow wood)
+	(build mining-camp)
+)
+
+(defrule
+	(timer-triggered t-lumbercamp)
+	(current-age >= feudal-age)
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith > 0)
+	(building-type-count-total mining-camp >= 1)
+	(building-type-count-total mining-camp < mining-count)
+	(resource-found gold)
+	(resource-found stone)
+	(or
+		(dropsite-min-distance gold > 7)
+		(dropsite-min-distance stone > 7)
+	)
+	(can-build mining-camp)
+=>
+	(build mining-camp)
+)
+
+(defrule
+	(timer-triggered t-lumbercamp)
+=>
+	(disable-timer t-lumbercamp)
+	(enable-timer t-lumbercamp 30)
+)
+
+(defrule
+	(building-type-count-total archery-range == 0)
+	(or
+		(goal rush-control CASTLE)
+		(goal rush-control RUSHING)
+	)
+	(or
+		(or
+			(goal combat-arm CAVARCHER)
+			(goal combat-arm ARCHER)
+		)
+		(or
+			(goal pre-unique-arm CAVARCHER)
+			(goal pre-unique-arm ARCHER)
+		)
+	)
+	(can-build-with-escrow archery-range)
+=>
+	(release-escrow wood)
+	(build archery-range)
+)
+
+(defrule
+	(goal combat-arm LIGHTCAV)
+	(building-type-count-total stable == 0)
+	(or
+		(goal rush-control CASTLE)
+		(goal rush-control RUSHING)
+	)
+	(can-build-with-escrow stable)
+=>
+	(release-escrow wood)
+	(build stable)
+)
+
+;feudal age market -- always keep a market handy!
+(defrule
+	(building-type-count-total market == 0)
+	(can-build-with-escrow market)
+=>
+	(release-escrow wood)
+	(build market)
+)
+
+;get a blacksmith
+(defrule
+	(building-type-count-total market > 0)
+	(can-build-with-escrow blacksmith)
+	(building-type-count-total blacksmith == 0)
+	(or
+		(building-type-count-total barracks > 0)
+		(or
+			(goal rush-control CASTLE)
+			(goal rush-control IMPERIAL)
+		)
+	)
+=>
+	(release-escrow wood)
+	(build blacksmith)
+)
+
+(defrule
+	(building-type-count-total market > 0)
+	(building-type-count-total archery-range == 0)
+	(not (goal rush-control IMPERIAL) )
+	(or
+		(goal combat-arm CAVARCHER)
+		(goal combat-arm ARCHER)
+	)
+	(can-build-with-escrow archery-range)
+=>
+	(release-escrow wood)
+	(build archery-range)
+)
+
+(defrule
+	(building-type-count-total market > 0)
+	(building-type-count-total archery-range == 0)
+	(not (goal rush-control IMPERIAL) )
+	(or
+		(or
+			(goal combat-supp CAVARCHER)
+			(goal combat-supp ARCHER)
+		)
+		(or
+			(goal pre-unique-arm CAVARCHER)
+			(goal pre-unique-arm ARCHER)
+		)
+	)
+	(can-build-with-escrow archery-range)
+=>
+	(release-escrow wood)
+	(build archery-range)
+)
+
+(defrule
+	(building-type-count-total market > 0)
+	(building-type-count-total stable == 0)
+	(not (goal rush-control IMPERIAL) )
+	(or
+		(or
+			(goal combat-supp CAVALRY)
+			(goal combat-supp LIGHTCAV)
+		)
+		(or
+			(goal pre-unique-arm CAVALRY)
+			(goal pre-unique-arm LIGHTCAV)
+		)
+	)
+	(can-build-with-escrow stable)
+=>
+	(release-escrow wood)
+	(build stable)
+)
+
+(defrule
+	(building-type-count-total market > 0)
+	(building-type-count-total stable == 0)
+	(not (goal rush-control IMPERIAL) )
+	(or
+		(goal combat-arm CAVALRY)
+		(goal combat-arm LIGHTCAV)
+	)
+	(can-build-with-escrow stable)
+=>
+	(release-escrow wood)
+	(build stable)
+)
+(defrule
+	(current-age >= feudal-age)
+	(current-age-time > 300)
+	(building-type-count-total mill < feudal-mill-count)
+	(wood-amount > 400)
+	(can-build mill)
+=>
+	(build mill)
+)
+
+(defrule
+	(cc-players-building-type-count any-ally market > 0)
+	(unit-type-count-total trade-cart == 0)
+	(wood-amount > 300)
+	(gold-amount > 300)
+	(nor
+		(town-under-attack)
+		(and
+			(goal 1 10)
+			(not (map-type team-islands) )
+		)
+	)
+	(can-train trade-cart)
+=>
+	(train trade-cart)
+	(disable-self)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(cc-players-building-type-count any-ally market > 0)
+	(unit-type-count-total trade-cart == 0)
+	(wood-amount > 300)
+	(gold-amount > 300)
+	(nor
+		(town-under-attack)
+		(and
+			(goal 1 10)
+			(not (map-type team-islands) )
+		)
+	)
+	(can-train trade-cart)
+=>
+	(train trade-cart)
+	(disable-self)
+)
+
+(defrule
+	(cc-players-building-type-count any-ally dock >= 1)
+	(unit-type-count-total trade-cog == 0)
+	(wood-amount > 300)
+	(gold-amount > 300)
+	(not (goal 1 0) )
+	(can-train trade-cog)
+=>
+	(train trade-cog)
+	(disable-self)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(cc-players-building-type-count any-ally dock >= 1)
+	(unit-type-count-total trade-cog == 0)
+	(wood-amount > 300)
+	(gold-amount > 300)
+	(not (goal 1 0) )
+	(can-train trade-cog)
+=>
+	(train trade-cog)
+	(disable-self)
+)
+
+;======================== CASTLE AGE RULES
+;see age advancement rules for strategic number-settings
+(defrule
+	(current-age >= castle-age)
+=>
+	(set-strategic-number sn-sentry-distance 4)
+	(set-strategic-number sn-maximum-town-size castle-town-size)
+	(set-strategic-number sn-percent-civilian-builders 15)
+
+	(set-strategic-number sn-percent-civilian-gatherers 85)
+	(set-strategic-number sn-blot-exploration-map 1)
+	(set-strategic-number sn-camp-max-distance 50)
+
+	(set-strategic-number sn-mill-max-distance 50)
+	(set-strategic-number sn-group-form-distance 30)
+	(set-strategic-number sn-enemy-sighted-response-distance 15)
+
+	(set-goal age-advancement NO)
+	(disable-timer t-ageup)
+
+	(disable-self)
+)
+
+;second TC
+(defrule
+	(current-age >= castle-age)
+	(difficulty <= moderate)
+	(building-type-count-total town-center < 2)
+	(can-build-with-escrow town-center)
+=>
+	(release-escrow wood)
+	(release-escrow stone)
+	(build town-center)
+)
+
+; villager count
+(defrule
+	(current-age == castle-age)
+	(difficulty <= moderate)
+	(civilian-population < civ-castle)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+;Siege Workshop
+(defrule
+	(building-type-count-total siege-workshop == 0)
+	(or
+		(difficulty > moderate)
+		(building-type-count-total town-center > 1)
+	)
+	(can-build-with-escrow siege-workshop)
+=>
+	(release-escrow wood)
+	(build siege-workshop)
+)
+
+;University & maintain it
+(defrule
+	(building-type-count-total university == 0)
+	(or
+		(building-type-count-total siege-workshop > 0)
+		(wood-amount > 500)
+	)
+	(or
+		(difficulty > moderate)
+		(building-type-count-total town-center > 1)
+	)
+	(can-build-with-escrow university)
+=>
+	(release-escrow wood)
+	(build university)
+)
+
+; Build a monastery
+(defrule
+	(building-type-count-total monastery == 0)
+	(or
+		(goal monk-rating GOOD)
+		(or
+			(building-type-count-total siege-workshop > 0)
+			(wood-amount > 500)
+		)
+	)
+	(not (goal monk-rating NO) )
+	(or
+		(difficulty > moderate)
+		(building-type-count-total town-center > 1)
+	)
+	(can-build-with-escrow monastery)
+=>
+	(release-escrow wood)
+	(build monastery)
+)
+
+(defrule
+	(goal monk-rating GOOD)
+	(building-type-count-total monastery < 2)
+	(building-type-count-total siege-workshop > 0)
+	(can-build monastery)
+=>
+	(build monastery)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(current-age-time > 300)
+	(building-type-count-total mill < castle-mill-count)
+	(wood-amount > 500)
+	(or
+		(difficulty > moderate)
+		(building-type-count-total town-center > 1)
+	)
+	(can-build mill)
+=>
+	(build mill)
+)
+
+;=============================IMPERIAL AGE RULES
+;see age advancement rules for strategic number-settings
+(defrule
+	(current-age == imperial-age)
+=>
+	(set-strategic-number sn-maximum-town-size imperial-town-size)
+	(set-strategic-number sn-percent-civilian-builders 15)
+	(set-strategic-number sn-percent-civilian-gatherers 85)
+	(set-strategic-number sn-camp-max-distance 50)
+
+	(set-strategic-number sn-mill-max-distance 50)
+	(set-strategic-number sn-enemy-sighted-response-distance 15)
+
+	(set-goal age-advancement NO)
+	(disable-self)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(difficulty <= moderate)
+	(or
+		(and
+			(current-age-time < 1800)
+			(civilian-population < civ-castle)
+		)
+		(civilian-population < civ-feudal)
+	)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(population >= pop-cap)
+	(or
+		(and
+			(current-age-time < 1800)
+			(civilian-population > civ-castle)
+		)
+		(civilian-population > civ-feudal)
+	)
+	(not (goal rush-control BOOMING) )
+=>
+	(delete-unit villager)
+)	
+
+;another town center?
+(defrule
+	(current-age == imperial-age)
+	(difficulty <= hard)
+	(building-type-count town-center < town-center-count)
+	(wood-amount > 400)
+	(stone-amount > 100)
+	(can-build town-center)
+=>
+	(build town-center)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(difficulty <= hard)
+	(current-age-time > 300)
+	(building-type-count-total mill < imperial-mill-count)
+	(wood-amount > 700)
+	(can-build mill)
+=>
+	(build mill)
+)
+
+;****************
+;forward builders!
+; start the run-through for island maps
+(defrule
+	(goal 1 10)
+	(goal rush-control RUSHING)
+	(difficulty <= moderate)
+	(building-type-count barracks == 1)
+	(building-type-count-total blacksmith > 0)
+	(strategic-number sn-number-forward-builders == 0)
+	(unit-type-count villager >= civ-dark-rush)
+	(goal combat-arm INFANTRY)
+=>
+	(set-strategic-number sn-number-forward-builders 1)
+)
+
+(defrule
+	(goal 1 10)
+	(goal rush-control RUSHING)
+	(difficulty <= moderate)
+	(building-type-count stable == 1)
+	(building-type-count-total university > 0)
+	(strategic-number sn-number-forward-builders == 0)
+	(unit-type-count villager >= civ-dark-rush)
+	(or
+		(goal combat-arm CAVALRY)
+		(goal combat-arm LIGHTCAV)
+	)
+=>
+	(set-strategic-number sn-number-forward-builders 1)
+)
+
+(defrule
+	(goal 1 10)
+	(goal rush-control RUSHING)
+	(difficulty <= moderate)
+	(building-type-count archery-range == 1)
+	(building-type-count-total market > 0)
+	(strategic-number sn-number-forward-builders == 0)
+	(unit-type-count villager >= civ-dark-rush)
+	(or
+		(goal combat-arm CAVARCHER)
+		(goal combat-arm ARCHER)
+	)
+=>
+	(set-strategic-number sn-number-forward-builders 1)
+)
+
+(defrule
+	(goal 1 10)
+	(goal rush-control RUSHING)
+	(difficulty <= hard)
+	(building-type-count siege-workshop == 1)
+	(strategic-number sn-number-forward-builders == 0)
+	(unit-type-count villager >= civ-dark-rush)
+	(or
+		(or
+			(building-type-count-total archery-range > 1)
+			(building-type-count-total castle > 1)
+		)
+		(or
+			(building-type-count-total barracks > 1)
+			(building-type-count-total stable > 1)
+		)
+	)
+=>
+	(set-strategic-number sn-number-forward-builders 1)
+)
+
+(defrule
+	(goal 1 10)
+	(goal rush-control RUSHING)
+	(difficulty <= hard)
+	(goal castle-attempt 2)
+	(unit-type-count villager > civ-dark-rush)
+	(building-type-count-total castle < 3)
+	(can-build-with-escrow castle)
+=>
+	(set-strategic-number sn-number-forward-builders 3)
+)
+
+(defrule
+	(goal 1 10)
+	(or
+		(or
+			(unit-type-count transport-ship == 0)
+			(attack-soldier-count < ten-percent-pop)
+		)
+		(or
+			(or
+				(unit-type-count villager < 10)
+				(not (goal rush-control RUSHING) )
+			)
+			(or
+				(goal military-parity NO)
+				(town-under-attack)
+			)
+		)
+	)
+	(strategic-number sn-number-forward-builders >= 1)
+=>
+	(set-strategic-number sn-number-forward-builders 0)
+)
+
+(defrule
+	(goal rush-control RUSHING)
+	(goal castle-attempt 2)
+	(difficulty <= hard)
+	(unit-type-count villager > civ-feudal)
+	(building-type-count-total castle < 3)
+	(can-build-with-escrow castle)
+=>
+	(release-escrow stone)
+	(build-forward castle)
+)
+
+(defrule
+	(goal castle-attempt 2)
+	(difficulty <= hard)
+	(unit-type-count villager > civ-dark-rush)
+	(building-type-count-total castle < 3)
+	(can-build-with-escrow castle)
+	(nor
+		(goal wonder-attempt POSSIBLE)
+		(goal rush-control RUSHING)
+	)
+=>
+	(release-escrow stone)
+	(build castle)
+)
+
+(defrule
+	(difficulty <= moderate)
+	(unit-type-count villager > civ-dark)
+	(building-type-count barracks < 3)
+	(building-type-count barracks == 1)
+	(can-build barracks)
+	(nor
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+	(or
+		(goal combat-arm INFANTRY)
+		(current-age == dark-age)
+	)
+	(or
+		(goal rush-control RUSHING)
+		(goal rush-control FEUDAL)
+	)
+=>
+	(build-forward barracks)
+)
+
+(defrule
+	(difficulty <= moderate)
+	(building-type-count barracks < 3)
+	(current-age > feudal-age)
+	(can-build barracks)
+	(not (goal rush-control IMPERIAL) )
+	(or
+		(goal combat-arm INFANTRY)
+		(goal combat-supp INFANTRY)
+	)
+=>
+	(build barracks)
+)
+
+(defrule
+	(goal rush-control RUSHING)
+	(difficulty <= moderate)
+	(building-type-count archery-range == 1)
+	(building-type-count-total market > 0)
+	(unit-type-count villager > civ-dark)
+	(can-build archery-range)
+	(or
+		(goal combat-arm CAVARCHER)
+		(goal combat-arm ARCHER)
+	)
+=>
+	(build-forward archery-range)
+)
+
+(defrule
+	(difficulty <= moderate)
+	(building-type-count archery-range < 3)
+	(building-type-count-total market > 0)
+	(can-build archery-range)
+	(nor
+		(goal rush-control RUSHING)
+		(goal rush-control IMPERIAL) 
+	)
+	(or
+		(or
+			(goal combat-arm CAVARCHER)
+			(goal combat-arm ARCHER)
+		)
+		(or
+			(goal combat-supp CAVARCHER)
+			(goal combat-supp ARCHER)
+		)
+	)
+=>
+	(build archery-range)
+)
+
+(defrule
+	(goal rush-control RUSHING)
+	(difficulty <= moderate)
+	(building-type-count stable == 1)
+	(building-type-count-total university > 0)
+	(unit-type-count villager > civ-dark)
+	(can-build stable)
+	(or
+		(goal combat-arm CAVALRY)
+		(goal combat-arm LIGHTCAV)
+	)
+=>
+	(build-forward stable)
+)
+
+(defrule
+	(difficulty <= moderate)
+	(building-type-count stable < 3)
+	(building-type-count-total university > 0)
+	(can-build stable)
+	(nor
+		(goal rush-control RUSHING) 
+		(goal rush-control IMPERIAL)
+	)
+	(or
+		(or
+			(goal combat-arm CAVALRY)
+			(goal combat-arm LIGHTCAV)
+		)
+		(or
+			(goal combat-supp CAVALRY)
+			(goal combat-supp LIGHTCAV)
+		)
+	)
+=>
+	(build stable)
+)
+
+(defrule
+	(goal rush-control RUSHING)
+	(difficulty <= hard)
+	(building-type-count siege-workshop == 1)
+	(can-build siege-workshop)
+	(unit-type-count villager > civ-feudal)
+	(or
+		(or
+			(building-type-count-total archery-range > 1)
+			(building-type-count-total castle > 1)
+		)
+		(or
+			(building-type-count-total barracks > 1)
+			(building-type-count-total stable > 1)
+		)
+	)
+=>
+	(build-forward siege-workshop)
+)
+
+(defrule
+	(difficulty <= hard)
+	(building-type-count siege-workshop == 1)
+	(can-build siege-workshop)
+	(or
+		(or
+			(building-type-count-total archery-range > 1)
+			(building-type-count-total castle > 1)
+		)
+		(or
+			(building-type-count-total barracks > 1)
+			(building-type-count-total stable > 1)
+		)
+	)
+	(not (goal rush-control RUSHING) )
+=>
+	(build siege-workshop)
+)
+
+;**************************************

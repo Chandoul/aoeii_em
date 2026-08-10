@@ -1,0 +1,1120 @@
+; TRAINING MILITARY UNITS
+
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-BOAT GV-TRANSPORT-SHIP)
+	(can-train transport-ship)
+=>
+	(train transport-ship)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+	(goal G-BOAT GV-CANNON-GALLEON)
+	(can-train cannon-galleon-line)
+=>
+	(train cannon-galleon-line)
+)
+
+(defrule
+	(goal G-SIEGE-UNIT GV-TREBUCHET)
+	(or	(goal G-TSA 1)
+		(or	(enemy-buildings-in-town)
+			(population >= SUB-TOP-POPULATION)
+		)
+	)
+	(can-train-with-escrow trebuchet)
+=>
+	(train trebuchet)
+)
+
+(defrule
+	(goal G-SIEGE-UNIT GV-BOMBARD-CANNON)
+	(or	(goal G-TSA 1)
+		(or	(enemy-buildings-in-town)
+			(population >= SUB-TOP-POPULATION)
+		)
+	)
+=>
+	(train bombard-cannon)
+)
+
+(defrule
+	(goal G-SIEGE-UNIT GV-RAM)
+	(or	(goal G-TSA 1)
+		(or	(enemy-buildings-in-town)
+			(population >= SUB-TOP-POPULATION)
+		)
+	)
+	(can-train-with-escrow battering-ram-line)
+=>
+	(train battering-ram-line)
+)
+
+
+(defrule
+	(unit-type-count-total monk < 3)
+	(unit-type-count-total DEAD-MONK == 0) ; An idea by Archon/Zergs to avoid suicidal monks
+	(can-train monk)		; which are going for a relic near enemy's base
+=>
+	(train monk)
+)
+
+
+; Naval training
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-BOAT GV-FISHING-SHIP)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-BOAT GV-GALLEY)
+	(can-train galley-line)
+=>
+	(train galley-line)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-BOAT GV-FIRE-SHIP)
+	(can-train fire-ship-line)
+=>
+	(train fire-ship-line)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-BOAT GV-DEMOLITION-SHIP)
+	(can-train demolition-ship-line)
+=>
+	(train demolition-ship-line)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-BOAT GV-CANNON-GALLEON)
+	(can-train cannon-galleon-line)
+=>
+	(train cannon-galleon-line)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-BOAT GV-DRAGON-BOAT)
+	(can-train longboat-line)
+=>
+	(train longboat-line)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-BOAT GV-TURTLE-SHIP)
+	(can-train turtle-ship-line)
+=>
+	(train turtle-ship-line)
+)
+
+
+; Unique training
+(defrule
+	(true)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-TRASH 0)
+	(or	(or	(nor	(goal G-TSA 1)
+				(enemy-buildings-in-town)
+			)
+			(strategic-number G-TREBUCHET >= 2)
+		)
+		(or	(unit-type-count-total battering-ram-line >= 3)
+			(unit-type-count-total bombard-cannon >= 2)
+		)
+	)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 1)
+)
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train jaguar-man-line)
+=>
+	(train jaguar-man-line)
+)
+#end-if
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train cataphract-line)
+=>
+	(train cataphract-line)
+)
+#end-if
+
+#load-if-defined BRITON-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(current-age == imperial-age)
+	(building-type-count archery-range >= 1)
+	(research-available ri-elite-longbowman)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train longbowman-line)
+=>
+	(train longbowman-line)
+)
+#end-if
+
+#load-if-defined CELTIC-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(current-age == imperial-age)
+	(building-type-count barracks >= 1)
+	(research-available ri-elite-woad-raider)
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(not(research-available ri-two-handed-swordsman))
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train woad-raider-line)
+=>
+	(train woad-raider-line)
+)
+#end-if
+
+#load-if-defined CHINESE-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train chu-ko-nu-line)
+=>
+	(train chu-ko-nu-line)
+)
+#end-if
+
+#load-if-defined FRANKISH-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 105)
+	)
+	(can-train throwing-axeman-line)
+=>
+	(train throwing-axeman-line)
+)
+#end-if
+
+#load-if-defined GOTHIC-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(goal G-BARRACK-UNIT GV-HUSKARL)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train BARRACK-HUSCARL-LINE)
+=>
+	(train BARRACK-HUSCARL-LINE)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(current-age == imperial-age)
+	(strategic-number G-THREAT-ARCHERY-GROUP == 0)
+	(research-available ri-elite-huskarl)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train huskarl-line)
+=>
+	(train huskarl-line)
+)
+#end-if
+
+#load-if-defined HUN-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(current-age == imperial-age)
+	(building-type-count stable >= 1)
+	(research-available ri-elite-tarkan)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train tarkan-line)
+=>
+	(train tarkan-line)
+)
+#end-if
+
+#load-if-defined INCAN-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(nand	(current-age == imperial-age)
+		(and	(strategic-number G-THREAT-CAVALRY-GROUP < 2)
+			(research-available ri-elite-kamayuk)
+		)
+	)
+	(can-train kamayuk)
+=>
+	(train kamayuk)
+)
+#end-if
+
+#load-if-defined INDIAN-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train elephant-archer)
+=>
+	(train elephant-archer)
+)
+#end-if
+
+#load-if-defined ITALIAN-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train genoese-crossbowman)
+=>
+	(train genoese-crossbowman)
+)
+#end-if
+
+#load-if-defined JAPANESE-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(current-age == castle-age)
+	(research-available ri-chain-mail)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(goal G-THREAT-UNIQUE-UNIT-GROUP 0)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(current-age == imperial-age)
+	(research-available ri-elite-samurai)
+	(goal G-THREAT-UNIQUE-UNIT-GROUP 0)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train samurai-line)
+=>
+	(train samurai-line)
+)
+#end-if
+
+#load-if-defined KOREAN-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train war-wagon-line)
+=>
+	(train war-wagon-line)
+)
+#end-if
+
+#load-if-defined MAGYAR-CIV
+(defrule
+	(or	(goal G-UNIQUE-UNIT-ALLOWED 1)
+		(research-completed ri-mercenaries)
+	)
+	(can-train magyar-huszar)
+=>
+	(train magyar-huszar)
+)
+#end-if
+
+#load-if-defined MAYAN-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(current-age == imperial-age)
+	(building-type-count archery-range >= 1)
+	(goal G-ARCHERY-UNIT GV-ARCHER)
+	(research-completed ri-arbalest)
+	(research-available ri-elite-plumed-archer)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train plumed-archer-line)
+=>
+	(train plumed-archer-line)
+)
+#end-if
+
+#load-if-defined MONGOL-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(current-age == imperial-age)
+	(building-type-count archery-range >= 1)
+	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+	(research-completed ri-heavy-cavalry-archer)
+	(research-available ri-elite-mangudai)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train mangudai-line)
+=>
+	(train mangudai-line)
+)
+#end-if
+
+#load-if-defined PERSIAN-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(or	(current-age < imperial-age)
+		(research-available ri-elite-war-elephant)
+	)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train war-elephant-line)
+=>
+	(train war-elephant-line)
+)
+#end-if
+
+#load-if-defined SARACEN-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(strategic-number G-THREAT-CAVALRY-GROUP < 1)
+	(goal G-THREAT-ARCHERY-CAVALRY-GROUP 0)
+	(or	(current-age < imperial-age)
+		(research-available ri-elite-mameluke)
+	)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train mameluke-line)
+=>
+	(train mameluke-line)
+)
+#end-if
+
+#load-if-defined SLAVIC-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(can-train boyar)
+=>
+	(train boyar)
+)
+#end-if
+
+#load-if-defined SPANISH-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train conquistador-line)
+=>
+	(train conquistador-line)
+)
+#end-if
+
+#load-if-defined TEUTONIC-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 130)
+	)
+	(can-train teutonic-knight-line)
+=>
+	(train teutonic-knight-line)
+)
+#end-if
+
+#load-if-defined TURKISH-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(current-age == imperial-age)
+	(building-type-count archery-range >= 1)
+	(goal G-ARCHERY-UNIT GV-HAND-CANNON)
+	(research-available ri-elite-janissary)
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train janissary-line)
+=>
+	(train janissary-line)
+)
+#end-if
+
+#load-if-defined VIKING-CIV
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(current-age == imperial-age)
+	(building-type-count barracks >= 1)
+	(research-available ri-elite-berserk)
+	(not(research-completed ri-chieftains))
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(not(research-available ri-two-handed-swordsman))
+=>
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+)
+
+(defrule
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 115)
+	)
+	(can-train berserk-line)
+=>
+	(train berserk-line)
+)
+#end-if
+
+(defrule
+	(goal G-BARRACK-UNIT GV-EAGLE)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 50)
+	)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(true)
+=>
+	(set-goal G-JOLLYGOAL 0)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(research-available ri-pikeman)
+	(gold-amount >= 90)
+	(strategic-number G-THREAT-CAVALRY-GROUP < 2)
+	(nor	(town-under-attack)
+		(nor	(and	(goal G-STABLE-UNIT GV-KNIGHT)
+				(can-train knight-line)
+			)
+			(and	(goal G-STABLE-UNIT GV-CAMEL)
+				(can-train camel-line)
+			)
+		)
+	)
+=>
+	(set-goal G-JOLLYGOAL 1)
+)
+
+(defrule
+	(goal G-BARRACK-UNIT GV-SPEAR)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 50)
+	)
+	(goal G-JOLLYGOAL 0)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(true)
+=>
+	(set-goal G-JOLLYGOAL 0)
+)
+
+(defrule
+	(nand	(current-age >= feudal-age)
+		(research-available ri-man-at-arms)
+	)
+	(nand	(current-age >= castle-age)
+		(research-available ri-long-swordsman)
+	)
+	(nand	(current-age == imperial-age)
+		(or	(research-available ri-two-handed-swordsman)
+			(research-available ri-champion)
+		)
+	)
+=>
+	(set-goal G-JOLLYGOAL 1)
+)
+
+#load-if-defined GOTHIC-CIV
+(defrule
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(or	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(food-amount > 660)
+	)
+	(goal G-JOLLYGOAL 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 95)
+	)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+)
+#end-if
+
+#load-if-defined INDIAN-CIV
+(defrule
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(or	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(food-amount > 660)
+	)
+	(goal G-JOLLYGOAL 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 105)
+	)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+)
+#end-if
+
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined INDIAN-CIV
+(defrule
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(or	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(food-amount > 660)
+	)
+	(goal G-JOLLYGOAL 1)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+)
+#end-if
+#end-if
+
+(defrule
+	(goal G-BARRACK-UNIT GV-CONDOTTIERO)
+	(can-train condottiero)
+=>
+	(train condottiero)
+)
+
+#load-if-defined INDIAN-CIV
+(defrule
+	(goal G-STABLE-UNIT GV-SCOUT)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 125)
+	)
+	(nand	(unit-type-count-total scout-cavalry-line >= MIN-SCOUTS-TO-ELITE)
+		(research-available ri-light-cavalry)
+	)
+	(nand	(current-age >= castle-age)
+		(and	(research-available ri-light-cavalry)
+			(gold-amount >= 50)
+		)
+	)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+#end-if
+
+#load-if-defined MAGYAR-CIV
+(defrule
+	(goal G-STABLE-UNIT GV-SCOUT)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 122)
+	)
+	(nand	(unit-type-count-total scout-cavalry-line >= MIN-SCOUTS-TO-ELITE)
+		(research-available ri-light-cavalry)
+	)
+	(nand	(current-age >= castle-age)
+		(and	(research-available ri-light-cavalry)
+			(gold-amount >= 50)
+		)
+	)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+#end-if
+
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+(defrule
+	(goal G-STABLE-UNIT GV-SCOUT)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 130)
+	)
+	(nand	(unit-type-count-total scout-cavalry-line >= MIN-SCOUTS-TO-ELITE)
+		(research-available ri-light-cavalry)
+	)
+	(nand	(current-age >= castle-age)
+		(and	(research-available ri-light-cavalry)
+			(gold-amount >= 50)
+		)
+	)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+#end-if
+#end-if
+
+(defrule
+	(goal G-ARCHERY-UNIT GV-SKIRM)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 50)
+	)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(goal G-STABLE-UNIT GV-CAMEL)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 94)
+	)
+	(can-train camel-line)
+=>
+	(train camel-line)
+)
+#end-if
+
+#load-if-defined INDIAN-CIV
+(defrule
+	(goal G-STABLE-UNIT GV-CAMEL)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 95)
+	)
+	(can-train camel-line)
+=>
+	(train camel-line)
+)
+#end-if
+
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined INDIAN-CIV
+(defrule
+	(goal G-STABLE-UNIT GV-CAMEL)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 105)
+	)
+	(can-train camel-line)
+=>
+	(train camel-line)
+)
+#end-if
+#end-if
+
+(defrule
+	(goal G-STABLE-UNIT GV-KNIGHT)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train knight-line)
+=>
+	(train knight-line)
+)
+
+
+(defrule
+	(goal G-ARCHERY-UNIT GV-ARCHER)
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+; Mongol CAs are great, but mangudais are better.
+; I train them in the castle age if tons of resources to increase military numbers at a faster rate
+; Also in imperial if heavy CA tech is researched (see Army Selection.per)
+#load-if-not-defined MONGOL-CIV
+(defrule
+	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line)
+)
+#else
+(defrule
+	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+	(nand	(and	(current-age == castle-age)
+			(building-type-count castle >= 1)
+		)
+		(or	(wood-amount < 200)
+			(gold-amount < 150)
+		)
+	)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line)
+)
+#end-if
+
+(defrule
+	(goal G-ARCHERY-UNIT GV-HAND-CANNON)
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer)
+)
+
+(defrule
+	(true)
+=>
+	(set-goal G-JOLLYGOAL 0)
+)
+
+(defrule
+	(nand	(current-age >= feudal-age)
+		(research-available ri-man-at-arms)
+	)
+	(nand	(current-age >= castle-age)
+		(research-available ri-long-swordsman)
+	)
+	(nand	(current-age == imperial-age)
+		(or	(research-available ri-two-handed-swordsman)
+			(research-available ri-champion)
+		)
+	)
+=>
+	(set-goal G-JOLLYGOAL 1)
+)
+
+(defrule
+	(nor	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(and	(food-amount > 660)
+			(gold-amount > 105)
+		)
+	)
+=>
+	(set-goal G-JOLLYGOAL 0)
+)
+
+#load-if-defined GOTHIC-CIV
+(defrule
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(goal G-JOLLYGOAL 1)
+
+	(nand	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHER-SWORDS)
+		(and	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-CASTLE)
+			(gold-amount < 45) ; To don't delay archer training
+		)
+	)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 95)
+	)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+)
+#end-if
+
+#load-if-defined INDIAN-CIV
+(defrule
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(goal G-JOLLYGOAL 1)
+
+	(nand	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHER-SWORDS)
+		(and	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-CASTLE)
+			(gold-amount < 45) ; To don't delay archer training
+		)
+	)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 105)
+	)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+)
+#end-if
+
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined INDIAN-CIV
+(defrule
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(goal G-JOLLYGOAL 1)
+
+	(nand	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHER-SWORDS)
+		(and	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-CASTLE)
+			(gold-amount < 45) ; To don't delay archer training
+		)
+	)
+	(nand	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(food-amount < 110)
+	)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+)
+#end-if
+#end-if
+
+
+; Great when enemy has ranged units, but only when we have enough meatshield to protect them.
+(defrule
+	(goal G-WORKSHOP GV-ONAGER)
+	(nand	(research-available ri-elite-skirmisher)
+		(or	(goal G-ARCHERY-UNIT GV-SKIRM)
+			(unit-type-count-total skirmisher-line >= MAX-SKIRMS-TO-ELITE)
+		)
+	)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line)
+)
+
+(defrule
+	(goal G-WORKSHOP GV-SCORPION)
+	(nand	(research-available ri-elite-skirmisher)
+		(or	(goal G-ARCHERY-UNIT GV-SKIRM)
+			(unit-type-count-total skirmisher-line >= MAX-SKIRMS-TO-ELITE)
+		)
+	)
+	(can-train scorpion-line)
+=>
+	(train scorpion-line)
+)
+
+
+; Extra monks
+
+#load-if-not-defined SPANISH-CIV
+(defrule
+	(or	(or	(civ-selected aztec)
+			(goal G-BARRACK-UNIT GV-SPEAR)
+		)
+		(or	(strategic-number G-THREAT-HUSCARL >= 1)
+			(and	(research-completed ri-sanctity)
+				(research-completed ri-fervor)
+			)
+		)
+	)
+	(players-unit-type-count any-enemy scout-cavalry-line < 6)
+	(players-unit-type-count any-enemy eagle-warrior-line < 6)
+	(unit-type-count-total DEAD-MONK == 0) ; An idea by Archon/Zergs to avoid suicidal monks
+	(can-train monk)		; which are going for a relic near enemy's base
+=>
+	(train monk)
+)
+#load-if-defined MAYAN-CIV
+(defrule
+	(strategic-number G-THREAT-HUSCARL >= 1)
+	(unit-type-count-total DEAD-MONK == 0) ; An idea by Archon/Zergs to avoid suicidal monks
+	(can-train monk)		; which are going for a relic near enemy's base
+=>
+	(train monk)
+)
+#end-if
+#else ; Spanish
+(defrule
+	(or	(food-amount < 600)
+		(gold-amount > 900)
+	)
+	(players-unit-type-count any-enemy scout-cavalry-line < 6)
+	(players-unit-type-count any-enemy eagle-warrior-line < 6)
+	(can-train missionary)
+=>
+	(train missionary)
+)
+
+(defrule
+	(or	(goal G-BARRACK-UNIT GV-SPEAR)
+		(or	(strategic-number G-THREAT-HUSCARL >= 1)
+			(and	(research-completed ri-sanctity)
+				(research-completed ri-fervor)
+			)
+		)
+	)
+	(unit-type-count-total DEAD-MONK == 0) ; An idea by Archon/Zergs to avoid suicidal monks
+	(not(can-train missionary))
+	(can-train monk)		; which are going for a relic near enemy's base
+=>
+	(train monk)
+)
+#end-if
+
+; Emergency units when no gold
+(defrule
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+	(strategic-number G-MILITARY-SUPERIORITY < 0)
+	(taunt-detected my-player-number 43) ; Taunt TA-GOLD-MINING
+	(nor	(research-available ri-long-swordsman)
+		(research-available ri-two-handed-swordsman)
+	)
+	(food-amount > 85)
+	(or	(wood-amount > 85)
+		(idle-farm-count > 1)
+	)
+	(gold-amount < 20)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+	(chat-to-player my-player-number "Emergency Spearman")
+)
+
+(defrule
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+	(strategic-number G-MILITARY-SUPERIORITY < 0)
+	(taunt-detected my-player-number 44) ; Taunt TA-STONE-MINING
+	(nor	(research-available ri-long-swordsman)
+		(research-available ri-two-handed-swordsman)
+	)
+	(food-amount > 85)
+	(or	(wood-amount > 85)
+		(idle-farm-count > 1)
+	)
+	(gold-amount < 20)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+	(chat-to-player my-player-number "Emergency Spearman")
+)
+
+(defrule
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+	(strategic-number G-MILITARY-SUPERIORITY < 0)
+	(food-amount > 75)
+	(or	(wood-amount > 95)
+		(idle-farm-count > 1)
+	)
+	(gold-amount < 70)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+	(chat-to-player my-player-number "Emergency Skirmisher")
+)
+
+#load-if-not-defined TEUTONIC-CIV
+(defrule
+	(goal G-STABLE-UNIT GV-KNIGHT)
+	(strategic-number G-MILITARY-SUPERIORITY < 0)
+	(nor	(research-available ri-bloodlines)
+		(research-available ri-light-cavalry)
+	)
+	(nand	(goal G-BARRACK-UNIT GV-SWORD)
+		(research-available ri-long-swordsman)
+	)
+	(nand	(goal G-BARRACK-UNIT GV-SPEAR)
+		(research-available ri-pikeman)
+	)
+	(food-amount > 190)
+	(gold-amount < 75)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+	(chat-to-player my-player-number "Emergency Light Cavalry")
+)
+
+(defrule
+	(goal G-STABLE-UNIT GV-CAMEL)
+	(strategic-number G-MILITARY-SUPERIORITY < 0)
+	(nor	(research-available ri-bloodlines)
+		(research-available ri-light-cavalry)
+	)
+	(nand	(goal G-BARRACK-UNIT GV-SWORD)
+		(research-available ri-long-swordsman)
+	)
+	(nand	(goal G-BARRACK-UNIT GV-SPEAR)
+		(research-available ri-pikeman)
+	)
+	(food-amount > 190)
+	(gold-amount < 75)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+	(chat-to-player my-player-number "Emergency Light Cavalry")
+)
+#end-if
+
+; Emergency feudal archers
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-ARCHERY-UNIT GV-SKIRM)
+	(food-amount < 75)
+	(or	(wood-amount > 85)
+		(idle-farm-count > 1)
+	)
+	(can-train archer-line)
+=>
+	(train archer-line)
+	(chat-to-player my-player-number "Emergency Feudal Archer")
+)
+
+; Emergency eagles
+(defrule
+	(current-age >= castle-age)
+	(goal G-BARRACK-UNIT GV-SPEAR)
+	(wood-amount < 85)
+	(or	(wood-amount < 25)
+		(idle-farm-count == 0)
+	)
+	(not(research-available ri-pikeman))
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line)
+	(chat-to-player my-player-number "Emergency Eagle")
+)

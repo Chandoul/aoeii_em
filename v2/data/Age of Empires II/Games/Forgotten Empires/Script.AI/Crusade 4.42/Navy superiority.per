@@ -1,0 +1,529 @@
+; 26 Galley
+; 27 Brulote
+; 28 Cannon
+; 29 Longoat
+; > TEN-PERCENT-POP Turtle
+; 31 Demolition
+
+; 0
+; 1 5%
+;2 10%
+;3 > FIVE-PERCENT-POP%
+
+;Initialize naval superiority goal.
+(defrule
+	;(or	
+	(warboat-count >= 3)
+		;(and	(population >= TOP-POPULATION)
+		;	(and	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+		;		(goal G-A
+=>
+	(set-goal G-NAVAL-SUPERIORITY 1)
+)
+
+;How I wish I could use the Group ID in(players-unit-type-count!  This would be
+;so much easier.  3 rules instead of all those below!
+
+(defrule
+	(warboat-count < TEN-PERCENT-POP)
+	(or	(players-unit-type-count any-enemy galley-line > 0)
+		(or	(players-unit-type-count any-enemy fire-ship-line > 0)
+			(or	(players-unit-type-count any-enemy cannon-galleon-line > 0)
+				(or	(players-unit-type-count any-enemy longboat-line > 0)
+					(or	(players-unit-type-count any-enemy turtle-ship-line > 0)
+						(players-unit-type-count any-enemy demolition-ship-line > 0)
+					)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(warboat-count < TEN-PERCENT-POP)
+	(or	(players-unit-type-count any-enemy galley-line > 0)
+		(or	(players-unit-type-count any-enemy fire-ship-line > 0)
+			(players-unit-type-count any-enemy cannon-galleon-line > 0)
+		)
+	)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(players-unit-type-count any-enemy longboat-line > 0)
+	(or(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0)))
+	(warboat-count < TEN-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(players-unit-type-count any-enemy galley-line > FIVE-PERCENT-POP)
+	(or(players-unit-type-count any-enemy fire-ship-line > FIVE-PERCENT-POP)
+	(players-unit-type-count any-enemy cannon-galleon-line > FIVE-PERCENT-POP)))
+	(warboat-count < FIFTEEN-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(players-unit-type-count any-enemy longboat-line > FIVE-PERCENT-POP)
+	(or(players-unit-type-count any-enemy turtle-ship-line > FIVE-PERCENT-POP)
+	(players-unit-type-count any-enemy demolition-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < FIFTEEN-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy galley-line > 0)
+		 (players-unit-type-count any-enemy fire-ship-line > 0))
+	(and(players-unit-type-count any-enemy galley-line > 0)
+	    (players-unit-type-count any-enemy cannon-galleon-line > 0)))
+	(warboat-count < FIFTEEN-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy galley-line > 0)
+	    (players-unit-type-count any-enemy longboat-line > 0))
+	(and(players-unit-type-count any-enemy galley-line > 0)
+	    (players-unit-type-count any-enemy turtle-ship-line > 0)))
+	(warboat-count < FIFTEEN-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy galley-line > 0)
+	    (players-unit-type-count any-enemy demolition-ship-line > 0))
+	(and(players-unit-type-count any-enemy fire-ship-line > 0)
+	    (players-unit-type-count any-enemy cannon-galleon-line > 0)))
+	(warboat-count < FIFTEEN-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy fire-ship-line > 0)
+	    (players-unit-type-count any-enemy longboat-line > 0))
+	(and(players-unit-type-count any-enemy fire-ship-line > 0)
+	    (players-unit-type-count any-enemy turtle-ship-line > 0)))
+	(warboat-count < FIFTEEN-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy fire-ship-line > 0)
+	    (players-unit-type-count any-enemy demolition-ship-line > 0))
+	(and(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	    (players-unit-type-count any-enemy longboat-line > 0)))
+	(warboat-count < FIFTEEN-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	    (players-unit-type-count any-enemy turtle-ship-line > 0))
+	(and(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	    (players-unit-type-count any-enemy demolition-ship-line > 0)))
+	(warboat-count < FIFTEEN-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy longboat-line > 0)
+	    (players-unit-type-count any-enemy turtle-ship-line > 0))
+	(and(players-unit-type-count any-enemy longboat-line > 0)
+	    (players-unit-type-count any-enemy demolition-ship-line > 0)))
+	(warboat-count < FIFTEEN-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0)
+	(warboat-count < FIFTEEN-PERCENT-POP)
+	=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(players-unit-type-count any-enemy galley-line > TEN-PERCENT-POP)
+	(or(players-unit-type-count any-enemy fire-ship-line > TEN-PERCENT-POP)
+	(players-unit-type-count any-enemy cannon-galleon-line > TEN-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+
+(defrule
+	(or(players-unit-type-count any-enemy longboat-line > TEN-PERCENT-POP)
+	(or(players-unit-type-count any-enemy turtle-ship-line > TEN-PERCENT-POP)
+	(players-unit-type-count any-enemy demolition-ship-line > TEN-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy galley-line > FIVE-PERCENT-POP)
+		 (players-unit-type-count any-enemy fire-ship-line > 0))
+	(and(players-unit-type-count any-enemy galley-line > 0)
+		 (players-unit-type-count any-enemy fire-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy galley-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy cannon-galleon-line > 0))
+	(and(players-unit-type-count any-enemy galley-line > 0)
+	    (players-unit-type-count any-enemy cannon-galleon-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy galley-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy longboat-line > 0))
+	(and(players-unit-type-count any-enemy galley-line > 0)
+	    (players-unit-type-count any-enemy longboat-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy galley-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy turtle-ship-line > 0))
+	(and(players-unit-type-count any-enemy galley-line > 0)
+	    (players-unit-type-count any-enemy turtle-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy galley-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy demolition-ship-line > 0))
+	(and(players-unit-type-count any-enemy galley-line > 0)
+	    (players-unit-type-count any-enemy demolition-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy fire-ship-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy cannon-galleon-line > 0))
+	(and(players-unit-type-count any-enemy fire-ship-line > 0)
+	    (players-unit-type-count any-enemy cannon-galleon-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy fire-ship-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy longboat-line > 0))
+	(and(players-unit-type-count any-enemy fire-ship-line > 0)
+	    (players-unit-type-count any-enemy longboat-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+	=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy fire-ship-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy turtle-ship-line > 0))
+	(and(players-unit-type-count any-enemy fire-ship-line > 0)
+	    (players-unit-type-count any-enemy turtle-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy fire-ship-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy demolition-ship-line > 0))
+	(and(players-unit-type-count any-enemy fire-ship-line > 0)
+	    (players-unit-type-count any-enemy demolition-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy cannon-galleon-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy longboat-line > 0))
+	(and(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	    (players-unit-type-count any-enemy longboat-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy cannon-galleon-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy turtle-ship-line > 0))
+	(and(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	    (players-unit-type-count any-enemy turtle-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy cannon-galleon-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy demolition-ship-line > 0))
+	(and(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	    (players-unit-type-count any-enemy demolition-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy longboat-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy turtle-ship-line > 0))
+	(and(players-unit-type-count any-enemy longboat-line > 0)
+	    (players-unit-type-count any-enemy turtle-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy longboat-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy demolition-ship-line > 0))
+	(and(players-unit-type-count any-enemy longboat-line > 0)
+	    (players-unit-type-count any-enemy demolition-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(or(and(players-unit-type-count any-enemy turtle-ship-line > FIVE-PERCENT-POP)
+	    (players-unit-type-count any-enemy demolition-ship-line > 0))
+	(and(players-unit-type-count any-enemy turtle-ship-line > 0)
+	    (players-unit-type-count any-enemy demolition-ship-line > FIVE-PERCENT-POP)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(players-unit-type-count any-enemy galley-line > 0)
+	  (players-unit-type-count any-enemy fire-ship-line > 0)
+	(or(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	(or(players-unit-type-count any-enemy longboat-line > 0)
+	(or(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0))))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(players-unit-type-count any-enemy galley-line > 0)
+	(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	(or(players-unit-type-count any-enemy longboat-line > 0)
+	(or(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(players-unit-type-count any-enemy galley-line > 0)
+	(players-unit-type-count any-enemy longboat-line > 0)
+	(or(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(players-unit-type-count any-enemy galley-line > 0)
+	(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0)
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(players-unit-type-count any-enemy fire-ship-line > 0)
+	(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	(or(players-unit-type-count any-enemy longboat-line > 0)
+	(or(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0)))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	  (players-unit-type-count any-enemy fire-ship-line > 0)
+	(players-unit-type-count any-enemy longboat-line > 0)
+	(or(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	  (players-unit-type-count any-enemy fire-ship-line > 0)
+	(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0)
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	(players-unit-type-count any-enemy longboat-line > 0)
+	(or(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0))
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(players-unit-type-count any-enemy cannon-galleon-line > 0)
+	(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0)
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+(defrule
+	(players-unit-type-count any-enemy longboat-line > 0)
+	(players-unit-type-count any-enemy turtle-ship-line > 0)
+	(players-unit-type-count any-enemy demolition-ship-line > 0)
+	(warboat-count < TWENTY-TWO-PERCENT-POP)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 0)
+)
+
+
+
+
+(defrule
+	(timer-triggered T-WATER-ATTACK-TEAM)
+	(or	(goal G-NAVAL-SUPERIORITY 1)
+		(or	(players-unit-type-count any-enemy ARROW-GALLEY > 0)
+			(or	(players-unit-type-count any-enemy ARROW-WAR-GALLEY > 0)
+				(or	(players-unit-type-count any-enemy ARROW-GALLEON > 0)
+					(or	(players-unit-type-count any-enemy ARROW-LONGBOAT-LINE > 0)
+						(or	(players-unit-type-count any-enemy FLAMING-ARROW-GALLEY > 0)
+							(players-unit-type-count any-enemy FLAMING-ARROW-WAR-GALLEY > 0)
+						)
+					)
+				)
+			)
+		)
+	)
+=>
+	(chat-to-player every-ally "100 Send your war boats to attack") ; Taunt TA-WATER-ATTACK
+	(enable-timer T-WATER-ATTACK-TEAM 20)
+)
+
+(defrule
+	(timer-triggered T-WATER-ATTACK-TEAM)
+	(or	(players-unit-type-count any-enemy FLAMING-ARROW-GALLEON > 0)
+		(or	(players-unit-type-count any-enemy FLAMING-ARROW-LONGBOAT-LINE > 0)
+			(or	(players-unit-type-count any-enemy FIRE-FIRE-SHIP-LINE > 0)
+				(or	(players-unit-type-count any-enemy BULLET-CANNON-GALLEON-LINE > 0)
+					(or	(players-unit-type-count any-enemy BULLET-TURTLE-SHIP-LINE > 0)
+						(players-unit-type-count any-enemy FLAMING-ARROW-WAR-GALLEY > 0)
+					)
+				)
+			)
+		)
+	)
+=>
+	(chat-to-player every-ally "100 Send your war boats to attack") ; Taunt TA-WATER-ATTACK
+	(enable-timer T-WATER-ATTACK-TEAM 20)
+)
+
+(defrule
+	(or	(goal G-TSA 1)
+		(and	(and	(current-age == imperial-age)
+				(and	(population >= SUB-TOP-POPULATION)
+					(goal G-ARMY-STRONG-PREPARED 1)
+				)
+			)
+			(or	(population >= TOP-POPULATION)
+				(strategic-number sn-number-boat-attack-groups > 0)
+			)
+		)
+	)
+	(goal G-NAVAL-SUPERIORITY 0)
+
+=>
+	(set-goal G-NAVAL-SUPERIORITY 1)
+	;(chat-to-player my-player-number "Naval attack to support land invasion")
+)
+
+(defrule
+	;(timer-triggered T-ALLY-NEEDS-WATER-HELP)
+	(taunt-detected any-ally 100)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 1)
+	(acknowledge-taunt this-any-ally 100)
+	(chat-to-player my-player-number "An ally is requesting my war boats.")
+	(enable-timer T-ALLY-NEEDS-NAVAL-HELP TV-ALLY-NEEDS-NAVAL-HELP)
+)
+
+(defrule
+	(game-time > 5)
+	(not(timer-triggered T-ALLY-NEEDS-NAVAL-HELP))
+	(strategic-number sn-number-boat-attack-groups > 0)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 1)
+	(chat-to-player every-ally "1hehe. Don't worry, my navy was attacking anyway.")
+)
+
+(defrule
+	(game-time > 5)
+	(not(timer-triggered T-ALLY-NEEDS-NAVAL-HELP))
+	(strategic-number sn-number-boat-attack-groups == 0)
+=>
+	(set-goal G-NAVAL-SUPERIORITY 1)
+	(chat-to-player every-ally "1Ok. I'll send my navy to fight.")
+)
+
+(defrule
+	(goal G-NAVAL-SUPERIORITY 0)
+	(strategic-number sn-number-boat-attack-groups > 0)
+=>
+	(set-strategic-number sn-number-boat-attack-groups 0)
+)
+
+(defrule
+	(goal G-NAVAL-SUPERIORITY 1)
+	(strategic-number sn-number-boat-attack-groups < 100)
+=>
+	(set-strategic-number sn-number-boat-attack-groups 100)
+)

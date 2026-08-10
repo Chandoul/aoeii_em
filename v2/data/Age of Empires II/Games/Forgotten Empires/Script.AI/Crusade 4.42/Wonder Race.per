@@ -1,0 +1,306 @@
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number sn-maximum-town-size < 50)
+=>
+	(set-strategic-number sn-maximum-town-size 50)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(strategic-number sn-camp-max-distance < HALF-MAP-SIZE)
+=>
+	(set-strategic-number sn-camp-max-distance HALF-MAP-SIZE)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(dropsite-min-distance gold > IDEAL-DROP-DISTANCE)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(strategic-number sn-wood-gatherer-percentage != 60)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(or	(building-type-count-total market == 0)
+		(building-type-count-total blacksmith == 0)
+	)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(strategic-number sn-wood-gatherer-percentage != 52)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 52)
+	(set-strategic-number sn-gold-gatherer-percentage  8)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total market >= 1)
+	(building-type-count-total blacksmith >= 1)
+	(or	(strategic-number sn-food-gatherer-percentage != 64)
+		(strategic-number sn-wood-gatherer-percentage != 27)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 64)
+	(set-strategic-number sn-wood-gatherer-percentage 27)
+	(set-strategic-number sn-gold-gatherer-percentage  9)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 48)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 12)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS > GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 45)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 10)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 18)
+	(set-strategic-number sn-stone-gatherer-percentage 32)
+)
+
+
+
+; Buildings and techs
+
+(defrule
+	(building-type-count-total wonder < 1)
+	(can-build wonder)
+=>
+	(build wonder)
+	(set-strategic-number sn-maximum-town-size 44)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(can-research ri-stonecutting)
+=>
+	(research ri-stonecutting)
+	(chat-to-player my-player-number "TREADMILL CRANE")
+)
+
+(defrule
+	(true)
+=>
+	(research ri-double-bit-axe)
+	(research ri-bow-saw)
+	;(research ri-two-man-saw)
+	(research ri-wheel-barrow)
+	(research ri-horse-collar)
+	(research ri-heavy-plow)
+	;(research ri-crop-rotation)
+	(research ri-gold-mining)
+	(research ri-gold-shaft-mining)
+)
+
+(defrule
+	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+	(can-train-with-escrow villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(taunt-detected my-player-number TA-STONE-MINING)
+=>
+	(research ri-stone-mining)
+	(research ri-stone-shaft-mining)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(build market)
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == blacksmith)
+	)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+	(set-strategic-number G-BUILDING-EXPANSION blacksmith)
+)
+
+(defrule
+	(or	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+		(research-available ri-stonecutting)
+	)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == university)
+	)
+	(building-type-count-total university < 1)
+	(can-build university)
+=>
+	(build university)
+	(set-strategic-number G-BUILDING-EXPANSION university)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == monastery)
+	)
+	(building-type-count-total monastery < 1)
+	(can-build monastery)
+=>
+	(build monastery)
+	(set-strategic-number G-BUILDING-EXPANSION monastery)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(research-completed ri-stonecutting)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == university)
+	)
+	(building-type-count-total university > 0)
+=>
+	(delete-building university)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == monastery)
+	)
+	(building-type-count-total monastery > 0)
+=>
+	(delete-building monastery)
+)
+
+
+
+;******************************************************************************
+;
+; Market Imperial Rules
+;
+;******************************************************************************
+
+;Buy food if wonder started to keep villager training.
+(defrule
+	(current-age == imperial-age)
+	(building-type-count-total wonder >= 1)
+	(gold-amount > 200)
+	(food-amount < 50)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+	(chat-to-player my-player-number "Buying food") 
+)
+
+;Sell food if you have surplus food.
+(defrule
+	(current-age == imperial-age)
+	(building-type-count-total wonder == 0)
+	(gold-amount < 1000)
+	(food-amount > 50)
+	(nor	(research-available ri-stonecutting)
+		(research-available ri-bow-saw)
+	)
+	(nor	(research-available ri-heavy-plow)
+		(research-available ri-gold-shaft-mining)
+	)
+	(not(research-available ri-stone-mining))
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(chat-to-player my-player-number "Selling wood")   
+)
+
+;Buy wood if you have surplus gold.
+(defrule
+	(current-age == imperial-age)
+	(building-type-count-total wonder == 0)
+	(gold-amount > 1100)
+	(wood-amount < 1000)
+	(can-buy-commodity wood)
+=>
+	(buy-commodity wood)
+	(chat-to-player my-player-number "Buying wood") 
+)
+
+;Sell wood if you have surplus wood.
+(defrule
+	(current-age == imperial-age)
+	(building-type-count-total wonder == 0)
+	(gold-amount < 1000)
+	(wood-amount > 1100)
+	(can-sell-commodity wood)
+=>
+	(sell-commodity wood)
+	(chat-to-player my-player-number "Selling wood")   
+)
+
+;Buy stone if you have surplus gold.
+(defrule
+	(current-age == imperial-age)
+	(building-type-count-total wonder == 0)
+	(gold-amount > 1100)
+	(stone-amount < 1000)
+	(can-buy-commodity stone)
+=>
+	(buy-commodity stone)
+	(chat-to-player my-player-number "Buying stone") 
+)
+
+;Sell stone if you have surplus stone.
+(defrule
+	(current-age == imperial-age)
+	(building-type-count-total wonder == 0)
+	(gold-amount < 1000)
+	(stone-amount > 1100)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+	(chat-to-player my-player-number "Selling stone")   
+)

@@ -1,0 +1,628 @@
+;if I'm short on resources, ask allies for some before using the market
+(defrule
+	(player-in-game any-ally)
+	(players-building-type-count any-ally market > 0)
+=>
+	(enable-timer 1 60)
+	(disable-self)
+)
+
+;****************************************
+(defrule
+	(goal resource-needed WOOD)
+	(timer-triggered t-tribute)
+	(not (stance-toward any-human ally) )
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22123)	;4
+)
+
+(defrule
+	(goal resource-needed FOOD)
+	(timer-triggered t-tribute)
+	(not (stance-toward any-human ally) )
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22122)	;3
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(timer-triggered t-tribute)
+	(not (stance-toward any-human ally) )
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22124)	;5
+)
+
+(defrule
+	(goal resource-needed STONE)
+	(timer-triggered t-tribute)
+	(not (stance-toward any-human ally) )
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22125)	;6
+)
+
+(defrule
+	(goal resource-needed WOOD)
+	(timer-triggered t-tribute)
+	(stance-toward any-human ally)
+	(not (goal wonder-attempt POSSIBLE) )
+	(or
+		(wood-amount > 250)
+		(and
+			(current-age < imperial-age)
+			(wood-amount > 150)
+		)
+	)
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22123)	;4
+)
+
+(defrule
+	(goal resource-needed FOOD)
+	(timer-triggered t-tribute)
+	(stance-toward any-human ally)
+	(or
+		(food-amount > 950)
+		(or
+			(and
+				(current-age == feudal-age)
+				(food-amount > 750)
+			)
+			(and
+				(current-age == imperial-age)
+				(food-amount > 250)
+			)
+		)
+	)
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22122)	;3
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(timer-triggered t-tribute)
+	(stance-toward any-human ally)
+	(not (goal wonder-attempt POSSIBLE) )
+	(or
+		(gold-amount > 750)
+		(and
+			(current-age != feudal-age)
+			(gold-amount > 150)
+		)
+	)
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22124)	;5
+)
+
+(defrule
+	(goal resource-needed STONE)
+	(timer-triggered t-tribute)
+	(stance-toward any-human ally)
+	(not (goal wonder-attempt POSSIBLE) )
+	(or
+		(stone-amount > 600)
+		(and
+			(not (goal castle-attempt YES) )
+			(stone-amount > 150)
+		)
+	)
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22125)	;6
+)
+
+(defrule
+	(goal resource-needed WOOD)
+	(timer-triggered t-tribute)
+	(stance-toward any-human ally)
+	(goal wonder-attempt POSSIBLE)
+	(wood-amount > 950)
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22123)	;4
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(timer-triggered t-tribute)
+	(stance-toward any-human ally)
+	(goal wonder-attempt POSSIBLE)
+	(gold-amount > 950)
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22123)	;4
+)
+
+(defrule
+	(goal resource-needed STONE)
+	(timer-triggered t-tribute)
+	(stance-toward any-human ally)
+	(goal wonder-attempt POSSIBLE)
+	(stone-amount > 950)
+	(nand 
+		(goal personality 1)
+		(current-age-time < 300)
+	)
+=>
+	(chat-to-player-using-id every-ally 22123)	;4
+)
+
+
+;***************************************
+;FEUDAL MARKET
+(defrule
+	(goal resource-needed WOOD)
+	(current-age == feudal-age)
+	(gold-amount > 400)
+	(can-buy-commodity wood)
+	(commodity-buying-price wood < 150)
+=>
+	(chat-local-to-self "use market for wood")
+	(release-escrow gold)
+	(buy-commodity wood)
+)
+
+(defrule
+	(goal resource-needed FOOD)
+	(current-age == feudal-age)
+	(gold-amount > 400)
+	(can-buy-commodity food)
+	(commodity-buying-price food < 150)
+=>
+	(chat-local-to-self "use market for food")
+	(release-escrow gold)
+	(buy-commodity food)
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(current-age == feudal-age)
+	(wood-amount > 300)
+	(not (goal sea-owner YES) )
+	(can-sell-commodity wood)
+=>
+	(chat-local-to-self "sell wood for gold")
+	(release-escrow wood)
+	(sell-commodity wood)
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(current-age == feudal-age)
+	(food-amount > 900)
+	(can-sell-commodity food)
+=>
+	(chat-local-to-self "sell food for gold")
+	(release-escrow food)
+	(sell-commodity food)
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(current-age == feudal-age)
+	(stone-amount > 225)
+	(can-sell-commodity stone)
+	(commodity-selling-price stone > 75)
+	(nor
+		(goal wall-build YES)
+		(goal castle-attempt YES)
+	)
+=>
+	(chat-local-to-self "sell stone for gold")
+	(release-escrow stone)
+	(sell-commodity stone)
+)
+
+(defrule
+	(goal resource-needed STONE)
+	(current-age == feudal-age)
+	(gold-amount > 450)
+	(can-buy-commodity stone)
+	(commodity-buying-price stone < 200)
+=>
+	(chat-local-to-self "use market for stone")
+	(release-escrow gold)
+	(buy-commodity stone)
+)
+
+;****************************
+;CASTLE MARKET
+(defrule
+	(goal resource-needed WOOD)
+	(current-age == castle-age)
+	(gold-amount > 950)
+	(can-buy-commodity wood)
+	(commodity-buying-price wood < 150)
+=>
+	(chat-local-to-self "use market for wood")
+	(release-escrow gold)
+	(buy-commodity wood)
+)
+
+(defrule
+	(goal resource-needed FOOD)
+	(current-age == castle-age)
+	(gold-amount > 950)
+	(can-buy-commodity food)
+	(commodity-buying-price food < 150)
+=>
+	(chat-local-to-self "use market for food")
+	(release-escrow gold)
+	(buy-commodity food)
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(current-age == castle-age)
+	(wood-amount > 450)
+	(not (goal sea-owner YES) )
+	(can-sell-commodity wood)
+=>
+	(chat-local-to-self "sell wood for gold")
+	(release-escrow wood)
+	(sell-commodity wood)
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(current-age == castle-age)
+	(food-amount > 1100)
+	(can-sell-commodity food)
+=>
+	(chat-local-to-self "sell food for gold")
+	(release-escrow food)
+	(sell-commodity food)
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(current-age == castle-age)
+	(stone-amount > 400)
+	(can-sell-commodity stone)
+	(commodity-selling-price stone > 75)
+	(nor
+		(goal wall-build YES)
+		(goal castle-attempt YES)
+	)
+=>
+	(chat-local-to-self "sell stone for gold")
+	(release-escrow stone)
+	(sell-commodity stone)
+	(set-goal resource-needed 0)
+)
+
+(defrule
+	(goal resource-needed STONE)
+	(current-age == castle-age)
+	(gold-amount > 1000)
+	(can-buy-commodity stone)
+	(commodity-buying-price stone < 200)
+=>
+	(chat-local-to-self "use market for stone")
+	(release-escrow gold)
+	(buy-commodity stone)
+	(set-goal resource-needed 0)
+)
+
+;****************************
+;IMPERIAL MARKET
+(defrule
+	(goal resource-needed WOOD)
+	(research-completed ri-guilds)
+	(can-buy-commodity wood)
+	(commodity-buying-price wood < 150)
+	(gold-amount > 1400)
+=>
+	(chat-local-to-self "use market for wood")
+	(release-escrow gold)
+	(buy-commodity wood)
+)
+
+(defrule
+	(goal resource-needed FOOD)
+	(research-completed ri-guilds)
+	(can-buy-commodity food)
+	(commodity-buying-price food < 150)
+	(gold-amount > 1400)
+=>
+	(chat-local-to-self "use market for food")
+	(release-escrow gold)
+	(buy-commodity food)
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(research-completed ri-guilds)
+	(not (goal sea-owner YES) )
+	(can-sell-commodity wood)
+	(or
+		(wood-amount > 1200)
+		(and
+			(nor 
+				(goal wonder-attempt POSSIBLE)
+				(goal upgrade-conflict 33)
+			)
+			(wood-amount > 625)
+		)
+	)
+=>
+	(chat-local-to-self "sell wood for gold")
+	(release-escrow wood)
+	(sell-commodity wood)
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(research-completed ri-guilds)
+	(food-amount > 1700)
+	(can-sell-commodity food)
+=>
+	(chat-local-to-self "sell food for gold")
+	(release-escrow food)
+	(sell-commodity food)
+)
+
+(defrule
+	(goal resource-needed GOLD)
+	(research-completed ri-guilds)
+	(stone-amount > 500)
+	(can-sell-commodity stone)
+	(commodity-selling-price stone > 75)
+	(nor
+		(goal wall-build YES)
+		(or
+			(goal castle-attempt YES)
+			(goal wonder-attempt POSSIBLE)
+		)
+	)
+=>
+	(chat-local-to-self "sell stone for gold")
+	(release-escrow stone)
+	(sell-commodity stone)
+)
+
+(defrule
+	(goal resource-needed STONE)
+	(research-completed ri-guilds)
+	(can-buy-commodity stone)
+	(commodity-buying-price stone < 200)
+	(gold-amount > 1400)
+=>
+	(chat-local-to-self "use market for stone")
+	(release-escrow gold)
+	(buy-commodity stone)
+)
+;****************************
+;Excess stuff
+(defrule
+	(wood-amount > 1200)
+	(or
+		(food-amount < 1600)
+		(or
+			(gold-amount < 1200)
+			(stone-amount < 650)
+		)
+	)
+	(can-sell-commodity wood)
+=>
+	(chat-local-to-self "excess wood")
+	(release-escrow wood)
+	(sell-commodity wood)
+)
+
+(defrule
+	(food-amount > 1700)
+	(or
+		(wood-amount < 1100)
+		(or
+			(gold-amount < 1200)
+			(stone-amount < 650)
+		)
+	)
+	(can-sell-commodity food)
+=>
+	(chat-local-to-self "excess food")
+	(release-escrow food)
+	(sell-commodity food)
+)
+
+(defrule
+	(gold-amount > 1250)
+	(can-buy-commodity wood)
+	(commodity-buying-price wood < 50)
+	(or
+		(and
+			(not (goal upgrade-conflict 33) )
+			(wood-amount < 525)
+		)
+		(wood-amount < 1100)
+	)
+=>
+	(chat-local-to-self "excess gold; buy wood")
+	(release-escrow gold)
+	(buy-commodity wood)
+)
+
+(defrule
+	(gold-amount > 1250)
+	(food-amount < 1600)
+	(can-buy-commodity food)
+	(commodity-buying-price food < 50)
+=>
+	(chat-local-to-self "excess gold; buy food")
+	(release-escrow gold)
+	(buy-commodity food)
+)
+
+(defrule
+	(gold-amount > 1400)
+	(stone-amount < 650)
+	(can-buy-commodity stone)
+	(commodity-buying-price stone < 200)
+=>
+	(chat-local-to-self "excess gold; buy stone")
+	(release-escrow gold)
+	(buy-commodity stone)
+)
+
+(defrule
+	(stone-amount > 1400)
+	(or
+		(wood-amount < 1100)
+		(or
+			(food-amount < 1600)
+			(gold-amount < 1200)
+		)
+	)
+	(can-sell-commodity stone)
+=>
+	(chat-local-to-self "excess stone")
+	(release-escrow stone)
+	(sell-commodity stone)
+)
+
+;************************************************
+;TIMER ONE
+(defrule
+	(timer-triggered t-tribute)
+	(not (player-in-game any-human-ally) )
+=>
+	(disable-timer t-tribute)
+	(enable-timer t-tribute 120)
+)
+
+;don't bug human allies too often
+(defrule
+	(timer-triggered t-tribute)
+	(player-in-game any-human-ally)
+=>
+	(disable-timer t-tribute)
+	(enable-timer t-tribute 300)
+)
+
+;**********************************************
+;AGE ADVANCEMENT
+(defrule
+	(goal age-advancement NO)
+	(current-age == dark-age)
+	(game-time >= 600)
+	(or
+		(players-current-age any-enemy > dark-age)
+		(civilian-population >= civ-dark-rush)
+	)
+=>
+	(set-goal upgrade-conflict NOTICE)
+)
+
+(defrule
+	(goal age-advancement NO)
+	(current-age == feudal-age)
+	(current-age-time > 450)
+	(or
+		(players-current-age any-enemy > feudal-age)
+		(civilian-population >= civ-dark)
+	)
+	(not (goal personality 1) )
+=>
+	(set-goal upgrade-conflict NOTICE)
+)
+
+(defrule
+	(goal age-advancement NO)
+	(current-age == castle-age)
+	(current-age-time > 300)
+	(or
+		(players-current-age any-enemy == imperial-age)
+		(civilian-population >= civ-feudal)
+	)
+	(not (goal personality 1) )
+=>
+	(set-goal upgrade-conflict NOTICE)
+)
+
+(defrule
+	(can-research-with-escrow feudal-age)
+=>
+	(release-escrow food)
+	(research feudal-age)
+	(set-goal resource-needed 0)
+	(set-goal age-advancement NOTICE)
+	(set-goal upgrade-conflict NO)
+	(disable-timer t-ageup)
+	(enable-timer t-ageup 140)
+)
+
+;advance to castle age
+(defrule
+	(can-research-with-escrow castle-age)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research castle-age)
+	(set-goal resource-needed 0)
+	(set-goal age-advancement NOTICE)
+	(set-goal upgrade-conflict NO)
+	(disable-timer t-ageup)
+	(enable-timer t-ageup 170)
+)
+
+;now advance to imperial
+
+(defrule
+	(can-research-with-escrow imperial-age)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research imperial-age)
+	(set-goal resource-needed 0)
+	(set-goal age-advancement NOTICE)
+	(set-goal upgrade-conflict NO)
+	(disable-timer t-ageup)
+	(enable-timer t-ageup 200)
+)
+
+;if we've failed to rise in age, reset goal age-advancement
+(defrule
+	(current-age < imperial-age)
+	(timer-triggered  t-ageup)
+	(goal age-advancement NOTICE)
+=>
+	(disable-timer t-ageup)
+	(set-goal age-advancement NO)
+)

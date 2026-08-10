@@ -1,0 +1,164 @@
+;best ship-builders = byzantines, japanese, persian, saracen, viking
+;secondary = briton, celts, chinese, turk
+;tertiary = franks, goths, mongols, teuton, 
+;first make sure that there is only _one_ main ship-builder
+
+(defrule
+	(true)
+=>
+	(set-goal sea-owner NOTICE)
+	(disable-self)
+)
+
+(defrule
+	(taunt-detected any-ally 202)
+=>
+	(acknowledge-taunt this-any-ally 202)
+	(set-goal sea-owner NO)
+	(disable-self)
+)
+
+;best ship-builders
+(defrule
+	(goal sea-owner NOTICE)
+	(player-in-game any-computer-ally)
+	(or
+		(or
+			(civ-selected byzantine)
+			(civ-selected japanese)
+		)
+		(or
+			(civ-selected persian)
+			(civ-selected saracen)
+		)
+	)
+=>
+	(chat-to-player-using-id every-ally 22408)	;202
+	(set-goal sea-owner YES)
+	(disable-self)
+)
+
+(defrule
+	(goal sea-owner NOTICE)
+	(player-in-game any-computer-ally)
+	(or
+		(or
+			(civ-selected viking)
+			(civ-selected spanish)
+		)
+		(civ-selected korean)
+	)
+=>
+	(chat-to-player-using-id every-ally 22408)	;202
+	(set-goal sea-owner YES)
+	(disable-self)
+)
+
+;mediocre ship-builders
+(defrule
+	(goal sea-owner NOTICE)
+	(game-time > 10)
+	(player-in-game any-computer-ally)
+	(or
+		(or
+			(civ-selected briton)
+			(civ-selected celtic)
+		)
+		(or
+			(or
+				(civ-selected chinese)
+				(civ-selected turkish)
+			)
+			(civ-selected mayan)
+		)
+	)
+=>
+	(chat-to-player-using-id every-ally 22408)	;202
+	(set-goal sea-owner YES)
+	(disable-self)
+)
+
+;inferior ship-builders
+(defrule
+	(goal sea-owner NOTICE)
+	(game-time > 20)
+	(player-in-game any-computer-ally)
+	(or
+		(or
+			(civ-selected frankish)
+			(civ-selected gothic)
+		)
+		(or
+			(civ-selected mongol)
+			(civ-selected teutonic)
+		)
+	)
+=>
+	(chat-to-player-using-id every-ally 22408)	;202
+	(set-goal sea-owner YES)
+	(disable-self)
+)
+
+;inferior ship-builders part 2
+(defrule
+	(goal sea-owner NOTICE)
+	(game-time > 20)
+	(player-in-game any-computer-ally)
+	(or
+		(civ-selected aztec)
+		(civ-selected hun)
+	)
+=>
+	(chat-to-player-using-id every-ally 22408)	;202
+	(set-goal sea-owner YES)
+	(disable-self)
+)
+
+;don't let the main ship builder join the human player!
+(defrule
+	(goal sea-owner YES)
+	(not (goal personality 0) )
+=>
+	(set-goal personality 0)
+)
+
+;make sure we can ALWAYS build a transport-ship ...
+(defrule
+	(population >= pop-cap)
+	(building-type-count dock > 0)
+	(unit-type-count transport-ship == 0)
+	(can-afford-unit transport-ship)
+	(attack-soldier-count > 0)
+=>
+	(delete-unit fishing-ship)
+)
+
+(defrule
+	(population >= pop-cap)
+	(building-type-count dock > 0)
+	(unit-type-count fishing-ship == 0)
+	(unit-type-count transport-ship == 0)
+	(can-afford-unit transport-ship)
+	(attack-soldier-count > 0)
+=>
+	(delete-unit villager)
+)
+
+(defrule
+	(unit-type-count-total transport-ship == 0)
+	(military-population > 10)
+	(can-train-with-escrow transport-ship)
+=>
+	(release-escrow wood)
+	(train transport-ship)
+)
+
+(defrule
+	(attack-soldier-count >= 20)
+	(research-completed ri-careening)
+	(unit-type-count-total transport-ship < 3)
+	(can-train transport-ship)
+=>
+	(train transport-ship)
+)
+

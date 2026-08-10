@@ -1,0 +1,22 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy monk-mango-push)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(goal gl-strategy monk-mango-push)
+	(players-civ target-player aztec)
+	(game-time > 550)
+	(game-time < 600)
+	(goal gl-current-age gv-dark)
+=>
+	(set-goal gl-strategy regicide-strategy)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(disable-self)
+)

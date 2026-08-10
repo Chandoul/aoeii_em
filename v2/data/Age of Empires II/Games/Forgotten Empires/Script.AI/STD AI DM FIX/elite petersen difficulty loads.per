@@ -1,0 +1,222 @@
+#load-if-defined DIFFICULTY-EASIEST
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-percent-enemy-sighted-response 10)
+	(set-strategic-number sn-easiest-reaction-percentage 20)
+	(set-difficulty-parameter ability-to-maintain-distance 100)
+	(set-difficulty-parameter ability-to-dodge-missiles 100)
+	(disable-self)
+)
+
+;crude age advancement rules
+(defrule
+	(goal age-advancement NO)
+	(players-current-age every-human >= feudal-age)
+	(can-research-with-escrow feudal-age)
+=>
+	(release-escrow food)
+	(research feudal-age)
+	(set-goal age-advancement NOTICE)
+	(enable-timer t-ageup 300)
+)
+
+(defrule
+	(current-age == feudal-age)
+=>
+	(disable-timer t-ageup)
+	(set-goal age-advancement NO)
+	(disable-self)
+)
+
+(defrule
+	(goal age-advancement NO)
+	(players-current-age every-human >= castle-age)
+	(can-research-with-escrow castle-age)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research castle-age)
+	(set-goal age-advancement NOTICE)
+	(enable-timer t-ageup 300)
+)
+
+(defrule
+	(current-age == castle-age)
+=>
+	(disable-timer t-ageup)
+	(set-goal age-advancement NO)
+	(disable-self)
+)
+
+(defrule
+	(goal age-advancement NOTICE)
+	(current-age < castle-age)
+	(timer-triggered t-ageup)
+=>
+	(disable-timer t-ageup)
+	(set-goal age-advancement NO)
+)
+#end-if
+;********************************
+#load-if-defined DIFFICULTY-EASY
+(load "STD AI DM FIX\elite petersen tower")
+
+
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-percent-enemy-sighted-response 25)
+	(set-strategic-number sn-easier-reaction-percentage 20)
+	(set-strategic-number sn-hits-before-alliance-change 50)
+	(set-difficulty-parameter ability-to-maintain-distance 75)
+	(set-difficulty-parameter ability-to-dodge-missiles 75)
+	(disable-self)
+)
+
+;crude age advancement rules
+(defrule
+	(goal age-advancement NO)
+	(players-current-age every-human >= feudal-age)
+	(can-research-with-escrow feudal-age)
+=>
+	(release-escrow food)
+	(research feudal-age)
+	(set-goal age-advancement NOTICE)
+	(enable-timer t-ageup 300)
+)
+
+(defrule
+	(current-age == feudal-age)
+=>
+	(disable-timer t-ageup)
+	(set-goal age-advancement NO)
+	(disable-self)
+)
+
+(defrule
+	(goal age-advancement NO)
+	(players-current-age every-human >= castle-age)
+	(can-research-with-escrow castle-age)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research castle-age)
+	(set-goal age-advancement NOTICE)
+	(enable-timer t-ageup 300)
+)
+
+(defrule
+	(current-age == castle-age)
+=>
+	(disable-timer t-ageup)
+	(set-goal age-advancement NO)
+	(disable-self)
+)
+
+(defrule
+	(goal age-advancement NO)
+	(players-current-age every-human == imperial-age)
+	(can-research-with-escrow imperial-age)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research imperial-age)
+	(set-goal age-advancement NOTICE)
+	(enable-timer t-ageup 300)
+)
+
+(defrule
+	(current-age == imperial-age)
+=>
+	(disable-timer t-ageup)
+	(set-goal age-advancement NO)
+	(disable-self)
+)
+
+(defrule
+	(goal age-advancement NOTICE)
+	(current-age < imperial-age)
+	(timer-triggered t-ageup)
+=>
+	(disable-timer t-ageup)
+	(set-goal age-advancement NO)
+)
+#end-if
+
+;********************************
+#load-if-defined DIFFICULTY-MODERATE
+(load "STD AI DM FIX\elite petersen market")
+(load "STD AI DM FIX\elite petersen tower")
+(load "STD AI DM FIX\elite petersen wonder")
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-percent-enemy-sighted-response 75)
+	(set-strategic-number sn-hits-before-alliance-change 25)
+	(set-difficulty-parameter ability-to-maintain-distance 50)
+	(set-difficulty-parameter ability-to-dodge-missiles 50)
+	(disable-self)
+)
+#end-if
+
+;********************************
+#load-if-defined DIFFICULTY-HARD
+(load "STD AI DM FIX\elite petersen market")
+(load "STD AI DM FIX\elite petersen tower")
+(load "STD AI DM FIX\elite petersen wonder")
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-percent-enemy-sighted-response 99)
+	(set-strategic-number sn-hits-before-alliance-change 10)
+	(set-difficulty-parameter ability-to-maintain-distance 25)
+	(set-difficulty-parameter ability-to-dodge-missiles 25)
+	(disable-self)
+)
+
+#end-if
+
+;********************************
+#load-if-defined DIFFICULTY-HARDEST
+(load "STD AI DM FIX\elite petersen market")
+(load "STD AI DM FIX\elite petersen tower")
+(load "STD AI DM FIX\elite petersen wonder")
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-percent-enemy-sighted-response 99)
+	(set-strategic-number sn-hits-before-alliance-change 10)
+	(set-difficulty-parameter ability-to-maintain-distance 0)
+	(set-difficulty-parameter ability-to-dodge-missiles 0)
+	(disable-self)
+)
+
+(defrule
+	(current-age == imperial-age)
+=>
+	(disable-timer t-chatmore)
+	(enable-timer t-chatmore 1800)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered t-chatmore)
+=>
+	(cc-add-resource wood 500)
+	(cc-add-resource food 500)
+	(cc-add-resource gold 500)
+	(cc-add-resource stone 500)
+	(disable-timer t-chatmore)
+	(enable-timer t-chatmore 1200)
+)
+
+#end-if
+
+
+

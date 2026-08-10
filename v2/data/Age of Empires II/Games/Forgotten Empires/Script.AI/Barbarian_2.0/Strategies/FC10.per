@@ -1,0 +1,49 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy boom)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(current-age == feudal-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 30)
+		(or	(strategic-number sn-wood-gatherer-percentage != 67)
+			(strategic-number sn-gold-gatherer-percentage != 3)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 67)
+	(set-strategic-number sn-gold-gatherer-percentage 3)
+)
+
+(defrule
+	(goal gl-strategy boom)
+	(building-type-count-total town-center < 3)
+	(current-age == castle-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 37)
+		(or	(strategic-number sn-wood-gatherer-percentage != 60)
+			(strategic-number sn-gold-gatherer-percentage != 3)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 37)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 3)
+)
+
+(defrule
+	(goal gl-strategy boom)
+	(building-type-count-total town-center >= 3)
+	(current-age == castle-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 53)
+		(or	(strategic-number sn-wood-gatherer-percentage != 44)
+			(strategic-number sn-gold-gatherer-percentage != 3)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 53)
+	(set-strategic-number sn-wood-gatherer-percentage 44)
+	(set-strategic-number sn-gold-gatherer-percentage 3)
+)
+
+

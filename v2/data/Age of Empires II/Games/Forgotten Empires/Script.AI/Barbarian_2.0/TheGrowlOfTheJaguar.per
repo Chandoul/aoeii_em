@@ -1,0 +1,613 @@
+; Grrr...
+
+; ============== RULES
+
+(defrule
+	(up-compare-goal gl-strategy != jaguar-boom)
+=>
+	(up-jump-rule 48)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(game-time > 3900)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-control 0)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(current-age == castle-age)
+	(players-unit-type-count focus-player crossbowman > 5)
+	(not	(research-completed ri-elite-skirmisher))
+=>
+	(set-strategic-number sn-enemy-sighted-response-distance 0)
+	(chat-to-player my-player-number "24Enemy is doing xbowrush")
+	(set-strategic-number sn-allow-resource-spending 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(strategic-number sn-enemy-sighted-response-distance == 0)
+	(research-completed ri-elite-skirmisher)
+=>
+	(set-strategic-number sn-enemy-sighted-response-distance 10)
+	(disable-self)
+)
+
+; ============= ECO BALANCING
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 54)
+	(set-strategic-number sn-gold-gatherer-percentage 6)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(dropsite-min-distance stone < 4)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 29)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(set-strategic-number sn-gold-gatherer-percentage 6)
+	(set-strategic-number sn-stone-gatherer-percentage 27)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(and	(stone-amount >= 650)
+			(goal gl-current-age gv-feudal-up))
+		(building-type-count-total castle > 0))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 39)
+	(set-strategic-number sn-wood-gatherer-percentage 52)
+	(set-strategic-number sn-gold-gatherer-percentage 5)
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(current-age >= castle-age)
+	(building-type-count-total town-center > 1)
+	(building-type-count-total castle > 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 39)
+	(set-strategic-number sn-wood-gatherer-percentage 44)
+	(set-strategic-number sn-gold-gatherer-percentage 12)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(current-age >= castle-age)
+	(building-type-count-total town-center > 2)
+	(building-type-count-total castle > 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 42)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(building-type-count-total town-center > 3)
+	(building-type-count-total castle > 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 44)
+	(set-strategic-number sn-wood-gatherer-percentage 37)
+	(set-strategic-number sn-gold-gatherer-percentage 14)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(research-completed my-unique-unit-upgrade)
+	(building-type-count-total town-center > 3)
+	(building-type-count-total castle > 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 41)
+	(set-strategic-number sn-wood-gatherer-percentage 34)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(up-modify-sn sn-gold-gatherer-percentage g:- gl-gathered-relics)
+)
+
+; ======== BUILDINGS - HIGH PRIORITY
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(building-type-count-total archery-range < 1)
+		(and	(building-type-count-total town-center > 3)
+			(wood-amount > 500)))
+	(building-type-count-total archery-range < 7)
+	(can-build archery-range)
+=>
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(building-type-count-total archery-range > 0)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(building-type-count-total castle > 0)
+		(stone-amount >= 750))
+	(building-type-count-total town-center < 4)
+	(can-build town-center)
+=>
+	(build town-center)
+	(chat-to-player my-player-number "Town center")
+)
+
+(defrule
+	(up-pending-objects c: mining-camp < 1)
+	(goal gl-strategy jaguar-boom)
+	(building-type-count-total blacksmith > 0)
+	(or	(and	(current-age >= castle-age)
+			(and	(game-time > 1900)
+				(building-type-count-total town-center > 2)))
+		(and	(building-type-count-total mining-camp < 3)
+			(dropsite-min-distance stone > 3)))
+	(building-type-count-total mining-camp < 5)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(up-pending-objects c: mining-camp < 1)
+	(goal gl-strategy jaguar-boom)
+	(game-time > 2100)
+	(building-type-count-total mining-camp < 10)
+	(dropsite-min-distance stone > 3)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+; ======== RESEARCHES - ECONOMY - HIGH PRIORITY
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(can-research ri-horse-collar)
+		(or	(can-research ri-double-bit-axe)
+			(can-research-with-escrow ri-heavy-plow)))
+=>
+	(release-escrow food)
+	(release-escrow wood)
+  	(research ri-double-bit-axe)
+  	(research ri-horse-collar)
+	(research ri-heavy-plow)
+)
+
+; ======== RESEARCHES - UNIT UPGRADES
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(can-research-with-escrow my-unique-unit-upgrade)
+		(and	(up-compare-goal gl-current-age >= gv-castle-up)
+			(can-research ri-stone-shaft-mining)))
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(research ri-stone-shaft-mining)
+ 	(research my-unique-unit-upgrade)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-research-status c: my-unique-unit-upgrade >= research-pending)
+	(can-research-with-escrow my-unique-research)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+ 	(research my-unique-research)
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(unit-type-count-total my-unique-unit-line > 0)
+	(or	(can-research ri-scale-mail)
+		(or	(can-research ri-chain-mail)
+			(or	(can-research ri-squires)
+				(can-research ri-plate-mail))))
+=>
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-squires)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(unit-type-count-total my-unique-unit-line > 16)
+		(up-research-status c: my-unique-unit-upgrade >= research-pending))
+	(or	(can-research ri-forging)
+		(or	(can-research ri-iron-casting)
+			(or	(can-research ri-blast-furnace)
+				(can-research ri-tracking))))
+=>
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+	(research ri-tracking)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(current-age-time > 300)
+	(can-research ri-conscription)
+=>
+	(research ri-conscription)
+)
+
+(defrule
+	(game-time > 1200)
+	(unit-type-count-total monk-set > 0)
+	(goal gl-strategy jaguar-boom)
+	(or	(can-research ri-fervor)
+		(or	(can-research ri-theocracy)
+			(or	(can-research ri-block-printing)
+				(can-research ri-illumination))))
+=>
+	(research ri-fervor)
+	(research ri-theocracy)
+	(research ri-block-printing)
+	(research ri-illumination)
+)
+
+; ======== RESEARCHES - ECONOMY - LOW PRIORITY
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(can-research ri-guilds)
+=>
+	(research ri-guilds)
+)
+
+; ============== BUILDINGS - DARK
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(building-type-count-total barracks < 1)
+	(can-build barracks)
+=>
+	(build barracks)
+)
+
+; ======== BUILDINGS - CASTLE
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(game-time > 2500)
+	(building-type-count-total town-center < 4)
+	(can-build-with-escrow town-center)
+=>
+	(set-strategic-number sn-town-center-placement 0)
+	(release-escrow wood)
+	(build town-center)
+	(chat-to-player my-player-number "Town center")
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(building-type-count-total town-center == 1)
+		(building-type-count-total town-center == 3))
+	(can-build-with-escrow town-center)
+=>
+	(up-modify-sn sn-camp-max-distance g:= gl-my-town-size)
+	(set-strategic-number sn-town-center-placement mining-camp)
+	(release-escrow wood)
+	(build town-center)
+	(chat-to-player my-player-number "Town center")
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(building-type-count-total town-center == 2)
+	(can-build-with-escrow town-center)
+=>
+	(up-modify-sn sn-camp-max-distance g:= gl-my-town-size)
+	(set-strategic-number sn-town-center-placement lumber-camp)
+	(release-escrow wood)
+	(build town-center)
+	(chat-to-player my-player-number "Town center")
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(research-completed ri-horse-collar)
+	(or	(current-age >= castle-age)
+		(building-type-count-total farm < 7))
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(current-age >= castle-age)
+	(building-type-count-total town-center > 2)
+	(building-type-count-total archery-range < 3)
+	(can-build archery-range)
+=>
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(current-age >= castle-age)
+	(building-type-count-total town-center > 2)
+	(or	(building-type-count-total monastery < 2)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(building-type-count-total monastery < 4)
+	(can-build monastery)
+=>
+	(build monastery)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(current-age >= castle-age)
+	(or	(building-type-count-total town-center > 3)
+		(unit-type-count-total villager > 95))
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(building-type-count-total university < 1)
+	(can-build university)
+=>
+	(build university)
+)
+
+; ======== UNITS - ARMY
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(soldier-count > 40)
+	(research-completed my-unique-unit-upgrade)
+	(or	(unit-type-count-total trebuchet-set < 3)
+		(gold-amount > 1000))
+	(unit-type-count-total trebuchet-set < 6)
+	(can-train trebuchet)
+=>
+	(train trebuchet)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(food-amount >= 70)
+	(or	(and	(game-time < 1400)
+			(and	(players-current-age focus-player == feudal-age)
+				(or	(players-unit-type-count focus-player skirmisher-line > 4)
+					(players-unit-type-count focus-player archer-line > 4))))
+		(and	(players-unit-type-count focus-player battering-ram-line > 0)
+			(unit-type-count jaguar-man-line < 3)))
+	(unit-type-count-total eagle-warrior-line < 3)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(food-amount >= 70)
+	(players-current-age focus-player == feudal-age)
+	(players-unit-type-count focus-player scout-cavalry-line > 1)
+	(unit-type-count jaguar-man-line < 2)
+	(unit-type-count-total eagle-warrior-line < 3)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(research-completed my-unique-unit-upgrade)
+	(unit-type-count-total my-unique-unit-line < 70)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(unit-type-count-total monk-set < 7)
+		(building-type-count-total town-center > 2))
+	(or	(unit-type-count-total monk-set < 13)
+		(or	(goal gl-current-age gv-castle-up)
+			(or	(research-completed ri-block-printing)
+				(and	(gold-amount > 700)
+					(food-amount < 800)))))
+	(unit-type-count-total monk-set < 20)
+	(can-train monk)
+=>
+	(train monk)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(and	(game-time < 1500)
+			(and	(commodity-selling-price stone < default-stone-price)
+				(unit-type-count-total my-unique-unit-line < 2)))
+		(unit-type-count-total villager > 50))
+	(or	(unit-type-count-total my-unique-unit-line < 6)
+		(unit-type-count-total villager > 70))
+	(unit-type-count-total my-unique-unit-line < 16)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(players-unit-type-count focus-player huskarl-line > 1)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 1)
+			(or	(players-unit-type-count focus-player woad-raider-line > 2)
+				(or	(players-unit-type-count focus-player berserk-line > 2)
+					(or	(players-unit-type-count focus-player eagle-warrior-line > 2)
+						(players-unit-type-count focus-player militiaman-line > 1))))))
+	(unit-type-count-total my-unique-unit-line < 5)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(players-unit-type-count focus-player huskarl-line > 5)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+			(or	(players-unit-type-count focus-player woad-raider-line > 5)
+				(or	(players-unit-type-count focus-player berserk-line > 5)
+					(or	(players-unit-type-count focus-player eagle-warrior-line > 4)
+						(players-unit-type-count focus-player militiaman-line > 6))))))
+	(unit-type-count-total my-unique-unit-line < 10)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(players-unit-type-count focus-player huskarl-line > 10)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 8)
+			(or	(players-unit-type-count focus-player woad-raider-line > 10)
+				(or	(players-unit-type-count focus-player berserk-line > 10)
+					(or	(players-unit-type-count focus-player eagle-warrior-line > 10)
+						(players-unit-type-count focus-player militiaman-line > 11))))))
+	(unit-type-count-total my-unique-unit-line < 17)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(or	(goal FFA YES)
+		(goal POSITION POCKET))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total town-center < 4)
+	(game-time < 1800)
+	(up-compare-goal threat-time > 10000)
+	(up-enemy-units-in-town < 5)
+=>
+	(up-jump-rule 5)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(players-unit-type-count focus-player cavalry-archer-line > 1)
+		(or	(players-unit-type-count focus-player archer-line > 2)
+			(or	(players-unit-type-count focus-player plumed-archer-line > 3)
+				(or	(and	(players-current-age focus-player == feudal-age)
+						(players-military-population focus-player > 3))
+					(players-unit-type-count focus-player genoese-crossbowman > 2)))))
+	(unit-type-count-total skirmisher-line < 23)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(players-unit-type-count focus-player chu-ko-nu-line > 2)
+		(or	(players-unit-type-count focus-player longbowman-line > 2)
+			(or	(players-unit-type-count focus-player janissary-line > 2)
+				(or	(players-unit-type-count focus-player mameluke-line > 3)
+					(and	(unit-type-count-total skirmisher-line < 5)
+						(dropsite-min-distance stone < 4))))))
+	(unit-type-count-total skirmisher-line < 23)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(players-unit-type-count focus-player cavalry-archer-line > 10)
+		(or	(players-unit-type-count focus-player archer-line > 15)
+			(or	(players-unit-type-count focus-player plumed-archer-line > 13)
+				(players-unit-type-count focus-player jaguar-man-line > 10))))
+	(unit-type-count-total skirmisher-line < 33)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(players-unit-type-count focus-player chu-ko-nu-line > 10)
+		(or	(players-unit-type-count focus-player longbowman-line > 12)
+			(or	(players-unit-type-count focus-player janissary-line > 10)
+				(players-unit-type-count focus-player mameluke-line > 12))))
+	(unit-type-count-total skirmisher-line < 33)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(and	(or	(players-unit-type-count focus-player mangudai-line > 1)
+				(or	(players-unit-type-count focus-player conquistador-line > 3)
+					(or	(unit-type-count-total villager > 67)
+						(players-unit-type-count focus-player elephant-archer > 3))))
+			(unit-type-count-total skirmisher-line < 23))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(unit-type-count-total skirmisher-line < 36)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+; ======== ATTACKING
+
+(defrule
+	(goal gl-strategy jaguar-boom)
+	(research-completed my-unique-unit-upgrade)
+	(research-completed ri-theocracy)
+=>
+	(enable-timer 7 0)
+	(disable-self)
+)
+

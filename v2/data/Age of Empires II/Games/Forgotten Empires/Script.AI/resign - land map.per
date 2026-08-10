@@ -1,0 +1,13 @@
+
+(defrule
+	(game-time > 600) ; 10 minutes
+	(or	(game-time > 10800) ; 3 hours
+		(or	(population < 2)
+			(or	(and	(building-count < 1)
+					(unit-type-count villager < 2))
+				(and	(unit-type-count villager < 2)
+					(and	(military-population < 2)
+						(unit-type-count monk < 2))))))
+=>
+	(resign)
+)

@@ -1,0 +1,396 @@
+;******************************************************************************
+;
+; Starting Strategic Numbers
+;
+;******************************************************************************
+
+
+(defrule
+	(true)
+=>
+	(chat-to-player my-player-number "I'm Crusade AI. Version 4.42") ; Presentation
+	(chat-to-player my-player-number "By Campeador")
+	(set-strategic-number G-AGE-STATUS GV-DARK-AGE)		;4
+	(set-goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+	(set-goal G-BOAT 0)
+	(set-goal G-TSA 0)
+	(set-strategic-number G-FARMING GV-FARM-IDLE-8)		;8
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+	(set-goal G-SIEGE-UNIT GV-NONE)				;12
+	(set-goal GV-UNIQUE-UNIT-TYPE GV-UNIQUE-UNIT-TYPE)
+
+	(disable-self)
+)
+
+
+(defrule
+	(true)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+	(set-goal G-NAVY-STRONG-PREPARED 0)
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 0)	;4
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+			;8
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+
+	;(set-goal G-FEUDAL-STRATEGY GV-FEUDAL-STRATEGY-DEFAULT)	;12
+	;(set-goal G-TSA-PHASE 0)
+	;(set-goal G-ATTACK-TYPE 0)
+	(set-goal G-NAVAL-SUPERIORITY 0)
+	(set-goal G-COOPERATION 0)
+
+	(disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(set-strategic-number G-TREBUCHET 0)
+	;(set-goal G-FOOD-FOR-BOOMING 0)
+	(set-goal G-TRUSH-AGRESSIVENESS 1)
+	(set-strategic-number G-WEAKER-ENEMY 0)			;4
+	(set-goal G-HELPING-ALLY 0)
+	(set-goal G-HELPING-FORWARD-TOWERS 0)
+	;(set-goal G-WALL-ENABLED 0)
+	(set-goal G-TRADE GV-NONE)				;8
+	(set-goal G-UNIQUE-UNIT-ALLOWED 0)
+	(set-goal G-GATHER-LEVEL-WOOD 0)
+	(set-goal G-SHEEP 0)
+	(set-strategic-number G-SHEEP-TOTAL 0)			;12
+	(set-goal G-ATTACK-PHASE GV-ATTACK-PHASE-0)
+
+
+	(disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(enable-timer T-VILLAGER-FOOD-GOLD 1)
+	(enable-timer T-VILLAGER-WOOD-STONE 1)
+	(enable-timer T-TSA-RETREAT 1)
+	(enable-timer T-ALLY-NEEDS-HELP 1)
+	(enable-timer T-TSA-PHASE 1)
+	(enable-timer T-WATER-ATTACK-TEAM 1)
+	(enable-timer T-ATTACK-TEAM 1)	
+	(enable-timer T-BUILDING 1)
+	(enable-timer T-ALLY-NEEDS-NAVAL-HELP 1)
+	;(enable-wall-placement 1)
+	;(enable-wall-placement 2)
+	(disable-self)
+)
+
+#load-if-defined UP-AVAILABLE
+(defrule
+	(true)
+=>
+	(set-strategic-number SN-ENABLE-BOAR-HUNTING 0)
+	(enable-timer T-BOAR-HUNTING 1)
+	(disable-self)
+)
+#end-if
+
+
+
+(defrule
+	(or	(or	(current-age == dark-age)
+			(or	(unit-type-count-total villager > 13)
+				(unit-type-count-total villager > SUB-TOP-VILLAGERS)			
+			)
+		)
+		(or	(food-amount > 300)
+			(or	(game-time > 250)
+				(current-age > feudal-age)
+			)
+		)
+	)
+=>
+	(chat-to-player my-player-number "45") ; Taunt TA-INITIAL-AGE-FINISHED
+	(disable-self)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number G-AGE-STATUS < GV-FEUDAL-AGE)
+=>
+	(set-strategic-number G-AGE-STATUS GV-FEUDAL-AGE)
+)
+
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-CASTLE-AGE)
+=>
+	(set-strategic-number G-AGE-STATUS GV-CASTLE-AGE)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(strategic-number G-AGE-STATUS < GV-IMPERIAL-AGE)
+=>
+	(set-strategic-number G-AGE-STATUS GV-IMPERIAL-AGE)
+)
+
+; Walled Map?
+(defrule
+	(not(taunt-detected my-player-number TA-WALLED-MAP))
+	;1(or	(building-type-count-total gate > 0)
+		(or	(building-type-count-total palisade-wall > 0)
+			(building-type-count-total stone-wall-line > 0)
+		)
+	;)
+=>
+	(chat-to-player my-player-number "48")
+)
+
+
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-intelligent-gathering 1)
+	(set-strategic-number sn-camp-max-distance 8)
+	(set-strategic-number sn-food-dropsite-distance -1)
+	(set-strategic-number sn-wood-dropsite-distance 15)
+	(set-strategic-number sn-stone-dropsite-distance 255) ; later 100
+	(set-strategic-number sn-gold-dropsite-distance 255) ; later 35
+	(set-strategic-number sn-maximum-food-drop-distance 25)
+	(set-strategic-number sn-maximum-wood-drop-distance 15) ; later 15
+	(set-strategic-number sn-maximum-stone-drop-distance 255) ; later 25
+	(set-strategic-number sn-maximum-gold-drop-distance 255) ; later 25
+	(set-strategic-number sn-maximum-hunt-drop-distance 0)
+	(set-strategic-number sn-initial-exploration-required 0)
+	(set-strategic-number sn-mill-max-distance 15)
+	(disable-self)
+)
+
+
+
+; To avoid gold camps placed in stone and viceversa
+(defrule
+	(taunt-detected my-player-number TA-GOLD-MINING)
+	(or	(strategic-number sn-gold-dropsite-distance > 4)
+		(strategic-number sn-maximum-gold-drop-distance > 6)
+	)
+=>
+	(set-strategic-number sn-gold-dropsite-distance 4)
+	(set-strategic-number sn-maximum-gold-drop-distance 6)
+)
+
+(defrule
+	(taunt-detected my-player-number TA-STONE-MINING)
+	(or	(strategic-number sn-stone-dropsite-distance > 4)
+		(strategic-number sn-maximum-stone-drop-distance > 6)
+	)
+=>
+	(set-strategic-number sn-stone-dropsite-distance 4)
+	(set-strategic-number sn-maximum-stone-drop-distance 6)
+)
+
+
+
+
+(defrule
+	(true)
+   =>
+	(set-strategic-number sn-gold-defend-priority 1)
+	(set-strategic-number sn-stone-defend-priority 5)
+	(set-strategic-number sn-forage-defend-priority 4)
+	(set-strategic-number sn-relic-defend-priority 2)
+	(set-strategic-number sn-town-defend-priority 3)
+	(set-strategic-number sn-dock-defend-priority 0)
+	(set-strategic-number sn-task-ungrouped-soldiers 0)
+	(set-strategic-number sn-gather-idle-soldiers-at-center 0)
+	(set-strategic-number sn-minimum-explore-group-size          0) 
+	(set-strategic-number sn-maximum-explore-group-size          1) 
+	(set-strategic-number sn-number-explore-groups               1)
+	(set-strategic-number sn-minimum-water-body-size-for-dock LAND-MAP)
+	(set-strategic-number sn-gather-defense-units 1)
+	(disable-self)
+)
+
+
+
+; Battle behavior
+(defrule
+   	(true)
+=>
+   	(set-difficulty-parameter ability-to-maintain-distance 0) 		;0/100 <--hit and run
+   	(set-difficulty-parameter ability-to-dodge-missiles 0) 		;0/100 <-- dancing ^^
+   	(set-strategic-number sn-consecutive-idle-unit-limit 60) 		;60/2
+   	;(set-strategic-number sn-sentry-distance 0) 				;0/20
+   	(set-strategic-number sn-sentry-distance-variation 0) 		;0/
+	(set-strategic-number sn-maximum-town-size 8)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 8)
+	(set-strategic-number sn-blot-exploration-map 0) ;1=rexplore
+	(set-strategic-number sn-blot-size BLOT-SIZE) ;15=default, 0 scouts w/ high LOS, 1 rest
+	(set-strategic-number sn-target-evaluation-ally-proximity 10)
+	(set-strategic-number sn-target-evaluation-distance -5)
+	(set-strategic-number sn-target-evaluation-time-kill-ratio 100)
+	(set-strategic-number sn-target-evaluation-damage-capability 0)
+	(set-strategic-number sn-target-evaluation-hitpoints 5)
+	(set-strategic-number sn-target-evaluation-range -5)
+   	(disable-self)
+)
+
+(defrule
+   	(true)
+=>
+   	;(set-strategic-number sn-minimum-attack-group-size ATTACK-GROUPS-SIZE)
+   	;(set-strategic-number sn-maximum-attack-group-size ATTACK-GROUPS-SIZE)
+   	(set-strategic-number sn-attack-intelligence 1)
+   	(set-strategic-number sn-target-evaluation-siege-weapon 100)
+	(set-strategic-number sn-number-attack-groups 0)
+	(set-strategic-number sn-number-boat-attack-groups 0)
+   	(set-strategic-number sn-zero-priority-distance 100)
+   	(set-strategic-number sn-target-evaluation-siege-weapon 100)
+	(set-strategic-number sn-ignore-attack-group-under-attack 0)
+	(set-strategic-number sn-group-commander-selection-method 2)		; 0 Leader is more HP, 1 few HP, 2 most ranged, 3+ any?
+	;(set-strategic-number sn-group-form-distance 30)					; Max distance formation of groups
+	(set-strategic-number sn-group-leader-defense-distance 5)
+	(set-strategic-number sn-group-form-distance 40)
+	(set-strategic-number sn-attack-group-gather-spacing 5)
+   	(set-strategic-number sn-coop-share-information 1)
+   	(set-strategic-number sn-coop-share-attacking 1)
+   	(set-strategic-number sn-zero-priority-distance FULL-MAP-SIZE)
+   	(disable-self)
+)
+
+(defrule
+   	(players-current-age any-enemy >= castle-age)
+	(strategic-number sn-group-leader-defense-distance < 9)
+=>
+	(set-strategic-number sn-group-leader-defense-distance 9)
+)
+
+(defrule
+   	(players-current-age any-enemy == imperial-age)
+	(strategic-number sn-group-leader-defense-distance < 14)
+=>
+	(set-strategic-number sn-group-leader-defense-distance 14)
+)
+
+; Exploration
+
+(defrule ; Rule inspired by Norman_Duck and Archon
+	(current-age == dark-age)
+	(or	(unit-type-count villager >= 20)
+		(players-unit-type-count 0 DEER >= 1)
+	)
+	(goal G-TSA 0)
+=>
+	(set-strategic-number sn-blot-exploration-map 0)
+	(set-strategic-number sn-blot-size 0)
+	;(set-strategic-number sn-maximum-town-size 8)
+	;(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 8)
+   	(set-strategic-number sn-sentry-distance 10)
+	;(chat-to-player my-player-number "Compacting town: TS 8")
+   	(disable-self)
+)
+
+
+
+
+; At first my priority is building the first house to avoid idle TC. Then explore to find food
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-percent-civilian-explorers 100)
+	(set-strategic-number sn-minimum-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 100)
+	(set-strategic-number sn-total-number-explorers 101)
+	(set-strategic-number sn-number-explore-groups 101)
+	(set-strategic-number sn-minimum-explore-group-size 1)
+	(set-strategic-number sn-maximum-explore-group-size 1)
+	(set-strategic-number sn-percent-civilian-builders 30)
+	(set-strategic-number sn-cap-civilian-builders 30)
+	(set-strategic-number sn-percent-civilian-gatherers 0)
+	(set-strategic-number sn-cap-civilian-gatherers 100)
+	(chat-to-player my-player-number "Researching for food.")
+	(disable-self)
+)
+
+; Once found berries, sheeps or turkeys,  villagers will gather resources and constructing buildings as necessary
+(defrule
+	(or	(not(sheep-and-forage-too-far))
+		(or	(players-unit-type-count my-player-number LIVESTOCK-GROUP >= 4)
+			(building-type-count-total farm >= 1)
+		)
+	)
+	(strategic-number sn-percent-civilian-explorers > 0)
+	;(nand	(sheep-and-forage-too-far)
+	;	(players-unit-type-count my-player-number LIVESTOCK-GROUP == 0)
+	;)
+=>
+	(set-strategic-number sn-percent-civilian-gatherers 100)
+	(set-strategic-number sn-percent-civilian-builders 100)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-number-explore-groups 1)
+	(chat-to-player my-player-number "Now we can start to gather resources")
+)
+
+; It's very rare, but even with the best exploration system, the scout/eagle might not find berries.
+; Then, if the sheeps are exhausted we'll need every villagers searching for them if we don't want 100 woodies in Dark Age.
+(defrule
+	(building-type-count-total mill == 0)
+	(building-type-count-total farm == 0)
+	(sheep-and-forage-too-far)
+	(players-unit-type-count my-player-number LIVESTOCK-GROUP == 0)
+	(strategic-number sn-percent-civilian-explorers < 100)
+	;(nand	(sheep-and-forage-too-far)
+	;	(players-unit-type-count my-player-number LIVESTOCK-GROUP == 0)
+	;)
+=>
+	(set-strategic-number sn-percent-civilian-explorers 100)
+	(set-strategic-number sn-total-number-explorers 101)
+	(chat-to-player my-player-number "Food exhausted. Villagers reexploring.")
+)
+
+(defrule
+	(or	(and	(food-amount > 1000)
+			(wood-amount > 1000)
+		)
+		(and	(current-age >= feudal-age)
+			(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+		)
+	)
+	(or	(strategic-number sn-percent-civilian-builders < 100)
+		(strategic-number sn-cap-civilian-builders < 100)
+	)
+=>
+	(set-strategic-number sn-percent-civilian-builders 100)
+	(set-strategic-number sn-cap-civilian-builders 100)
+)
+
+
+(defrule
+	(or	(and	(current-age == imperial-age)
+			(and	(population >= TOP-POPULATION)
+				(goal G-ARMY-STRONG-PREPARED 1)
+			)
+		)
+		(and	(food-amount > 2000)
+			(and	(wood-amount > 2000)
+				(gold-amount > 1000)
+			)
+		)
+	)
+=>
+	(chat-to-player every-ally "32") ; Taunt "Stop villager training"
+	(disable-self)
+)
+
+; Naval exploration
+(defrule
+	(current-age >= feudal-age)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-strategic-number sn-minimum-boat-explore-group-size 1)
+	(set-strategic-number sn-maximum-boat-explore-group-size 1)
+	(set-strategic-number sn-number-boat-explore-groups 1)
+	(disable-self)
+)

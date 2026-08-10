@@ -1,0 +1,23 @@
+#load-if-not-defined TURBO-RANDOM-MAP
+#load-if-defined DARK-AGE-START
+#load-if-not-defined REGICIDE
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(difficulty <= hard)
+	(current-age == dark-age)
+	(strategic-number sn-nomad-style-start == 0)
+	(game-time > 20)
+	(building-type-count-total town-center < 2)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal POSITION FLANK)
+	(game-time < 480)
+	(goal gl-rush-suitability-on-map GOOD)
+=>
+	(set-goal gl-DRUSH YES)
+	(set-strategic-number sn-allow-new-build-order 4)
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if

@@ -1,0 +1,22 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy regicide-strategy)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 20)
+	(goal gl-current-age gv-dark)
+	(or	(not	(player-valid any-ally))
+		(or	(goal POSITION FLANK)
+			(up-compare-goal gl-rush-suitability-on-map <= LOW)))
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+=>
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-strategy jaguar-boom)
+	(disable-self)
+)

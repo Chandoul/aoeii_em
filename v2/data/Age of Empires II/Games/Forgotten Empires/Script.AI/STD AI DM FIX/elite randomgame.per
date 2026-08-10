@@ -1,0 +1,51 @@
+(load "STD AI DM FIX\elite petersen constants")
+
+;******************************
+#load-if-defined WONDER-RACE
+
+(load "STD AI DM FIX\elite wonder rush")
+
+#end-if
+;******************************
+#load-if-defined DEATH-MATCH
+
+(load "STD AI DM FIX\elite petersen map loads")
+(load "STD AI DM FIX\elite petersen diplomacy")
+
+
+(load "STD AI DM FIX\elite petersen supplement")
+(load "STD AI DM FIX\elite petersen groups")
+(load "STD AI DM FIX\elite petersen resign")
+
+
+(load "STD AI DM FIX\elite petersen deathmatch")
+
+#end-if
+;******************************
+#load-if-defined DEFEND-WONDER
+
+(load "STD AI DM FIX\elite petersen map loads")
+(load "STD AI DM FIX\elite petersen diplomacy")
+
+(load "STD AI DM FIX\elite wonder kill")
+
+#end-if
+;******************************
+#load-if-not-defined DEATH-MATCH
+#load-if-not-defined DEFEND-WONDER
+#load-if-not-defined WONDER-RACE
+
+(load "STD AI DM FIX\elite petersen map loads")
+(load "STD AI DM FIX\elite petersen diplomacy")
+
+(load "STD AI DM FIX\elite petersen supplement")
+(load "STD AI DM FIX\elite petersen groups")
+(load "STD AI DM FIX\elite petersen resign")
+
+
+(load "STD AI DM FIX\elite ai petersen rules")
+
+#end-if
+#end-if
+#end-if
+;******************************

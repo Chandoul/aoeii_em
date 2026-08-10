@@ -1,0 +1,10 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-feudal-archery archers)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type basic-flush)
+	(set-goal gl-strategy flush)
+	(disable-self)
+)
+

@@ -1,0 +1,15 @@
+(defrule
+	(game-time > 50)
+	(goal SLING 0)
+	(or	(player-human any-enemy)
+		(not	(players-civ any-enemy aztec)))
+	(goal gl-current-age gv-dark)
+	(up-compare-goal gl-strategy != michi-boom)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+=>
+	(set-goal gl-strategy castle-drop)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+	(disable-self)
+)

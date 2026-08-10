@@ -1,0 +1,1043 @@
+;=========================================================
+; Cavalry
+;=========================================================
+(defrule
+	(strategic-number cavalry < 3)
+(or	(players-unit-type-count focus-player magyar-huszar >= 3)
+(or	(players-unit-type-count focus-player imperial-camel >= 3)
+	(players-unit-type-count focus-player boyar >= 3)))
+=>
+	(set-strategic-number cavalry 3))
+(defrule
+	(strategic-number cavalry < 5)
+(or	(players-unit-type-count focus-player magyar-huszar >= 5)
+(or	(players-unit-type-count focus-player imperial-camel >= 5)
+	(players-unit-type-count focus-player boyar >= 5)))
+=>
+	(set-strategic-number cavalry 5))
+(defrule
+	(strategic-number cavalry < 7)
+(or	(players-unit-type-count focus-player magyar-huszar >= 7)
+(or	(players-unit-type-count focus-player imperial-camel >= 7)
+	(players-unit-type-count focus-player boyar >= 7)))
+=>
+	(set-strategic-number cavalry 7))
+(defrule
+	(strategic-number cavalry < 10)
+(or	(players-unit-type-count focus-player magyar-huszar >= 10)
+(or	(players-unit-type-count focus-player imperial-camel >= 10)
+	(players-unit-type-count focus-player boyar >= 10)))
+=>
+	(set-strategic-number cavalry 10))
+(defrule
+	(strategic-number cavalry < 15)
+(or	(players-unit-type-count focus-player magyar-huszar >= 15)
+(or	(players-unit-type-count focus-player imperial-camel >= 15)
+	(players-unit-type-count focus-player boyar >= 15)))
+=>
+	(set-strategic-number cavalry 15))
+(defrule
+	(strategic-number cavalry < 25)
+(or	(players-unit-type-count focus-player magyar-huszar >= 25)
+(or	(players-unit-type-count focus-player imperial-camel >= 25)
+	(players-unit-type-count focus-player boyar >= 25)))
+=>
+	(set-strategic-number cavalry 25))
+(defrule
+	(strategic-number cavalry < 40)
+(or	(players-unit-type-count focus-player magyar-huszar >= 40)
+(or	(players-unit-type-count focus-player imperial-camel >= 40)
+	(players-unit-type-count focus-player boyar >= 40)))
+=>
+	(set-strategic-number cavalry 40))
+
+(defrule
+	(strategic-number cavalry >= 3)
+	(players-unit-type-count focus-player knight-line <= 2)
+	(players-unit-type-count focus-player camel-line <= 2)
+	(players-unit-type-count focus-player tarkan-line <= 2)
+	(players-unit-type-count focus-player war-elephant-line <= 0)
+	(players-unit-type-count focus-player war-wagon-line <= 2)
+	(players-unit-type-count focus-player cataphract-line <= 2)
+	(players-unit-type-count focus-player scout-cavalry-line <= 2)
+	(players-unit-type-count focus-player magyar-huszar <= 2)
+	(players-unit-type-count focus-player boyar <= 2)
+	(players-unit-type-count focus-player imperial-camel <= 2)
+=>
+	(set-strategic-number cavalry 0))
+
+(defrule
+	(strategic-number cavalry < 3)
+(or	(players-unit-type-count focus-player knight-line >= 3)
+(or	(players-unit-type-count focus-player camel-line >= 3)
+(or	(players-unit-type-count focus-player tarkan-line >= 3)
+(or	(players-unit-type-count focus-player war-elephant-line >= 1)
+(or	(players-unit-type-count focus-player war-wagon-line >= 3)
+(or	(players-unit-type-count focus-player cataphract-line >= 3)
+	(players-unit-type-count focus-player scout-cavalry-line >= 3)))))))
+=>
+	(set-strategic-number cavalry 3))
+
+(defrule
+	(strategic-number cavalry >= 5)
+	(players-unit-type-count focus-player knight-line <= 4)
+	(players-unit-type-count focus-player camel-line <= 4)
+	(players-unit-type-count focus-player tarkan-line <= 4)
+	(players-unit-type-count focus-player war-elephant-line <= 2)
+	(players-unit-type-count focus-player war-wagon-line <= 4)
+	(players-unit-type-count focus-player cataphract-line <= 4)
+	(players-unit-type-count focus-player scout-cavalry-line <= 4)
+	(players-unit-type-count focus-player magyar-huszar <= 4)
+	(players-unit-type-count focus-player boyar <= 4)
+	(players-unit-type-count focus-player imperial-camel <= 4)
+=>
+	(set-strategic-number cavalry 3))
+
+(defrule
+	(strategic-number cavalry < 5)
+(or	(players-unit-type-count focus-player knight-line >= 5)
+(or	(players-unit-type-count focus-player camel-line >= 5)
+(or	(players-unit-type-count focus-player tarkan-line >= 5)
+(or	(players-unit-type-count focus-player war-elephant-line >= 3)
+(or	(players-unit-type-count focus-player war-wagon-line >= 5)
+(or	(players-unit-type-count focus-player cataphract-line >= 5)
+	(players-unit-type-count focus-player scout-cavalry-line >= 5)))))))
+=>
+	(set-strategic-number cavalry 5))
+
+(defrule
+	(strategic-number cavalry >= 7)
+	(players-unit-type-count focus-player knight-line <= 6)
+	(players-unit-type-count focus-player camel-line <= 6)
+	(players-unit-type-count focus-player tarkan-line <= 6)
+	(players-unit-type-count focus-player war-elephant-line <= 4)
+	(players-unit-type-count focus-player war-wagon-line <= 6)
+	(players-unit-type-count focus-player cataphract-line <= 6)
+	(players-unit-type-count focus-player scout-cavalry-line <= 6)
+	(players-unit-type-count focus-player magyar-huszar <= 6)
+	(players-unit-type-count focus-player boyar <= 6)
+	(players-unit-type-count focus-player imperial-camel <= 6)
+=>
+	(set-strategic-number cavalry 5))
+
+(defrule
+	(strategic-number cavalry < 7)
+(or	(players-unit-type-count focus-player knight-line >= 7)
+(or	(players-unit-type-count focus-player camel-line >= 7)
+(or	(players-unit-type-count focus-player tarkan-line >= 7)
+(or	(players-unit-type-count focus-player war-elephant-line >= 5)
+(or	(players-unit-type-count focus-player war-wagon-line >= 7)
+(or	(players-unit-type-count focus-player cataphract-line >= 7)
+	(players-unit-type-count focus-player scout-cavalry-line >= 7)))))))
+=>
+	(set-strategic-number cavalry 7))
+
+(defrule
+	(strategic-number cavalry >= 10)
+	(players-unit-type-count focus-player knight-line <= 9)
+	(players-unit-type-count focus-player camel-line <= 9)
+	(players-unit-type-count focus-player tarkan-line <= 9)
+	(players-unit-type-count focus-player war-elephant-line <= 6)
+	(players-unit-type-count focus-player war-wagon-line <= 9)
+	(players-unit-type-count focus-player cataphract-line <= 9)
+	(players-unit-type-count focus-player scout-cavalry-line <= 9)
+	(players-unit-type-count focus-player magyar-huszar <= 9)
+	(players-unit-type-count focus-player boyar <= 9)
+	(players-unit-type-count focus-player imperial-camel <= 9)
+=>
+	(set-strategic-number cavalry 7))
+
+(defrule
+	(strategic-number cavalry < 10)
+(or	(players-unit-type-count focus-player knight-line >= 10)
+(or	(players-unit-type-count focus-player camel-line >= 10)
+(or	(players-unit-type-count focus-player tarkan-line >= 10)
+(or	(players-unit-type-count focus-player war-elephant-line >= 7)
+(or	(players-unit-type-count focus-player war-wagon-line >= 10)
+(or	(players-unit-type-count focus-player cataphract-line >= 10)
+	(players-unit-type-count focus-player scout-cavalry-line >= 10)))))))
+=>
+	(set-strategic-number cavalry 10))
+
+(defrule
+	(strategic-number cavalry >= 15)
+	(players-unit-type-count focus-player knight-line <= 14)
+	(players-unit-type-count focus-player camel-line <= 14)
+	(players-unit-type-count focus-player tarkan-line <= 14)
+	(players-unit-type-count focus-player war-elephant-line <= 8)
+	(players-unit-type-count focus-player war-wagon-line <= 14)
+	(players-unit-type-count focus-player cataphract-line <= 14)
+	(players-unit-type-count focus-player scout-cavalry-line <= 14)
+	(players-unit-type-count focus-player magyar-huszar <= 14)
+	(players-unit-type-count focus-player boyar <= 14)
+	(players-unit-type-count focus-player imperial-camel <= 14)
+=>
+	(set-strategic-number cavalry 10))
+
+(defrule
+	(strategic-number cavalry < 15)
+(or	(players-unit-type-count focus-player knight-line >= 15)
+(or	(players-unit-type-count focus-player camel-line >= 15)
+(or	(players-unit-type-count focus-player tarkan-line >= 15)
+(or	(players-unit-type-count focus-player war-elephant-line >= 9)
+(or	(players-unit-type-count focus-player war-wagon-line >= 15)
+(or	(players-unit-type-count focus-player cataphract-line >= 15)
+	(players-unit-type-count focus-player scout-cavalry-line >= 15)))))))
+=>
+	(set-strategic-number cavalry 15))
+
+(defrule
+	(strategic-number cavalry >= 25)
+	(players-unit-type-count focus-player knight-line <= 24)
+	(players-unit-type-count focus-player camel-line <= 24)
+	(players-unit-type-count focus-player tarkan-line <= 24)
+	(players-unit-type-count focus-player war-elephant-line <= 13)
+	(players-unit-type-count focus-player war-wagon-line <= 24)
+	(players-unit-type-count focus-player cataphract-line <= 24)
+	(players-unit-type-count focus-player scout-cavalry-line <= 24)
+	(players-unit-type-count focus-player magyar-huszar <= 24)
+	(players-unit-type-count focus-player boyar <= 24)
+	(players-unit-type-count focus-player imperial-camel <= 24)
+=>
+	(set-strategic-number cavalry 15))
+
+(defrule
+	(strategic-number cavalry < 25)
+(or	(players-unit-type-count focus-player knight-line >= 25)
+(or	(players-unit-type-count focus-player camel-line >= 25)
+(or	(players-unit-type-count focus-player tarkan-line >= 25)
+(or	(players-unit-type-count focus-player war-elephant-line >= 14)
+(or	(players-unit-type-count focus-player war-wagon-line >= 25)
+(or	(players-unit-type-count focus-player cataphract-line >= 25)
+	(players-unit-type-count focus-player scout-cavalry-line >= 25)))))))
+=>
+	(set-strategic-number cavalry 25))
+
+(defrule
+	(strategic-number cavalry >= 40)
+	(players-unit-type-count focus-player knight-line <= 39)
+	(players-unit-type-count focus-player camel-line <= 39)
+	(players-unit-type-count focus-player tarkan-line <= 39)
+	(players-unit-type-count focus-player war-elephant-line <= 22)
+	(players-unit-type-count focus-player war-wagon-line <= 39)
+	(players-unit-type-count focus-player cataphract-line <= 39)
+	(players-unit-type-count focus-player scout-cavalry-line <= 39)
+	(players-unit-type-count focus-player magyar-huszar <= 39)
+	(players-unit-type-count focus-player boyar <= 39)
+	(players-unit-type-count focus-player imperial-camel <= 39)
+=>
+	(set-strategic-number cavalry 25))
+
+(defrule
+	(strategic-number cavalry < 40)
+(or	(players-unit-type-count focus-player knight-line >= 40)
+(or	(players-unit-type-count focus-player camel-line >= 40)
+(or	(players-unit-type-count focus-player tarkan-line >= 40)
+(or	(players-unit-type-count focus-player war-elephant-line >= 23)
+(or	(players-unit-type-count focus-player war-wagon-line >= 40)
+(or	(players-unit-type-count focus-player cataphract-line >= 40)
+	(players-unit-type-count focus-player scout-cavalry-line >= 40)))))))
+=>
+	(set-strategic-number cavalry 40))
+;=========================================================
+; Archers
+;=========================================================
+(defrule
+	(strategic-number archers < 3)
+(or	(players-unit-type-count focus-player war-wagon-line >= 3)
+	(players-unit-type-count focus-player slinger >= 3))
+=>
+	(set-strategic-number archers 3))
+(defrule
+	(strategic-number archers < 5)
+(or	(players-unit-type-count focus-player war-wagon-line >= 5)
+	(players-unit-type-count focus-player slinger >= 5))
+=>
+	(set-strategic-number archers 5))
+(defrule
+	(strategic-number archers < 7)
+(or	(players-unit-type-count focus-player war-wagon-line >= 7)
+	(players-unit-type-count focus-player slinger >= 7))
+=>
+	(set-strategic-number archers 7))
+(defrule
+	(strategic-number archers < 10)
+(or	(players-unit-type-count focus-player war-wagon-line >= 10)
+	(players-unit-type-count focus-player slinger >= 10))
+=>
+	(set-strategic-number archers 10))
+(defrule
+	(strategic-number archers < 15)
+(or	(players-unit-type-count focus-player war-wagon-line >= 15)
+	(players-unit-type-count focus-player slinger >= 15))
+=>
+	(set-strategic-number archers 15))
+(defrule
+	(strategic-number archers < 25)
+(or	(players-unit-type-count focus-player war-wagon-line >= 25)
+	(players-unit-type-count focus-player slinger >= 25))
+=>
+	(set-strategic-number archers 25))
+(defrule
+	(strategic-number archers < 40)
+(or	(players-unit-type-count focus-player war-wagon-line >= 40)
+	(players-unit-type-count focus-player slinger >= 40))
+=>
+	(set-strategic-number archers 40))
+(defrule
+	(strategic-number archers >= 3)
+	(players-unit-type-count focus-player genoese-crossbowman <= 2)
+	(players-unit-type-count focus-player plumed-archer-line <= 2)
+	(players-unit-type-count focus-player mangudai-line <= 2)
+	(players-unit-type-count focus-player longbowman-line <= 2)
+	(players-unit-type-count focus-player chu-ko-nu-line <= 2)
+	(players-unit-type-count focus-player cavalry-archer-line <= 2)
+	(players-unit-type-count focus-player archer-line <= 2)
+	(players-unit-type-count focus-player slinger <= 2)
+	(players-unit-type-count focus-player war-wagon-line <= 2)
+=>
+	(set-strategic-number archers 0))
+
+(defrule
+	(strategic-number archers < 3)
+(or	(players-unit-type-count focus-player genoese-crossbowman >= 3)
+(or	(players-unit-type-count focus-player plumed-archer-line >= 3)
+(or	(players-unit-type-count focus-player mangudai-line >= 3)
+(or	(players-unit-type-count focus-player longbowman-line >= 3)
+(or	(players-unit-type-count focus-player chu-ko-nu-line >= 3)
+(or	(players-unit-type-count focus-player cavalry-archer-line >= 3)
+	(players-unit-type-count focus-player archer-line >= 3)))))))
+=>
+	(set-strategic-number archers 3))
+
+(defrule
+	(strategic-number archers >= 5)
+	(players-unit-type-count focus-player genoese-crossbowman <= 4)
+	(players-unit-type-count focus-player plumed-archer-line <= 4)
+	(players-unit-type-count focus-player mangudai-line <= 4)
+	(players-unit-type-count focus-player longbowman-line <= 4)
+	(players-unit-type-count focus-player chu-ko-nu-line <= 4)
+	(players-unit-type-count focus-player cavalry-archer-line <= 4)
+	(players-unit-type-count focus-player archer-line <= 4)
+	(players-unit-type-count focus-player slinger <= 4)
+	(players-unit-type-count focus-player war-wagon-line <= 4)
+=>
+	(set-strategic-number archers 3))
+
+(defrule
+	(strategic-number archers < 5)
+(or	(players-unit-type-count focus-player genoese-crossbowman >= 5)
+(or	(players-unit-type-count focus-player plumed-archer-line >= 5)
+(or	(players-unit-type-count focus-player mangudai-line >= 5)
+(or	(players-unit-type-count focus-player longbowman-line >= 5)
+(or	(players-unit-type-count focus-player chu-ko-nu-line >= 5)
+(or	(players-unit-type-count focus-player cavalry-archer-line >= 5)
+	(players-unit-type-count focus-player archer-line >= 5)))))))
+=>
+	(set-strategic-number archers 5))
+
+(defrule
+	(strategic-number archers >= 7)
+	(players-unit-type-count focus-player genoese-crossbowman <= 6)
+	(players-unit-type-count focus-player plumed-archer-line <= 6)
+	(players-unit-type-count focus-player mangudai-line <= 6)
+	(players-unit-type-count focus-player longbowman-line <= 6)
+	(players-unit-type-count focus-player chu-ko-nu-line <= 6)
+	(players-unit-type-count focus-player cavalry-archer-line <= 6)
+	(players-unit-type-count focus-player archer-line <= 6)
+	(players-unit-type-count focus-player slinger <= 6)
+	(players-unit-type-count focus-player war-wagon-line <= 6)
+=>
+	(set-strategic-number archers 5))
+
+(defrule
+	(strategic-number archers < 7)
+(or	(players-unit-type-count focus-player genoese-crossbowman >= 7)
+(or	(players-unit-type-count focus-player plumed-archer-line >= 7)
+(or	(players-unit-type-count focus-player mangudai-line >= 7)
+(or	(players-unit-type-count focus-player longbowman-line >= 7)
+(or	(players-unit-type-count focus-player chu-ko-nu-line >= 7)
+(or	(players-unit-type-count focus-player cavalry-archer-line >= 7)
+	(players-unit-type-count focus-player archer-line >= 7)))))))
+=>
+	(set-strategic-number archers 7))
+
+(defrule
+	(strategic-number archers >= 10)
+	(players-unit-type-count focus-player genoese-crossbowman <= 9)
+	(players-unit-type-count focus-player plumed-archer-line <= 9)
+	(players-unit-type-count focus-player mangudai-line <= 9)
+	(players-unit-type-count focus-player longbowman-line <= 9)
+	(players-unit-type-count focus-player chu-ko-nu-line <= 9)
+	(players-unit-type-count focus-player cavalry-archer-line <= 9)
+	(players-unit-type-count focus-player archer-line <= 9)
+	(players-unit-type-count focus-player slinger <= 9)
+	(players-unit-type-count focus-player war-wagon-line <= 9)
+=>
+	(set-strategic-number archers 7))
+
+(defrule
+	(strategic-number archers < 10)
+(or	(players-unit-type-count focus-player genoese-crossbowman >= 10)
+(or	(players-unit-type-count focus-player plumed-archer-line >= 10)
+(or	(players-unit-type-count focus-player mangudai-line >= 10)
+(or	(players-unit-type-count focus-player longbowman-line >= 10)
+(or	(players-unit-type-count focus-player chu-ko-nu-line >= 10)
+(or	(players-unit-type-count focus-player cavalry-archer-line >= 10)
+	(players-unit-type-count focus-player archer-line >= 10)))))))
+=>
+	(set-strategic-number archers 10))
+
+(defrule
+	(strategic-number archers >= 15)
+	(players-unit-type-count focus-player genoese-crossbowman <= 14)
+	(players-unit-type-count focus-player plumed-archer-line <= 14)
+	(players-unit-type-count focus-player mangudai-line <= 14)
+	(players-unit-type-count focus-player longbowman-line <= 14)
+	(players-unit-type-count focus-player chu-ko-nu-line <= 14)
+	(players-unit-type-count focus-player cavalry-archer-line <= 14)
+	(players-unit-type-count focus-player archer-line <= 14)
+	(players-unit-type-count focus-player slinger <= 14)
+	(players-unit-type-count focus-player war-wagon-line <= 14)
+=>
+	(set-strategic-number archers 10))
+
+(defrule
+	(strategic-number archers < 15)
+(or	(players-unit-type-count focus-player genoese-crossbowman >= 15)
+(or	(players-unit-type-count focus-player plumed-archer-line >= 15)
+(or	(players-unit-type-count focus-player mangudai-line >= 15)
+(or	(players-unit-type-count focus-player longbowman-line >= 15)
+(or	(players-unit-type-count focus-player chu-ko-nu-line >= 15)
+(or	(players-unit-type-count focus-player cavalry-archer-line >= 15)
+	(players-unit-type-count focus-player archer-line >= 15)))))))
+=>
+	(set-strategic-number archers 15))
+
+(defrule
+	(strategic-number archers >= 25)
+	(players-unit-type-count focus-player genoese-crossbowman <= 24)
+	(players-unit-type-count focus-player plumed-archer-line <= 24)
+	(players-unit-type-count focus-player mangudai-line <= 24)
+	(players-unit-type-count focus-player longbowman-line <= 24)
+	(players-unit-type-count focus-player chu-ko-nu-line <= 24)
+	(players-unit-type-count focus-player cavalry-archer-line <= 24)
+	(players-unit-type-count focus-player archer-line <= 24)
+	(players-unit-type-count focus-player slinger <= 24)
+	(players-unit-type-count focus-player war-wagon-line <= 24)
+=>
+	(set-strategic-number archers 15))
+
+(defrule
+	(strategic-number archers < 25)
+(or	(players-unit-type-count focus-player genoese-crossbowman >= 25)
+(or	(players-unit-type-count focus-player plumed-archer-line >= 25)
+(or	(players-unit-type-count focus-player mangudai-line >= 25)
+(or	(players-unit-type-count focus-player longbowman-line >= 25)
+(or	(players-unit-type-count focus-player chu-ko-nu-line >= 25)
+(or	(players-unit-type-count focus-player cavalry-archer-line >= 25)
+	(players-unit-type-count focus-player archer-line >= 25)))))))
+=>
+	(set-strategic-number archers 25))
+
+(defrule
+	(strategic-number archers >= 40)
+	(players-unit-type-count focus-player genoese-crossbowman <= 39)
+	(players-unit-type-count focus-player plumed-archer-line <= 39)
+	(players-unit-type-count focus-player mangudai-line <= 39)
+	(players-unit-type-count focus-player longbowman-line <= 39)
+	(players-unit-type-count focus-player chu-ko-nu-line <= 39)
+	(players-unit-type-count focus-player cavalry-archer-line <= 39)
+	(players-unit-type-count focus-player archer-line <= 39)
+	(players-unit-type-count focus-player slinger <= 39)
+	(players-unit-type-count focus-player war-wagon-line <= 39)
+=>
+	(set-strategic-number archers 25))
+
+(defrule
+	(strategic-number archers < 40)
+(or	(players-unit-type-count focus-player genoese-crossbowman >= 40)
+(or	(players-unit-type-count focus-player plumed-archer-line >= 40)
+(or	(players-unit-type-count focus-player mangudai-line >= 40)
+(or	(players-unit-type-count focus-player longbowman-line >= 40)
+(or	(players-unit-type-count focus-player chu-ko-nu-line >= 40)
+(or	(players-unit-type-count focus-player cavalry-archer-line >= 40)
+	(players-unit-type-count focus-player archer-line >= 40)))))))
+=>
+	(set-strategic-number archers 40))
+;=========================================================
+; Infantry
+;=========================================================
+(defrule
+	(strategic-number infantry < 3)
+(or	(players-unit-type-count focus-player jaguar-man-line >= 3)
+	(players-unit-type-count focus-player kamayuk >= 6))
+=>
+	(set-strategic-number infantry 3))
+(defrule
+	(strategic-number infantry < 5)
+(or	(players-unit-type-count focus-player jaguar-man-line >= 5)
+	(players-unit-type-count focus-player kamayuk >= 9))
+=>
+	(set-strategic-number infantry 5))
+(defrule
+	(strategic-number infantry < 7)
+(or	(players-unit-type-count focus-player jaguar-man-line >= 7)
+	(players-unit-type-count focus-player kamayuk >= 11))
+=>
+	(set-strategic-number infantry 7))
+(defrule
+	(strategic-number infantry < 10)
+(or	(players-unit-type-count focus-player jaguar-man-line >= 10)
+	(players-unit-type-count focus-player kamayuk >= 16))
+=>
+	(set-strategic-number infantry 10))
+(defrule
+	(strategic-number infantry < 15)
+(or	(players-unit-type-count focus-player jaguar-man-line >= 15)
+	(players-unit-type-count focus-player kamayuk >= 23))
+=>
+	(set-strategic-number infantry 15))
+(defrule
+	(strategic-number infantry < 25)
+(or	(players-unit-type-count focus-player jaguar-man-line >= 25)
+	(players-unit-type-count focus-player kamayuk >= 34))
+=>
+	(set-strategic-number infantry 25))
+(defrule
+	(strategic-number infantry < 40)
+(or	(players-unit-type-count focus-player jaguar-man-line >= 40)
+	(players-unit-type-count focus-player kamayuk >= 51))
+=>
+	(set-strategic-number infantry 40))
+(defrule
+	(strategic-number infantry >= 3)
+	(players-unit-type-count focus-player spearman-line <= 5)
+	(players-unit-type-count focus-player kamayuk <= 5)
+	(players-unit-type-count focus-player militiaman-line <= 2)
+	(players-unit-type-count focus-player samurai-line <= 2)
+	(players-unit-type-count focus-player teutonic-knight-line <= 2)
+	(players-unit-type-count focus-player throwing-axeman-line <= 2)
+	(players-unit-type-count focus-player berserk-line <= 2)
+	(players-unit-type-count focus-player jaguar-man-line <= 2)
+=>
+	(set-strategic-number infantry 0))
+
+(defrule
+	(strategic-number infantry < 3)
+(or	(players-unit-type-count focus-player spearman-line >= 6)
+(or	(players-unit-type-count focus-player militiaman-line >= 3)
+(or	(players-unit-type-count focus-player samurai-line >= 3)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 3)
+(or	(players-unit-type-count focus-player throwing-axeman-line >= 3)
+	(players-unit-type-count focus-player berserk-line >= 3))))))
+=>
+	(set-strategic-number infantry 3))
+
+(defrule
+	(strategic-number infantry >= 5)
+	(players-unit-type-count focus-player spearman-line <= 8)
+	(players-unit-type-count focus-player kamayuk <= 8)
+	(players-unit-type-count focus-player militiaman-line <= 4)
+	(players-unit-type-count focus-player samurai-line <= 4)
+	(players-unit-type-count focus-player teutonic-knight-line <= 4)
+	(players-unit-type-count focus-player throwing-axeman-line <= 4)
+	(players-unit-type-count focus-player berserk-line <= 4)
+	(players-unit-type-count focus-player jaguar-man-line <= 4)
+=>
+	(set-strategic-number infantry 3))
+
+(defrule
+	(strategic-number infantry < 5)
+(or	(players-unit-type-count focus-player spearman-line >= 9)
+(or	(players-unit-type-count focus-player militiaman-line >= 5)
+(or	(players-unit-type-count focus-player samurai-line >= 5)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 5)
+(or	(players-unit-type-count focus-player throwing-axeman-line >= 5)
+	(players-unit-type-count focus-player berserk-line >= 5))))))
+=>
+	(set-strategic-number infantry 5))
+
+(defrule
+	(strategic-number infantry >= 7)
+	(players-unit-type-count focus-player spearman-line <= 10)
+	(players-unit-type-count focus-player kamayuk <= 10)
+	(players-unit-type-count focus-player militiaman-line <= 6)
+	(players-unit-type-count focus-player samurai-line <= 6)
+	(players-unit-type-count focus-player teutonic-knight-line <= 6)
+	(players-unit-type-count focus-player throwing-axeman-line <= 6)
+	(players-unit-type-count focus-player berserk-line <= 6)
+	(players-unit-type-count focus-player jaguar-man-line <= 6)
+=>
+	(set-strategic-number infantry 5))
+
+(defrule
+	(strategic-number infantry < 7)
+(or	(players-unit-type-count focus-player spearman-line >= 11)
+(or	(players-unit-type-count focus-player militiaman-line >= 7)
+(or	(players-unit-type-count focus-player samurai-line >= 7)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 7)
+(or	(players-unit-type-count focus-player throwing-axeman-line >= 7)
+	(players-unit-type-count focus-player berserk-line >= 7))))))
+=>
+	(set-strategic-number infantry 7))
+
+(defrule
+	(strategic-number infantry >= 10)
+	(players-unit-type-count focus-player spearman-line <= 15)
+	(players-unit-type-count focus-player kamayuk <= 15)
+	(players-unit-type-count focus-player militiaman-line <= 9)
+	(players-unit-type-count focus-player samurai-line <= 9)
+	(players-unit-type-count focus-player teutonic-knight-line <= 9)
+	(players-unit-type-count focus-player throwing-axeman-line <= 9)
+	(players-unit-type-count focus-player berserk-line <= 9)
+	(players-unit-type-count focus-player jaguar-man-line <= 9)
+=>
+	(set-strategic-number infantry 7))
+
+(defrule
+	(strategic-number infantry < 10)
+(or	(players-unit-type-count focus-player spearman-line >= 16)
+(or	(players-unit-type-count focus-player militiaman-line >= 10)
+(or	(players-unit-type-count focus-player samurai-line >= 10)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 10)
+(or	(players-unit-type-count focus-player throwing-axeman-line >= 10)
+	(players-unit-type-count focus-player berserk-line >= 10))))))
+=>
+	(set-strategic-number infantry 10))
+
+(defrule
+	(strategic-number infantry >= 15)
+	(players-unit-type-count focus-player spearman-line <= 22)
+	(players-unit-type-count focus-player kamayuk <= 22)
+	(players-unit-type-count focus-player militiaman-line <= 14)
+	(players-unit-type-count focus-player samurai-line <= 14)
+	(players-unit-type-count focus-player teutonic-knight-line <= 14)
+	(players-unit-type-count focus-player throwing-axeman-line <= 14)
+	(players-unit-type-count focus-player berserk-line <= 14)
+	(players-unit-type-count focus-player jaguar-man-line <= 14)
+=>
+	(set-strategic-number infantry 10))
+
+(defrule
+	(strategic-number infantry < 15)
+(or	(players-unit-type-count focus-player spearman-line >= 23)
+(or	(players-unit-type-count focus-player militiaman-line >= 15)
+(or	(players-unit-type-count focus-player samurai-line >= 15)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 15)
+(or	(players-unit-type-count focus-player throwing-axeman-line >= 15)
+	(players-unit-type-count focus-player berserk-line >= 15))))))
+=>
+	(set-strategic-number infantry 15))
+
+(defrule
+	(strategic-number infantry >= 25)
+	(players-unit-type-count focus-player spearman-line <= 33)
+	(players-unit-type-count focus-player kamayuk <= 33)
+	(players-unit-type-count focus-player militiaman-line <= 24)
+	(players-unit-type-count focus-player samurai-line <= 24)
+	(players-unit-type-count focus-player teutonic-knight-line <= 24)
+	(players-unit-type-count focus-player throwing-axeman-line <= 24)
+	(players-unit-type-count focus-player berserk-line <= 24)
+	(players-unit-type-count focus-player jaguar-man-line <= 24)
+=>
+	(set-strategic-number infantry 15))
+
+(defrule
+	(strategic-number infantry < 25)
+(or	(players-unit-type-count focus-player spearman-line >= 34)
+(or	(players-unit-type-count focus-player militiaman-line >= 25)
+(or	(players-unit-type-count focus-player samurai-line >= 25)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 25)
+(or	(players-unit-type-count focus-player throwing-axeman-line >= 25)
+	(players-unit-type-count focus-player berserk-line >= 25))))))
+=>
+	(set-strategic-number infantry 25))
+
+(defrule
+	(strategic-number infantry >= 40)
+	(players-unit-type-count focus-player spearman-line <= 50)
+	(players-unit-type-count focus-player kamayuk <= 50)
+	(players-unit-type-count focus-player militiaman-line <= 39)
+	(players-unit-type-count focus-player samurai-line <= 39)
+	(players-unit-type-count focus-player teutonic-knight-line <= 39)
+	(players-unit-type-count focus-player throwing-axeman-line <= 39)
+	(players-unit-type-count focus-player berserk-line <= 39)
+	(players-unit-type-count focus-player jaguar-man-line <= 39)
+=>
+	(set-strategic-number infantry 25))
+
+(defrule
+	(strategic-number infantry < 40)
+(or	(players-unit-type-count focus-player spearman-line >= 51)
+(or	(players-unit-type-count focus-player militiaman-line >= 40)
+(or	(players-unit-type-count focus-player samurai-line >= 40)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 40)
+(or	(players-unit-type-count focus-player throwing-axeman-line >= 40)
+	(players-unit-type-count focus-player berserk-line >= 40))))))
+=>
+	(set-strategic-number infantry 40))
+;=========================================================
+; Gunpowder
+;=========================================================
+(defrule
+	(strategic-number gunpowder >= 3)
+	(players-unit-type-count focus-player hand-cannoneer <= 2)
+	(players-unit-type-count focus-player conquistador-line <= 2)
+	(players-unit-type-count focus-player janissary-line <= 2)
+=>
+	(set-strategic-number gunpowder 0))
+
+(defrule
+	(strategic-number gunpowder < 3)
+(or	(players-unit-type-count focus-player hand-cannoneer >= 3)
+(or	(players-unit-type-count focus-player conquistador-line >= 3)
+	(players-unit-type-count focus-player janissary-line >= 3)))
+=>
+	(set-strategic-number gunpowder 3))
+
+(defrule
+	(strategic-number gunpowder >= 5)
+	(players-unit-type-count focus-player hand-cannoneer <= 4)
+	(players-unit-type-count focus-player conquistador-line <= 4)
+	(players-unit-type-count focus-player janissary-line <= 4)
+=>
+	(set-strategic-number gunpowder 3))
+
+(defrule
+	(strategic-number gunpowder < 5)
+(or	(players-unit-type-count focus-player hand-cannoneer >= 5)
+(or	(players-unit-type-count focus-player conquistador-line >= 5)
+	(players-unit-type-count focus-player janissary-line >= 5)))
+=>
+	(set-strategic-number gunpowder 5))
+
+(defrule
+	(strategic-number gunpowder >= 7)
+	(players-unit-type-count focus-player hand-cannoneer <= 6)
+	(players-unit-type-count focus-player conquistador-line <= 6)
+	(players-unit-type-count focus-player janissary-line <= 6)
+=>
+	(set-strategic-number gunpowder 5))
+
+(defrule
+	(strategic-number gunpowder < 7)
+(or	(players-unit-type-count focus-player hand-cannoneer >= 7)
+(or	(players-unit-type-count focus-player conquistador-line >= 7)
+	(players-unit-type-count focus-player janissary-line >= 7)))
+=>
+	(set-strategic-number gunpowder 7))
+
+(defrule
+	(strategic-number gunpowder >= 10)
+	(players-unit-type-count focus-player hand-cannoneer <= 9)
+	(players-unit-type-count focus-player conquistador-line <= 9)
+	(players-unit-type-count focus-player janissary-line <= 9)
+=>
+	(set-strategic-number gunpowder 7))
+
+(defrule
+	(strategic-number gunpowder < 10)
+(or	(players-unit-type-count focus-player hand-cannoneer >= 10)
+(or	(players-unit-type-count focus-player conquistador-line >= 10)
+	(players-unit-type-count focus-player janissary-line >= 10)))
+=>
+	(set-strategic-number gunpowder 10))
+
+(defrule
+	(strategic-number gunpowder >= 15)
+	(players-unit-type-count focus-player hand-cannoneer <= 14)
+	(players-unit-type-count focus-player conquistador-line <= 14)
+	(players-unit-type-count focus-player janissary-line <= 14)
+=>
+	(set-strategic-number gunpowder 10))
+
+(defrule
+	(strategic-number gunpowder < 15)
+(or	(players-unit-type-count focus-player hand-cannoneer >= 15)
+(or	(players-unit-type-count focus-player conquistador-line >= 15)
+	(players-unit-type-count focus-player janissary-line >= 15)))
+=>
+	(set-strategic-number gunpowder 15))
+
+(defrule
+	(strategic-number gunpowder >= 25)
+	(players-unit-type-count focus-player hand-cannoneer <= 24)
+	(players-unit-type-count focus-player conquistador-line <= 24)
+	(players-unit-type-count focus-player janissary-line <= 24)
+=>
+	(set-strategic-number gunpowder 15))
+
+(defrule
+	(strategic-number gunpowder < 25)
+(or	(players-unit-type-count focus-player hand-cannoneer >= 25)
+(or	(players-unit-type-count focus-player conquistador-line >= 25)
+	(players-unit-type-count focus-player janissary-line >= 25)))
+=>
+	(set-strategic-number gunpowder 25))
+
+(defrule
+	(strategic-number gunpowder >= 40)
+	(players-unit-type-count focus-player hand-cannoneer <= 39)
+	(players-unit-type-count focus-player conquistador-line <= 39)
+	(players-unit-type-count focus-player janissary-line <= 39)
+=>
+	(set-strategic-number gunpowder 25))
+
+(defrule
+	(strategic-number gunpowder < 40)
+(or	(players-unit-type-count focus-player hand-cannoneer >= 40)
+(or	(players-unit-type-count focus-player conquistador-line >= 40)
+	(players-unit-type-count focus-player janissary-line >= 40)))
+=>
+	(set-strategic-number gunpowder 40))
+
+(defrule
+	(strategic-number archers < 3)
+	(strategic-number gunpowder >= 3)
+=>
+	(set-strategic-number archers 3))
+(defrule
+	(strategic-number archers < 5)
+	(strategic-number gunpowder >= 5)
+=>
+	(set-strategic-number archers 5))
+(defrule
+	(strategic-number archers < 7)
+	(strategic-number gunpowder >= 7)
+=>
+	(set-strategic-number archers 7))
+(defrule
+	(strategic-number archers < 10)
+	(strategic-number gunpowder >= 10)
+=>
+	(set-strategic-number archers 10))
+(defrule
+	(strategic-number archers < 15)
+	(strategic-number gunpowder >= 15)
+=>
+	(set-strategic-number archers 15))
+(defrule
+	(strategic-number archers < 25)
+	(strategic-number gunpowder >= 25)
+=>
+	(set-strategic-number archers 25))
+(defrule
+	(strategic-number archers < 40)
+	(strategic-number gunpowder >= 40)
+=>
+	(set-strategic-number archers 40))
+;=========================================================
+; Monks
+;=========================================================
+(defrule
+	(strategic-number moenche >= 3)
+	(players-unit-type-count every-enemy monk <= 2)
+	(players-unit-type-count every-enemy missionary <= 2)
+=>
+	(set-strategic-number moenche 0))
+
+(defrule
+	(strategic-number moenche < 3)
+(or	(players-unit-type-count any-enemy monk >= 3)
+	(players-unit-type-count any-enemy missionary >= 3))
+=>
+	(set-strategic-number moenche 3))
+
+(defrule
+	(strategic-number moenche >= 5)
+	(players-unit-type-count every-enemy monk <= 4)
+	(players-unit-type-count every-enemy missionary <= 4)
+=>
+	(set-strategic-number moenche 3))
+
+(defrule
+	(strategic-number moenche < 5)
+(or	(players-unit-type-count any-enemy monk >= 5)
+	(players-unit-type-count any-enemy missionary >= 5))
+=>
+	(set-strategic-number moenche 5))
+
+(defrule
+	(strategic-number moenche >= 7)
+	(players-unit-type-count every-enemy monk <= 6)
+	(players-unit-type-count every-enemy missionary <= 6)
+=>
+	(set-strategic-number moenche 5))
+
+(defrule
+	(strategic-number moenche < 7)
+(or	(players-unit-type-count any-enemy monk >= 7)
+	(players-unit-type-count any-enemy missionary >= 7))
+=>
+	(set-strategic-number moenche 7))
+
+(defrule
+	(strategic-number moenche >= 10)
+	(players-unit-type-count every-enemy monk <= 9)
+	(players-unit-type-count every-enemy missionary <= 9)
+=>
+	(set-strategic-number moenche 7))
+
+(defrule
+	(strategic-number moenche < 10)
+(or	(players-unit-type-count any-enemy monk >= 10)
+	(players-unit-type-count any-enemy missionary >= 10))
+=>
+	(set-strategic-number moenche 10))
+
+(defrule
+	(strategic-number moenche >= 15)
+	(players-unit-type-count every-enemy monk <= 14)
+	(players-unit-type-count every-enemy missionary <= 14)
+=>
+	(set-strategic-number moenche 10))
+
+(defrule
+	(strategic-number moenche < 15)
+(or	(players-unit-type-count any-enemy monk >= 15)
+	(players-unit-type-count any-enemy missionary >= 15))
+=>
+	(set-strategic-number moenche 15))
+
+(defrule
+	(strategic-number moenche >= 25)
+	(players-unit-type-count every-enemy monk <= 24)
+	(players-unit-type-count every-enemy missionary <= 24)
+=>
+	(set-strategic-number moenche 15))
+
+(defrule
+	(strategic-number moenche < 25)
+(or	(players-unit-type-count any-enemy monk >= 25)
+	(players-unit-type-count any-enemy missionary >= 25))
+=>
+	(set-strategic-number moenche 25))
+
+(defrule
+	(strategic-number moenche >= 40)
+	(players-unit-type-count every-enemy monk <= 39)
+	(players-unit-type-count every-enemy missionary <= 39)
+=>
+	(set-strategic-number moenche 25))
+
+(defrule
+	(strategic-number moenche < 40)
+(or	(players-unit-type-count any-enemy monk >= 40)
+	(players-unit-type-count any-enemy missionary >= 40))
+=>
+	(set-strategic-number moenche 40))
+;=========================================================
+; Siege
+;=========================================================
+(defrule
+	(strategic-number siege >= 3)
+	(players-unit-type-count focus-player bombard-cannon <= 3)
+	(players-unit-type-count focus-player scorpion-line <= 2)
+	(players-unit-type-count focus-player mangonel-line <= 2)
+=>
+	(set-strategic-number siege 0))
+
+(defrule
+	(strategic-number siege < 3)
+(or	(players-unit-type-count focus-player bombard-cannon >= 4)
+(or	(players-unit-type-count focus-player scorpion-line >= 3)
+	(players-unit-type-count focus-player mangonel-line >= 3)))
+=>
+	(set-strategic-number siege 3))
+
+(defrule
+	(strategic-number siege >= 5)
+	(players-unit-type-count focus-player bombard-cannon <= 5)
+	(players-unit-type-count focus-player scorpion-line <= 4)
+	(players-unit-type-count focus-player mangonel-line <= 4)
+=>
+	(set-strategic-number siege 3))
+
+(defrule
+	(strategic-number siege < 5)
+(or	(players-unit-type-count focus-player bombard-cannon >= 6)
+(or	(players-unit-type-count focus-player scorpion-line >= 5)
+	(players-unit-type-count focus-player mangonel-line >= 5)))
+=>
+	(set-strategic-number siege 5))
+
+(defrule
+	(strategic-number siege >= 7)
+	(players-unit-type-count focus-player bombard-cannon <= 7)
+	(players-unit-type-count focus-player scorpion-line <= 6)
+	(players-unit-type-count focus-player mangonel-line <= 6)
+=>
+	(set-strategic-number siege 5))
+
+(defrule
+	(strategic-number siege < 7)
+(or	(players-unit-type-count focus-player bombard-cannon >= 8)
+(or	(players-unit-type-count focus-player scorpion-line >= 7)
+	(players-unit-type-count focus-player mangonel-line >= 7)))
+=>
+	(set-strategic-number siege 7))
+
+(defrule
+	(strategic-number siege >= 10)
+	(players-unit-type-count focus-player bombard-cannon <= 9)
+	(players-unit-type-count focus-player scorpion-line <= 9)
+	(players-unit-type-count focus-player mangonel-line <= 9)
+=>
+	(set-strategic-number siege 7))
+
+(defrule
+	(strategic-number siege < 10)
+(or	(players-unit-type-count focus-player bombard-cannon >= 10)
+(or	(players-unit-type-count focus-player scorpion-line >= 10)
+	(players-unit-type-count focus-player mangonel-line >= 10)))
+=>
+	(set-strategic-number siege 10))
+
+(defrule
+	(strategic-number siege >= 15)
+	(players-unit-type-count focus-player bombard-cannon <= 14)
+	(players-unit-type-count focus-player scorpion-line <= 14)
+	(players-unit-type-count focus-player mangonel-line <= 14)
+=>
+	(set-strategic-number siege 10))
+
+(defrule
+	(strategic-number siege < 15)
+(or	(players-unit-type-count focus-player bombard-cannon >= 15)
+(or	(players-unit-type-count focus-player scorpion-line >= 15)
+	(players-unit-type-count focus-player mangonel-line >= 15)))
+=>
+	(set-strategic-number siege 15))
+
+(defrule
+	(strategic-number siege >= 25)
+	(players-unit-type-count focus-player bombard-cannon <= 24)
+	(players-unit-type-count focus-player scorpion-line <= 24)
+	(players-unit-type-count focus-player mangonel-line <= 24)
+=>
+	(set-strategic-number siege 15))
+
+(defrule
+	(strategic-number siege < 25)
+(or	(players-unit-type-count focus-player bombard-cannon >= 25)
+(or	(players-unit-type-count focus-player scorpion-line >= 25)
+	(players-unit-type-count focus-player mangonel-line >= 25)))
+=>
+	(set-strategic-number siege 25))
+
+(defrule
+	(strategic-number siege >= 40)
+	(players-unit-type-count focus-player bombard-cannon <= 39)
+	(players-unit-type-count focus-player scorpion-line <= 39)
+	(players-unit-type-count focus-player mangonel-line <= 39)
+=>
+	(set-strategic-number siege 25))
+
+(defrule
+	(strategic-number siege < 40)
+(or	(players-unit-type-count focus-player bombard-cannon >= 40)
+(or	(players-unit-type-count focus-player scorpion-line >= 40)
+	(players-unit-type-count focus-player mangonel-line >= 40)))
+=>
+	(set-strategic-number siege 40))

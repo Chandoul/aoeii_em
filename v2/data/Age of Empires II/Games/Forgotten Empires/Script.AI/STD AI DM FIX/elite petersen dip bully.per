@@ -1,0 +1,1269 @@
+;THE BULLY
+#load-if-not-defined TEAMS-LOCKED
+#load-if-defined DIFFICULTY-EASIEST
+
+	(defrule
+		(true)
+	=>
+		(set-stance every-human neutral)
+		(set-stance every-computer neutral)
+		(disable-self)
+	)
+
+	(defrule
+		(cc-players-building-type-count any-human market > 0)
+	=>
+		(generate-random-number 2)
+		(set-goal personality 50)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 50)
+		(random-number == 1)
+	=>
+		(disable-timer t-chat)
+		(enable-timer t-chat 10)
+		(set-goal personality 4)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 50)
+	=>
+		(set-goal personality 0)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 4)
+		(taunt-detected any-computer 218)
+	=>
+		(set-goal personality 0)
+		(acknowledge-taunt this-any-computer 218)
+		(disable-timer t-chat)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 4)
+		(timer-triggered t-chat)
+	=>
+		(set-goal personality ALLY)
+		(disable-timer t-chat)
+		(set-stance every-human neutral)
+		(set-stance every-computer neutral)
+		(chat-to-player-using-id every-human 22000)
+			;"41 Send me 100 resources and I shall join thine side."
+		(chat-to-player-using-id every-computer 22400)	;218
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(or
+			(or
+				(players-tribute any-human-neutral wood >= 100)
+				(players-tribute any-human-neutral food >= 100)
+			)
+			(or
+				(players-tribute any-human-neutral gold >= 100)
+				(players-tribute any-human-neutral stone >= 100)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22002)
+		(chat-to-player-using-id this-any-human-neutral 22003)
+			;"39 I am grateful for thy tribute."
+			;"Let us be friends henceforth!"
+		(set-stance this-any-human-neutral ally)
+		(set-stance every-computer enemy)
+		(disable-self)
+	)
+
+#end-if
+#load-if-defined DIFFICULTY-EASY
+	(defrule
+		(cc-players-building-type-count any-human market > 0)
+	=>
+		(generate-random-number 2)
+		(set-goal personality 50)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 50)
+		(random-number == 1)
+	=>
+		(disable-timer t-chat)
+		(enable-timer t-chat 10)
+		(set-goal personality 4)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 50)
+	=>
+		(set-goal personality 0)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 4)
+		(taunt-detected any-computer 218)
+	=>
+		(set-goal personality 0)
+		(acknowledge-taunt this-any-computer 218)
+		(disable-timer t-chat)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 4)
+		(timer-triggered t-chat)
+	=>
+		(set-goal personality ALLY)
+		(set-stance every-human neutral)
+		(set-stance every-computer neutral)
+		(chat-to-player-using-id every-computer 22400)	;218
+		(disable-timer t-chat)
+		(enable-timer t-chat 600)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(starting-resources == low-resources)
+	=>
+		(chat-to-player-using-id every-human 22004)
+		(chat-to-player-using-id every-human 22005)
+			;"41 Send me 200 each of wood, food, gold, and stone!"
+			;"If thou dost this thing, I shall join thine side."
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(starting-resources == medium-resources)
+	=>
+		(chat-to-player-using-id every-human 22006)
+		(chat-to-player-using-id every-human 22005)
+			;"41 Send me 500 each of wood, food, gold, and stone!"
+			;"If thou dost this thing, I shall join thine side."
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(starting-resources == high-resources)
+		(stance-toward any-human neutral)
+	=>
+		(chat-to-player-using-id every-human 22007)
+		(chat-to-player-using-id every-human 22005)
+			;"41 Send me 1000 each of wood, food, gold, and stone!"
+			;"If thou dost this thing, I shall join thine side."
+		(disable-self)
+	)
+
+	(defrule
+		(timer-triggered t-chat)
+		(goal personality ALLY)
+		(or
+			(and
+				(starting-resources == low-resources)
+				(players-tribute any-human-neutral wood < 200)
+			)
+			(or
+				(and
+					(starting-resources == medium-resources)
+					(players-tribute any-human-neutral wood < 500)
+				)
+				(and
+					(starting-resources == high-resources)
+					(players-tribute any-human-neutral wood < 1000)
+				)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22008)
+			;"41 Thou must send me more wood!"
+		(disable-timer t-chat)
+		(enable-timer t-chat 300)
+	)
+
+	(defrule
+		(timer-triggered t-chat)
+		(goal personality ALLY)
+		(or
+			(and
+				(starting-resources == low-resources)
+				(players-tribute any-human-neutral food < 200)
+			)
+			(or
+				(and
+					(starting-resources == medium-resources)
+					(players-tribute any-human-neutral food < 500)
+				)
+				(and
+					(starting-resources == high-resources)
+					(players-tribute any-human-neutral food < 1000)
+				)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22009)
+			;"41 Thou must send me more food!"
+		(disable-timer t-chat)
+		(enable-timer t-chat 300)
+	)
+
+	(defrule
+		(timer-triggered t-chat)
+		(goal personality ALLY)
+		(or
+			(and
+				(starting-resources == low-resources)
+				(players-tribute any-human-neutral gold < 200)
+			)
+			(or
+				(and
+					(starting-resources == medium-resources)
+					(players-tribute any-human-neutral gold < 500)
+				)
+				(and
+					(starting-resources == high-resources)
+					(players-tribute any-human-neutral gold < 1000)
+				)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22010)
+			;"41 Thou must send me more gold!"
+		(disable-timer t-chat)
+		(enable-timer t-chat 300)
+	)
+
+	(defrule
+		(timer-triggered t-chat)
+		(goal personality ALLY)
+		(or
+			(and
+				(starting-resources == low-resources)
+				(players-tribute any-human-neutral stone < 200)
+			)
+			(or
+				(and
+					(starting-resources == medium-resources)
+					(players-tribute any-human-neutral stone < 500)
+				)
+				(and
+					(starting-resources == high-resources)
+					(players-tribute any-human-neutral stone < 1000)
+				)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22011)
+			;"41 Thou must send me more stone!"
+		(disable-timer t-chat)
+		(enable-timer t-chat 300)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(or
+			(and
+				(starting-resources == low-resources)
+				(players-tribute any-human-neutral wood >= 200)
+			)
+			(or
+				(and
+					(starting-resources == medium-resources)
+					(players-tribute any-human-neutral wood >= 500)
+				)
+				(and
+					(starting-resources == high-resources)
+					(players-tribute any-human-neutral wood >= 1000)
+				)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22012)
+			;"41 Thank thee for the wood! It is enough."
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(or
+			(and
+				(starting-resources == low-resources)
+				(players-tribute any-human-neutral food >= 200)
+			)
+			(or
+				(and
+					(starting-resources == medium-resources)
+					(players-tribute any-human-neutral food >= 500)
+				)
+				(and
+					(starting-resources == high-resources)
+					(players-tribute any-human-neutral food >= 1000)
+				)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22013)
+			;"41 Thank thee for the food! It is enough."
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(or
+			(and
+				(starting-resources == low-resources)
+				(players-tribute any-human-neutral gold >= 200)
+			)
+			(or
+				(and
+					(starting-resources == medium-resources)
+					(players-tribute any-human-neutral gold >= 500)
+				)
+				(and
+					(starting-resources == high-resources)
+					(players-tribute any-human-neutral gold >= 1000)
+				)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22014)
+			;"41 Thank thee for the gold! It is enough."
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(or
+			(and
+				(starting-resources == low-resources)
+				(players-tribute any-human-neutral stone >= 200)
+			)
+			(or
+				(and
+					(starting-resources == medium-resources)
+					(players-tribute any-human-neutral stone >= 500)
+				)
+				(and
+					(starting-resources == high-resources)
+					(players-tribute any-human-neutral stone >= 1000)
+				)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22015)
+			;"41 Thank thee for the stone! It is enough."
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(starting-resources == low-resources)
+		(players-tribute any-human-neutral wood >= 200)
+		(players-tribute any-human-neutral food >= 200)
+		(players-tribute any-human-neutral gold >= 200)
+		(players-tribute any-human-neutral stone >= 200)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22016)
+		(chat-to-player-using-id this-any-human-neutral 22017)
+			;"39 The goods we have obtained from thee are glorious!"
+			;"Set thine stance to Ally with me!"
+		(set-stance this-any-human-neutral ally)
+		(set-goal 35 NOTICE)
+		(set-goal 22 NO)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(starting-resources == medium-resources)
+		(players-tribute any-human-neutral wood >= 500)
+		(players-tribute any-human-neutral food >= 500)
+		(players-tribute any-human-neutral gold >= 500)
+		(players-tribute any-human-neutral stone >= 500)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22016)
+		(chat-to-player-using-id this-any-human-neutral 22017)
+			;"39 The goods we have obtained from thee are glorious!"
+			;"Set thine stance to Ally with me!"
+		(set-stance this-any-human-neutral ally)
+		(set-goal 35 NOTICE)
+		(set-goal 22 NO)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(starting-resources == high-resources)
+		(players-tribute any-human-neutral wood >= 1000)
+		(players-tribute any-human-neutral food >= 1000)
+		(players-tribute any-human-neutral gold >= 1000)
+		(players-tribute any-human-neutral stone >= 1000)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22016)
+		(chat-to-player-using-id this-any-human-neutral 22017)
+			;"39 The goods we have obtained from thee are glorious!"
+			;"Set thine stance to Ally with me!"
+		(set-stance this-any-human-neutral ally)
+		(set-goal 35 NOTICE)
+		(set-goal 22 NO)
+		(disable-self)
+	)
+
+#end-if
+#load-if-not-defined DIFFICULTY-EASIEST
+#load-if-not-defined DIFFICULTY-EASY
+
+	(defrule
+		(true)
+	=>
+		(set-goal personality NOTICE)
+		(set-goal 22 NO)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality NOTICE)
+		(taunt-detected any-computer-ally 218)
+	=>
+		(set-goal personality 12)
+		(set-stance every-human enemy)
+		(acknowledge-taunt this-any-computer-ally 218)
+		(set-stance every-computer ally)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality NOTICE)
+		(difficulty <= moderate)
+		(or
+			(building-type-count house > 0)
+			(or
+				(civ-selected hun)
+				(building-type-count castle > 0)
+			)
+		)
+		(player-in-game any-computer-ally)
+	=>
+		(set-goal personality 50)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 50)
+	=>
+		(generate-random-number 4)
+		(set-goal 36 NO)
+		(set-goal 37 NO)
+		(set-goal 38 NO)
+		(set-goal 39 NO)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 50)
+		(random-number == 1)
+	=>
+		(set-goal personality ALLY)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 50)
+		(difficulty == moderate)
+		(or
+			(random-number == 2)
+			(random-number == 3)
+		)
+	=>
+		(set-goal personality ALLY)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 50)
+		(difficulty < moderate)
+		(or
+			(random-number == 2)
+			(random-number == 3)
+		)
+	=>
+		(set-goal personality BULLY)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality 50)
+		(random-number == 4)
+	=>
+		(set-goal personality BULLY)
+		(disable-self)
+	)
+
+	;make sure the other AIs don't try this!
+	(defrule
+		(or
+			(goal personality BULLY)
+			(goal personality ALLY)
+		)
+	=>
+		(chat-to-player-using-id every-computer 22400)	;"218"
+		(disable-self)
+	)
+
+	;no early rush!
+	(defrule
+		(or
+			(goal personality BULLY)
+			(goal personality ALLY)
+		)
+		(or
+			(goal rush-control 2)
+			(goal rush-control RUSHING)
+		)
+	=>
+		(set-goal rush-control IMPERIAL)
+	)
+
+;end the deal
+(defrule
+	(stance-toward any-human enemy)
+	(or
+		(goal personality BULLY)
+		(goal personality ALLY)
+	)
+=>
+	(set-stance this-any-human neutral)
+	(set-stance every-computer neutral)
+	(disable-self)
+)
+
+;*******************************************************8
+;bully rules
+
+(defrule
+	(goal personality BULLY)
+	(goal get-mad NO)
+	(current-age >= feudal-age)
+=>
+	(disable-timer t-chat)
+	(enable-timer t-chat 300)
+	(set-goal 25 NOTICE)
+	(disable-self)
+)
+
+(defrule
+	(goal personality BULLY)
+	(goal 25 NOTICE)
+	(timer-triggered t-chat)
+=>
+	(generate-random-number 4)
+)
+
+;***************************************************
+;feudal age demands
+(defrule
+	(goal personality BULLY)
+	(goal 25 NOTICE)
+	(current-age == feudal-age)
+	(timer-triggered t-chat)
+	(stance-toward any-human neutral)
+	(random-number == 1)
+=>
+	(chat-to-player-using-id this-any-human 22039)
+		;"41 Give me 100 wood or face my wrath! Thou hast but 3 minutes to obey!"
+	(set-goal 25 WOOD)
+	(clear-tribute-memory this-any-human wood)
+	(disable-timer t-chat)
+	(enable-timer t-chat 200)
+)
+
+(defrule
+	(goal personality BULLY)
+	(goal 25 NOTICE)
+	(current-age == feudal-age)
+	(timer-triggered t-chat)
+	(stance-toward any-human neutral)
+	(random-number == 2)
+=>
+	(chat-to-player-using-id this-any-human 22038)
+		;"41 Give me 100 food or face my wrath! Thou hast but 3 minutes to obey!"
+	(set-goal 25 FOOD)
+	(clear-tribute-memory this-any-human food)
+	(disable-timer t-chat)
+	(enable-timer t-chat 200)
+)
+
+(defrule
+	(goal personality BULLY)
+	(goal 25 NOTICE)
+	(current-age == feudal-age)
+	(timer-triggered t-chat)
+	(stance-toward any-human neutral)
+	(random-number == 3)
+=>
+	(chat-to-player-using-id this-any-human 22036)
+		;"41 Give me 100 gold or face my wrath! Thou hast but 3 minutes to obey!"
+	(set-goal 25 GOLD)
+	(clear-tribute-memory this-any-human gold)
+	(disable-timer t-chat)
+	(enable-timer t-chat 200)
+)
+
+(defrule
+	(goal personality BULLY)
+	(goal 25 NOTICE)
+	(current-age == feudal-age)
+	(timer-triggered t-chat)
+	(stance-toward any-human neutral)
+	(random-number == 4)
+=>
+	(chat-to-player-using-id this-any-human 22040)
+		;"Give me 100 stone or face my wrath! Thou hast but 3 minutes to obey!"
+	(set-goal 25 STONE)
+	(clear-tribute-memory this-any-human stone)
+	(disable-timer t-chat)
+	(enable-timer t-chat 200)
+)
+
+(defrule
+	(goal personality BULLY)
+	(or
+		(and
+			(goal 25 WOOD)
+			(players-tribute-memory any-human-neutral wood >= 100)
+		)
+		(and
+			(goal 25 FOOD)
+			(players-tribute-memory any-human-neutral food >= 100)
+		)
+	)
+=>
+	(chat-to-player-using-id this-any-human-neutral 22041)
+		;"41 Well done! Thou art still in my good graces."
+	(set-goal 25 NOTICE)
+	(disable-timer t-chat)
+	(enable-timer t-chat 360)
+)
+
+(defrule
+	(goal personality BULLY)
+	(or
+		(and
+			(goal 25 GOLD)
+			(players-tribute-memory any-human-neutral gold >= 100)
+		)
+		(and
+			(goal 25 STONE)
+			(players-tribute-memory any-human-neutral stone >= 100)
+		)
+	)
+=>
+	(chat-to-player-using-id this-any-human-neutral 22041)
+		;"41 Well done! Thou art still in my good graces."
+	(set-goal 25 NOTICE)
+	(disable-timer t-chat)
+	(enable-timer t-chat 360)
+)
+
+(defrule
+	(goal personality BULLY)
+	(timer-triggered t-chat)
+	(or
+		(or
+			(goal 25 WOOD)
+			(goal 25 FOOD)
+		)
+		(or
+			(goal 25 GOLD)
+			(goal 25 STONE)
+		)
+	)
+=>
+	(set-goal personality 10)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+;***************************************************
+;castle-age demands
+(defrule
+	(goal personality BULLY)
+	(goal 25 NOTICE)
+	(timer-triggered t-chat)
+	(current-age == castle-age)
+	(stance-toward any-human neutral)
+	(random-number == 1)
+=>
+	(chat-to-player-using-id this-any-human 22045)
+		;"41 Thou hast but 2 minutes to send me 200 wood or face the consequences!"
+	(set-goal 25 CASTLE-AGE-WOOD)
+	(clear-tribute-memory this-any-human wood)
+	(disable-timer t-chat)
+	(enable-timer t-chat 150)
+)
+
+(defrule
+	(goal personality BULLY)
+	(goal 25 NOTICE)
+	(timer-triggered t-chat)
+	(current-age == castle-age)
+	(stance-toward any-human neutral)
+	(random-number == 2)
+=>
+	(chat-to-player-using-id this-any-human 22043)
+		;"41 Thou hast but 2 minutes to send me 200 food or face the consequences!"
+	(set-goal 25 CASTLE-AGE-FOOD)
+	(clear-tribute-memory this-any-human food)
+	(disable-timer t-chat)
+	(enable-timer t-chat 150)
+)
+
+(defrule
+	(goal personality BULLY)
+	(goal 25 NOTICE)
+	(timer-triggered t-chat)
+	(current-age == castle-age)
+	(stance-toward any-human neutral)
+	(random-number == 3)
+=>
+	(chat-to-player-using-id this-any-human 22042)
+		;"41 Thou hast but 2 minutes to send me 200 gold or face the consequences!"
+	(set-goal 25 CASTLE-AGE-GOLD)
+	(clear-tribute-memory this-any-human gold)
+	(disable-timer t-chat)
+	(enable-timer t-chat 150)
+)
+
+(defrule
+	(goal personality BULLY)
+	(goal 25 NOTICE)
+	(timer-triggered t-chat)
+	(current-age == castle-age)
+	(stance-toward any-human neutral)
+	(random-number == 3)
+=>
+	(chat-to-player-using-id this-any-human 22044)
+		;"41 Thou hast but 2 minutes to send me 200 stone or face the consequences!"
+	(set-goal 25 CASTLE-AGE-STONE)
+	(clear-tribute-memory this-any-human stone)
+	(disable-timer t-chat)
+	(enable-timer t-chat 150)
+)
+
+(defrule
+	(goal personality BULLY)
+	(or
+		(and
+			(goal 25 CASTLE-AGE-WOOD)
+			(players-tribute-memory any-human-neutral wood >= 200)
+		)
+		(and
+			(goal 25 CASTLE-AGE-FOOD)
+			(players-tribute-memory any-human-neutral food >= 200)
+		)
+	)
+=>
+	(chat-to-player-using-id this-any-human-neutral 22046)
+		;"41 Thank thee! Thy tribute shall be put to good use."
+	(set-goal 25 NOTICE)
+	(disable-timer t-chat)
+	(enable-timer t-chat 360)
+)
+
+(defrule
+	(goal personality BULLY)
+	(or
+		(and
+			(goal 25 CASTLE-AGE-GOLD)
+			(players-tribute-memory any-human-neutral gold >= 200)
+		)
+		(and
+			(goal 25 CASTLE-AGE-STONE)
+			(players-tribute-memory any-human-neutral stone >= 200)
+		)
+	)
+=>
+	(chat-to-player-using-id this-any-human-neutral 22046)
+		;"41 Thank thee! Thy tribute shall be put to good use."
+	(set-goal 25 NOTICE)
+	(disable-timer t-chat)
+	(enable-timer t-chat 360)
+)
+
+(defrule
+	(goal personality BULLY)
+	(timer-triggered t-chat)
+	(or
+		(or
+			(goal 25 CASTLE-AGE-WOOD)
+			(goal 25 CASTLE-AGE-FOOD)
+		)
+		(or
+			(goal 25 CASTLE-AGE-GOLD)
+			(goal 25 CASTLE-AGE-STONE)
+		)
+	)
+=>
+	(set-goal personality 10)
+	(disable-timer t-chat)
+	(disable-self)
+)
+;***************************************************
+;Imperial age demands
+(defrule
+	(timer-triggered t-chat)
+	(goal personality BULLY)
+	(current-age == imperial-age)
+	(stance-toward any-human neutral)
+	(random-number == 1)
+=>
+	(chat-to-player-using-id this-any-human 22047)
+		;"41 Send me 500 wood in tribute or die! As usual, thou hast 2 minutes to comply."
+	(set-goal 25 IMPERIAL-AGE-WOOD)
+	(clear-tribute-memory this-any-human wood)
+	(disable-timer t-chat)
+	(enable-timer t-chat 150)
+)
+
+(defrule
+	(timer-triggered t-chat)
+	(goal personality BULLY)
+	(current-age == imperial-age)
+	(stance-toward any-human neutral)
+	(random-number == 2)
+=>
+	(chat-to-player-using-id this-any-human 22048)
+		;"41 Send me 500 food in tribute or die! As usual, thou hast 2 minutes to comply."
+	(set-goal 25 IMPERIAL-AGE-FOOD)
+	(clear-tribute-memory this-any-human food)
+	(disable-timer t-chat)
+	(enable-timer t-chat 150)
+)
+
+(defrule
+	(timer-triggered t-chat)
+	(goal personality BULLY)
+	(current-age == imperial-age)
+	(stance-toward any-human neutral)
+	(random-number == 3)
+=>
+	(chat-to-player-using-id this-any-human 22049)
+		;"41 Send me 500 gold in tribute or die! As usual, thou hast 2 minutes to comply."
+	(set-goal 25 IMPERIAL-AGE-GOLD)
+	(clear-tribute-memory this-any-human gold)
+	(disable-timer t-chat)
+	(enable-timer t-chat 150)
+)
+
+(defrule
+	(timer-triggered t-chat)
+	(goal personality BULLY)
+	(current-age == imperial-age)
+	(stance-toward any-human neutral)
+	(random-number == 4)
+=>
+	(chat-to-player-using-id this-any-human 22051)
+		;"41 Send me 500 stone in tribute or die! As usual, thou hast 2 minutes to comply."
+	(set-goal 25 IMPERIAL-AGE-STONE)
+	(clear-tribute-memory this-any-human stone)
+	(disable-timer t-chat)
+	(enable-timer t-chat 150)
+)
+
+(defrule
+	(goal personality BULLY)
+	(or
+		(and
+			(goal 25 IMPERIAL-AGE-WOOD)
+			(players-tribute-memory any-human-neutral wood >= 500)
+		)
+		(and
+			(goal 25 IMPERIAL-AGE-FOOD)
+			(players-tribute-memory any-human-neutral food >= 500)
+		)
+	)
+=>
+	(chat-to-player-using-id this-any-human-neutral 22052)
+		;"41 Excellent! Thou hast done acceptably, and are safe for now."
+	(set-goal 25 NOTICE)
+	(disable-timer t-chat)
+	(enable-timer t-chat 360)
+)
+
+(defrule
+	(goal personality BULLY)
+	(or
+		(and
+			(goal 25 IMPERIAL-AGE-GOLD)
+			(players-tribute-memory any-human-neutral gold >= 500)
+		)
+		(and
+			(goal 25 IMPERIAL-AGE-STONE)
+			(players-tribute-memory any-human-neutral stone >= 500)
+		)
+	)
+=>
+	(chat-to-player-using-id this-any-human-neutral 22052)
+		;"41 Excellent! Thou hast done acceptably, and are safe for now."
+	(set-goal 25 NOTICE)
+	(disable-timer t-chat)
+	(enable-timer t-chat 360)
+)
+
+(defrule
+	(goal personality BULLY)
+	(timer-triggered t-chat)
+	(or
+		(or
+			(goal 25 IMPERIAL-AGE-WOOD)
+			(goal 25 IMPERIAL-AGE-FOOD)
+		)
+		(or
+			(goal 25 IMPERIAL-AGE-GOLD)
+			(goal 25 IMPERIAL-AGE-STONE)
+		)
+	)
+=>
+	(set-goal personality 10)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+;lots and lots of tribute
+(defrule
+	(goal personality BULLY)
+	(players-tribute any-human-neutral wood > 500)
+	(players-tribute any-human-neutral food > 500)
+	(players-tribute any-human-neutral gold > 500)
+	(players-tribute any-human-neutral stone > 500)
+=>
+	(set-stance every-computer enemy)
+	(chat-to-player-using-id this-any-human-neutral 22053)
+		;"39 Thou art a worthy fellow. I hereby declare us friends."
+	(set-goal personality NO)
+	(set-stance this-any-human-neutral ally)
+	(disable-self)
+)
+
+(defrule
+	(goal personality BULLY)
+	(or
+		(or
+			(players-tribute any-human-neutral wood >= 1500)
+			(players-tribute any-human-neutral food >= 1500)
+		)
+		(or
+			(players-tribute any-human-neutral gold >= 1500)
+			(players-tribute any-human-neutral stone >= 1500)
+		)
+	)
+=>
+	(set-stance this-any-human-neutral ally)
+	(set-stance every-computer enemy)
+	(chat-to-player-using-id this-any-human-neutral 22053)
+		;"39 Thou art a worthy fellow. I hereby declare us friends."
+	(set-goal personality NO)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+;********************************************
+;********************************************
+;THE ALLY RULES (goal personality ALLY)
+
+	(defrule
+		(goal personality ALLY)
+		(goal get-mad NO)
+		(stance-toward any-human neutral)
+		(current-age == feudal-age)
+		(game-time > 600)
+	=>
+		(chat-to-player-using-id this-any-human 22055)
+		(chat-to-player-using-id this-any-human 22056)
+			;"41 Send me 500 each of wood, food, gold, and stone!"
+			;"If thou dost this thing, I shall join thine side."
+		(set-goal 22 YES)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(goal 22 YES)
+		(starting-resources == low-resources)
+	=>
+		(enable-timer t-chat 600)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(goal 22 YES)
+		(starting-resources == medium-resources)
+	=>
+		(enable-timer t-chat 300)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(goal 2 YES)
+		(starting-resources == high-resources)
+	=>
+		(enable-timer t-chat 150)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(timer-triggered t-chat)
+		(players-tribute any-human-neutral wood < 500)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22057)
+			;"41 Thou must send more wood if thou wishest me to be thine ally!"
+		(disable-timer t-chat)
+		(enable-timer t-chat 300)
+	)
+
+	(defrule
+		(timer-triggered t-chat)
+		(goal personality ALLY)
+		(players-tribute any-human-neutral food < 500)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22058)
+			;"41 Thou must send more food if thou wishest me to be thine ally!"
+		(disable-timer t-chat)
+		(enable-timer t-chat 300)
+	)
+
+	(defrule
+		(timer-triggered t-chat)
+		(goal personality ALLY)
+		(players-tribute any-human-neutral gold < 500)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22059)
+			;"41 Thou must send more gold if thou wishest me to be thine ally!"
+		(disable-timer t-chat)
+		(enable-timer t-chat 300)
+	)
+
+	(defrule
+		(timer-triggered t-chat)
+		(goal personality ALLY)
+		(players-tribute any-human-neutral stone < 500)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22060)
+			;"41 Thou must send more stone if thou wishest me to be thine ally!"
+		(disable-timer t-chat)
+		(enable-timer t-chat 300)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(players-tribute any-human-neutral wood >= 500)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22061)
+			;"41 Thank thee for the wood! It is enough."
+		(clear-tribute-memory this-any-human-neutral wood)
+		(set-goal 36 YES)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(players-tribute any-human-neutral food >= 500)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22062)
+			;"41 Thank thee for the food! It is enough."
+		(clear-tribute-memory this-any-human-neutral food)
+		(set-goal 37 YES)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(players-tribute any-human-neutral gold >= 500)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22063)
+			;"41 Thank thee for the gold! It is enough."
+		(clear-tribute-memory this-any-human-neutral gold)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(players-tribute any-human-neutral stone >= 500)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22064)
+			;"41 Thank thee for the stone! It is enough."
+		(clear-tribute-memory this-any-human-neutral stone)
+		(set-goal 38 YES)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(goal 36 YES)
+		(players-tribute-memory any-human-neutral wood > 0)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22065)
+			;"41 Thou hast sent me sufficient wood!! Pray, send no more."
+		(clear-tribute-memory this-any-human-neutral wood)
+		(set-goal 39 YES)
+		(disable-self)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(goal 37 YES)
+		(players-tribute-memory any-human-neutral food > 0)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22066)
+			;"41 Thou hast sent me sufficient food!! Pray, send no more."
+		(clear-tribute-memory this-any-human-neutral food)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(goal 38 YES)
+		(players-tribute-memory any-human-neutral gold > 0)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22067)
+			;"41 Thou hast sent me sufficient gold!! Pray, send no more."
+		(clear-tribute-memory this-any-human-neutral gold)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(goal 39 YES)
+		(players-tribute-memory any-human-neutral stone > 0)
+	=>
+		(chat-to-player-using-id this-any-human-neutral 22068)
+			;"41 Thou hast sent me sufficient stone!! Pray, send no more."
+		(clear-tribute-memory this-any-human-neutral stone)
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(players-tribute any-human-neutral wood >= 500)
+		(players-tribute any-human-neutral food >= 500)
+		(players-tribute any-human-neutral gold >= 500)
+		(players-tribute any-human-neutral stone >= 500)
+		(stance-toward any-human neutral)
+	=>
+		(chat-to-player-using-id this-any-human 22016)
+		(chat-to-player-using-id this-any-human 22003)
+			;"39 The goods we have obtained from you are glorious!"
+			;"Let us be friends henceforth!"
+		(set-stance this-any-human ally)
+		(set-stance every-computer enemy)
+		(set-goal personality NO)
+		(disable-self)
+	)
+
+;*************************************************
+;MODERATE DIFFICULTY
+	(defrule
+		(goal personality ALLY)
+		(game-time > 4800)
+		(stance-toward any-human neutral)
+		(difficulty == moderate)
+		(or
+			(or
+				(goal 36 NO)
+				(goal 37 NO)
+			)
+			(or
+				(goal 38 NO)
+				(goal 39 NO)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human 22069)
+		(chat-to-player-using-id this-any-human 22070)
+			;"40 I have waited far too long for the promised tribute!"
+			;"Thou art exceedingly lax in fulfilling my requests."
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(game-time > 4800)
+		(stance-toward any-human neutral)
+		(difficulty == moderate)
+		(or
+			(or
+				(goal 36 NO)
+				(goal 37 NO)
+			)
+			(or
+				(goal 38 NO)
+				(goal 39 NO)
+			)
+		)
+	=>
+		(set-stance this-any-human enemy)
+		(set-stance every-computer ally)
+		(set-goal personality 10)
+	)
+
+;*************************************************
+;HARD+ DIFFICULTY
+	(defrule
+		(goal personality ALLY)
+		(game-time > 3600)
+		(stance-toward any-human neutral)
+		(difficulty <= hard)
+		(or
+			(or
+				(goal 36 NO)
+				(goal 37 NO)
+			)
+			(or
+				(goal 38 NO)
+				(goal 39 NO)
+			)
+		)
+	=>
+		(chat-to-player-using-id this-any-human 22069)
+		(chat-to-player-using-id this-any-human 22070)
+			;"40 I have waited far too long for the promised tribute!"
+			;"Thou art exceedingly lax in fulfilling my requests."
+	)
+
+	(defrule
+		(goal personality ALLY)
+		(game-time > 3600)
+		(stance-toward any-human neutral)
+		(difficulty <= hard)
+		(or
+			(or
+				(goal 36 NO)
+				(goal 37 NO)
+			)
+			(or
+				(goal 38 NO)
+				(goal 39 NO)
+			)
+		)
+	=>
+		(set-stance this-any-human enemy)
+		(set-stance every-computer ally)
+		(set-goal personality 10)
+	)
+
+;*************************************************
+#end-if
+#end-if
+#end-if
+
+

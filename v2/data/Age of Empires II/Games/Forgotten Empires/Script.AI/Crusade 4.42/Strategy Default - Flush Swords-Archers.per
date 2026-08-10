@@ -1,0 +1,9 @@
+(defconst GV-FEUDAL-STRATEGY-DEFAULT GV-FLUSH-SWORD-ARCHERS)
+
+(defrule
+	(true)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-SWORD-ARCHERS)
+	(chat-to-player my-player-number "Default Strategy: Man_at_arms-archers Flush")
+	(disable-self)
+)

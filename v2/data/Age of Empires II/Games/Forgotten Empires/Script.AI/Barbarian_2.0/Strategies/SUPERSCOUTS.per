@@ -1,0 +1,653 @@
+(defrule
+	(up-compare-goal gl-strategy != super-scouts)
+	(game-time > 1200)
+=>
+	(up-jump-rule 50)
+)
+
+(defrule
+	(game-time > 20)
+	(goal gl-enemy-human-rating LOW)
+	(player-valid any-human-enemy)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+=>
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-strategy super-scouts)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-strategy scrush)
+	(disable-self)
+)
+
+; ================= ECO
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(up-compare-goal gl-current-age c:>= gv-dark-up)
+	(current-age == dark-age)
+	(strategic-number sn-wood-gatherer-percentage != 71)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 29)
+	(set-strategic-number sn-wood-gatherer-percentage 71)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-add-rams-in-attack 0)
+	(set-strategic-number sn-skip-first-mining-camp 1)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+	(current-age == feudal-age)
+	(building-type-count-total stable >= 1)
+	(building-type-count-total stable <= 2)
+	(building-type-count-total blacksmith == 0)
+	(building-type-count-total market == 0)
+	(or	(strategic-number sn-wood-gatherer-percentage != 45)
+		(strategic-number sn-food-gatherer-percentage != 55))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 55)
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+	(current-age == feudal-age)
+	(building-type-count-total stable > 1)
+	(building-type-count-total blacksmith == 0)
+	(building-type-count-total market > 0)
+	(or	(strategic-number sn-wood-gatherer-percentage != 38)
+		(strategic-number sn-food-gatherer-percentage != 52))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 52)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+	(building-type-count-total blacksmith > 0)
+	(building-type-count-total stable < 4)
+	(game-time < 1400)
+	(or	(strategic-number sn-food-gatherer-percentage != 45)
+		(strategic-number sn-wood-gatherer-percentage != 35))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 45)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+	(building-type-count-total blacksmith > 0)
+	(building-type-count-total stable < 4)
+	(building-type-count-total archery-range < 2)
+	(game-time > 1400)
+	(or	(strategic-number sn-food-gatherer-percentage != 45)
+		(strategic-number sn-wood-gatherer-percentage != 30))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 45)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 15)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+	(building-type-count-total blacksmith > 0)
+	(building-type-count-total stable > 3)
+	(building-type-count-total archery-range < 2)
+	(or	(strategic-number sn-food-gatherer-percentage != 45)
+		(strategic-number sn-wood-gatherer-percentage != 25))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 45)
+	(set-strategic-number sn-wood-gatherer-percentage 25)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-stone-gatherer-percentage 15)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+	(building-type-count-total blacksmith > 0)
+	(building-type-count-total stable > 3)
+	(building-type-count-total archery-range > 1)
+	(or	(strategic-number sn-food-gatherer-percentage != 50)
+		(strategic-number sn-wood-gatherer-percentage != 40))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 5)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age c:>= gv-feudal-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 5)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(set-strategic-number sn-target-evaluation-ally-proximity 20)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(research-completed ri-forging)
+	(players-current-age every-enemy <= feudal-age)
+=>
+	(set-strategic-number sn-threat-level -3)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(research-completed ri-forging)
+	(unit-type-count-total scout-cavalry-line > 16)
+	(players-current-age every-enemy <= feudal-age)
+=>
+	(set-strategic-number sn-threat-level -4)
+	(disable-self)
+)
+
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(goal MILITARY 1)
+	(research-completed ri-forging)
+	(game-time > 1320)
+	(strategic-number sn-threat-level > -3); Attack is going on so better go all-in
+=>
+	(set-strategic-number sn-threat-level -3)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(goal MILITARY 0)
+	(research-completed ri-forging)
+	(players-current-age any-enemy > feudal-age)
+	(players-unit-type-count every-enemy spearman-line < 5)
+	(players-unit-type-count every-enemy eagle-warrior-line < 5)
+	(players-unit-type-count every-enemy knight-line < 2)
+	(players-unit-type-count every-enemy camel-line < 2)
+	(strategic-number sn-threat-level > -2)
+=>
+	(set-strategic-number sn-threat-level -2)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(goal MILITARY 0)
+	(research-completed ri-forging)
+	(players-current-age any-enemy > feudal-age)
+	(players-unit-type-count any-enemy spearman-line > 4)
+	(strategic-number sn-threat-level < -1)
+	(strategic-number sn-threat-level > 0)
+=>
+	(set-strategic-number sn-threat-level -1)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(research-completed ri-forging)
+	(players-current-age any-enemy > feudal-age)
+	(goal MILITARY 0)
+	(or	(players-unit-type-count any-enemy camel-line > 1)
+		(or	(players-unit-type-count any-enemy eagle-warrior-line > 4)
+			(players-unit-type-count any-enemy knight-line > 1)))
+	(strategic-number sn-threat-level != 0)
+=>
+	(set-strategic-number sn-threat-level 0)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == castle-age)
+	(nor	(research-available ri-iron-casting)
+		(research-available ri-chain-barding))
+=>
+	(set-strategic-number sn-threat-level -4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == castle-age)
+	(or	(nor	(research-available ri-iron-casting)
+			(research-available ri-chain-barding))
+		(soldier-count < 20))
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(players-current-age every-enemy >= castle-age)
+	(players-military-population every-enemy > 20)
+	(soldier-count > 40)
+	(goal MILITARY 0)
+	(game-time > 1800)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+	(strategic-number sn-target-evaluation-ally-proximity != 9999)
+=>
+	(set-strategic-number sn-target-evaluation-ally-proximity 9999)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == castle-age)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+	(enable-timer 7 0)
+)
+
+; ================= VILLAGERS
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(unit-type-count-total villager < 100)
+	(or	(food-amount < 725)
+		(gold-amount < 162))
+	(nor	(can-research-with-escrow ri-wheel-barrow)
+		(or	(can-research-with-escrow ri-loom)
+			(can-research-with-escrow castle-age)))
+	(can-train villager)
+=>
+	(train villager)
+)
+
+; ============ RESEARCHES
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(research-completed ri-loom)
+	(or	(can-research ri-bloodlines)
+		(and	(not	(research-available	ri-bloodlines))
+			(or	(can-research ri-scale-barding)
+				(can-research ri-forging))))
+=>
+	(research ri-bloodlines)
+	(research ri-scale-barding)
+	(research ri-forging)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(research-completed ri-forging)
+	(or	(players-unit-type-count any-enemy spearman-line > 7)
+		(unit-type-count-total spearman-line > 10))
+	(can-research ri-scale-mail)
+=>
+	(research ri-scale-mail)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(research-completed ri-fletching)
+	(unit-type-count-total skirmisher > 4)
+	(can-research ri-padded-archer-armor)
+=>
+	(research ri-padded-archer-armor)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(building-type-count-total stable > 0)
+	(or	(can-research-with-escrow ri-horse-collar)
+		(or	(can-research-with-escrow ri-heavy-plow)
+			(can-research-with-escrow ri-double-bit-axe)))
+=>
+	(release-escrow food)
+	(release-escrow wood)
+	(research ri-horse-collar)
+	(research ri-heavy-plow)
+	(research ri-double-bit-axe)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(building-type-count-total market > 0)
+	(game-time > 1080)
+	(or	(can-research-with-escrow ri-gold-mining)
+		(and	(can-research-with-escrow ri-stone-mining)
+			(and	(dropsite-min-distance stone < 4)
+				(strategic-number sn-stone-gatherer-percentage > 0))))
+=>
+	(research ri-gold-mining)
+	(research ri-stone-mining)
+)
+
+; ============ BUILDINGS
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(up-compare-goal gl-current-age c:>= gv-dark-up)
+	(not	(building-available stable))
+	(building-type-count-total barracks < 1)
+	(can-build barracks)
+=>
+	(build barracks)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(building-type-count-total stable < 2)
+	(can-build stable)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build stable)
+	(enable-timer 7 0)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(game-time > 1860)
+	(or	(building-type-count-total archery-range < 5)
+		(wood-amount > 300))
+	(building-type-count-total archery-range < 7)
+	(can-build archery-range)
+=>
+	(set-strategic-number sn-maximum-town-size 22)
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(or	(dropsite-min-distance stone < 4)
+		(food-amount > 450))
+	(or	(building-type-count-total stable < 3)
+		(game-time > 1500))
+	(building-type-count-total stable < 4)
+	(can-build stable)
+=>
+	(set-strategic-number sn-maximum-town-size 18)
+	(build stable)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+	(building-type-count-total stable > 1)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(set-strategic-number sn-maximum-town-size 16)
+	(build market)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(building-type-count-total market > 0)
+	(game-time > 1020)
+	(or	(building-type-count-total blacksmith < 1)
+		(up-compare-goal gl-current-age c:>= gv-feudal-up))
+	(building-type-count-total blacksmith < 2)
+	(can-build blacksmith)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(game-time > 1400)
+	(building-type-count-total mining-camp < 4)
+	(building-type-count-total market > 0)
+	(or	(dropsite-min-distance stone > 3)
+		(building-type-count-total stable > 3))
+	(or	(up-pending-objects c: mining-camp < 1)
+		(strategic-number sn-defer-dropsite-update == 0))
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(research-completed ri-horse-collar)
+	(current-age == feudal-age)
+	(building-type-count-total stable > 0)
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(game-time > 1600)
+	(building-type-count-total stable > 3)
+	(or	(building-type-count-total barracks < 2)
+		(game-time > 2100))
+	(building-type-count-total barracks < 3)
+	(can-build barracks)
+=>
+	(set-strategic-number sn-maximum-town-size 20)
+	(build barracks)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(game-time > 1500)
+	(building-type-count-total stable < 5)
+	(can-build stable)
+=>
+	(set-strategic-number sn-maximum-town-size 20)
+	(build stable)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age >= feudal-age)
+	(game-time > 1600)
+	(unit-type-count-total militiaman-line < 100)
+	(food-amount >= 110)
+	(nand	(unit-type-count-total militiaman-line > 2)
+		(research-available ri-man-at-arms))
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+)
+
+(defrule
+	(goal MILITARY 1)
+	(goal gl-strategy super-scouts)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+	(current-age == feudal-age)
+	(can-build watch-tower)
+	(commodity-selling-price stone < 75)
+=>
+	(build-forward watch-tower)
+)
+
+; ============ UNITS
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(or	(nor	(research-available ri-light-cavalry)
+			(research-available ri-chain-barding))
+		(unit-type-count-total scout-cavalry-line < 10))
+	(current-age >= feudal-age)
+	(food-amount >= 130)
+	(unit-type-count-total scout-cavalry-line < 100)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age >= feudal-age)
+	(unit-type-count-total spearman-line < 10)
+	(game-time > 960)
+	(players-military-population every-enemy < 3)
+	(nor	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+	(food-amount >= 70)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age >= feudal-age)
+	(unit-type-count-total spearman-line < 10)
+	(or	(players-unit-type-count any-enemy knight-line > 0)
+		(or	(players-unit-type-count any-enemy spearman-line > 4)
+			(players-unit-type-count any-enemy camel-line > 0)))
+	(food-amount >= 70)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age >= feudal-age)
+	(unit-type-count-total spearman-line < 16)
+	(or	(unit-type-count-total spearman-line < 2)
+		(or	(players-unit-type-count any-enemy knight-line > 3)
+			(or	(players-unit-type-count any-enemy camel-line > 3)
+				(players-unit-type-count any-enemy spearman-line > 7))))
+	(food-amount >= 70)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age >= feudal-age)
+	(unit-type-count-total spearman-line < 27)
+	(or	(players-unit-type-count any-enemy knight-line > 7)
+		(or	(players-unit-type-count any-enemy camel-line > 7)
+			(players-unit-type-count any-enemy spearman-line > 13)))
+	(food-amount >= 70)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age >= feudal-age)
+	(unit-type-count-total skirmisher-line < 100)
+	(food-amount >= 75)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age >= feudal-age)
+	(research-completed ri-fletching)
+	(unit-type-count-total skirmisher-line > 10)
+	(unit-type-count-total archer-line < 100)
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+; ============ MARKET
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(up-compare-goal gl-current-age c:<= gv-feudal)
+	(current-age == feudal-age)
+	(can-sell-commodity stone)
+	(commodity-selling-price stone >= 75)
+=>
+	(sell-commodity stone)
+	(sell-commodity stone)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(food-amount < 800)
+	(or	(gold-amount > 220)
+		(not	(research-available ri-bloodlines)))
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(gold-amount < 200)
+	(wood-amount >= 175)
+	(can-sell-commodity wood)
+	(or	(commodity-selling-price wood >= 53)
+		(wood-amount >= 250))
+	(nand	(building-type-count-total stable < 4)
+		(or	(game-time > 1500)
+			(food-amount > 300)))
+	(game-time < 1840)
+=>
+	(sell-commodity wood)
+)
+
+(defrule
+	(goal gl-strategy super-scouts)
+	(current-age == feudal-age)
+	(gold-amount < 200)
+	(wood-amount >= 175)
+	(can-sell-commodity wood)
+	(or	(commodity-selling-price wood >= 80)
+		(wood-amount >= 250))
+	(or	(and	(building-type-count-total stable > 3)
+			(building-type-count-total archery-range > 1))
+		(wood-amount >= 275))
+	(game-time > 1840)
+=>
+	(sell-commodity wood)
+)
+
+

@@ -1,0 +1,72 @@
+(defconst super-traitor-chat-id 22075); In fact, I'm switching sides! Fare thee well, losers.
+(defconst traitor-chat-id 22104); Your cities we shall burn to ashes.
+(defconst betrayed-chat-id 22096); My armies will easily crush you!
+(defconst wonder-game-time 4577)
+(defconst camp-raid-time-variance 2055)
+(defconst nomad-tc-up-chat "TC")
+(defconst gg-chat "well played!")
+(defconst boar-stealing-nature 1)
+(defconst villager-laming-nature 1)
+
+#load-if-not-defined UP-SCENARIO-GAME
+
+#load-if-not-defined UP-MICHI-STYLE
+#load-if-not-defined WONDER-RACE
+#load-if-not-defined KING-OF-THE-HILL
+#load-if-not-defined TURBO-RANDOM-MAP
+#load-if-defined DARK-AGE-START
+#load-if-defined DIFFICULTY-HARD
+(defrule
+	(not	(death-match-game))
+	(nand	(or	(goal gl-strategy heavy-krush)
+			(goal gl-strategy eagle-rush))
+		(unit-type-count-total villager > 24))
+	(population-cap >= 75)
+	(current-age == castle-age)
+	(unit-type-count-total villager < 28)
+=>
+	(chat-to-all "...")
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-defined UP-MULTIPLE-ENEMIES
+(defrule
+	(population-cap >= 200)
+	(players-population every-enemy >= pop-to-full-pop-attack)
+	(players-population every-ally < almost-full-pop)
+	(population < 130)
+=>
+	(chat-to-all "I know, this isn't going too well.")
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(not	(death-match-game))
+	(stance-toward focus-player enemy)
+	(players-unit-type-count focus-player paladin > 40)
+=>
+	(chat-to-all "How many paladins are you going to train?")
+	(disable-self)
+)
+
+(defrule
+	(difficulty <= hard)
+	(players-score any-ally < 1500)
+	(players-score any-enemy > 3000)
+	(current-score > 3000)
+	(player-in-game every-ally)
+	(not	(player-valid any-human-ally))
+	(goal SLING 0)
+=>
+	(up-get-player-fact this-any-ally player-number 0 temporary-goal)
+	(up-chat-data-to-all "p%d is noob" g: temporary-goal)
+	(disable-self)
+)
+#end-if

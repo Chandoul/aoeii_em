@@ -1,0 +1,747 @@
+
+; ============== RULES
+
+(defrule
+	(up-compare-goal gl-strategy != CA-rush)
+=>
+	(up-jump-rule 53)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(or	(game-time > 2700)
+		(cc-players-unit-type-count 0 gold-mine < 3))
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-strategic-number sn-target-evaluation-distance 10000)
+	(set-strategic-number sn-target-evaluation-time-kill-ratio 10000)
+	(set-strategic-number sn-target-evaluation-hitpoints 0)
+	(set-strategic-number sn-target-evaluation-damage-capability 10000)
+	(set-strategic-number sn-target-evaluation-kills 0)
+	(set-strategic-number sn-target-evaluation-randomness 0)
+	(set-strategic-number sn-target-evaluation-attack-attempts 0)
+	(set-strategic-number sn-target-evaluation-siege-weapon 1000)
+	(set-strategic-number sn-add-rams-in-attack 0)
+	(set-difficulty-parameter ability-to-maintain-distance 0)
+	(set-strategic-number sn-heresy-escrow 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal MILITARY 0)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 0)
+=>
+	(set-strategic-number sn-add-rams-in-attack 1)
+	(disable-timer 2)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal MILITARY 1)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 1)
+=>
+	(enable-timer 2 90)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+; ============= ECO BALANCING
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 39)
+	(set-strategic-number sn-wood-gatherer-percentage 49)
+	(set-strategic-number sn-gold-gatherer-percentage 12)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-strategic-number sn-stone-dropsite-distance 50)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 40)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal RAM 1)
+	(research-completed ri-bodkin-arrow)
+	(unit-type-count-total battering-ram-line < 1)
+	(wood-amount < 300)
+	(strategic-number sn-wood-gatherer-percentage != 50)
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 16)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 34)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal RAM 1)
+	(research-completed ri-bodkin-arrow)
+	(unit-type-count-total battering-ram-line < 1)
+	(wood-amount >= 300)
+	(strategic-number sn-wood-gatherer-percentage != 40)
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 16)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 44)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(research-completed ri-bodkin-arrow)
+	(gold-amount < 200)
+	(wood-amount < 200)
+	(strategic-number sn-wood-gatherer-percentage != 39)
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 16)
+	(set-strategic-number sn-wood-gatherer-percentage 39)
+	(set-strategic-number sn-gold-gatherer-percentage 45)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal TC 0)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(research-completed ri-bodkin-arrow)
+	(gold-amount >= 300)
+	(wood-amount < 200)
+	(strategic-number sn-wood-gatherer-percentage != 48)
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 16)
+	(set-strategic-number sn-wood-gatherer-percentage 48)
+	(set-strategic-number sn-gold-gatherer-percentage 36)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal TC 0)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(research-completed ri-bodkin-arrow)
+	(gold-amount < 200)
+	(wood-amount >= 300)
+	(strategic-number sn-wood-gatherer-percentage != 29)
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 16)
+	(set-strategic-number sn-wood-gatherer-percentage 29)
+	(set-strategic-number sn-gold-gatherer-percentage 54)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal TC 1)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(current-age-time > 300)
+	(game-time >= 1500)
+	(gold-amount < 200)
+	(wood-amount < 200)
+	(strategic-number sn-wood-gatherer-percentage != 43)
+	(current-age >= castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 22)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(set-strategic-number sn-gold-gatherer-percentage 40)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal TC 1)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(current-age-time > 300)
+	(game-time >= 1500)
+	(gold-amount >= 300)
+	(wood-amount < 200)
+	(strategic-number sn-wood-gatherer-percentage != 46)
+	(current-age >= castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 22)
+	(set-strategic-number sn-wood-gatherer-percentage 46)
+	(set-strategic-number sn-gold-gatherer-percentage 32)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal TC 1)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(current-age-time > 300)
+	(game-time >= 1500)
+	(gold-amount < 200)
+	(wood-amount >= 300)
+	(strategic-number sn-wood-gatherer-percentage != 27)
+	(current-age >= castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 22)
+	(set-strategic-number sn-wood-gatherer-percentage 27)
+	(set-strategic-number sn-gold-gatherer-percentage 50)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal TC 1)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(current-age-time > 300)
+	(game-time >= 1500)
+	(gold-amount < 200)
+	(wood-amount >= 500)
+	(commodity-selling-price food >= 50)
+	(strategic-number sn-wood-gatherer-percentage != 20)
+	(current-age >= castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 20)
+	(set-strategic-number sn-gold-gatherer-percentage 40)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal TC 1)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(current-age-time > 300)
+	(game-time >= 1500)
+	(gold-amount < 300)
+	(wood-amount >= 500)
+	(commodity-selling-price food < 50)
+	(strategic-number sn-wood-gatherer-percentage != 30)
+	(current-age >= castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 40)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal TC 1)
+	(current-age >= castle-age)
+	(or	(and	(stone-amount < 100)
+			(building-type-count-total town-center < 3))
+		(and	(stone-amount < 200)
+			(building-type-count-total town-center < 2)))
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+; ============== VILLAGERS
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(current-age >= castle-age)
+	(nand	(research-available ri-bodkin-arrow)
+		(food-amount < 250))
+	(nand	(can-research-with-escrow ri-hand-cart)
+		(unit-type-count-total villager > 50))
+	(not	(can-research-with-escrow imperial-age))
+	(can-train-with-escrow villager)
+=>
+	(train villager)
+)
+
+; ======== RESEARCHES - UNIT UPGRADES
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(can-research ri-bloodlines)
+		(or	(can-research ri-fletching)
+			(or	(can-research ri-bodkin-arrow)
+				(or	(can-research ri-thumb-ring)
+					(can-research ri-bracer)))))
+=>
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-thumb-ring)
+	(research ri-bloodlines)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(research-completed ri-bodkin-arrow)
+		(goal gl-eternal-drush YES))
+	(or	(unit-type-count-total cavalry-archer-line > 17)
+		(food-amount > 250))
+	(or	(can-research ri-padded-archer-armor)
+		(or	(can-research ri-leather-archer-armor)
+			(can-research ri-parthian-tactics)))
+=>
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-parthian-tactics)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(unit-type-count-total cavalry-archer-line > 20)
+	(or	(and	(not	(research-available ri-bracer))
+			(can-research ri-chemistry))
+		(or	(can-research ri-ballistics)
+			(and	(unit-type-count-total cavalry-archer-line > 27)
+				(can-research ri-husbandry))))
+=>
+	(research ri-ballistics)
+	(research ri-chemistry)
+	(research ri-husbandry)
+)
+
+; ======== RESEARCHES - ECONOMY - LOW PRIORITY
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(or	(soldier-count > 30)
+		(game-time > 1800))
+	(food-amount > 175)
+	(can-research ri-heavy-plow)
+=>
+	(research ri-heavy-plow)
+)
+
+; ============== BUILDINGS - DARK
+
+;...
+
+; ============== BUILDINGS - FEUDAL
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(or	(building-type-count-total archery-range < 1)
+		(and	(building-type-count-total blacksmith > 0)
+			(or	(building-type-count-total archery-range < 3)
+				(and	(goal SLING 3)
+					(building-type-count-total archery-range < 6)))))
+	(can-build archery-range)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(game-time > 1500)
+	(or	(building-type-count-total mining-camp < 4)
+		(game-time > 1800))
+	(building-type-count-total mining-camp < 6)
+	(resource-found gold)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(current-age == feudal-age)
+	(building-type-count-total blacksmith > 0)
+	(building-type-count-total archery-range > 0)
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(and	(building-type-count-total farm < 10)
+			(or	(not	(research-completed ri-bodkin-arrow))
+				(unit-type-count-total knight > 0)))
+		(or	(building-type-count-total farm < 8)
+			(and	(idle-farm-count < 1)
+				(building-type-count-total town-center > 1))))
+	(can-build farm)
+=>
+	(build farm)
+)
+
+; ======== BUILDINGS - CASTLE
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(nand	(goal RAM 1)
+		(building-type-count-total siege-workshop < 1))
+	(or	(wood-amount > 300)
+		(stone-amount > 200))
+	(game-time > 1500)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build market)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(nand	(goal TC 1)
+		(building-type-count-total town-center < 3))
+	(or	(and	(unit-type-count-total villager > 43)
+			(building-type-count-total archery-range < 5))
+		(and	(unit-type-count-total villager > 56)
+			(building-type-count-total archery-range < 6)))
+	(can-build archery-range)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(nand	(goal TC 1)
+		(building-type-count-total town-center < 3))
+	(or	(and	(unit-type-count-total villager > 65)
+			(building-type-count-total archery-range < 7))
+		(and	(unit-type-count-total villager > 83)
+			(building-type-count-total archery-range < 9)))
+	(can-build archery-range)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(or	(and	(game-time > 1800)
+			(soldier-count > 35))
+		(and	(player-in-game any-ally)
+			(game-time > 1500)))
+	(building-type-count-total town-center < 3)
+=>
+	(set-goal TC 1)
+	(set-strategic-number sn-food-gatherer-percentage 22)
+	(set-strategic-number sn-wood-gatherer-percentage 46)
+	(set-strategic-number sn-gold-gatherer-percentage 32)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(or	(goal RAM 1)
+		(and	(soldier-count > 60)
+			(building-type-count-total university > 0)))
+	(or	(building-type-count-total siege-workshop < 1)
+		(and	(population > 185)
+			(building-type-count-total siege-workshop < 2)))
+	(can-build siege-workshop)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build siege-workshop)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(current-age >= castle-age)
+	(research-completed ri-heavy-plow)
+	(idle-farm-count <= 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(unit-type-count-total cavalry-archer-line > 20)
+		(goal gl-eternal-drush YES))
+	(not	(research-completed ri-bloodlines))
+	(building-type-count-total stable < 1)
+	(can-build stable)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build stable)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(nand	(goal TC 1)
+		(and	(building-type-count-total town-center < 3)
+			(stone-amount >= 100)))
+	(unit-type-count-total villager > 65)
+	(unit-type-count-total cavalry-archer-line > 50)
+	(building-type-count-total university < 1)
+	(can-build university)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build university)
+)
+
+; ======== UNITS - ARMY
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal RAM 1)
+	(or	(and	(unit-type-count-total mangonel-line < 1)
+			(or	(players-unit-type-count focus-player scorpion-line > 0)
+				(players-unit-type-count focus-player skirmisher-line > 10)))
+		(and	(unit-type-count-total mangonel-line < 2)
+			(or	(players-unit-type-count focus-player scorpion-line > 1)
+				(players-unit-type-count focus-player skirmisher-line > 15))))
+	(can-train mangonel-line)
+=>
+	(train mangonel-line)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal RAM 1)
+	(nand	(players-unit-type-count any-enemy scorpion-line > 1)
+		(unit-type-count-total mangonel-line < 1))
+	(nand	(unit-type-count-total battering-ram-line > 0)
+		(building-type-count-total archery-range < 3))
+	(or	(unit-type-count-total battering-ram-line < 3)
+		(and	(unit-type-count-total battering-ram-line < 6)
+			(soldier-count > 43)))
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(or	(players-unit-type-count focus-player cavalry-archer-line > 14)
+		(or	(players-unit-type-count focus-player archer-line > 14)
+			(or	(players-unit-type-count focus-player skirmisher-line > 14)
+				(players-unit-type-count focus-player plumed-archer-line > 9))))
+	(unit-type-count-total mangonel-line < 4)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(nand	(players-unit-type-count any-enemy scorpion-line > 1)
+		(unit-type-count-total mangonel-line < 1))
+	(or	(nand	(goal RAM 1)
+			(unit-type-count-total battering-ram-line < 1))
+		(and	(wood-amount > 230)
+			(gold-amount > 120)))
+	(unit-type-count-total cavalry-archer-line < 100)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(not	(goal gl-MICRO-CONTROL YES))
+	(unit-type-count-total spearman-line < 14)
+	(or	(players-unit-type-count focus-player scout-cavalry-line > 5)
+		(players-unit-type-count focus-player knight-line > 4))
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+; ======== ATTACKING
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(current-age >= castle-age)
+=>
+	(enable-timer 1 0)
+	(enable-timer 7 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(soldier-count > 15)
+	(or	(and	(goal MILITARY 1)
+			(timer-triggered 2))
+		(or	(players-building-type-count target-player stone-wall-line > 5)
+			(or	(players-building-type-count target-player palisade-wall > 10)
+				(or	(players-unit-type-count target-player watch-tower > 0)
+					(players-unit-type-count target-player castle > 0)))))
+	(not	(goal RAM 1))
+=>
+	(set-goal RAM 1)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal MILITARY 0)
+	(or	(players-unit-type-count focus-player scorpion-line < 2)
+		(unit-type-count-total mangonel-line > 0))
+	(soldier-count <= 15)
+	(not	(goal RAM 0))
+=>
+	(set-goal RAM 0)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(goal MILITARY 0)
+	(or	(players-unit-type-count focus-player scorpion-line < 2)
+		(unit-type-count-total mangonel-line > 0))
+	(players-building-type-count target-player stone-wall-line <= 5)
+	(players-building-type-count target-player palisade-wall <= 10)
+	(players-unit-type-count target-player watch-tower == 0)
+	(players-unit-type-count target-player castle == 0)
+	(not	(goal RAM 0))
+=>
+	(set-goal RAM 0)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(soldier-count > 5)
+	(or	(and	(unit-type-count-total mangonel-line < 1)
+			(players-unit-type-count focus-player scorpion-line > 1))
+		(and	(soldier-count > 21)
+			(and	(goal MILITARY 1)
+				(players-military-population focus-player < 3))))
+	(not	(goal RAM 1))
+=>
+	(set-goal RAM 1)
+)
+
+; ========= MARKET - BALANCING THE RESOURCES
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(or	(not	(goal TC 1))
+		(or	(building-type-count-total town-center > 2)
+			(or	(and	(building-type-count-total town-center > 1)
+					(stone-amount >= 200))
+				(stone-amount >= 300))))
+	(commodity-selling-price stone > 40)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(unit-type-count-total cavalry-archer-line > 30)
+	(research-available ri-thumb-ring)
+	(wood-amount >= 200)
+	(gold-amount >= 400)
+	(food-amount < 300)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+	(buy-commodity food)
+	(chat-to-player my-player-number "Buy food x2")
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(or	(and	(gold-amount < 50)
+			(wood-amount > 350))
+		(and	(gold-amount < 250)
+			(wood-amount > 450)))
+	(can-sell-commodity wood)
+	(commodity-selling-price wood >= 40)
+=>
+	(sell-commodity wood)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(wood-amount > 1000)
+	(gold-amount < 600)
+	(or	(commodity-selling-price wood >= 35)
+		(current-age == imperial-age))
+	(can-sell-commodity wood)
+	(nand	(civ-selected hun)
+		(and	(current-age == imperial-age)
+			(not	(research-completed ri-guilds))))
+=>
+	(sell-commodity wood)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(building-type-count-total university > 0)
+	(wood-amount > 500)
+	(gold-amount < 800)
+	(gold-amount > 500)
+	(food-amount > 1000)
+	(commodity-selling-price wood >= 45)
+=>
+	(sell-commodity wood)
+	(sell-commodity wood)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(food-amount > 400)
+	(gold-amount < 100)
+	(can-sell-commodity food)
+	(or	(commodity-selling-price food >= 40)
+		(or	(and	(civ-selected hun)
+				(and	(current-age == imperial-age)
+					(research-completed ri-guilds)))
+			(civ-selected mongol)))
+=>
+	(sell-commodity food)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(food-amount > 1100)
+	(gold-amount < 600)
+	(or	(commodity-selling-price food >= 35)
+		(current-age == imperial-age))
+	(can-sell-commodity food)
+	(nand	(civ-selected hun)
+		(and	(current-age == imperial-age)
+			(not	(research-completed ri-guilds))))
+=>
+	(sell-commodity food)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(current-age >= castle-age)
+	(gold-amount >= 1000)
+	(food-amount < 300)
+	(commodity-buying-price food < 180)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+)
+
+(defrule
+	(goal gl-strategy CA-rush)
+	(gold-amount >= 700)
+	(wood-amount < 140)
+	(can-buy-commodity wood)
+=>
+	(buy-commodity wood)
+)
+
+

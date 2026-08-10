@@ -1,0 +1,367 @@
+; ================= ECO
+
+(defrule
+	(goal gl-strategy wall-boom); Don't use this rule yet
+	(game-time > 65)
+=>
+	(set-goal gl-strategy wall-boom)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-strategic-number sn-home-exploration-time 600)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+	(disable-self)
+)
+
+(defrule
+	(map-type black-forest)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal MILITARY 1)
+=>
+	(up-delete-objects c: wall-class c: 32767)
+	(up-delete-objects c: gate-class c: 32767)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-current-age gv-dark)
+	(or	(strategic-number sn-food-gatherer-percentage != 70)
+		(strategic-number sn-wood-gatherer-percentage != 30))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 70)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-current-age gv-dark-up)
+	(current-age == dark-age)
+	(or	(strategic-number sn-wood-gatherer-percentage != 51)
+		(strategic-number sn-stone-gatherer-percentage != 20))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 29)
+	(set-strategic-number sn-wood-gatherer-percentage 51)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 20)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-current-age gv-feudal)
+	(current-age == feudal-age)
+	(building-type-count-total blacksmith == 0)
+	(building-type-count-total market == 0)
+	(or	(strategic-number sn-wood-gatherer-percentage != 35)
+		(strategic-number sn-food-gatherer-percentage != 40))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 15)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-current-age gv-feudal)
+	(current-age == feudal-age)
+	(building-type-count-total blacksmith > 0)
+	(building-type-count-total market > 0)
+	(or	(strategic-number sn-wood-gatherer-percentage != 50)
+		(strategic-number sn-food-gatherer-percentage != 32))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 32)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 8)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-current-age gv-feudal-up)
+	(current-age == feudal-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 25)
+		(or	(strategic-number sn-wood-gatherer-percentage != 60)
+			(strategic-number sn-gold-gatherer-percentage != 10)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 25)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(set-goal TC 1)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(current-age-time > 20)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(current-age == castle-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 54)
+		(or	(strategic-number sn-wood-gatherer-percentage != 40)
+			(strategic-number sn-gold-gatherer-percentage != 6)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 54)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 6)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(current-age-time > 240)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(current-age == castle-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 46)
+		(or	(strategic-number sn-wood-gatherer-percentage != 41)
+			(strategic-number sn-gold-gatherer-percentage != 13)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 46)
+	(set-strategic-number sn-wood-gatherer-percentage 41)
+	(set-strategic-number sn-gold-gatherer-percentage 13)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-current-age gv-feudal-up)
+	(goal gl-turtling-control defences-needed)
+	(building-type-count-total castle == 0)
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 23)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-current-age gv-feudal-up)
+	(or	(current-age-time > 120)
+		(goal gl-turtling-control defences-needed))
+	(current-age == castle-age)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(set-strategic-number sn-disable-builder-assistance 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-turtling-control YES)
+	(or	(players-unit-type-count focus-player battering-ram-line > 0)
+		(or	(players-unit-type-count focus-player mangonel-line > 0)
+			(or	(players-building-type-count focus-player siege-workshop > 0)
+				(and	(game-time > 1460)
+					(and	(timer-triggered 9)
+						(town-under-attack))))))
+=>
+	(set-goal gl-turtling-control defences-needed)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(or	(players-military-population focus-player > 12)
+		(or	(players-unit-type-count focus-player battering-ram-line > 0)
+			(players-unit-type-count focus-player mangonel-line > 0)))
+	(unit-type-count-total mangonel-line < 1)
+=>
+	(set-escrow-percentage wood 100)
+	(set-escrow-percentage gold 100)
+	(set-goal gl-panic-xbow-counter YES)
+)
+
+; ================= TOWN SIZE
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(not	(goal gl-turtling-control open-the-wall))
+	(current-age >= feudal-age)
+	(or	(strategic-number sn-maximum-town-size < 40)
+		(strategic-number sn-maximum-town-size > 41))
+=>
+	(set-strategic-number sn-maximum-town-size 40)
+	(chat-to-player my-player-number "TS 40")
+)
+
+; ================= AGE UP
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(unit-type-count-total villager > 26)
+	(can-research feudal-age)
+=>
+	(research feudal-age)
+	(set-goal gl-current-age gv-dark-up)
+	(disable-timer 1)
+	(enable-timer 10 0)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(current-age == feudal-age)
+	(or	(unit-type-count-total villager < 39)
+		(or	(game-time < 1130)
+			(or	(food-amount < 620)
+				(gold-amount < 162))))
+	(nor	(can-research-with-escrow ri-wheel-barrow)
+		(or	(can-research-with-escrow ri-loom)
+			(can-research-with-escrow castle-age)))
+	(can-train villager)
+=>
+	(train villager)
+)
+
+; ============ RESEARCHES
+
+(defrule
+	(current-age == dark-age)
+	(goal gl-strategy wall-boom)
+	(food-amount > 420)
+	(not	(can-research feudal-age))
+	(unit-type-count-total villager > 26)
+	(can-research ri-loom)
+=>
+	(research ri-loom)
+	(enable-timer 2 22)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(or	(can-research-with-escrow ri-horse-collar)
+		(or	(can-research-with-escrow ri-heavy-plow)
+			(can-research-with-escrow ri-double-bit-axe)))
+=>
+	(release-escrow food)
+	(release-escrow wood)
+	(research ri-horse-collar)
+	(research ri-heavy-plow)
+	(research ri-double-bit-axe)
+)
+
+; ============ BUILDINGS
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(dropsite-min-distance stone > 3)
+	(can-build mining-camp)
+=>
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(strategic-number sn-camp-max-distance > 23)
+=>
+	(set-strategic-number sn-camp-max-distance 23)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(or	(and	(current-age == feudal-age)
+			(up-compare-goal gl-current-age >= gv-feudal))
+		(and	(current-age-time > 30)
+			(up-compare-goal gl-current-age >= gv-castle)))
+	(building-type-count-total farm g:< gl-max-farm-count)
+	(or	(research-completed ri-horse-collar)
+		(building-type-count-total farm < 10))
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-current-age gv-feudal)
+	(current-age-time > 16)
+	(dropsite-min-distance stone < 4)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build market)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(current-age >= feudal-age)
+	(current-age-time > 18)
+=>
+	(enable-wall-placement 2)
+	(set-strategic-number sn-disable-builder-assistance 0)
+	(set-goal gl-turtling-control YES)
+	(set-goal gl-disable-mining-upgrades YES)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(not	(goal gl-turtling-control open-the-wall))
+	(can-build-wall 2 stone-wall-line)
+=>
+	(build-wall 2 stone-wall-line)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-current-age gv-feudal)
+	(current-age == feudal-age)
+	(players-military-population focus-player > 2)
+	(building-type-count-total watch-tower < 3)
+	(up-can-build 0 c: watch-tower)
+=>
+	(up-set-placement-data my-player-number -1 c: 16)
+	(up-assign-builders c: watch-tower c: 1)
+	(up-build place-control 0 c: watch-tower)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-turtling-control defences-needed)
+	(building-type-count-total monastery < 2)
+	(can-build monastery)
+=>
+	(build monastery)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-turtling-control defences-needed)
+	(building-type-count-total siege-workshop < 1)
+	(can-build siege-workshop)
+=>
+	(build siege-workshop)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-turtling-control defences-needed)
+	(unit-type-count-total mangonel-line < 1)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line)
+)
+
+(defrule
+	(goal gl-strategy wall-boom)
+	(goal gl-turtling-control defences-needed)
+	(unit-type-count-total scorpion-line < 4)
+	(can-train scorpion-line)
+=>
+	(train scorpion-line)
+)
+

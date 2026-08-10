@@ -1,0 +1,2169 @@
+; ARMY SELECTION
+
+(defrule
+	(true)
+=>
+	(set-goal G-JOLLYGOAL 0)
+	(set-goal G-TRASH 0)
+	(set-goal G-SIEGE-UNIT GV-NONE)
+)
+
+
+; SIEGE
+
+; Bombard cannons > Trebuchets > Rams
+
+(defrule
+	(current-age >= castle-age)
+	(building-type-count siege-workshop >= 1)
+	(or	(goal G-TSA 1)
+		(or	(enemy-buildings-in-town)
+			(population >= SUB-TOP-POPULATION)
+		)
+	)
+	(unit-type-count-total battering-ram-line < 11)
+=>
+	(set-goal G-SIEGE-UNIT GV-RAM)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(building-type-count castle >= 1)
+	(or	(goal G-TSA 1)
+		(or	(enemy-buildings-in-town)
+			(population >= SUB-TOP-POPULATION)
+		)
+	)
+	(strategic-number G-TREBUCHET < 8)
+=>
+	(set-goal G-SIEGE-UNIT GV-TREBUCHET)
+)
+
+(defrule
+	(unit-available bombard-cannon)
+	(building-type-count siege-workshop >= 1)
+	(or	(goal G-TSA 1)
+		(or	(enemy-buildings-in-town)
+			(population >= SUB-TOP-POPULATION)
+		)
+	)
+	(unit-type-count-total bombard-cannon < 9)
+=>
+	(set-goal G-SIEGE-UNIT GV-BOMBARD-CANNON)
+)
+
+
+
+
+; Default units
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SWORD-ARCHERS)
+		(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+			(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+	(set-goal G-ARCHERY-UNIT GV-ARCHER)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-ARCHER)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+		(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+		(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+			(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-ARCHER)
+	(set-goal G-STABLE-UNIT GV-SCOUT)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+=>
+	(set-goal G-BARRACK-UNIT GV-INFANTRY-DEFAULT-CASTLE)
+	(set-goal G-ARCHERY-UNIT GV-RANGED-DEFAULT-CASTLE)
+	(set-goal G-STABLE-UNIT GV-CAVALRY-DEFAULT-CASTLE)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+=>
+	(set-goal G-BARRACK-UNIT GV-INFANTRY-DEFAULT-IMPERIAL)
+	(set-goal G-ARCHERY-UNIT GV-RANGED-DEFAULT-IMPERIAL)
+	(set-goal G-STABLE-UNIT GV-CAVALRY-DEFAULT-IMPERIAL)
+)
+
+
+
+; CAVALRY
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined INCAN-CIV
+
+; Byzantines have great camels, and Turks have good camels and bad spears, so they want any excuse to train camels
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+=>
+	(set-goal G-STABLE-UNIT GV-CAMEL)
+)
+#end-if
+#load-if-defined TURKISH-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+=>
+	(set-goal G-STABLE-UNIT GV-CAMEL)
+)
+#end-if
+
+; The rest of camel civs generally prefer knights because they are better all-around units, although they can need camels if enemy spams a lot of cavalry
+#load-if-defined CHINESE-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 2)
+	(or	(unit-type-count-total camel-line < 10)
+		(strategic-number G-THREAT-CAVALRY-GROUP >= 3)
+	)
+=>
+	(set-goal G-STABLE-UNIT GV-CAMEL)
+)
+#end-if
+#load-if-defined MONGOL-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 2)
+	(or	(unit-type-count-total camel-line < 10)
+		(strategic-number G-THREAT-CAVALRY-GROUP >= 3)
+	)
+=>
+	(set-goal G-STABLE-UNIT GV-CAMEL)
+)
+#end-if
+#load-if-defined PERSIAN-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 2)
+	(or	(unit-type-count-total camel-line < 10)
+		(strategic-number G-THREAT-CAVALRY-GROUP >= 3)
+	)
+=>
+	(set-goal G-STABLE-UNIT GV-CAMEL)
+)
+#end-if
+#load-if-defined SARACEN-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+	(or	(research-completed my-unique-research)
+		(and	(strategic-number G-THREAT-CAVALRY-GROUP >= 2)
+			(or	(unit-type-count-total camel-line < 10)
+				(strategic-number G-THREAT-CAVALRY-GROUP >= 3)
+			)
+		)
+	)
+=>
+	(set-goal G-STABLE-UNIT GV-CAMEL)
+)
+#end-if
+
+(defrule
+	(strategic-number G-THREAT-MONK >= 1)
+	(or	(or	(unit-type-count-total scout-cavalry-line < 10)
+			(strategic-number G-THREAT-MONK >= 3)
+		)
+		(and	(strategic-number G-THREAT-MONK >= 2)
+			(unit-type-count-total scout-cavalry-line < 20)
+		)
+	)	
+=>
+	(set-goal G-STABLE-UNIT GV-SCOUT)
+)
+
+; Teuton scouts can't be upgraded, so they must be avoided.
+; Fortunately, Teutons are more resistent to conversion, so they have a smaller necessity to counter monks.
+#load-if-defined TEUTONIC-CIV
+(defrule
+	(or	(or	(strategic-number G-THREAT-MONK < 2)
+			(unit-type-count-total scout-cavalry-line >= 10)
+		)
+		(and	(strategic-number G-THREAT-MONK < 3)
+			(unit-type-count-total scout-cavalry-line >= 5)
+		)
+	)	
+	(can-train knight-line)	
+=>
+	(set-goal G-STABLE-UNIT GV-KNIGHT)
+)
+#end-if
+
+; You can't train knights/camels in transition to castle, so you can replace them by emergency scouts if your army is too weak
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-CASTLE)
+	(or	(goal G-STABLE-UNIT GV-KNIGHT)
+		(goal G-STABLE-UNIT GV-CAMEL)
+	)
+	(strategic-number G-MILITARY-SUPERIORITY < 0)
+	(nor	(research-available ri-forging)
+		(research-available ri-scale-barding)
+	)
+	(nor	(research-available ri-padded-archer-armor)
+		(research-available ri-scale-mail)
+	)
+	(nand	(research-available ri-bloodlines)
+		(gold-amount > 50)
+	)
+	;(strategic-number G-MILITARY-SUPERIORITY < 0)
+=>
+	(set-goal G-STABLE-UNIT GV-SCOUT)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(goal G-STABLE-UNIT GV-NONE)
+	(or	(strategic-number G-THREAT-MONK >= 2)
+		(strategic-number G-THREAT-ARCHERY-GROUP >= 3)
+	)
+=>
+	(set-goal G-STABLE-UNIT GV-SCOUT)
+)
+#end-if ; No Aztec
+#end-if ; No Mayan
+#end-if ; No Inca
+
+
+
+
+
+
+; INFANTRY
+
+; Spears to counter cavalry.
+; Byzantines only need a weak excuse to train them because they have cheaper trash,
+; but Turks prefer avoid them because they can't upgrade them.
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(players-current-age any-enemy >= castle-age)
+	(unit-type-count-total spearman-line < 6)
+	(current-age < castle-age)
+	(not(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY))
+	(nor	(players-civ any-enemy aztec)
+		(players-civ any-enemy mayan)
+	)
+	(players-building-type-count any-enemy barracks < 2)
+	(players-building-type-count any-enemy archery-range < 3)
+	(strategic-number G-THREAT-MONK == 0)
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-MONK == 0)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 2)
+	(or	(goal G-ARMY-STRONG-PREPARED 1)
+		(nand	(goal G-STABLE-UNIT GV-KNIGHT)
+			(building-type-count stable >= 1)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+
+(defrule
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+	(strategic-number G-THREAT-MONK == 0)
+	(strategic-number G-THREAT-ARCHERY-GROUP == 0)
+	(nand	(building-type-count-total stable >= 1)
+		(or	(goal G-STABLE-UNIT GV-KNIGHT)
+			(goal G-STABLE-UNIT GV-CAMEL)
+		)
+	)
+	(or	(goal G-BARRACK-UNIT GV-NONE)
+		(civ-selected byzantine)
+	)
+	(nand	(civ-selected turkish)
+		(current-age >= castle-age)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+
+
+; We prefer swords if we have enough spears and we have to counter eagles.
+; Although mesos could prefer train their own eagles in such cases.
+#load-if-defined AZTEC-CIV
+(defrule
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-ARCHERY-GROUP == 0)
+	(strategic-number G-THREAT-MONK == 0)
+	(nand	(and	(current-age == castle-age)
+			(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+		)
+		(research-available ri-long-swordsman)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+#load-if-defined CELTIC-CIV
+(defrule
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 2)
+	(strategic-number G-THREAT-MONK == 0)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+#load-if-defined GOTHIC-CIV
+(defrule
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 2)
+	(strategic-number G-THREAT-MONK == 0)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+#load-if-defined HUN-CIV
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-ARCHERY-GROUP == 0)
+	(strategic-number G-THREAT-MONK == 0)
+	(or	(goal G-ARCHERY-UNIT GV-NONE)
+		(nand	(goal G-STABLE-UNIT GV-KNIGHT)
+			(building-type-count stable >= 1)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+#load-if-defined JAPANESE-CIV
+(defrule
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 2)
+	(strategic-number G-THREAT-MONK == 0)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+#load-if-defined MAYAN-CIV
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-ARCHERY-GROUP == 0)
+	(strategic-number G-THREAT-MONK == 0)
+	(nand	(current-age >= castle-age)
+		(research-available ri-long-swordsman)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+#load-if-defined PERSIAN-CIV
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-ARCHERY-GROUP == 0)
+	(strategic-number G-THREAT-MONK == 0)
+	(or	(goal G-ARCHERY-UNIT GV-NONE)
+		(nand	(goal G-STABLE-UNIT GV-KNIGHT)
+			(building-type-count stable >= 1)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+#load-if-defined VIKING-CIV
+(defrule
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-MONK == 0)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 2)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined VIKING-CIV
+#load-if-not-defined TURKISH-CIV
+(defrule
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-MONK == 0)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 2)
+	(nand	(goal GV-UNIQUE-UNIT-TYPE GV-INFANTRY)
+		(and	(building-type-count-total castle >= 1)
+			(current-age >= castle-age)
+		)
+	)
+	(or	(goal G-ARMY-STRONG-PREPARED 1)
+		(nand	(goal G-STABLE-UNIT GV-KNIGHT)
+			(building-type-count stable >= 1)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if ; Not Aztecs
+#end-if ; Not Byzantines
+#end-if ; Not Celts
+#end-if ; Not Goths
+#end-if ; Not Huns
+#end-if ; Not Japanese
+#end-if ; Not Mayans
+#end-if ; Not Persians
+#end-if ; Not Vikings
+#end-if ; Not Turks
+
+
+
+; Aztecs generally prefers swordmen once they click imperial botton, but eagles can be more useful if the enemy has a lot of monks or archery units.
+#load-if-defined AZTEC-CIV
+(defrule
+	(or	(strategic-number G-THREAT-MONK >= 1)
+		(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-EAGLE)
+)
+#end-if
+
+#load-if-defined MAYAN-CIV
+(defrule
+	(or	(strategic-number G-THREAT-MONK >= 1)
+		(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-EAGLE)
+)
+#end-if
+
+#load-if-defined GOTHIC-CIV
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+	(research-completed RI-ANARCHY)
+=>
+	(set-goal G-BARRACK-UNIT GV-HUSKARL)
+)
+#end-if
+
+
+#load-if-not-defined TURKISH-CIV
+(defrule
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 1)
+	(strategic-number G-THREAT-MONK < 1)
+	(or	(current-age < castle-age)
+		(or	(building-type-count-total stable < 1)
+			(nor	(goal G-STABLE-UNIT GV-KNIGHT)
+				(goal G-STABLE-UNIT GV-CAMEL)
+			)
+		)
+	)
+	(unit-type-count-total spearman-line < 12)
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+
+(defrule
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 2)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 2)
+	(strategic-number G-THREAT-MONK < 2)
+	(or	(current-age < castle-age)
+		(or	(building-type-count-total stable < 1)
+			(nor	(goal G-STABLE-UNIT GV-KNIGHT)
+				(goal G-STABLE-UNIT GV-CAMEL)
+			)
+		)
+	)
+	(or	(unit-type-count-total spearman-line < 20)
+		(strategic-number G-THREAT-CAVALRY-GROUP >= 3)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+#else
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 1)
+	(strategic-number G-THREAT-MONK < 1)
+	(or	(current-age < castle-age)
+		(or	(building-type-count-total stable < 1)
+			(nor	(goal G-STABLE-UNIT GV-KNIGHT)
+				(goal G-STABLE-UNIT GV-CAMEL)
+			)
+		)
+	)
+	(unit-type-count-total spearman-line < 12)
+	(or	(current-age < castle-age)
+		(unit-type-count-total spearman-line < 8)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+
+(defrule
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 2)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 2)
+	(strategic-number G-THREAT-MONK < 2)
+	(or	(current-age < castle-age)
+		(or	(building-type-count-total stable < 1)
+			(nor	(goal G-STABLE-UNIT GV-KNIGHT)
+				(goal G-STABLE-UNIT GV-CAMEL)
+			)
+		)
+	)
+	(unit-type-count-total spearman-line < 20)
+	(or	(current-age < castle-age)
+		(unit-type-count-total spearman-line < 14)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+
+(defrule
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 3)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 3)
+	(strategic-number G-THREAT-MONK < 3)
+	(or	(current-age < castle-age)
+		(or	(building-type-count-total stable < 1)
+			(nor	(goal G-STABLE-UNIT GV-KNIGHT)
+				(goal G-STABLE-UNIT GV-CAMEL)
+			)
+		)
+	)
+	(or	(current-age < castle-age)
+		(unit-type-count-total spearman-line < 18)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+
+; If Turks face eagles and cavalry, they prefer counter eagles because they have good swords but bad spears.
+(defrule
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(strategic-number G-THREAT-MONK == 0)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 2)
+	(or	(goal G-ARMY-STRONG-PREPARED 1)
+		(nand	(goal G-STABLE-UNIT GV-KNIGHT)
+			(building-type-count stable >= 1)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+
+
+#load-if-defined GOTHIC-CIV
+(defrule
+	(current-age >= castle-age)
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(research-available ri-long-swordsman)
+	(not(can-research ri-long-swordsman))
+	(research-completed RI-ANARCHY)
+=>
+	(set-goal G-BARRACK-UNIT GV-HUSKARL)
+)
+#end-if
+
+#load-if-defined ITALIAN-CIV
+(defrule
+	(unit-available condottiero)
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(or	(research-available ri-plate-mail)
+		(or	(strategic-number G-THREAT-ARCHERY-GROUP >= 3)
+			(or	(players-unit-type-count any-enemy hand-cannoneer > 0)
+				(or	(players-unit-type-count any-enemy janissary-line > 0)
+					(players-unit-type-count any-enemy conquistador-line > 0)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-CONDOTTIERO)
+)
+#end-if
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(goal G-BARRACK-UNIT GV-NONE)
+	(or	(players-building-type-count any-enemy watch-tower >= 1)
+		(and	(players-unit-type-count any-enemy skirmisher-line >= 1)
+			(nor	(research-available ri-fletching)
+				(research-available ri-padded-archer-armor)
+			)
+		)
+	)
+
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+
+(defrule
+	(current-age == castle-age)
+	(goal G-BARRACK-UNIT GV-NONE)
+	(not (research-available ri-long-swordsman))
+	(players-unit-type-count any-enemy spearman-line > 5)
+	(players-unit-type-count any-enemy skirmisher-line > 5)
+	(strategic-number G-THREAT-MONK == 0)
+	(or	(goal G-ARMY-STRONG-PREPARED 1)
+		(or	(civ-selected celtic)
+			(or	(civ-selected japanese)
+				(civ-selected viking)
+			)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+
+
+
+
+; ARCHERY
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-CASTLE)
+	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+=>
+	(set-goal G-ARCHERY-UNIT GV-ARCHER)
+)
+
+; Chinese and Saracen cav archers are nice, and also their xbows
+#load-if-not-defined HUN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined SPANISH-CIV
+(defrule
+	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+	(current-age >= castle-age)
+	(not(research-available ri-crossbow))
+	(or	(current-age == castle-age)
+		(research-available ri-heavy-cavalry-archer)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-ARCHER)
+)
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(goal G-ARCHERY-UNIT GV-HAND-CANNON)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(strategic-number G-THREAT-HUSCARL == 0)
+	(or	(research-completed ri-heavy-cavalry-archer)
+		(or	(research-completed ri-sipahi)
+			(not(can-train hand-cannoneer))
+		)
+	)
+=>
+
+	(set-goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(goal G-ARCHERY-UNIT GV-HAND-CANNON)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(strategic-number G-THREAT-HUSCARL == 0)
+	(can-train arbalest)
+	(not(can-train hand-cannoneer))
+=>
+
+	(set-goal G-ARCHERY-UNIT GV-ARCHER)
+)
+
+
+; Mangudais are better than cav archers, so it's better to avoid spend resources in their upgrade and training
+#load-if-defined MONGOL-CIV
+(defrule
+	(current-age == imperial-age)
+	(building-type-count-total castle >= 1)
+	(research-available ri-heavy-cavalry-archer)
+	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+=>
+
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+)
+#end-if
+
+; Byzantines only need a weak excuse to train skirms because they have cheaper trash,
+; but other civs prefer avoid them because they can't upgrade them or have got other good ranged units.
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(goal G-ARCHERY-UNIT GV-ARCHER)
+	(unit-type-count-total skirmisher-line < 16)
+	(nand	(goal G-STABLE-UNIT GV-SCOUT)
+		(food-amount < 200)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#end-if
+
+#load-if-defined MONGOL-CIV
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(current-age <= feudal-age)
+	(goal G-ARCHERY-UNIT GV-ARCHER)
+	(unit-type-count-total skirmisher-line < 12)
+	(nand	(goal G-STABLE-UNIT GV-SCOUT)
+		(food-amount < 200)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#end-if
+
+#load-if-defined TURKISH-CIV
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(current-age <= feudal-age)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(unit-type-count-total skirmisher-line < 12)
+	(nand	(goal G-STABLE-UNIT GV-SCOUT)
+		(food-amount < 200)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#end-if
+
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined TURKISH-CIV
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(strategic-number G-THREAT-CAVALRY-GROUP < 2)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(unit-type-count-total skirmisher-line < 12)
+	(nand	(goal G-STABLE-UNIT GV-SCOUT)
+		(food-amount < 200)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+	(players-unit-type-count any-enemy eagle-warrior-line < 4)
+	(strategic-number G-THREAT-CAVALRY-GROUP < 3)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(nand	(goal G-STABLE-UNIT GV-SCOUT)
+		(food-amount < 200)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#end-if
+
+#load-if-defined TURKISH-CIV
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+	(players-unit-type-count any-enemy eagle-warrior-line < 4)
+	(strategic-number G-THREAT-CAVALRY-GROUP < 3)
+	(current-age <= feudal-age)
+	(unit-type-count-total skirmisher-line < 12)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(nand	(goal G-STABLE-UNIT GV-SCOUT)
+		(food-amount < 200)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#end-if
+
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined TURKISH-CIV
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+	(players-unit-type-count any-enemy eagle-warrior-line < 4)
+	(strategic-number G-THREAT-CAVALRY-GROUP < 3)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(unit-type-count-total skirmisher-line < 12)
+	(nand	(goal G-STABLE-UNIT GV-SCOUT)
+		(food-amount < 200)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-defined TURKISH-CIV
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 3)
+	(players-unit-type-count any-enemy eagle-warrior-line < 4)
+	(strategic-number G-THREAT-CAVALRY-GROUP < 3)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(unit-type-count-total skirmisher-line < 20)
+	(nand	(goal G-STABLE-UNIT GV-SCOUT)
+		(food-amount < 200)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#else
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 3)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(nand	(goal G-STABLE-UNIT GV-SCOUT)
+		(food-amount < 200)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#end-if
+
+; Arbalest are better all around units but hand cannon works better against infantry civs
+(defrule
+	(not(goal G-ARCHERY-UNIT GV-SKIRM))
+	(unit-available	hand-cannoneer)
+	(or	(players-civ any-enemy aztec)
+		(or	(players-civ any-enemy celtic)
+			(or	(players-civ any-enemy gothic)
+				(or	(players-civ any-enemy japanese)
+					(or	(players-civ any-enemy teutonic)
+						(players-civ any-enemy viking)
+					)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-HAND-CANNON)
+)
+
+
+
+
+
+; FASTER FLUSH
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-ARCHERY-UNIT GV-ARCHER)
+	(strategic-number G-THREAT-CAVALRY-GROUP < 2)
+	(players-unit-type-count any-enemy eagle-warrior-line < 2)
+	(or	(players-military-population any-enemy > 1)
+		(and	(not(goal G-TSA 1))
+			(enemy-buildings-in-town)
+		)
+	)
+	(food-amount > 155)
+	(gold-amount < 45)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(goal G-ARCHERY-UNIT GV-ARCHER)
+	(not(taunt-detected my-player-number TA-GOLD-MINING))
+	(research-available ri-man-at-arms)
+	(gold-amount < 65)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(current-age == feudal-age)
+	(goal G-BARRACK-UNIT GV-NONE)
+	(goal G-STABLE-UNIT GV-SCOUT)
+	(building-type-count-total stable == 0)
+	(not(research-available ri-man-at-arms))
+	(or	(players-military-population any-enemy > 1)
+		(and	(not(goal G-TSA 1))
+			(enemy-buildings-in-town)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(current-age == feudal-age)
+	(goal G-BARRACK-UNIT GV-NONE)
+	(goal G-STABLE-UNIT GV-SCOUT)
+	(building-type-count-total stable == 0)
+	(or	(players-military-population any-enemy > 1)
+		(and	(not(goal G-TSA 1))
+			(enemy-buildings-in-town)
+		)
+	)
+	(research-available ri-man-at-arms)
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+
+; We'll need extra power if enemy is much stronger or if he's forward building us
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(current-age < castle-age)
+	(goal G-BARRACK-UNIT GV-NONE)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+	(or	(research-available ri-man-at-arms)
+		(gold-amount < 20)
+	)
+	(or	(strategic-number G-MILITARY-SUPERIORITY <= -1)
+		(and	(not(goal G-TSA 1))
+			(enemy-buildings-in-town)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(current-age < castle-age)
+	(goal G-BARRACK-UNIT GV-NONE)
+	(nor	(research-available ri-man-at-arms)
+		(gold-amount < 20)
+	)
+	(or	(strategic-number G-MILITARY-SUPERIORITY <= -1)
+		(and	(not(goal G-TSA 1))
+			(enemy-buildings-in-town)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+; ECO BALANCE
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-ARCHERY-UNIT GV-ARCHER)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 2)
+	(food-amount > 800)
+	(gold-amount < 245)
+=>
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-ARCHERY-UNIT GV-ARCHER)
+	(food-amount > 800)
+	(gold-amount < 200)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-ARCHERY-UNIT GV-SKIRM)
+	(food-amount < 800)
+	(gold-amount > 200)
+=>
+	(set-goal G-ARCHERY-UNIT GV-ARCHER)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(food-amount < 880)
+	(gold-amount > 200)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(nand	(or	(goal G-TSA 0)
+			(goal G-TSA -1)
+		)
+		(town-under-attack)
+	)
+=>
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(food-amount < 860)
+	(gold-amount > 200)
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(nand	(or	(goal G-TSA 0)
+			(goal G-TSA -1)
+		)
+		(town-under-attack)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+)
+
+#load-if-defined BYZANTINE-CIV
+(defrule		
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(goal G-ARCHERY-UNIT GV-ARCHER)
+	(gold-amount < 45)
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#end-if
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-IMPERIAL)
+	(goal G-ARCHERY-UNIT GV-SKIRM)
+	(food-amount < 667)
+	(gold-amount > 400)
+	(or	(food-amount < 200)
+		(gold-amount > 567)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-RANGED-DEFAULT-CASTLE)
+)
+#else
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-IMPERIAL)
+	(goal G-ARCHERY-UNIT GV-SKIRM)
+	(food-amount < 1000)
+	(gold-amount > 400)
+	(or	(food-amount < 200)
+		(gold-amount > 800)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-RANGED-DEFAULT-CASTLE)
+)
+#end-if
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(food-amount > 1000)
+	(gold-amount < 800)
+	(goal G-BARRACK-UNIT GV-EAGLE)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+)
+
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(food-amount > 1200)
+	(gold-amount < 800)
+	(goal G-BARRACK-UNIT GV-EAGLE)
+=>
+	(set-goal G-BARRACK-UNIT GV-SWORD)
+)
+#end-if
+
+#load-if-defined MAYAN-CIV
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(food-amount > 1000)
+	(gold-amount < 800)
+	(goal G-BARRACK-UNIT GV-EAGLE)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+)
+
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(food-amount > 1200)
+	(gold-amount < 800)
+	(goal G-BARRACK-UNIT GV-EAGLE)
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+#end-if
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(food-amount > 667)
+	(gold-amount < 567)
+	(or	(goal G-ARCHERY-UNIT GV-ARCHER)
+		(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+)
+#else
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(food-amount > 1000)
+	(gold-amount < 800)
+	(or	(goal G-ARCHERY-UNIT GV-ARCHER)
+		(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+)
+#end-if
+
+#load-if-not-defined TURKISH-CIV
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(food-amount > 667)
+	(gold-amount < 567)
+	(or	(goal G-ARCHERY-UNIT GV-ARCHER)
+		(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#else
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(food-amount > 1000)
+	(gold-amount < 800)
+	(or	(goal G-ARCHERY-UNIT GV-ARCHER)
+		(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+#end-if
+#end-if
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(food-amount < 667)
+	(gold-amount > 567)
+	(goal G-ARCHERY-UNIT GV-SKIRM)
+=>
+	(set-goal G-ARCHERY-UNIT GV-RANGED-DEFAULT-CASTLE)
+)
+#else
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(food-amount < 1000)
+	(gold-amount > 800)
+	(goal G-ARCHERY-UNIT GV-SKIRM)
+=>
+	(set-goal G-ARCHERY-UNIT GV-RANGED-DEFAULT-CASTLE)
+)
+#end-if
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(food-amount > 667)
+	(gold-amount < 567)
+	(or	(goal G-STABLE-UNIT GV-KNIGHT)
+		(goal G-STABLE-UNIT GV-CAMEL)
+	)
+=>
+	(set-goal G-STABLE-UNIT GV-SCOUT)
+)
+#end-if
+
+#load-if-defined TEUTONIC-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(food-amount > 1000)
+	(gold-amount < 800)
+	(or	(goal G-STABLE-UNIT GV-KNIGHT)
+		(goal G-STABLE-UNIT GV-CAMEL)
+	)
+=>
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+#end-if
+
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined TEUTONIC-CIV
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(food-amount > 1000)
+	(gold-amount < 800)
+	(or	(goal G-STABLE-UNIT GV-KNIGHT)
+		(goal G-STABLE-UNIT GV-CAMEL)
+	)
+=>
+	(set-goal G-STABLE-UNIT GV-SCOUT)
+)
+#end-if
+#end-if
+
+
+
+; TRASH UNITS
+
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(food-amount > 1000)
+	(wood-amount > 160)
+	(gold-amount < 75) ; The cost of a ram
+	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+	(building-type-count-total town-center >= 1)
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+	(building-type-count-total university >= 1)
+	(building-type-count-total market >= 1)
+=>
+	(set-goal G-TRASH 1)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(building-type-count-total dock >= 1)
+	(goal G-NAVY-STRONG-PREPARED 0)
+	(wood-amount > 90)
+	(gold-amount < 150)
+	(or	(current-age == imperial-age)
+		(gold-amount < 150)
+	)
+=>
+	(set-goal G-TRASH 1)
+)
+
+#load-if-not-defined TURKISH-CIV
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(or	(food-amount > 200)
+		(wood-amount > 200)
+	)
+	(or	(and	(food-amount > 200)
+			(wood-amount > 200)
+		)
+		(or	(food-amount > TRASH-FOOD)
+			(or	(wood-amount > TRASH-WOOD)
+				(gold-amount < 100)
+			)
+		)
+	)
+	(gold-amount < TRASH-GOLD)
+	(goal G-ARMY-STRONG-PREPARED 0)
+=>
+	(set-goal G-TRASH 1)
+)
+#else
+(defrule
+	(current-age == imperial-age)
+	(or	(food-amount > 200)
+		(wood-amount > 200)
+	)
+	(or	(and	(food-amount > 200)
+			(wood-amount > 200)
+		)
+		(or	(food-amount > TRASH-FOOD)
+			(or	(wood-amount > TRASH-WOOD)
+				(gold-amount < 100)
+			)
+		)
+	)
+	(gold-amount < TRASH-GOLD)
+	(goal G-ARMY-STRONG-PREPARED 0)
+=>
+	(set-goal G-TRASH 1)
+)
+#end-if
+
+(defrule
+	(current-age >= castle-age)
+	(goal G-TRASH 1)
+	(not(goal G-BARRACK-UNIT GV-NONE))
+=>
+	(set-goal G-BARRACK-UNIT GV-SPEAR)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(goal G-TRASH 1)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+=>
+	(set-goal G-ARCHERY-UNIT GV-SKIRM)
+)
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined TEUTONIC-CIV
+(defrule
+	(current-age >= castle-age)
+	(goal G-TRASH 1)
+	(not(goal G-STABLE-UNIT GV-NONE))
+=>
+	(set-goal G-STABLE-UNIT GV-SCOUT)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+
+
+
+
+
+; CANCELLING INADEQUATE UNITS
+
+; Archers are horrible against eagles if they are not enough massed
+(defrule
+
+	(nand	(goal G-BARRACK-UNIT GV-NONE)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+	(not(goal G-ARCHERY-UNIT GV-HAND-CANNON))
+	(strategic-number G-THREAT-EAGLE > 0)
+	(strategic-number G-THREAT-ARCHERY-GROUP == 0)
+	(strategic-number G-THREAT-MONK == 0)
+	(nand	(players-unit-type-count any-enemy spearman-line > 0)
+		(nand	(goal G-UNIQUE-UNIT-TYPE GV-INFANTRY)
+			(unit-type-count-total my-unique-unit-line > 0)
+		)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+)
+
+; Archers are awful against huskies
+(defrule
+	(nand	(goal G-BARRACK-UNIT GV-NONE)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+	(not(goal G-ARCHERY-UNIT GV-HAND-CANNON))
+	(strategic-number G-THREAT-HUSCARL >= 1)
+	(strategic-number G-THREAT-ARCHERY-GROUP < 3)
+	(strategic-number G-THREAT-MONK < 3)
+	(nand	(players-unit-type-count any-enemy spearman-line > 5)
+		(nand	(goal G-UNIQUE-UNIT-TYPE GV-INFANTRY)
+			(unit-type-count-total my-unique-unit-line > 0)
+		)
+	)
+=>
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+)
+
+; Archers are bad against towers
+(defrule
+	(current-age <= castle-age)
+	(nand	(goal G-BARRACK-UNIT GV-NONE)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+	(players-building-type-count any-enemy watch-tower > 4)
+	(strategic-number G-THREAT-MONK == 0)
+	(goal G-ARMY-STRONG-PREPARED 0)	
+	(food-amount < 2000)
+	(wood-amount < 2000)
+	(gold-amount < 1000)
+=>
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+)
+
+
+; Stop m@a production if enemy wants to mush
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(nand	(players-unit-type-count any-enemy skirmisher-line > 0)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+	(or	(players-building-type-count any-enemy monastery >= 1)
+		(strategic-number G-THREAT-MONK >= 1)
+	)
+	(or	(strategic-number G-THREAT-EAGLE == 0)
+		(strategic-number G-THREAT-MONK >= 2)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+)
+
+; Scouts are weak against eagles
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-BARRACK-UNIT GV-SWORD)
+	(goal G-STABLE-UNIT GV-SCOUT)
+	(strategic-number G-THREAT-EAGLE > 0)
+	(strategic-number G-THREAT-MONK == 0)
+	(strategic-number G-THREAT-ARCHERY-GROUP == 0)
+=>
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+
+
+
+
+; STOPPING MILITARY TRAINING
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(food-amount < 2000)
+	(wood-amount < 2000)
+	(gold-amount < 1000)
+	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+#load-if-not-defined GOTHIC-CIV ; Goths can't wall, so it's too risky for them to stop military production
+(defrule
+	(current-age < castle-age)
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	(nor	(goal G-BOAT GV-NONE)
+		(enemy-buildings-in-town)
+	)
+	(building-type-count-total dock >= 1)
+	(or	(players-building-type-count any-enemy watch-tower == 0) ; Trushes are possible in mixed maps
+		(and	(players-building-type-count any-enemy stone-wall-line == 0)
+			(players-building-type-count any-enemy palisade-wall == 0)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+#end-if
+
+(defrule
+	(current-age < castle-age)
+	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+	(nor	(goal G-BOAT GV-NONE)
+		(enemy-buildings-in-town)
+	)
+	(building-type-count-total dock >= 1)
+	(or	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+		(players-unit-type-count any-enemy transport-ship == 0)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+
+
+
+
+
+
+; AGE ADVANCING
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(unit-type-count-total villager > 50)
+	(food-amount > 600)
+	(gold-amount > 150)
+	(military-population > 17)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(nand	(or	(goal G-TSA 0)
+			(goal G-TSA -1)
+		)
+		(town-under-attack)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(food-amount > 700)
+	(gold-amount > 175)
+	(or	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+		(and	(food-amount > 760)
+			(gold-amount > 190)
+		)
+	)
+	(or	(goal G-TSA 1)
+		(not(town-under-attack))
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(nor	(goal G-TSA 1)
+		(or	(town-under-attack)
+			(enemy-buildings-in-town)
+		)
+	)
+	(food-amount < 860)
+	(gold-amount > 200)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(nor	(goal G-TSA 1)
+		(or	(town-under-attack)
+			(enemy-buildings-in-town)
+		)
+	)
+	(goal G-ARCHERY-UNIT GV-SKIRM)
+	(food-amount < 860)
+	(gold-amount > 200)
+=>
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(nor	(goal G-TSA -1)
+		(or	(town-under-attack)
+			(enemy-buildings-in-town)
+		)
+	)
+	(food-amount > 800)
+	(gold-amount < 245)
+=>
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock > MIXED-MAP)
+	(or	(players-military-population every-enemy < 2)
+		(wall-completed-percentage 2 == 100)
+	)
+	(players-unit-type-count any-enemy transport-ship == 0)
+	(nor	(goal G-TSA 1)
+		(or	(town-under-attack)
+			(enemy-buildings-in-town)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(building-type-count-total barracks >= BARRACKS-LATE-CASTLE)
+	(building-type-count-total archery-range >= ARCHERIES-LATE-CASTLE)
+	(building-type-count-total stable >= STABLES-LATE-CASTLE)
+	(building-type-count-total monastery >= 1)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	;(building-type-count-total siege-workshop >= 1)
+	;(military-population > 50)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(nor	(goal G-TSA -1)
+		(or	(enemy-buildings-in-town)
+			(town-under-attack)
+		)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+
+#load-if-not-defined BYZANTINE-CIV
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(research-available imperial-age)
+	(food-amount > 800)
+	(gold-amount > 640)
+	(military-population > 50)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(not(goal G-TSA 1))
+	(nand	(goal G-TSA 0)
+		(town-under-attack)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+#else
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(research-available imperial-age)
+	(food-amount > 600)
+	(gold-amount > 550)
+	(military-population > 50)
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(not(goal G-TSA 1))
+	(nand	(goal G-TSA 0)
+		(town-under-attack)
+	)
+=>
+	(set-goal G-BARRACK-UNIT GV-NONE)
+	(set-goal G-ARCHERY-UNIT GV-NONE)
+	(set-goal G-STABLE-UNIT GV-NONE)
+)
+#end-if
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+; Onagers? Scorps?
+
+(defrule
+	(true)
+=>
+	(set-goal G-WORKSHOP GV-NONE)
+)
+
+(defrule
+	(goal G-SIEGE-UNIT GV-RAM)
+=>
+	(set-goal G-WORKSHOP GV-RAM)
+)
+
+(defrule
+	(goal G-SIEGE-UNIT GV-BOMBARD-CANNON)
+=>
+	(set-goal G-WORKSHOP GV-BOMBARD-CANNON)
+)
+
+#load-if-not-defined KOREAN-CIV
+(defrule
+	(goal G-TRASH 0)
+	(goal G-WORKSHOP GV-NONE)
+	;(current-age == castle-age)
+	(or	(strategic-number G-THREAT-MONK >= 3)
+		(and	(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+			(or	(unit-type-count-total mangonel-line < 1)
+				(strategic-number G-THREAT-ARCHERY-GROUP >= 3)
+			)
+		)
+	)
+=>
+	(set-goal G-WORKSHOP GV-ONAGER)
+)
+#else
+(defrule
+	(goal G-TRASH 0)
+	(goal G-WORKSHOP GV-NONE)
+	(or	(strategic-number G-THREAT-MONK >= 2)
+		(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+	)
+=>
+	(set-goal G-WORKSHOP GV-ONAGER)
+)
+#end-if
+
+; Attack walled enemies with massed onagers it's a bad idea for AIs, because our melee units could be destroyed by them
+(defrule
+	(goal G-WORKSHOP GV-ONAGER)
+	(or	(or	(goal G-TSA 1)
+			(enemy-buildings-in-town)
+		)
+		(and	(and	(unit-type-count-total mangonel-line >= 1)
+				(strategic-number G-NUMERICAL-WEAKER-ENEMY >= 0)
+			)
+			(and	(players-building-type-count any-enemy stone-wall-line >= 1)
+				(players-building-type-count any-enemy palisade-wall >= 1)
+			)
+		)
+	)
+=>
+	(set-goal G-WORKSHOP GV-NONE)
+)
+
+(defrule
+	(goal G-TRASH 0)
+	(goal G-WORKSHOP GV-NONE)
+	(current-age == castle-age)
+	(or	(strategic-number G-THREAT-MONK >= 3)
+		(strategic-number G-THREAT-ARCHERY-GROUP >= 3)
+	)
+	(nand	(goal G-ARCHERY-UNIT GV-SKIRM)
+		(and	(research-available ri-elite-skirmisher)
+			(unit-type-count-total skirmisher-line >= 12)
+		)
+	)
+	(nand	(building-type-count university >= 1)
+		(research-available ri-ballistics)
+	)
+=>
+	(set-goal G-WORKSHOP GV-SCORPION)
+)
+
+#load-if-defined CELTIC-CIV
+(defrule
+	(goal G-TRASH 0)
+	(goal G-WORKSHOP GV-NONE)
+=>
+	(set-goal G-WORKSHOP GV-SCORPION)
+)
+#end-if
+
+#load-if-defined SLAVIC-CIV
+(defrule
+	(goal G-TRASH 0)
+	(goal G-WORKSHOP GV-NONE)
+=>
+	(set-goal G-WORKSHOP GV-SCORPION)
+)
+#end-if
+
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined SLAVIC-CIV
+(defrule
+	(goal G-TRASH 0)
+	(goal G-WORKSHOP GV-NONE)
+	(strategic-number G-THREAT-HUSCARL >= 1)
+=>
+	(set-goal G-WORKSHOP GV-SCORPION)
+)
+
+(defrule
+	(goal G-TRASH 0)
+	(goal G-WORKSHOP GV-NONE)
+	(current-age == castle-age)
+	(wood-amount > 200)
+	(gold-amount > 225)
+	(goal G-ARCHERY-UNIT GV-SKIRM)
+	(nand	(building-type-count university >= 1)
+		(research-available ri-ballistics)
+	)
+=>
+	(set-goal G-WORKSHOP GV-SCORPION)
+)
+
+(defrule
+	(goal G-TRASH 0)
+	(goal G-WORKSHOP GV-NONE)
+	(current-age == imperial-age)
+	(wood-amount > 200)
+	(gold-amount > 225)
+	;(goal G-ARMY-STRONG-PREPARED 1)
+	(research-completed ri-heavy-scorpion)
+	(or	(goal G-ARCHERY-UNIT GV-SKIRM)
+		(research-completed ri-siege-engineers)
+	)
+	(nand	(building-type-count university >= 1)
+		(or	(research-available ri-ballistics)
+			(research-available ri-siege-engineers)
+		)
+	)
+=>
+	(set-goal G-WORKSHOP GV-SCORPION)
+)
+
+(defrule
+	(goal G-TRASH 0)
+	(goal G-WORKSHOP GV-NONE)
+	(current-age == imperial-age)
+	(or	(civ-selected chinese)
+		(civ-selected mongol)
+	)
+	(wood-amount > 200)
+	(gold-amount > 225)
+	(nand	(research-available ri-heavy-scorpion)
+		(research-available my-unique-research)
+	)
+	(nand	(building-type-count university >= 1)
+		(research-available ri-ballistics)
+	)
+=>
+	(set-goal G-WORKSHOP GV-SCORPION)
+)
+#end-if
+#end-if
+
+(defrule
+	(or	(building-type-count siege-workshop == 0)
+		(current-age < castle-age)
+	)
+=>
+	(set-goal G-WORKSHOP GV-NONE)
+)
+
+
+
+; Navy selection
+(defrule
+	(true)
+=>
+	(set-goal G-BOAT GV-NONE)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(unit-available galley-line)
+	(gold-amount >= 24)
+	(or	(gold-amount >= 30)
+		(civ-selected viking)
+	)
+=>
+	(set-goal G-BOAT GV-GALLEY)
+)
+
+#load-if-not-defined VIKING-CIV
+#load-if-not-defined BYZANTINE-CIV
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(unit-available fire-ship-line)
+	(players-building-type-count any-enemy dock >= 1) ; I prefer my own galleys to counter enemy monks converting my navy
+	(or	(unit-type-count-total fire-ship-line < 3)
+		(or	(players-unit-type-count any-enemy galley-line >= 1)
+			(or	(players-unit-type-count any-enemy fire-ship-line >= 1)
+				(players-unit-type-count any-enemy longboat-line >= 1)
+			)
+		)
+	)
+	(unit-type-count-total fire-ship-line < 20)
+=>
+	(set-goal G-BOAT GV-FIRE-SHIP)
+)
+#else ; Byzantines
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(unit-available fire-ship-line)
+	(or	(unit-type-count-total fire-ship-line < 3)
+		(or	(players-unit-type-count any-enemy galley-line >= 1)
+			(or	(players-unit-type-count any-enemy fire-ship-line >= 1)
+				(players-unit-type-count any-enemy longboat-line >= 1)
+			)
+		)
+	)
+	(players-building-type-count any-enemy dock >= 1) ; I prefer my own galleys to counter enemy monks converting my navy
+	(unit-type-count-total fire-ship-line < 30)
+=>
+	(set-goal G-BOAT GV-FIRE-SHIP)
+)
+#end-if
+#end-if
+
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(unit-available demolition-ship-line)
+	(players-unit-type-count every-enemy galley-line < 2)
+	(players-unit-type-count every-enemy longboat-line < 2)
+	(players-unit-type-count any-enemy fire-ship-line >= 4)
+	(or
+		(unit-type-count fire-ship-line < 4)
+		(players-unit-type-count any-enemy fire-ship-line >= 5)
+	)
+	(or
+		(unit-type-count fire-ship-line < 5)
+		(players-unit-type-count any-enemy fire-ship-line >= 6)
+	)
+	(or
+		(unit-type-count fire-ship-line < 6)
+		(players-unit-type-count any-enemy fire-ship-line >= 7)
+	)
+	(unit-type-count fire-ship-line < 6)
+=>
+	(set-goal G-BOAT GV-DEMOLITION-SHIP)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(unit-available demolition-ship-line)
+	(players-unit-type-count every-enemy galley-line < 2)
+	(players-unit-type-count every-enemy longboat-line < 2)
+	(players-unit-type-count any-enemy fire-ship-line >= 9)
+	(or
+		(unit-type-count fire-ship-line < 7)
+		(players-unit-type-count any-enemy fire-ship-line >= 9)
+	)
+	(or
+		(unit-type-count fire-ship-line < 9)
+		(players-unit-type-count any-enemy fire-ship-line >= 11)
+	)
+	(or
+		(unit-type-count fire-ship-line < 11)
+		(players-unit-type-count any-enemy fire-ship-line >= 13)
+	)
+	(unit-type-count fire-ship-line < 11)
+=>
+	(set-goal G-BOAT GV-DEMOLITION-SHIP)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(unit-available demolition-ship-line)
+	(players-unit-type-count every-enemy galley-line < 2)
+	(players-unit-type-count every-enemy longboat-line < 2)
+	(players-unit-type-count any-enemy fire-ship-line >= 16)
+	(or
+		(unit-type-count fire-ship-line < 13)
+		(players-unit-type-count any-enemy fire-ship-line >= 16)
+	)
+	(or
+		(unit-type-count fire-ship-line < 16)
+		(players-unit-type-count any-enemy fire-ship-line >= 19)
+	)
+	(or
+		(unit-type-count fire-ship-line < 19)
+		(players-unit-type-count any-enemy fire-ship-line >= 23)
+	)
+	(unit-type-count fire-ship-line < 19)
+=>
+	(set-goal G-BOAT GV-DEMOLITION-SHIP)
+)
+
+#load-if-defined KOREAN-CIV
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(current-age >= castle-age)
+	(unit-available turtle-ship-line)
+	(can-train turtle-ship-line)
+=>
+	(set-goal G-BOAT GV-TURTLE-SHIP)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(unit-available cannon-galleon-line)
+	(warboat-count >= 5)
+	(or	(goal G-NAVAL-SUPERIORITY 1)
+		(or	(warboat-count >= TWENTY-PERCENT-POP)
+			(population >= SUB-TOP-POPULATION)
+		)
+	)
+	;(or	(players-building-type-count any-enemy castle >= 1)
+	;	(or	(players-building-type-count any-enemy watch-tower >= 1)
+	;		(players-building-type-count any-enemy bombard-tower >= 1)
+	;	)
+	;)
+=>
+	(set-goal G-BOAT GV-CANNON-GALLEON)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+	(goal G-TRADE GV-TRADE-WATER)
+	(nand	(goal G-BOAT GV-CANNON-GALLEON)
+		(unit-type-count-total cannon-galleon-line < 3)
+	)
+	(warboat-count >= 5)
+	(goal G-NAVAL-SUPERIORITY 1)
+	(players-unit-type-count any-enemy galley-line == 0)
+	(players-unit-type-count any-enemy fire-ship-line == 0)
+	(players-unit-type-count any-enemy demolition-ship-line == 0)
+	(players-unit-type-count any-enemy cannon-galleon-line == 0)
+	(players-unit-type-count any-enemy longboat-line == 0)
+	(players-unit-type-count any-enemy turtle-ship-line == 0)
+	(unit-type-count-total trade-cog < MAX-TRADE-CARTS)
+=>
+	(set-goal G-BOAT GV-TRADE-COG)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(or	(goal G-BOAT GV-NONE)
+		(nand	(gold-amount >= 24)
+			(or	(gold-amount >= 30)
+				(civ-selected viking)
+			)
+		)
+	)
+	(population < EIGHTY-PERCENT-POP)
+	(or	(cc-players-unit-type-count 0 SHORE-FISH-GROUP >= 1)
+		(cc-players-unit-type-count 0 FISHING-GROUNDS-GROUP >= 1)
+	)
+	(unit-type-count-total fishing-ship < TEN-PERCENT-POP)
+=>
+	(set-goal G-BOAT GV-FISHING-SHIP)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+	(unit-available transport-ship)
+	(or	(or	(population > SUB-TOP-POPULATION)
+			(goal G-TSA 1)
+		)
+		(or	(warboat-count > FORTY-PERCENT-POP)
+			(population > EIGHTY-PERCENT-POP)
+		)
+	)
+	(unit-type-count-total transport-ship < 3)
+=>
+	(set-goal G-BOAT GV-TRANSPORT-SHIP)
+)
+
+(defrule
+	(nand	(goal G-BOAT GV-CANNON-GALLEON)
+		(unit-type-count-total cannon-galleon-line < 3)
+	)
+	(nand	(goal G-BOAT GV-FISHING-SHIP)
+		(unit-type-count-total fishing-ship < TEN-PERCENT-POP)
+	)
+	(nor	(goal G-BOAT GV-TRANSPORT-SHIP)
+		(goal G-BOAT GV-TRADE-COG)
+	)
+	(warboat-count > 5)
+	(warboat-count > FIVE-PERCENT-POP)
+	(or	(warboat-count > TWENTY-TWO-PERCENT-POP)
+		(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	)
+=>
+	(set-goal G-JOLLYGOAL dock)
+)
+
+(defrule
+	(goal G-JOLLYGOAL dock)
+	(or	(population > EIGHTY-PERCENT-POP)
+		(nor	(warboat-count <= THIRTY-PERCENT-POP)
+			(goal G-BOAT GV-FISHING-SHIP)
+		)		
+	)
+=>
+	(set-goal G-BOAT GV-NONE)
+)
+
+(defrule
+	(goal G-JOLLYGOAL dock)
+	(players-unit-type-count any-enemy galley-line == 0)
+	(players-unit-type-count any-enemy fire-ship-line == 0)
+	(players-unit-type-count any-enemy demolition-ship-line == 0)
+	(players-unit-type-count any-enemy cannon-galleon-line == 0)
+	(players-unit-type-count any-enemy longboat-line == 0)
+	(players-unit-type-count any-enemy turtle-ship-line == 0)
+=>
+	(set-goal G-BOAT GV-NONE)
+)

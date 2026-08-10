@@ -1,0 +1,697 @@
+#load-if-defined DEATH-MATCH
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(goal G-BOAT GV-NONE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 28)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-goal G-GATHER-LEVEL-WOOD 0)
+	(set-goal G-GATHER-LEVEL-STONE 1)
+	(set-goal G-JOLLYGOAL 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(not(goal G-BOAT GV-NONE))
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 41)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-goal G-GATHER-LEVEL-WOOD 0)
+	(set-goal G-GATHER-LEVEL-STONE 1)
+	(set-goal G-JOLLYGOAL 0)
+)
+
+#else ; Not DM
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(goal G-BOAT GV-NONE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 29)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-goal G-GATHER-LEVEL-WOOD 2)
+	(set-goal G-GATHER-LEVEL-STONE 0)
+	(set-goal G-JOLLYGOAL 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(not(goal G-BOAT GV-NONE))
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-goal G-GATHER-LEVEL-WOOD 2)
+	(set-goal G-GATHER-LEVEL-STONE 0)
+	(set-goal G-JOLLYGOAL 0)
+)
+
+
+
+; SETTING WOOD AND STONE
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(or	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+		(goal G-BARRACK-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+		(goal G-ARCHERY-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+=>
+	(set-goal G-JOLLYGOAL 1)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(or	(building-type-count-total barracks >= 1)
+		(goal G-BARRACK-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total archery-range >= 1)
+		(goal G-ARCHERY-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total stable >= 1)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+=>
+	(set-goal G-JOLLYGOAL 1)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	;(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-JOLLYGOAL 1)
+	(nand	(building-type-count-total market == 0)
+		(and	(player-in-game any-ally)
+			(players-building-type-count market any-ally >= 1)
+		)
+	)
+	(building-type-count-total monastery >= 1)
+	;(building-type-count-total siege-workshop >= 1)
+	(dropsite-min-distance stone <= BUILDING-DROP-DISTANCE)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 0)
+	(set-goal G-GATHER-LEVEL-STONE 2)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	;(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-STONE 2)
+	(building-type-count castle >= 1)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 1)
+	(set-goal G-GATHER-LEVEL-STONE 1)
+)
+
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	;(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-WOOD 1)
+	(goal G-JOLLYGOAL 1)
+	(building-type-count-total market >= 1)
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+	(building-type-count-total university >= 1)
+	;(goal G-WORKSHOP GV-NONE)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	;(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-WOOD 0)
+	(building-type-count-total town-center < 3)
+	(building-type-count castle >= 1)
+	(stone-amount >= 100)
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+	(goal G-UNIQUE-UNIT-TYPE GV-ARCHERY)
+	(not(goal G-WORKSHOP GV-NONE))
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 1)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-WOOD 0)
+	(building-type-count castle >= 1)
+	(wood-amount < TRASH-WOOD)
+	(food-amount > TRASH-FOOD+200)
+	(wood-amount > TRASH-GOLD+200)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 1)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-WOOD 1)
+	(wood-amount > TRASH-WOOD+200)
+	(food-amount < TRASH-FOOD-200)
+	(wood-amount < TRASH-GOLD-200)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(current-age == feudal-age)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(or	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+		(goal G-BARRACK-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+		(goal G-ARCHERY-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 0)
+	(set-goal G-GATHER-LEVEL-STONE 0)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(current-age == feudal-age)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(or	(building-type-count-total barracks >= 1)
+		(goal G-BARRACK-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total archery-range >= 1)
+		(goal G-ARCHERY-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total stable >= 1)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 0)
+	(set-goal G-GATHER-LEVEL-STONE 0)
+)
+#end-if
+
+
+
+
+; SETTING FOOD AND GOLD
+
+
+; -1
+;200 150 500 700
+; 0
+;300 200 800 750
+;400 250 850 700
+; +1
+;350 100 800 500
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 0)
+	(food-amount < 500)
+	(gold-amount > 150)
+	(or	(food-amount < 200)
+		(gold-amount > 700)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD -1)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 0)
+	(food-amount > 350)
+	(gold-amount < 500)
+	(or	(food-amount > 800)
+		(gold-amount < 100)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 1)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD -1)
+	(food-amount > 300)
+	(gold-amount < 750)
+	(or	(food-amount > 800)
+		(gold-amount < 200)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 1)
+	(food-amount < 850)
+	(gold-amount > 250)
+	(or	(food-amount < 400)
+		(gold-amount > 700)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 1)
+	(food-amount > 350)
+	(gold-amount < 500)
+	(or	(food-amount > 800)
+		(gold-amount < 100)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 2)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 2)
+	(food-amount < 850)
+	(gold-amount > 250)
+	(or	(food-amount < 400)
+		(gold-amount > 700)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 1)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+
+; -1
+;200 150 F-2 G+2
+; 0
+;550 200 F G
+;500 400 F G
+; +1
+;400 200 F+2 G-2
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-GOLD 0)
+	(food-amount < TRASH-FOOD-200)
+	(gold-amount > 150)
+	(or	(food-amount < 200)
+		(gold-amount > TRASH-GOLD+200)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD -1)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-GOLD 0)
+	(food-amount > 400)
+	(gold-amount < TRASH-GOLD-200)
+	(or	(food-amount > TRASH-FOOD+200)
+		(gold-amount < 200)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 1)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-GOLD -1)
+	(food-amount > 550)
+	(gold-amount < TRASH-GOLD)
+	(or	(food-amount > TRASH-FOOD)
+		(gold-amount < 200)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-GOLD 1)
+	(food-amount < TRASH-FOOD)
+	(gold-amount > 400)
+	(or	(food-amount < 500)
+		(gold-amount > TRASH-GOLD)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-GOLD 1)
+	(food-amount > 550)
+	(gold-amount < TRASH-GOLD)
+	(or	(food-amount > TRASH-FOOD)
+		(gold-amount < 200)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 2)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(goal G-GATHER-LEVEL-GOLD 2)
+	(food-amount < TRASH-FOOD)
+	(gold-amount > 400)
+	(or	(food-amount < 500)
+		(gold-amount > TRASH-GOLD)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 1)
+	(enable-timer T-VILLAGER-FOOD-GOLD 5) ; More than two secons to avoid this goal changed in the same scan cicle
+)
+
+
+#load-if-defined DARK-AGE-START
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+	(disable-self)
+)
+#end-if
+
+#load-if-defined FEUDAL-AGE-START
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+	(disable-self)
+)
+#end-if
+
+#load-if-defined CASTLE-AGE-START
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+	(disable-self)
+)
+#end-if
+
+#load-if-defined IMPERIAL-AGE-START
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+	(disable-self)
+)
+#end-if
+
+;Post Imperial and Defend the Wonder
+#load-if-not-defined DARK-AGE-START
+#load-if-not-defined FEUDAL-AGE-START
+#load-if-not-defined CASTLE-AGE-START
+#load-if-not-defined IMPERIAL-AGE-START
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-goal G-GATHER-LEVEL-GOLD 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(goal G-BOAT GV-NONE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD -1)
+	(nand	(strategic-number sn-food-gatherer-percentage == FOOD-HIGH)
+		(strategic-number sn-gold-gatherer-percentage == GOLD-LOW)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage FOOD-HIGH)
+	(set-strategic-number sn-gold-gatherer-percentage GOLD-LOW)
+	(chat-to-player my-player-number "High Food - Low Gold")
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(goal G-BOAT GV-NONE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 0)
+	(nand	(strategic-number sn-food-gatherer-percentage == FOOD-AVERAGE)
+		(strategic-number sn-gold-gatherer-percentage == GOLD-AVERAGE)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage FOOD-AVERAGE)
+	(set-strategic-number sn-gold-gatherer-percentage GOLD-AVERAGE)
+	(chat-to-player my-player-number "Average Food - Average Gold")
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(goal G-BOAT GV-NONE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 1)
+	(nand	(strategic-number sn-food-gatherer-percentage == FOOD-LOW)
+		(strategic-number sn-gold-gatherer-percentage == GOLD-HIGH)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage FOOD-LOW)
+	(set-strategic-number sn-gold-gatherer-percentage GOLD-HIGH)
+	(chat-to-player my-player-number "Low Food - High Gold")
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(goal G-BOAT GV-NONE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 2)
+	(nand	(strategic-number sn-food-gatherer-percentage == FOOD-VERY-LOW)
+		(strategic-number sn-gold-gatherer-percentage == GOLD-VERY-HIGH)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage FOOD-VERY-LOW)
+	(set-strategic-number sn-gold-gatherer-percentage GOLD-VERY-HIGH)
+	(chat-to-player my-player-number "Very Low Food - Very High Gold")
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(not(goal G-BOAT GV-NONE))
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD -1)
+	(nand	(strategic-number sn-food-gatherer-percentage == FOOD-HIGH-AMPHIBIAN)
+		(strategic-number sn-gold-gatherer-percentage == GOLD-LOW-AMPHIBIAN)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage FOOD-HIGH-AMPHIBIAN)
+	(set-strategic-number sn-gold-gatherer-percentage GOLD-LOW-AMPHIBIAN)
+	(chat-to-player my-player-number "High Food - Low Gold")
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(not(goal G-BOAT GV-NONE))
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 0)
+	(nand	(strategic-number sn-food-gatherer-percentage == FOOD-AVERAGE-AMPHIBIAN)
+		(strategic-number sn-gold-gatherer-percentage == GOLD-AVERAGE-AMPHIBIAN)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage FOOD-AVERAGE-AMPHIBIAN)
+	(set-strategic-number sn-gold-gatherer-percentage GOLD-AVERAGE-AMPHIBIAN)
+	(chat-to-player my-player-number "Average Food - Average Gold")
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(not(goal G-BOAT GV-NONE))
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 1)
+	(nand	(strategic-number sn-food-gatherer-percentage == FOOD-LOW-AMPHIBIAN)
+		(strategic-number sn-gold-gatherer-percentage == GOLD-HIGH-AMPHIBIAN)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage FOOD-LOW-AMPHIBIAN)
+	(set-strategic-number sn-gold-gatherer-percentage GOLD-HIGH-AMPHIBIAN)
+	(chat-to-player my-player-number "Low Food - High Gold")
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(not(goal G-BOAT GV-NONE))
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(goal G-GATHER-LEVEL-GOLD 2)
+	(nand	(strategic-number sn-food-gatherer-percentage == FOOD-VERY-LOW-AMPHIBIAN)
+		(strategic-number sn-gold-gatherer-percentage == GOLD-VERY-HIGH-AMPHIBIAN)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage FOOD-VERY-LOW-AMPHIBIAN)
+	(set-strategic-number sn-gold-gatherer-percentage GOLD-VERY-HIGH-AMPHIBIAN)
+	(chat-to-player my-player-number "Very Low Food - Very High Gold")
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+)
+
+
+; Modifying gatherer percentages to better eco balance
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-WOOD-STONE)
+	(goal G-GATHER-LEVEL-WOOD 0)
+	(goal G-GATHER-LEVEL-STONE 0)
+=>
+	(enable-timer T-VILLAGER-WOOD-STONE 90)
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 5)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 2)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 6)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+	(chat-to-player my-player-number "Average wood - Average Stone")
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-WOOD-STONE)
+	(goal G-GATHER-LEVEL-WOOD 2)
+=>
+	(enable-timer T-VILLAGER-WOOD-STONE 90)
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 13)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+	(chat-to-player my-player-number "High Wood - No Stone")
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-WOOD-STONE)
+	(not(goal G-GATHER-LEVEL-WOOD 2))
+	(goal G-GATHER-LEVEL-STONE 2)
+=>
+	(enable-timer T-VILLAGER-WOOD-STONE 90)
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 1)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 1)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 11)
+	(chat-to-player my-player-number "Low Wood - High Stone")
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-WOOD-STONE)
+	(goal G-GATHER-LEVEL-WOOD 1)
+	(goal G-GATHER-LEVEL-STONE 1)
+=>
+	(enable-timer T-VILLAGER-WOOD-STONE 90)
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 3)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 2)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 4)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 4)
+	(chat-to-player my-player-number "Average wood - Average Stone")
+)
+
+#load-if-not-defined DEATH-MATCH
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-WOOD-STONE)
+	(goal G-GATHER-LEVEL-WOOD 0)
+	(goal G-GATHER-LEVEL-STONE 1)
+=>
+	(enable-timer T-VILLAGER-WOOD-STONE 90)
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 5)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 5)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 3)
+	(chat-to-player my-player-number "Low Wood - High Stone")
+)
+#else
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(timer-triggered T-VILLAGER-WOOD-STONE)
+	(goal G-GATHER-LEVEL-WOOD 0)
+	(goal G-GATHER-LEVEL-STONE 1)
+=>
+	(enable-timer T-VILLAGER-WOOD-STONE 90)
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 9)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 5)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 2)
+	(chat-to-player my-player-number "Low Wood - High Stone")
+)
+#end-if

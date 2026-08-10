@@ -1,0 +1,19 @@
+;Resign file used for all AI Ladder AIs
+
+;(defrule
+;	(game-time > 7200)     ; 2 hours
+;=>
+;	(resign)
+;)
+
+(defrule
+	(building-type-count-total town-center == 0)
+	(building-type-count-total castle == 0)
+	(unit-type-count-total villager < 2)
+	(not(can-train villager))
+	(or	(population < 2)
+		(and	(military-population < 4)
+			(unit-type-count monk < 2)))
+=>
+	(resign)
+)

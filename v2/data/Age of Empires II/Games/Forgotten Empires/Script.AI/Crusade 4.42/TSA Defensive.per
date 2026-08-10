@@ -1,0 +1,147 @@
+; DEFENSIVE TSA
+
+;	Decreasing town-size to atract enemy troops to town center fire
+;
+;(defconst T-TSA-RETREAT 4)
+;(defconst TV-DEFENSIVE-TSA 30)
+;(defconst TV-TOWN-UNDER-ATTACK 30)
+
+(defrule
+	;(strategic-number G-MILITARY-SUPERIORITY <= -1)
+	(town-under-attack)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(goal G-TSA 0)
+=>
+	;(set-goal G-TSA -1)
+	(enable-timer T-TSA-RETREAT TV-TOWN-UNDER-ATTACK)
+	;(chat-to-player my-player-number "Town under attack. Starting Defensive TSA")
+)
+
+(defrule
+	(strategic-number sn-maximum-town-size < 40)
+	(town-under-attack)
+	(timer-triggered T-TSA-RETREAT)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-MILITARY-SUPERIORITY <= 0)
+	(goal G-TSA 0)
+=>
+	(set-goal G-TSA -1)
+	(set-strategic-number sn-maximum-town-size 2)
+	(enable-timer T-TSA-RETREAT TV-DEFENSIVE-TSA)
+	(chat-to-player my-player-number "Town under attack. Starting Defensive TSA")
+)
+
+(defrule
+	(nand	(town-under-attack)
+		(strategic-number G-MILITARY-SUPERIORITY <= 0)
+	)
+	(goal G-TSA -1)
+=>
+	(set-goal G-TSA 0)
+	(disable-timer T-TSA-RETREAT)
+	;(set-strategic-number sn-maximum-town-size 8)
+	(chat-to-player my-player-number "Stopping Defensive TSA")
+)
+
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 35)
+	(strategic-number sn-maximum-town-size < 40)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 40)
+	(chat-to-player my-player-number "Defensive TSA: TS 40")
+)
+
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 30)
+	(strategic-number sn-maximum-town-size < 35)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 35)
+	(chat-to-player my-player-number "Defensive TSA: TS 35")
+)
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 26)
+	(strategic-number sn-maximum-town-size < 30)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 30)
+	(chat-to-player my-player-number "Defensive TSA: TS 30")
+)
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 23)
+	(strategic-number sn-maximum-town-size < 26)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 26)
+	(chat-to-player my-player-number "Defensive TSA: TS 26")
+)
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 20)
+	(strategic-number sn-maximum-town-size < 23)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 23)
+	(chat-to-player my-player-number "Defensive TSA: TS 23")
+)
+
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 17)
+	(strategic-number sn-maximum-town-size < 20)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 20)
+	(chat-to-player my-player-number "Defensive TSA: TS 20")
+)
+
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 14)
+	(strategic-number sn-maximum-town-size < 17)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 17)
+	(chat-to-player my-player-number "Defensive TSA: TS 17")
+)
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 11)
+	(strategic-number sn-maximum-town-size < 14)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 14)
+	(chat-to-player my-player-number "Defensive TSA: TS 14")
+)
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 8)
+	(strategic-number sn-maximum-town-size < 11)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 11)
+	(chat-to-player my-player-number "Defensive TSA: TS 11")
+)
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 5)
+	(strategic-number sn-maximum-town-size <= 8)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 8)
+	(chat-to-player my-player-number "Defensive TSA: TS 8")
+)
+
+(defrule
+	(strategic-number sn-maximum-town-size >= 2)
+	(strategic-number sn-maximum-town-size < 5)
+	(goal G-TSA -1)
+=>
+	(set-strategic-number sn-maximum-town-size 5)
+	(chat-to-player my-player-number "Defensive TSA: TS 5")
+)

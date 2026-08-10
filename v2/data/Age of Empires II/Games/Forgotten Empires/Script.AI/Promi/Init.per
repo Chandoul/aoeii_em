@@ -1,0 +1,1999 @@
+;======================================================================
+; Strategic-numbers, goals, etc.
+;======================================================================
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-attack-intelligence 1)
+	(set-strategic-number sn-attack-separation-time-randomness 0)
+	(set-strategic-number sn-attack-winning-player 1)
+	(set-strategic-number sn-attack-winning-player-factor 1)
+	(set-strategic-number sn-attack-group-size-randomness 0)
+	(set-strategic-number sn-attack-group-gather-spacing 5)
+	(set-strategic-number sn-gather-defense-units 1)
+	(set-strategic-number sn-gather-idle-soldiers-at-center 0)
+	(set-strategic-number sn-consecutive-idle-unit-limit 0)
+	(set-strategic-number sn-garrison-rams 0)
+	(set-strategic-number sn-ignore-attack-group-under-attack 0)
+	(set-strategic-number sn-initial-attack-delay 0)
+	(set-strategic-number sn-initial-attack-delay-type 0)
+	(set-strategic-number sn-task-ungrouped-soldiers 0)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-enemy-sighted-response-distance 10)
+	(set-strategic-number sn-percent-attack-soldiers 0)
+	(set-strategic-number sn-percent-attack-boats 0)
+	(set-strategic-number sn-number-defend-groups 0)
+	(set-strategic-number sn-number-attack-groups 0)
+	(set-strategic-number sn-minimum-defend-group-size 1)
+	(set-strategic-number sn-maximum-defend-group-size 1)
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 1)
+	(set-strategic-number sn-percent-enemy-sighted-response 100)
+	(set-strategic-number sn-group-form-distance 30)
+	(set-strategic-number sn-group-commander-selection-method 0)
+	(set-strategic-number sn-group-leader-defense-distance 3)
+	(set-strategic-number sn-zero-priority-distance 250)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-target-evaluation-siege-weapon		555)
+	(set-strategic-number sn-target-evaluation-damage-capability	  1)
+	(set-strategic-number sn-target-evaluation-in-progress		  0)
+	(set-strategic-number sn-target-evaluation-distance evaluation-distance)
+	(set-strategic-number sn-target-evaluation-hitpoints evaluation-hitpoints)
+	(set-strategic-number sn-target-evaluation-range		  0)
+	(set-strategic-number sn-target-evaluation-rof 			  0)
+	(set-strategic-number sn-target-evaluation-time-kill-ratio	  1)
+	(set-strategic-number sn-target-evaluation-attack-attempts	  0)
+	(set-strategic-number sn-target-evaluation-ally-proximity	  0)
+	(set-strategic-number sn-target-evaluation-randomness 		  0)
+	(set-strategic-number sn-target-evaluation-boat 		  0)
+	(set-strategic-number sn-target-evaluation-continent		  0)
+	(set-strategic-number sn-target-evaluation-kills 		  0)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-defend-overlap-distance 1)
+	(set-strategic-number sn-defense-distance 3)
+	(set-strategic-number sn-sentry-distance 9)
+	(set-strategic-number sn-sentry-distance-variation 0)
+	(set-strategic-number sn-dock-defend-priority 0)
+	(set-strategic-number sn-town-defend-priority 1)
+	(set-strategic-number sn-gold-defend-priority 1)
+	(set-strategic-number sn-stone-defend-priority 0)
+	(set-strategic-number sn-forage-defend-priority 0)
+	(set-strategic-number sn-relic-defend-priority 1)
+	(set-strategic-number sn-special-attack-type1 -1)
+	(set-strategic-number sn-special-attack-type2 -1)
+	(set-strategic-number sn-special-attack-type3 -1)
+;	(set-strategic-number sn-special-attack-influence1 10000)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-max-build-plan-gatherer-percentage 100)
+	(set-strategic-number sn-food-dropsite-distance 3)
+	(set-strategic-number sn-wood-dropsite-distance 3)
+	(set-strategic-number sn-gold-dropsite-distance 3)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(set-strategic-number sn-maximum-food-drop-distance 6)
+	(set-strategic-number sn-maximum-wood-drop-distance 20)
+	(set-strategic-number sn-maximum-gold-drop-distance 10)
+	(set-strategic-number sn-maximum-stone-drop-distance 9)
+	(set-strategic-number sn-maximum-fish-boat-drop-distance -1)
+	(set-strategic-number sn-maximum-hunt-drop-distance 32)
+	(set-strategic-number my-sn-military-superiority 0)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-allow-civilian-defense 1)
+	(set-strategic-number sn-cap-civilian-builders 200)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-gatherers 0)
+	(set-strategic-number sn-percent-civilian-builders 100)
+	(set-strategic-number sn-percent-civilian-explorers 100)
+	(set-strategic-number sn-percent-civilian-gatherers 0)
+;	(set-strategic-number sn-number-forward-builders 0)
+	(set-strategic-number sn-minimum-dropsite-buffer 50)
+	(set-strategic-number sn-maximum-gaia-attack-response 2)
+	(set-strategic-number sn-intelligent-gathering 1)
+	(set-strategic-number sn-max-retask-gather-amount 0)
+	(set-strategic-number sn-retask-gather-amount 0)
+	(set-strategic-number sn-use-by-type-max-gathering 0)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-max-skips-per-attempt 1)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1800)
+	(set-strategic-number sn-number-build-attempts-before-skip 1)
+	(set-strategic-number sn-number-max-skip-cycles 1)
+	(set-strategic-number sn-random-placement-factor 0)
+	(set-strategic-number sn-required-forest-tiles 11)
+	(set-strategic-number sn-camp-max-distance 16)
+	(set-strategic-number sn-mill-max-distance 14)
+	(set-strategic-number sn-minimum-town-size 3)
+	(set-strategic-number sn-maximum-town-size 10)
+	(set-strategic-number sn-minimum-peace-like-level 51)
+	(set-strategic-number sn-relic-return-distance 255)
+	(set-strategic-number target-military-superiority 0)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-blot-exploration-map 0)
+	(set-strategic-number sn-blot-size 1)
+	(set-strategic-number sn-initial-exploration-required 0)
+;	(set-strategic-number sn-percent-half-exploration 30); default
+;	(set-strategic-number sn-percent-exploration-required 0)
+	(set-strategic-number sn-number-enemy-objects-required 1)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-number-boat-explore-groups 1)
+;	(set-strategic-number sn-percentage-explore-exterminators 0)
+	(set-strategic-number sn-minimum-explore-group-size 1)
+	(set-strategic-number sn-maximum-explore-group-size 1)
+	(set-strategic-number sn-minimum-boat-explore-group-size 1)
+	(set-strategic-number sn-maximum-boat-explore-group-size 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-build-frequency 1)
+	(set-strategic-number sn-do-not-scale-for-difficulty-level 1)
+	(set-strategic-number sn-easiest-reaction-percentage 100)
+	(set-strategic-number sn-easier-reaction-percentage 100)
+	(set-strategic-number sn-scaling-frequency 1)
+	(set-strategic-number sn-track-player-history 0)
+	(set-strategic-number sn-coop-share-attacking 1)
+	(set-strategic-number sn-coop-share-attacking-interval 2)
+	(set-strategic-number infantry 0)
+	(set-strategic-number archers 0)
+	(set-strategic-number cavalry 0)
+	(set-strategic-number gunpowder 0)
+	(set-strategic-number moenche 0)
+	(set-strategic-number siege 0)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-goal TSA-goal 0)
+	(set-goal researchplan no) ; research plan not completed
+	(set-goal kloster no)
+	(set-goal tc no)
+	(set-goal lc no)
+	(set-goal enablesmith no)
+	(set-goal earlystone no)
+	(set-goal enemy-goal 0)
+	(set-goal boom yes); no
+	(set-goal dreitc no)
+	(set-goal fleet yes)
+	(set-goal enemy-boats no)
+	(set-goal woodavailable yes)
+	(set-goal increase-ts 0)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-goal e-skirm no)
+	(set-goal e-cata no)
+	(set-goal Multiplayer no)
+	(set-goal farms no)
+	(set-goal retreat yes)
+	(set-goal rebuildcamp yes)
+	(set-goal gatherunits no)
+	(set-goal defend no); dead vills
+	(set-goal attack yes); used to stop AI from spamming 31
+	(set-goal e-skirmgold yes); will be reset in castle-age, no need to save gold before
+	(set-goal spreadunits no)
+	(set-goal disablearb no)
+	(set-goal retargetenemy yes)
+	(set-strategic-number sn-minimum-civilian-explorers 0)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-minimum-boat-attack-group-size 1)
+	(set-strategic-number sn-maximum-boat-attack-group-size 1)
+	(set-strategic-number sn-number-boat-attack-groups 0)
+	(set-difficulty-parameter ability-to-dodge-missiles 0);opposite (bug)
+	(set-difficulty-parameter ability-to-maintain-distance 0);same here
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage wood 0)
+	(set-escrow-percentage gold 0)
+	(set-escrow-percentage stone 0)
+	(set-goal map water)
+	(set-goal nomad no)
+	(set-goal underattack no)
+	(set-goal attacking no)
+	(set-goal attackmethod TSA)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-current-age dark)
+	(set-goal spears yes)
+	(set-goal retreatnow no)
+	(set-goal scoutg no)
+	(set-goal stanceg no)
+	(set-goal request no)
+	(set-goal wwonder no)
+	(set-goal islands no)
+	(set-goal siegereq no)
+	(set-strategic-number sn-coop-share-information 1)
+	(set-goal reset yes)
+	(set-goal market-flare 0)
+	(set-goal unit-flare 0)
+	(set-goal unit-flare-point 0)
+	(disable-self))
+
+
+#load-if-not-defined DIFFICULTY-EASIEST
+#load-if-not-defined DIFFICULTY-EASY
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-enable-boar-hunting 0)
+	(set-strategic-number sn-maximum-hunt-drop-distance 0)
+	(set-strategic-number sn-minimum-boar-hunt-group-size 0)
+	(set-strategic-number sn-minimum-number-hunters 0)
+	(set-strategic-number sn-minimum-boar-lure-group-size 0)
+	(set-strategic-number sn-preferred-trade-distance 255)
+	(set-strategic-number sn-enable-new-building-system 1)
+	(up-modify-sn sn-home-exploration-time c:+ 180)
+	(up-assign-builders c: market c: 2)
+	(up-assign-builders c: monastery c: 2)
+	(up-assign-builders c: castle c: 5)
+	(up-assign-builders c: town-center-foundation c: 4)
+	(up-assign-builders c: wonder c: 50)
+	(up-assign-builders c: bombard-tower c: 3)
+	(disable-self))
+#end-if
+#end-if
+
+(defrule
+	(true)
+=>
+	(set-goal boar-hunting-goal 0)
+	(set-goal math-goal 0)
+	(set-strategic-number sn-object-repair-level 20607); 16384 = siege weapons alone
+	(set-strategic-number sn-enable-training-queue 1)
+	(set-strategic-number sn-livestock-to-town-center 1)
+	(set-strategic-number sn-town-center-placement 0)
+	(set-strategic-number sn-dock-proximity-factor -1)
+	(set-strategic-number sn-ignore-tower-elevation 0)
+	(set-strategic-number sn-safe-town-size 45)
+	(set-goal threat-time 0)
+	(set-goal threat-player 0)
+	(set-goal threat-source 0)
+	(set-goal threat-target 0)
+	(up-release-escrow)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-number-civilian-militia 0)
+	(set-strategic-number sn-wall-targeting-mode 1)
+	(set-strategic-number sn-enable-offensive-priority 1)
+	(up-set-defense-priority c: stone-wall-line c: 0)
+	(up-set-defense-priority c: palisade-wall c: 0)
+	(set-strategic-number sn-local-targeting-mode 1)
+	(set-strategic-number sn-enable-patrol-attack 1)
+	(set-goal assisting-ally-1 no)
+	(set-goal assisting-ally-2 no)
+	(set-goal assisting-ally-3 no)
+	(set-goal assisting-ally-4 no)
+	(set-goal assisting-ally-5 no)
+	(set-goal assisting-ally-6 no)
+	(up-set-defense-priority c: wonder c: 32767); highest value
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-goal assisting-ally-7 no)
+	(set-goal assisting-ally-8 no)
+	(set-goal assistance no)
+	(set-goal position-goal 0)
+	(set-goal target-pop 0)
+	(set-goal target-mpop 0)
+	(set-goal queue yes)
+	(set-goal 402 0)
+	(set-goal 403 0)
+	(set-goal attacknotifier no)
+	(set-goal targeted-player 0)
+	(set-strategic-number teamsuperiority 0)
+	(set-goal milunits yes)
+	(set-goal landnomad no)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-goal strategy usual)
+	(set-goal drushtarget 0)
+	(set-goal selectdrushwaypoint 0)
+	(set-goal realdrushwaypoint 0)
+	(set-goal temporary-goal 0)
+	(set-goal temporary-goal2 0)
+	(set-goal drushretreatpoint 0)
+	(set-goal rescout no)
+	(set-goal scatteredislets no)
+	(set-goal retask no)
+	(set-goal migrated no)
+	(set-goal defendchat yes)
+	(set-goal tribute yes)
+	(set-strategic-number sn-attack-separation-time-randomness 0)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(set-goal gl-wood-to-be-seen 0)
+	(set-goal deer-luring 0)
+	(set-goal gl-boar-2 0)
+	(set-goal gl-boar-1 0)
+	(set-goal gl-data 0)
+	(set-goal disablecannon no)
+	(set-goal disablemilit no)
+	(set-goal escrowing 0)
+	(set-goal relocating no)
+	(set-goal palagoal no)
+	(set-goal strategy-type passive)
+	(set-goal gatherinside yes)
+	(set-goal attackpriorities usual)
+	(set-goal attackprioritychange yes)
+	(disable-self))
+
+(defrule
+	(true)
+=>
+	(up-set-defense-priority c: market c: 2000)
+	(up-set-offense-priority c: market c: 4)
+	(set-goal enemysling 0)
+	(set-goal distancegoal 0)
+	(set-strategic-number sn-disable-builder-assistance 1); not needed with assign-builders
+	(set-goal buildmill no)
+	(set-goal buildlumber yes)
+	(set-goal spears yes)
+	(set-goal uugoal no)
+	(set-goal urgoal no)
+	(disable-self))
+
+
+
+
+
+
+
+
+
+
+
+
+
+(defrule
+	(goal attackprioritychange no)
+=>
+	(up-jump-rule 7))
+(defrule
+	(goal attackprioritychange yes)
+=>
+	(up-modify-goal attackpriorities g:= strategy))
+(defrule
+	(up-compare-goal attackpriorities != r-flush)
+	(up-compare-goal attackpriorities != usual)
+=>
+	(set-goal attackpriorities usual))
+(defrule
+	(unit-type-count siege-units >= 2)
+=>
+	(set-goal attackpriorities usual))
+(defrule
+	(goal attackpriorities r-flush)
+	(goal attackprioritychange yes)
+=>
+	(up-set-defense-priority c: castle c: 1000)
+	(up-set-defense-priority c: bombard-tower c: 1000)
+	(up-set-defense-priority c: town-center c: 3000)
+	(up-set-defense-priority c: watch-tower c: 2000)
+	(up-set-defense-priority c: monastery c: 9000)
+	(up-set-defense-priority c: barracks c: 9000)
+	(up-set-defense-priority c: stable c: 9000)
+	(up-set-defense-priority c: archery-range c: 9000)
+	(up-set-defense-priority c: siege-workshop c: 9000)
+	(up-set-defense-priority c: lumber-camp c: 32767)
+	(up-set-defense-priority c: mining-camp c: 32767)
+	(up-set-defense-priority c: mill c: 10000)
+	(up-set-defense-priority c: house c: 2))
+(defrule
+	(goal attackpriorities r-flush)
+	(goal attackprioritychange yes)
+=>
+	(up-set-offense-priority c: castle c: 1)
+	(up-set-offense-priority c: bombard-tower c: 1)
+	(up-set-offense-priority c: town-center c: 3)
+	(up-set-offense-priority c: watch-tower c: 2)
+	(up-set-offense-priority c: monastery c: 9)
+	(up-set-offense-priority c: barracks c: 9)
+	(up-set-offense-priority c: stable c: 9)
+	(up-set-offense-priority c: archery-range c: 9)
+	(up-set-offense-priority c: siege-workshop c: 9)
+	(up-set-offense-priority c: lumber-camp c: 11)
+	(up-set-offense-priority c: mining-camp c: 11)
+	(up-set-offense-priority c: mill c: 10)
+	(up-set-offense-priority c: house c: 1)
+	(set-goal attackprioritychange no))
+(defrule
+	(goal attackpriorities usual)
+	(goal attackprioritychange yes)
+=>
+	(up-set-defense-priority c: castle c: 8000)
+	(up-set-defense-priority c: bombard-tower c: 8000)
+	(up-set-defense-priority c: town-center c: 6000)
+	(up-set-defense-priority c: watch-tower c: 3000)
+	(up-set-defense-priority c: monastery c: 2500)
+	(up-set-defense-priority c: barracks c: 2500)
+	(up-set-defense-priority c: stable c: 2500)
+	(up-set-defense-priority c: archery-range c: 2500)
+	(up-set-defense-priority c: siege-workshop c: 2000)
+	(up-set-defense-priority c: lumber-camp c: 1000)
+	(up-set-defense-priority c: mining-camp c: 750)
+	(up-set-defense-priority c: mill c: 250)
+	(up-set-defense-priority c: house c: 2))
+(defrule
+	(goal attackpriorities usual)
+	(goal attackprioritychange yes)
+=>
+	(up-set-offense-priority c: castle c: 11)
+	(up-set-offense-priority c: bombard-tower c: 11)
+	(up-set-offense-priority c: town-center c: 10)
+	(up-set-offense-priority c: watch-tower c: 8)
+	(up-set-offense-priority c: monastery c: 5)
+	(up-set-offense-priority c: barracks c: 5)
+	(up-set-offense-priority c: stable c: 5)
+	(up-set-offense-priority c: archery-range c: 5)
+	(up-set-offense-priority c: siege-workshop c: 4)
+	(up-set-offense-priority c: lumber-camp c: 3)
+	(up-set-offense-priority c: mining-camp c: 3)
+	(up-set-offense-priority c: mill c: 2)
+	(up-set-offense-priority c: house c: 1)
+	(set-goal attackprioritychange no))
+
+; End jump
+
+(defrule
+	(true)
+=>
+	(up-set-offense-priority c: war-elephant c: 11)
+	(up-set-offense-priority c: knight c: 10)
+	(up-set-offense-priority c: cataphract c: 10)
+	(up-set-offense-priority c: tarkan c: 10)
+	(up-set-offense-priority c: teutonic-knight c: 10)
+	(up-set-offense-priority c: war-wagon c: 10)
+	(up-set-offense-priority c: janissary c: 9)
+	(up-set-offense-priority c: conquistador c: 9)
+	(up-set-offense-priority c: mameluke c: 10)
+	(up-set-offense-priority c: huskarl c: 10)
+	(up-set-offense-priority c: hand-cannoneer c: 9)
+	(up-set-offense-priority c: eagle-warrior c: 9)
+	(up-set-offense-priority c: monk c: 10)
+	(disable-self))
+(defrule
+	(true)
+=>
+	(up-set-offense-priority c: scout-cavalry c: 8)
+	(up-set-offense-priority c: militiaman c: 8)
+	(up-set-offense-priority c: jaguar-man c: 8)
+	(up-set-offense-priority c: woad-raider c: 8)
+	(up-set-offense-priority c: berserk c: 8)
+	(up-set-offense-priority c: samurai c: 8)
+	(up-set-offense-priority c: spearman c: 9)
+	(up-set-offense-priority c: camel c: 8)
+	(up-set-offense-priority c: demolition-ship c: 11)
+	(up-set-offense-priority c: transport-ship c: 11)
+	(up-set-offense-priority c: turtle-ship c: 10)
+	(up-set-offense-priority c: fire-ship c: 10)
+	(up-set-offense-priority c: galley c: 8)
+	(up-set-offense-priority c: fishing-ship c: 7)
+	(disable-self))
+(defrule
+	(true)
+=>
+	(up-set-offense-priority c: missionary c: 10)
+	(up-set-offense-priority c: unpacked-trebuchet c: 10)
+	(up-set-offense-priority c: trebuchet c: 5)
+	(up-set-offense-priority c: throwing-axeman c: 8)
+	(up-set-offense-priority c: mangudai c: 7)
+	(up-set-offense-priority c: cavalry-archer c: 6)
+	(up-set-offense-priority c: chu-ko-nu c: 6)
+	(up-set-offense-priority c: plumed-archer c: 6)
+	(up-set-offense-priority c: archer c: 5)
+	(up-set-offense-priority c: longbowman c: 5)
+	(up-set-offense-priority c: 904 c: 5) ; vil-class
+	(up-set-offense-priority c: skirmisher c: 0)
+	(up-set-offense-priority c: king-class c: 11)
+	(disable-self))
+
+(defrule
+(or	(player-valid 3)
+(or	(player-valid 4)
+(or	(player-valid 5)
+(or	(player-valid 6)
+(or	(player-valid 7)
+	(player-valid 8))))))
+	(goal Multiplayer no)
+=>
+	(set-goal Multiplayer yes))
+
+(defrule
+	(building-type-count-total house >= 1)
+=>
+	(up-assign-builders c: house c: 1)
+	(disable-self))
+
+(defrule
+	(dropsite-min-distance wood >= 0)
+	(dropsite-min-distance wood < 255)
+	(goal woodavailable no)
+=>
+	(set-goal woodavailable yes))
+
+(defrule
+(or	(dropsite-min-distance wood < 0)
+	(dropsite-min-distance wood >= 255))
+	(goal woodavailable yes)
+=>
+	(set-goal woodavailable no))
+
+(defrule
+	(goal islands no)
+	(goal enemy-boats no)
+	(cc-players-unit-type-count 0 deep-fish <= 0)
+	(goal map water)
+=>
+	(chat-to-player my-player-number "No watermap.")
+	(set-goal map land)
+;	(set-strategic-number sn-garrison-rams 1)
+)
+
+(defrule
+(or	(map-type oasis)
+(or	(map-type fortress)
+	(map-type black-forest)))
+	(goal map water)
+=>
+	(chat-to-player my-player-number "No watermap.")
+	(set-goal map land)
+	(set-goal fleet no))
+
+#load-if-not-defined OASIS-MAP
+#load-if-not-defined FORTRESS-MAP
+#load-if-not-defined BLACK-FOREST-MAP
+
+(defrule
+	(goal map land)
+	(goal enemy-boats yes)
+=>
+	(chat-to-player my-player-number "Enemy boats -> Watermap?")
+	(set-goal map water))
+
+#end-if
+#end-if
+#end-if
+
+(defrule
+;	(goal map water)
+	(true)
+=>
+	(enable-wall-placement 2)
+	(disable-self))
+
+(defrule
+(or	(map-type islands)
+	(map-type team-islands))
+	(goal islands no)
+=>
+	(set-goal islands yes)
+	(set-goal enemy-boats yes)
+	(chat-to-player my-player-number "Islands."))
+
+#load-if-not-defined HIGHLAND-MAP
+(defrule
+(nor	(map-type islands)
+	(map-type team-islands))
+	(wall-completed-percentage 2 >= 100)
+	(building-type-count stone-wall < 9)
+	(building-type-count palisade-wall < 9)
+	(building-type-count gate < 6)
+	(goal map water)
+	(goal islands no)
+=>
+	(set-goal islands yes)
+	(set-goal enemy-boats yes)
+	(set-strategic-number sn-garrison-rams 0)
+	(chat-to-player my-player-number "Islands."))
+#end-if
+
+#load-if-not-defined ISLANDS-MAP ; always 'yes' on islands
+#load-if-not-defined TEAM-ISLANDS-MAP
+(defrule 
+	(goal islands no)
+(or	(or	(players-building-type-count any-enemy dock > 0)
+		(players-unit-type-count any-enemy fishing-ship > 0))
+	(or	(players-unit-type-count any-enemy galley-line > 0)
+		(players-unit-type-count any-enemy fire-ship-line > 0)))
+	(goal enemy-boats no)
+=>
+	(set-goal enemy-boats yes)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1500))
+
+(defrule 
+	(goal islands no)
+	(players-building-type-count every-enemy dock == 0)
+	(players-unit-type-count every-enemy galley-line == 0)
+	(players-unit-type-count every-enemy fire-ship-line == 0)
+	(goal enemy-boats yes)
+=>
+	(set-goal enemy-boats no)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1800))
+#end-if
+#end-if
+
+;(defrule
+;	(current-age >= feudal-age)
+;=>
+;	(up-get-focus-fact unit-type-count galley-line gl-target-soldier-count)
+;	(up-get-focus-fact unit-type-count fire-ship-line temporary-goal)
+;	(up-modify-goal gl-target-soldier-count g:+ temporary-goal)
+;	(up-get-focus-fact unit-type-count turtle-ship-line temporary-goal)
+;	(up-modify-goal temporary-goal c:* 3)
+;	(up-modify-goal gl-target-soldier-count g:+ temporary-goal)
+;	(up-get-focus-fact unit-type-count cannon-galleon-line temporary-goal)
+;	(up-modify-goal gl-target-soldier-count g:+ temporary-goal)
+;	(up-get-focus-fact unit-type-count longboat-line temporary-goal)
+;	(up-modify-goal gl-target-soldier-count g:+ temporary-goal))
+
+(defrule
+(or	(goal islands yes)
+(or	(map-type islands)
+	(map-type team-islands)))
+(or	(goal enemy-boats no)
+	(strategic-number sn-minimum-water-body-size-for-dock > 1000))
+=>
+	(set-goal enemy-boats yes)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1000))
+
+(defrule
+	(strategic-number sn-number-boat-explore-groups >= 1)
+	(unit-type-count deep-fish > 0)
+	(strategic-number my-sn-military-superiority <= 0)
+	(goal attacking no)
+	(strategic-number sn-current-age < imperial)
+	(warboat-count <= 0)
+=>
+	(set-strategic-number sn-number-boat-explore-groups 0))
+
+(defrule
+	(strategic-number sn-number-boat-explore-groups <= 0)
+(or	(goal attacking yes)
+(or	(and	(strategic-number my-sn-military-superiority >= 0)
+		(population >= del-civ-pop))
+	(goal researchplan yes)))
+	(warboat-count >= 1)
+=>
+	(set-strategic-number sn-number-boat-explore-groups 1))
+
+(defrule
+	(strategic-number sn-number-boat-explore-groups <= 0)
+	(goal islands yes)
+	(players-building-count any-enemy <= 0)
+	(strategic-number sn-current-age >= imperial)
+=>
+	(set-strategic-number sn-number-boat-explore-groups 1))
+
+(defrule
+(or	(strategic-number sn-minimum-attack-group-size != 1)
+	(strategic-number sn-maximum-attack-group-size != 1))
+(nor	(map-type islands)
+(or	(map-type team-islands)
+(or	(goal islands yes)
+(or	(goal strategy drush)
+	(unit-type-count-total transport-ship >= 1)))))
+=>
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 1)
+	(chat-local-to-self "Attack-group-size: 1."))
+
+(defrule
+	(unit-type-count-total transport-ship >= 1)
+(or	(strategic-number sn-minimum-attack-group-size < 5)
+	(strategic-number sn-maximum-attack-group-size < 5))
+(or	(goal islands yes)
+(or	(map-type islands)
+	(map-type team-islands)))
+(not	(research-completed ri-careening))
+=>
+	(set-strategic-number sn-minimum-attack-group-size 5)
+	(set-strategic-number sn-maximum-attack-group-size 5)
+	(chat-local-to-self "Attack-group-size: 5."))
+
+(defrule
+	(unit-type-count-total transport-ship >= 1)
+(or	(strategic-number sn-minimum-attack-group-size < 8)
+	(strategic-number sn-maximum-attack-group-size < 10))
+(or	(goal islands yes)
+(or	(map-type islands)
+	(map-type team-islands)))
+	(research-completed ri-careening)
+(not	(research-completed ri-dry-dock))
+=>
+	(set-strategic-number sn-minimum-attack-group-size 8)
+	(set-strategic-number sn-maximum-attack-group-size 10)
+	(chat-local-to-self "Attack-group-size: 8-10."))
+
+(defrule
+	(unit-type-count-total transport-ship >= 1)
+(or	(strategic-number sn-minimum-attack-group-size < 8)
+	(strategic-number sn-maximum-attack-group-size < 20))
+(or	(goal islands yes)
+(or	(map-type islands)
+	(map-type team-islands)))
+	(research-completed ri-dry-dock)
+=>
+	(set-strategic-number sn-minimum-attack-group-size 10)
+	(set-strategic-number sn-maximum-attack-group-size 20)
+	(chat-local-to-self "Attack-group-size: 10-20."))
+
+(defrule
+	(strategic-number sn-attack-group-gather-spacing > 5)
+=>
+	(set-strategic-number sn-attack-group-gather-spacing 5))
+
+(defrule
+	(timer-triggered TSA-timer)
+	(strategic-number sn-percent-attack-soldiers >= 100)
+	(strategic-number sn-attack-group-gather-spacing <= 5)
+=>
+	(set-strategic-number sn-attack-group-gather-spacing 50)
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 1)
+	(chat-local-to-self "Attack-group-size: 1."))
+
+#load-if-defined KING-OF-THE-HILL
+(defrule
+(or	(building-type-count castle >= 3)
+(or	(goal researchplan yes)
+	(game-time >= 3000)))
+	(strategic-number sn-gather-idle-soldiers-at-center != 1)
+=>
+	(set-strategic-number sn-gather-idle-soldiers-at-center 1))
+#end-if
+
+(defrule
+(or	(building-type-count-total archery-range >= 1)
+(or	(building-type-count-total stable >= 1)
+	(building-type-count-total market >= 1)))
+	(goal enablesmith no)
+=>
+	(set-goal enablesmith yes))
+(defrule
+	(building-type-count-total monastery >= 1)
+	(goal kloster no)
+=>
+	(set-goal kloster yes))
+(defrule
+	(building-type-count-total town-center >= 2)
+	(goal tc no)
+=>
+	(set-goal tc yes))
+(defrule
+	(building-type-count-total town-center >= 3)
+	(goal dreitc no)
+=>
+	(set-goal dreitc yes))
+(defrule
+	(current-age == feudal-age)
+	(strategic-number sn-current-age < feudal)
+=>
+	(set-strategic-number sn-current-age feudal))
+(defrule
+	(current-age == castle-age)
+	(strategic-number sn-current-age < castlea)
+=>
+	(set-strategic-number sn-current-age castlea))
+(defrule
+	(current-age >= imperial-age)
+	(strategic-number sn-current-age < imperial)
+=>
+	(set-strategic-number sn-current-age imperial))
+
+#load-if-defined DARK-AGE-END
+(defrule
+	(current-age >= dark-age)
+	(strategic-number sn-current-age < imperial)
+=>
+	(set-goal tc yes)
+	(set-goal dreitc yes)
+	(set-goal e-skirm yes)
+	(set-goal researchplan yes)
+	(set-goal milunits yes)
+	(set-goal e-cata yes)
+	(set-strategic-number sn-current-age imperial))
+#end-if
+#load-if-defined FEUDAL-AGE-END
+(defrule
+	(current-age >= feudal-age)
+	(building-type-count blacksmith >= 1)
+	(strategic-number sn-current-age < imperial)
+=>
+	(set-goal tc yes)
+	(set-goal dreitc yes)
+	(set-goal e-skirm yes)
+	(set-goal researchplan yes)
+	(set-goal milunits yes)
+	(set-goal e-cata yes)
+	(set-strategic-number sn-current-age imperial))
+(defrule
+	(goal attacking yes)
+	(goal underattack no)
+	(can-build watch-tower)
+=>
+	(build-forward watch-tower))
+#end-if
+#load-if-defined CASTLE-AGE-END
+(defrule
+	(current-age >= castle-age)
+	(building-type-count castle >= 1)
+	(strategic-number sn-current-age < imperial)
+=>
+	(set-goal researchplan yes)
+	(set-goal milunits yes)
+	(set-goal e-cata yes)
+	(set-strategic-number sn-current-age imperial))
+#end-if
+
+(defrule
+(or	(not	(research-available ri-elite-skirmisher))
+	(up-research-status c: ri-elite-skirmisher >= research-pending))
+	(current-age >= castle-age)
+	(goal e-skirm no)
+=>
+	(set-goal e-skirm yes))
+
+(defrule
+(or	(goal researchplan yes)
+	(gold-amount >= 2500))
+	(goal underattack no)
+	(goal defend no); dead vils
+	(building-type-count-total dock <= 0)
+	(unit-type-count-total transport-ship <= 0)
+	(wood-amount >= 200)
+	(goal enemy-boats yes)
+	(goal attacking yes)
+	(strategic-number sn-minimum-water-body-size-for-dock > 100)
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 100))
+
+(defrule
+(or	(population < del-civ-pop)
+(or	(unit-type-count trebuchet-set >= 3)
+	(unit-type-count battering-ram-line >= 5)))
+	(goal siegereq no)
+=>
+	(set-goal siegereq yes))
+(defrule
+	(population >= del-civ-pop)
+	(unit-type-count trebuchet-set < 3)
+	(unit-type-count battering-ram-line < 5)
+	(goal siegereq yes)
+=>
+	(set-goal siegereq no))
+
+#load-if-defined FORTRESS-MAP
+(defrule
+	(up-compare-goal milunits != no)
+=>
+	(set-goal milunits no)
+	(disable-self))
+(defrule
+	(goal milunits no)
+(or	(up-enemy-units-in-town > 4)
+(or	(goal defend yes)
+(or	(strategic-number my-sn-military-superiority <= -2)
+	(strategic-number sn-current-age >= imperial))))
+=>
+	(set-goal milunits yes)
+	(chat-local-to-self "I'll start to train military units now."))
+#end-if
+#load-if-defined UP-MICHI-STYLE
+(defrule
+	(up-compare-goal milunits != no)
+=>
+	(set-goal milunits no)
+	(disable-self))
+(defrule
+	(goal milunits no)
+(or	(up-enemy-units-in-town > 0)
+	(strategic-number sn-current-age >= imperial))
+=>
+	(set-goal milunits yes)
+	(chat-local-to-self "I'll start to train military units now."))
+#else
+
+(defrule
+	(up-compare-goal milunits != no)
+	(goal islands yes)
+=>
+	(set-goal milunits no)
+	(disable-self))
+
+(defrule
+	(goal milunits no)
+	(goal islands yes)
+	(up-enemy-units-in-town > 0)
+=>
+	(set-goal milunits yes)
+	(chat-local-to-self "I'll start to train military units now."))
+
+(defrule
+	(goal milunits yes)
+(or	(building-type-count-total archery-range >= 1)
+(or	(building-type-count-total stable >= 1)
+	(building-type-count-total barracks >= 2)))
+	(strategic-number sn-current-age <= feudal)
+	(up-compare-goal enemy-goal == 0)
+	(goal islands no)
+(not	(goal position-goal pocket))
+	(players-military-population every-enemy < 2)
+=>
+	(set-goal milunits 101)
+	(chat-local-to-self "Waiting for the enemy to make the first move.")
+	(disable-self))
+
+(defrule
+	(goal milunits 101)
+	(strategic-number sn-current-age >= feudal)
+	(goal islands no)
+;(not	(goal position-goal pocket))
+(or	(up-compare-goal enemy-goal != 0)
+(or	(players-military-population any-enemy >= 3)
+(or	(and	(players-current-age every-enemy <= feudal-age)
+		(players-military-population any-enemy >= 2))
+		(strategic-number sn-current-age >= imperial))))
+=>
+	(set-goal milunits yes)
+	(chat-local-to-self "Milunits enabled."))
+
+
+;#load-if-not-defined UP-3-PLAYER-TEAM
+;#load-if-not-defined UP-4-PLAYER-TEAM
+;(defrule
+;	(true)
+;=>
+;	(up-jump-rule 6))
+;#end-if
+;#end-if
+
+(defrule
+	(goal milunits yes)
+	(goal position-goal pocket)
+=>
+	(set-goal milunits no)
+	(disable-self))
+(defrule
+	(goal milunits no)
+	(strategic-number sn-current-age >= imperial)
+(or	(gold-amount >= 1200)
+(or	(strategic-number my-sn-military-superiority <= -3)
+(or	(town-under-attack)
+(or	(goal researchplan yes)
+	(goal defend yes)))))
+=>
+	(set-goal milunits yes)
+	(chat-local-to-self "I'll start to train military units now.")
+;	(chat-to-player every-computer-ally "I'll start to train military units now.")
+)
+
+(defrule
+	(goal milunits no)
+	(town-under-attack)
+	(strategic-number sn-maximum-town-size <= 40)
+	(enemy-buildings-in-town)
+(or	(players-building-type-count any-enemy watch-tower >= 3)
+(or	(players-building-type-count any-enemy bombard-tower >= 3)
+	(players-building-type-count any-enemy castle >= 2)))
+	(military-population < 15)
+=>
+	(set-goal milunits yes)
+	(chat-local-to-self "I'll start to train military units now.")
+;	(chat-to-player every-computer-ally "I'll start to train military units now.")
+)
+
+(defrule
+	(goal position-goal flank)
+	(goal strategy usual)
+	(strategic-number sn-current-age >= fcastlea)
+	(strategic-number my-sn-military-superiority <= -1)
+(or	(not	(goal enemy-goal 0))
+(or	(strategic-number my-sn-military-superiority <= -2)
+	(goal defend yes)))
+	(goal Multiplayer yes)
+	(goal dreitc no)
+=>
+	(set-goal dreitc yes)
+	(chat-local-to-self "AD enabled.")
+	(disable-self))
+
+(defrule
+;	(goal position-goal flank)
+	(current-age >= castle-age)
+	(strategic-number my-sn-military-superiority >= 0)
+(or	(goal enemy-goal 0)
+	(strategic-number my-sn-military-superiority >= 1))
+	(goal underattack no)
+;	(goal Multiplayer yes)
+	(goal dreitc yes)
+	(building-type-count-total town-center < 3)
+=>
+	(set-goal dreitc no)
+	(chat-local-to-self "AD disabled.")
+	(disable-self))
+
+(defrule
+	(goal position-goal flank)
+	(strategic-number sn-current-age == fcastlea)
+(not	(goal enemy-goal 0))
+(or	(strategic-number my-sn-military-superiority <= -1)
+	(goal defend yes))
+	(goal Multiplayer yes)
+=>
+	(set-goal enemy-goal rush)
+	(disable-self))
+#end-if
+
+(defrule
+	(building-type-count-total market >= 1)
+=>
+	(up-assign-builders c: market c: 1)
+	(disable-self))
+
+(defrule
+	(building-type-count-total town-center <= 0)
+=>
+	(up-assign-builders c: town-center-foundation c: 20)
+	(disable-self))
+
+(defrule
+	(building-type-count-total town-center >= 1)
+=>
+	(up-assign-builders c: town-center-foundation c: 4)
+	(disable-self))
+
+(defrule
+	(up-allied-goal any-ally milunits == no)
+	(goal attacking no)
+	(town-under-attack)
+;test	(goal defend yes)
+	(goal underattack yes)
+	(military-population < 11)
+	(up-enemy-units-in-town > 13)
+=>
+	(chat-to-player every-ally "222 Help!")
+	(chat-to-player every-ally "32 Immediate assistance required.")
+	(disable-self))
+
+(defrule
+	(goal milunits no)
+	(town-under-attack)
+	(military-population < 9)
+(or	(goal defend yes)
+	(up-enemy-units-in-town > 8))
+=>
+	(set-goal milunits yes)
+	(chat-local-to-self "I'll start to train military units now.")
+;	(chat-to-player every-computer-ally "I'll start to train military units now.")
+)
+
+;(defrule
+;	(civ-selected aztec)
+;	(unit-type-count villager <= 4)
+;	(building-type-count house == 1)
+;(or	(building-type-count mill >= 1)
+;	(building-type-count town-center >= 1))
+;;(not	(resource-found food))
+;(or	(unit-type-count-total 123 >= 1);m-lumberjack
+;	(unit-type-count-total 218 >= 1));f-lumberjack
+;	(goal buildmill yes)
+;=>
+;	(up-reset-scouts)
+;	(up-retask-gatherers wood c: 4)
+;	(set-strategic-number sn-maximum-food-drop-distance 20)
+;	(disable-self))
+(defrule
+	(resource-found food)
+	(unit-type-count villager <= 7)
+	(strategic-number sn-wood-gatherer-percentage <= 6)
+(or	(building-type-count-total town-center >= 1)
+	(building-type-count-total mill >= 1))
+(or	(unit-type-count-total 123 >= 1);m-lumberjack
+	(unit-type-count-total 218 >= 1));f-lumberjack
+	(goal buildmill yes)
+=>
+	(up-retask-gatherers wood c: 7)
+	(set-strategic-number sn-maximum-food-drop-distance 20)
+	(disable-self))
+
+(defrule
+	(resource-found wood)
+	(unit-type-count-total villager > 70)
+=>
+	(enable-timer upwood 2)
+	(disable-self))
+
+(defrule
+	(unit-type-count-total 213 < 3)	; Dead female builder
+	(unit-type-count-total 225 < 3)	; Dead male builder
+	(building-type-count town-center >= 1)
+	(strategic-number sn-percent-building-cancellation > 10)
+=>
+	(set-strategic-number sn-percent-building-cancellation 10))
+
+(defrule
+(or	(unit-type-count-total 213 >= 3)	; Dead female builder
+	(unit-type-count-total 225 >= 3))	; Dead male builder
+	(population < max-civ-pop)
+	(building-type-count town-center >= 1)
+	(strategic-number sn-percent-building-cancellation < 100)
+=>
+	(set-strategic-number sn-percent-building-cancellation 100))
+
+(defrule
+	(building-type-count town-center <= 0)
+	(building-type-count-total town-center >= 1)
+	(strategic-number sn-percent-building-cancellation > 0)
+=>
+	(set-strategic-number sn-percent-building-cancellation 0))
+
+(defrule
+	(up-pending-objects c: town-center >= 1)
+	(up-enemy-units-in-town > 20)
+	(strategic-number sn-percent-building-cancellation > 0)
+=>
+	(set-strategic-number sn-percent-building-cancellation 0))
+
+(defrule
+	(strategic-number sn-allow-adjacent-dropsites != 0)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0))
+
+(defrule
+	(strategic-number sn-dropsite-separation-distance != 6)
+=>
+	(set-strategic-number sn-dropsite-separation-distance 6))
+
+(defrule
+	(strategic-number sn-filter-under-attack != 0)
+=>
+	(set-strategic-number sn-filter-under-attack 0))
+
+(defrule
+	(goal relocating yes)
+=>
+	(set-goal relocating no))
+
+(defrule
+	(goal attacking yes)
+	(strategic-number sn-enemy-sighted-response-distance < 25)
+=>
+	(set-strategic-number sn-enemy-sighted-response-distance 25))
+
+(defrule
+	(goal attacking no)
+	(strategic-number sn-enemy-sighted-response-distance > 10)
+=>
+	(set-strategic-number sn-enemy-sighted-response-distance 10))
+
+(defrule
+	(game-time > 1800)
+	(or	(building-type-count-total mining-camp > 5)
+		(and	(game-time > 2100)
+			(building-type-count-total town-center > 2)))
+	(strategic-number sn-defer-dropsite-update == 0)
+=>
+	(set-strategic-number sn-defer-dropsite-update 1))
+
+(defrule
+	(up-pending-objects c: mill == 0)
+	(strategic-number sn-preferred-mill-placement != 0)
+=>
+	(set-strategic-number sn-preferred-mill-placement 0))
+
+(defrule
+(or	(unit-type-count villager >= 9)
+(or	(unit-type-count-total 123 >= 1);m-lumberjack
+	(unit-type-count-total 218 >= 1)));f-lumberjack
+	(up-compare-goal buildlumber != yes)
+=>
+	(set-goal buildlumber yes))	
+
+(defrule
+;(or	(and	(unit-type-count villager-food < 1)
+;		(game-time >= 30))
+;(or	(goal map land)
+;(or	(building-type-count-total dock >= 1)
+;	(and	(and	(unit-type-count villager-food < 7)
+;			(unit-type-count villager >= 7))
+;		(food-amount < 100)))))
+	(up-compare-goal buildmill != yes)
+=>
+;	(up-retask-gatherers wood c: 7)
+	(set-goal buildmill yes)
+;	(chat-local-to-self "Mill allowed.")
+)
+
+(defrule
+(or	(goal buildmill yes)
+(or	(and	(unit-type-count villager >= 6)
+		(unit-type-count villager-food < 6))
+	(and	(unit-type-count villager >= 7)
+		(unit-type-count villager-food < 7))))
+	(strategic-number sn-maximum-food-drop-distance < 18)
+=>
+	(set-strategic-number sn-maximum-food-drop-distance 18)
+;	(chat-local-to-self "Maximum-food-drop-distance: 18.")
+)
+
+(defrule
+	(current-age == feudal-age)
+=>
+	(set-strategic-number sn-dock-training-filter 1)
+	(disable-self))
+
+(defrule
+	(current-age >= castle-age)
+	(strategic-number sn-dock-training-filter != 2)
+=>
+	(set-strategic-number sn-dock-training-filter 2)); only train warships where needed
+
+(defrule
+	(goal islands yes)
+	(population >= max-pop)
+	(warboat-count <= 0)
+	(unit-type-count transport-ship <= 0)
+	(strategic-number sn-dock-training-filter != 0)
+=>
+	(set-strategic-number sn-dock-training-filter 0)); train ships everywhere
+
+(defrule
+(or	(unit-type-count-total 178 >= 2); Dead trade cart (empty)
+	(unit-type-count-total 205 >= 2)); Dead trade cart (full)
+	(strategic-number sn-preferred-trade-distance > 50)
+=>
+	(set-strategic-number sn-preferred-trade-distance 50))
+
+(defrule
+	(unit-type-count-total 178 <= 0); Dead trade cart (empty)
+	(unit-type-count-total 205 <= 0); Dead trade cart (full)
+	(strategic-number sn-preferred-trade-distance < 255)
+=>
+	(set-strategic-number sn-preferred-trade-distance 255))
+
+(defrule
+	(goal Multiplayer no)
+(or	(players-civ focus-player aztec)
+(or	(players-civ focus-player mayan)
+	(players-civ focus-player incan)))
+	(goal spears yes)
+=>
+	(set-goal spears no))
+
+(defrule
+	(goal escrowing 0)
+(or	(escrow-amount wood >= 1)
+(or	(escrow-amount food >= 1)
+(or	(escrow-amount gold >= 1)
+	(escrow-amount stone >= 1))))
+=>
+	(set-escrow-percentage wood 0)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(set-escrow-percentage stone 0)
+	(up-release-escrow)
+	(chat-local-to-self "Debugging escrow."))
+
+(defrule
+(not	(town-under-attack))
+	(goal escrowing 0)
+	(goal queue yes)
+;test	(current-age >= castle-age)
+	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-strategic-number sn-enable-training-queue 1))
+;(defrule
+;	(town-under-attack)
+;	(current-age >= castle-age)
+;	(strategic-number sn-enable-training-queue != 0)
+;=>
+;	(set-strategic-number sn-enable-training-queue 0))
+(defrule
+	(up-compare-goal escrowing != 0)
+	(up-compare-goal escrowing != 109); town-center
+	(strategic-number sn-enable-training-queue != 0)
+=>
+	(set-strategic-number sn-enable-training-queue 0))
+(defrule
+	(goal queue yes)
+	(strategic-number sn-current-age == dark)
+	(up-research-status c: ri-loom < research-pending)
+	(gold-amount >= 50)
+	(unit-type-count-total villager > 8)
+	(dropsite-min-distance live-boar < 32)
+	(strategic-number sn-enable-training-queue != 0)
+=>
+	(set-goal queue no)
+	(set-strategic-number sn-enable-training-queue 0))
+(defrule
+	(goal queue no)
+	(strategic-number sn-current-age == dark)
+	(up-research-status c: ri-loom >= research-pending)
+	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-goal queue yes)
+	(set-strategic-number sn-enable-training-queue 1))
+(defrule
+	(goal queue yes)
+	(strategic-number sn-current-age == dark)
+	(goal enemy-goal flush)
+	(food-amount >= 450)
+	(unit-type-count-total villager >= 25)
+	(strategic-number sn-enable-training-queue != 0)
+=>
+	(set-goal queue no)
+	(set-strategic-number sn-enable-training-queue 0))
+(defrule
+	(goal queue no)
+	(current-age == dark-age)
+	(strategic-number sn-current-age > dark)
+;	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-goal queue yes)
+	(set-strategic-number sn-enable-training-queue 1)
+	(disable-self))
+(defrule
+	(goal queue yes)
+	(current-age == feudal-age)
+	(strategic-number sn-current-age == feudal)
+	(food-amount >= 800)
+	(gold-amount >= 200)
+	(building-type-count-total blacksmith >= 1)
+	(strategic-number sn-enable-training-queue != 0)
+=>
+	(set-goal queue no)
+	(set-strategic-number sn-enable-training-queue 0))
+(defrule
+	(goal queue no)
+	(current-age == feudal-age)
+	(strategic-number sn-current-age > feudal)
+;	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-goal queue yes)
+	(set-strategic-number sn-enable-training-queue 1)
+	(disable-self))
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(goal queue no)
+(or	(food-amount < 300)
+(or	(wood-amount < 200)
+(or	(civilian-population >= up-max-civ)
+	(and	(goal dreitc no)
+		(strategic-number my-sn-military-superiority <= 0)))))
+	(up-research-status c: ri-hand-cart < research-pending)
+	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-goal queue yes)
+	(set-strategic-number sn-enable-training-queue 1))
+(defrule
+	(goal queue yes)
+	(strategic-number sn-current-age == castlea)
+(or	(goal dreitc yes)
+	(strategic-number my-sn-military-superiority >= 1))
+	(food-amount >= 320)
+	(wood-amount >= 220)
+	(up-research-status c: ri-hand-cart < research-pending)
+	(civilian-population < up-max-civ)
+	(strategic-number sn-enable-training-queue != 0)
+=>
+	(set-goal queue no)
+	(set-strategic-number sn-enable-training-queue 0))
+(defrule
+	(up-research-status c: ri-hand-cart >= research-pending)
+;	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-goal queue yes)
+	(set-strategic-number sn-enable-training-queue 1)
+	(disable-self))
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(goal queue no)
+	(goal escrowing ri-pikeman)
+(or	(food-amount < 180)
+	(gold-amount < 50))
+	(up-research-status c: ri-pikeman < research-pending)
+	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-goal queue yes)
+	(set-strategic-number sn-enable-training-queue 1))
+(defrule
+	(goal queue yes)
+	(strategic-number sn-current-age == castlea)
+	(goal escrowing ri-pikeman)
+	(food-amount >= 215)
+	(gold-amount >= 90)
+	(up-research-status c: ri-pikeman < research-pending)
+	(strategic-number sn-enable-training-queue != 0)
+=>
+	(set-goal queue no)
+	(set-strategic-number sn-enable-training-queue 0))
+(defrule
+	(up-research-status c: ri-pikeman >= research-pending)
+;	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-goal queue yes)
+	(set-strategic-number sn-enable-training-queue 1)
+	(disable-self))
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(goal queue no)
+(or	(food-amount <= 500)
+	(gold-amount <= 400))
+	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-goal queue yes)
+	(set-strategic-number sn-enable-training-queue 1))
+#else
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(goal queue no)
+(or	(food-amount <= 800)
+	(gold-amount <= 600))
+	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-goal queue yes)
+	(set-strategic-number sn-enable-training-queue 1))
+#end-if
+(defrule
+	(goal queue yes)
+	(strategic-number sn-current-age == castlea)
+	(food-amount >= imp-food)
+	(gold-amount >= imp-gold)
+(or	(building-type-count castle >= 1)
+(or	(building-type-count university >= 1)
+	(building-type-count siege-workshop >= 1)))
+	(strategic-number sn-enable-training-queue != 0)
+=>
+	(set-goal queue no)
+	(set-strategic-number sn-enable-training-queue 0))
+(defrule
+	(strategic-number sn-current-age >= imperial)
+	(strategic-number sn-enable-training-queue != 1)
+=>
+	(set-goal queue yes)
+	(set-strategic-number sn-enable-training-queue 1))
+
+(defrule
+	(population >= max-pop)
+	(gold-amount >= 200)
+	(goal researchplan yes)
+	(strategic-number sn-percent-attack-soldiers == 100)
+	(strategic-number sn-warship-targeting-mode != 0)
+=>
+	(set-strategic-number sn-warship-targeting-mode 0))
+
+(defrule
+(or	(population < max-pop)
+(or	(gold-amount < 100)
+(or	(goal researchplan no)
+	(strategic-number sn-percent-attack-soldiers < 100))))
+	(strategic-number sn-warship-targeting-mode != 1)
+=>
+	(set-strategic-number sn-warship-targeting-mode 1))
+
+(defrule
+(or	(up-pending-objects c: town-center == 0)
+	(timer-triggered embassy))
+	(strategic-number sn-town-center-placement != 0)
+=>
+	(set-strategic-number sn-town-center-placement 0))
+
+(defrule
+	(strategic-number sn-number-boat-explore-groups >= 1)
+	(up-resource-percent amount-exploration >= 100);95
+=>
+	(set-strategic-number sn-number-boat-explore-groups 0))
+
+(defrule
+	(goal e-cata no)
+	(up-research-status c: my-unique-unit-upgrade >= research-pending)
+	(research-completed my-unique-unit-upgrade)
+=>
+	(set-goal e-cata yes))
+(defrule
+	(goal researchplan no)
+	(up-research-status c: ri-paladin >= research-pending)
+=>
+	(set-goal researchplan yes))
+(defrule
+	(goal researchplan no)
+	(up-research-status c: ri-champion >= research-pending)
+=>
+	(set-goal researchplan yes))
+(defrule
+	(goal researchplan no)
+	(up-research-status c: my-unique-research >= research-pending)
+=>
+	(set-goal researchplan yes))
+
+(defrule
+	(goal retargetenemy yes)
+;	(building-type-count-total town-center >= 1)
+	(players-building-count any-enemy > 0)
+=>
+	(up-find-player enemy find-closest targeted-player)
+	(up-modify-sn sn-target-player-number g:= targeted-player)
+	(up-modify-sn sn-focus-player-number g:= targeted-player))
+
+(defrule
+	(true)
+=>
+	(up-get-fact resource-amount amount-relics gl-relics)
+	(up-get-threat-data threat-time threat-player threat-source threat-target)
+	(up-find-player enemy find-attacker attacking-enemy)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters))
+
+(defrule
+	(players-building-count any-enemy > 0)
+=>
+	(up-get-target-fact population 0 target-pop)
+	(up-get-target-fact military-population 0 target-mpop)
+	(up-get-target-fact civilian-population 0 target-cpop)
+	(up-get-player-fact my-player-number soldier-count 0 my-mpop)
+	(up-get-player-fact my-player-number civilian-population 0 my-cpop)
+	(up-modify-sn target-military-superiority g:= my-mpop)
+	(up-modify-sn target-military-superiority g:- target-mpop)
+	(up-modify-sn target-civilian-superiority g:= my-cpop)
+	(up-modify-sn target-civilian-superiority g:- target-cpop)
+	(up-get-victory-data winning-player victory-type victory-time))
+
+(defrule
+	(goal retargetenemy 3)
+	(players-building-type-count every-enemy wonder <= 0)
+(not	(enemy-captured-relics))
+=>
+	(set-goal retargetenemy yes)
+	(chat-to-player my-player-number "Retargeting to closest enemy.")
+	(set-strategic-number sn-special-attack-type1 0)
+	(set-strategic-number sn-special-attack-influence1 1)
+	(set-strategic-number sn-special-attack-type3 0)
+	(set-strategic-number sn-special-attack-influence3 1))
+
+#load-if-not-defined ARCHIPELAGO-MAP
+#load-if-not-defined BALTIC-MAP
+#load-if-not-defined CONTINENTAL-MAP
+#load-if-not-defined CRATER-LAKE-MAP
+#load-if-not-defined HIGHLAND-MAP
+#load-if-not-defined MEDITERRANEAN-MAP
+#load-if-not-defined MIGRATION-MAP
+#load-if-not-defined NOMAD-MAP
+#load-if-not-defined RIVERS-MAP
+#load-if-not-defined SALT-MARSH-MAP
+#load-if-not-defined SCANDANAVIA-MAP
+#load-if-not-defined YUCATAN-MAP
+#load-if-not-defined OASIS-MAP
+#load-if-not-defined ISLANDS-MAP
+#load-if-not-defined TEAM-ISLANDS-MAP
+#load-if-not-defined UP-NOMAD-STYLE
+#load-if-not-defined UP-MICHI-STYLE
+#load-if-not-defined CUSTOM-MAP
+(defrule
+(or	(up-allied-sn any-computer-ally sn-target-player-number s:== sn-target-player-number)
+(or	(up-compare-goal position-goal != pocket)
+(or	(game-time <= 1140)
+(or	(game-time >= 2110)
+(or	(not(player-in-game any-ally))
+	(up-compare-goal strategy != krush))))))
+=>
+	(up-jump-rule 6))
+(defrule
+	(goal enemysling 0)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 1))
+(defrule
+	(game-time < 2100)
+	(players-current-age focus-player == feudal-age)
+	(players-military-population focus-player <= 2)
+(or	(military-population >= 9)
+	(goal attacking yes))
+	(players-building-count focus-player > 0)
+	(players-building-type-count focus-player castle < 1)
+	(stance-toward focus-player enemy)
+	(goal enemysling 0)
+=>
+	(up-modify-goal enemysling s:= sn-focus-player-number))
+(defrule
+	(goal enemysling 0)
+	(strategic-number sn-focus-player-number < 8)
+	(player-valid focus-player)
+=>
+	(up-modify-sn sn-focus-player-number c:+ 1)
+	(up-jump-rule -2))
+(defrule
+	(goal enemysling 0)
+=>
+	(up-modify-sn sn-focus-player-number g:= temporary-goal))
+(defrule
+	(goal retargetenemy yes)
+	(players-building-count any-enemy > 0)
+	(up-compare-goal enemysling >= 1)
+	(up-compare-goal enemysling <= 8)
+=>
+	(up-modify-sn sn-target-player-number g:= enemysling)
+	(up-modify-sn sn-focus-player-number g:= enemysling)
+	(chat-to-player my-player-number "Targeting enemy sling.")
+	(chat-to-player every-ally "Targeting enemy sling.")
+	(set-goal retargetenemy 4)); blocks retargeting to closest player
+(defrule
+(or	(game-time >= 2100)
+(or	(goal underattack yes)
+	(players-building-type-count target-player town-center <= 0)))
+=>
+	(set-goal retargetenemy yes))
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+(or	(and	(stance-toward target-player ally)
+		(player-in-game any-enemy))
+(or	(not(player-valid target-player))
+(or	(not(player-in-game target-player))
+	(player-resigned target-player)))); just to be sure
+=>
+	(set-goal retargetenemy yes))
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(players-building-count any-enemy > 0)
+	(enemy-captured-relics)
+(not	(goal retargetenemy 3))
+=>
+	(up-modify-sn sn-focus-player-number g:= winning-player)
+	(up-modify-sn sn-target-player-number g:= winning-player)
+	(set-strategic-number sn-special-attack-type1 1)
+	(set-strategic-number sn-special-attack-influence1 10000)
+	(chat-to-player my-player-number "Retargeting to player with relics.")
+	(set-goal retargetenemy 3)); blocks retargeting to closest player
+
+(defrule
+	(players-building-count any-enemy > 0)
+	(players-building-type-count target-player wonder == 0)
+	(players-building-type-count any-enemy wonder > 0)
+=>
+	(up-get-player-fact this-any-enemy player-number 0 temp-goal)
+	(up-modify-sn sn-target-player-number g:= temp-goal)
+	(up-modify-sn sn-focus-player-number g:= temp-goal)
+	(set-strategic-number sn-special-attack-type3 1)
+	(set-strategic-number sn-special-attack-influence3 10000)
+	(chat-to-player my-player-number "Retargeting to player with wonder.")
+	(set-goal retargetenemy 3)); blocks retargeting to closest player
+
+(defrule
+	(goal retargetenemy 3)
+	(up-compare-goal victory-time >= 0)
+	(up-compare-goal victory-time < 1000)
+	(goal underattack no)
+(or	(and	(up-building-type-in-town c: wonder == 0)
+		(players-building-type-count target-player wonder > 0))
+	(and	(enemy-captured-relics)
+		(up-building-type-in-town c: monastery == 0)))
+	(goal attacking no)
+=>
+	(set-goal attacking yes)
+	(up-reset-unit c: -1));max-ts?
+
+(defrule
+	(goal attacking yes)
+	(players-building-type-count focus-player wonder > 0)
+	(stance-toward focus-player enemy)
+	(timer-triggered retask-timer); 180 once c=>i
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: battering-ram-line c: 4)
+;	(up-filter-include cmdid-military -1 -1 -1)
+;	(up-find-local c: all-units-class c: 20)
+	(up-filter-include -1 -1 -1 -1)
+	(up-find-remote c: wonder c: 1)
+	(up-target-objects 0 action-patrol -1 stance-aggressive))
+
+(defrule
+	(goal attacking yes)
+	(enemy-captured-relics)
+	(players-building-type-count focus-player monastery > 0)
+	(stance-toward focus-player enemy)
+	(timer-triggered retask-timer); 180 once c=>i
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: battering-ram-line c: 2)
+;	(up-filter-include cmdid-military -1 -1 -1)
+;	(up-find-local c: all-units-class c: 20)
+	(up-filter-include -1 -1 -1 -1)
+	(up-find-remote c: monastery c: 1)
+	(up-target-objects 0 action-patrol -1 stance-aggressive))
+#end-if
+
+(defrule
+	(strategic-number sn-percent-attack-soldiers < 100)
+	(strategic-number sn-maximum-town-size <= 10)
+(not	(goal attacking no))
+=>
+	(set-goal attacking no))
+(defrule
+(not	(goal strategy drush))
+(or	(strategic-number sn-percent-attack-soldiers >= 100)
+	(strategic-number sn-maximum-town-size >= 68)); random
+(not	(goal attacking yes))
+=>
+	(set-goal attacking yes))
+
+
+#load-if-not-defined WONDER-RACE
+#load-if-not-defined ARENA-MAP
+#load-if-not-defined FORTRESS-MAP
+#load-if-not-defined ISLANDS-MAP
+#load-if-not-defined TEAM-ISLANDS-MAP
+#load-if-not-defined REGICIDE
+#load-if-not-defined UP-MICHI-STYLE
+#load-if-not-defined BLACK-FOREST-MAP
+
+
+#load-if-not-defined OASIS-MAP
+
+#load-if-not-defined UP-POCKET-POSITION
+
+#load-if-not-defined GOLD-RUSH-MAP; Hell no
+#load-if-defined SCANDANAVIA-MAP; scand-i-navia doesn't work => scand-a-navia (works)
+#load-if-defined AZTEC-CIV
+(defrule
+	(goal strategy usual)
+	(goal nomad no)
+	(goal landnomad no)
+	(goal islands no)
+	(goal milunits yes)
+	(military-population >= 1)
+	(game-time < 300)
+	(strategic-number sn-current-age <= dark)
+	(players-current-age focus-player == dark-age)
+=>
+	(set-strategic-number sn-gather-defense-units 0)
+	(up-modify-sn sn-home-exploration-time c:- 180); still +30
+	(set-goal strategy drush)
+	(set-goal milunits yes)
+	(set-goal attackprioritychange yes)
+	(disable-self))
+#end-if
+#end-if
+#end-if
+
+;#load-if-not-defined CELTIC-CIV
+;#load-if-not-defined PERSIAN-CIV
+;#load-if-not-defined HUN-CIV
+;#load-if-not-defined TEUTONIC-CIV
+;#load-if-not-defined TURKISH-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined SLAVIC-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined FRANKISH-CIV ; mainly arbalest civs
+(defrule
+	(goal strategy usual)
+	(goal nomad no)
+	(goal landnomad no)
+	(goal map land)
+	(goal milunits yes)
+	(military-population >= 1)
+	(game-time < 300)
+	(strategic-number sn-current-age <= feudal)
+=>
+;	(up-modify-sn sn-home-exploration-time c:- 60)
+	(set-goal strategy r-flush)
+	(set-goal milunits r-flush)
+	(set-goal attackprioritychange yes)
+	(disable-self))
+;#end-if
+;#end-if
+;#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+;#end-if
+;#end-if
+
+#else ; Pocket
+
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV;
+;#load-if-not-defined BYZANTINE-CIV
+;#load-if-not-defined MONGOL-CIV
+;#load-if-not-defined CELTIC-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined JAPANESE-CIV ; Franks, Huns, Spanish, Persians, Teutons, Chinese, Magyars, Slavs,
+#load-if-not-defined SARACEN-CIV ; Vikings, Britons, Turks, Celts, Mongols, Byzantine?
+(defrule
+	(goal strategy usual)
+	(goal nomad no)
+	(goal landnomad no)
+	(goal map land)
+	(goal milunits yes)
+	(military-population >= 1)
+	(game-time < 300)
+	(strategic-number sn-current-age <= castlea)
+=>
+;	(up-modify-sn sn-home-exploration-time c:- 60)
+	(set-goal strategy krush)
+	(set-goal milunits krush)
+	(set-goal attackprioritychange yes)
+	(disable-self))
+;#end-if
+;#end-if
+;#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#end-if ; end pocket
+
+#end-if ; Oasis
+
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(goal strategy drush)
+(or	(goal milunits no)
+;(or	(strategic-number sn-current-age > feudal); doing that in General already
+	(and	(strategic-number sn-current-age > dark)
+		(building-type-count-total barracks <= 0)))
+;)
+=>
+	(set-goal attacking no)
+	(set-goal reset yes)
+	(set-goal strategy usual)
+	(set-goal attackprioritychange yes))
+
+(defrule ; after drushing
+(not	(goal strategy drush))
+;	(strategic-number sn-current-age >= feudal)
+	(strategic-number sn-gather-defense-units == 0)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-set-offense-priority c: villager-class c: 5) ; standard values
+	(up-set-offense-priority c: lumber-camp c: 3)
+	(up-set-offense-priority c: mining-camp c: 3)
+	(set-strategic-number sn-gather-defense-units 1)
+	(up-set-attack-stance militiaman-line c: stance-aggressive)
+	(set-strategic-number sn-number-attack-groups 0)
+	(set-strategic-number sn-percent-attack-soldiers 0)
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 1))
+
+(defrule
+	(goal strategy r-flush)
+	(players-building-type-count target-player stone-wall-line >= 8)
+	(current-age <= feudal-age)
+=>
+	(set-goal strategy usual)
+	(set-goal milunits yes)
+	(set-goal attackprioritychange yes))
+(defrule
+	(goal strategy usual)
+	(unit-type-count siege-units <= 0)
+	(up-projectile-detected projectile-fortification < 3000)
+	(strategic-number my-sn-military-superiority <= 3)
+	(goal attacking yes)
+	(current-age <= feudal-age)
+=>
+	(set-goal attacking no)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-filter-include cmdid-military -1 -1 -1)
+	(up-find-local c: all-units-class c: 240)
+	(up-get-point position-self point-x)
+	(up-set-target-point point-x)
+	(up-target-point point-x action-move -1 stance-no-attack)
+	(enable-timer resetnow 35)
+	(set-strategic-number sn-maximum-town-size 10))
+
+(defrule
+	(up-compare-goal strategy != usual)
+(or	(population >= del-civ-pop)
+(or	(military-population >= 100)
+(or	(goal milunits no)
+	(strategic-number sn-current-age >= imperial))))
+=>
+	(set-goal milunits yes)
+;	(set-goal attacking no)
+;	(set-goal reset yes)
+	(set-goal strategy usual)
+	(set-goal attackprioritychange yes)
+	(chat-to-player my-player-number "Resetting strategy."))
+
+(defrule
+(or	(goal strategy drush)
+(or	(goal strategy r-flush)
+	(goal strategy krush)))
+	(goal strategy-type passive)
+=>
+	(set-goal strategy-type aggressive))
+
+(defrule
+	(goal strategy usual)
+	(goal strategy-type aggressive)
+=>
+	(set-goal strategy-type passive))

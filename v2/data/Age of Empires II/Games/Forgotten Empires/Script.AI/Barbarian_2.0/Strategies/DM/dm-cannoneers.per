@@ -1,0 +1,55 @@
+#load-if-defined TURKISH-CIV
+(defrule
+	(true)
+=>
+	(set-goal gl-strategy dm-cannoneers)
+	(set-goal gl-dm-barracks-number 0)
+	(set-goal gl-dm-range-number 13)
+	(set-goal gl-dm-stable-number 4)
+	(set-goal gl-dm-workshop-number 0)
+	(set-goal gl-dm-food-to-sell 0)
+	(set-goal gl-dm-wood-to-sell 1500)
+	(set-goal gl-dm-stone-to-sell 500)
+	(set-goal gl-dm-allow-counter-halbs 0)
+	(set-goal gl-dm-allow-counter-skirms 0)
+	(set-goal gl-dm-main-unit hand-cannoneer)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy dm-cannoneers)
+	(building-type-count castle > 2)
+=>
+	(set-goal gl-strategy dm-UU)
+	(set-goal gl-dm-main-unit my-unique-unit)
+	(set-goal gl-dm-stable-number 8)
+	(set-goal gl-dm-allow-UU-training 1)
+	(disable-self)
+)
+#else
+(defrule
+	(true)
+=>
+	(set-goal gl-strategy dm-cannoneers)
+	(set-goal gl-dm-barracks-number 0)
+	(set-goal gl-dm-range-number 13)
+	(set-goal gl-dm-stable-number 0)
+	(set-goal gl-dm-workshop-number 0)
+	(set-goal gl-dm-food-to-sell 1000)
+	(set-goal gl-dm-wood-to-sell 1500)
+	(set-goal gl-dm-stone-to-sell 500)
+	(set-goal gl-dm-allow-counter-halbs 1)
+	(set-goal gl-dm-allow-counter-skirms 1)
+	(set-goal gl-dm-main-unit hand-cannoneer)
+	(set-goal gl-dm-allow-UU-training 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy dm-cannoneers)
+	(building-type-count castle > 2)
+=>
+	(set-goal gl-dm-main-unit champion)
+	(disable-self)
+)
+#end-if

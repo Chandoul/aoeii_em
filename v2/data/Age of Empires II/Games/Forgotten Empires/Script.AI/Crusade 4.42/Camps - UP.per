@@ -1,0 +1,849 @@
+
+; First Mill rules, inspired from BTG
+(defrule
+	(building-type-count-total town-center >= 1)
+	(building-type-count-total mill < 1)
+	(or	(resource-found food) ; Berries found
+		(game-time > 350) ; Emergency situation
+	)
+	(can-build mill)
+	(up-pending-objects c: mill < 1)
+=>
+	(build mill)
+	(set-strategic-number sn-maximum-food-drop-distance 15)
+	(set-strategic-number sn-maximum-hunt-drop-distance 20)
+	;(set-strategic-number G-AGE-STATUS GV-DARK-MILL)
+	(chat-to-player my-player-number "First Mill")
+	;(set-strategic-number sn-mill-max-distance 35) ; To allow hunting mill
+)
+
+
+
+; Taken from The Horde, by Archon/Zergs
+#load-if-defined SCANDANAVIA-MAP
+(defrule
+	(building-type-count town-center > 0)
+	(or
+		(or 
+			(unit-type-count FEMALE-HUNTER >= 1)
+			(unit-type-count MALE-HUNTER >= 1)
+		)
+		(and
+			(building-type-count mill == 0); as there are no berries build 1st mill anyways
+			(game-time > 180)
+		)
+	)
+	(can-build mill)
+	(building-type-count-total mill < 2)
+	(up-pending-objects c: mill < 1)
+=>
+	(build mill)
+)
+#end-if
+
+; Hunting
+
+(defrule
+	(or	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(research-completed ri-loom)
+	)
+	(strategic-number sn-maximum-hunt-drop-distance  < 35)
+	(nor	(unit-type-count MALE-HUNTER > 0)  ;Hunters
+		(unit-type-count FEMALE-HUNTER > 0)
+	)
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance  35)
+)
+
+
+
+; Extra mills. Useful when we have tons of farms, to reduce walking farmers.
+
+; Next two rules are taken from The Horde, by Archon/Zergs
+;#load-if-defined YUCATAN-MAP
+(defrule
+	(or	(map-type yucatan)
+		(cc-players-unit-type-count 0 JAGUAR >= 1) ; Condition added for the 
+	)						; AI Ladder Mini-Tournament II (2011)
+	(building-type-count town-center > 0)
+	(building-type-count-total mill < 2)
+	(building-type-count-total lumber-camp >= 1)
+	(resource-found food)
+	(can-build mill)
+	(up-pending-objects c: mill < 1)
+=>
+	(build mill)
+)
+;#end-if
+
+; Cheap Japanese mills can be useful to hunters
+#load-if-defined JAPANESE-CIV
+(defrule
+	(building-type-count town-center > 0)
+	(or	(unit-type-count MALE-HUNTER > 0)  ;Hunters
+		(unit-type-count FEMALE-HUNTER > 0)
+	) 
+	(can-build mill)
+	(building-type-count-total mill < 2)
+	(up-pending-objects c: mill < 1)
+=>
+	(build mill)
+)
+#end-if
+
+(defrule
+	(strategic-number G-FARMING >= GV-FARM-IDLE-8)
+	(building-type-count town-center > 0)
+	(building-type-count-total mill < 3)
+	(building-type-count-total farm > 16)
+	(or	(building-type-count-total mill < 2)
+		(building-type-count-total farm > 24)
+	)
+	(can-build mill)
+	(up-pending-objects c: mill < 1)
+=>
+	(build mill)
+)
+
+
+; Radical farms
+#load-if-defined SCANDANAVIA-MAP
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(or	(wood-amount > 90)
+		(civ-selected teutonic)
+	)
+	(building-type-count-total mill >= 1)
+	(building-type-count-total farm < 2)
+	(wood-amount > 70)
+	(can-build farm)
+	(up-pending-objects c: farm < 1)
+=>
+	(build farm)
+)
+#else
+#load-if-not-defined UP-AVAILABLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(or	(civ-selected persian)
+		(civ-selected japanese)
+	)
+	(building-type-count-total mill >= 1)
+	(building-type-count-total farm < 1)
+	(wood-amount > 90)
+	(unit-type-count-total villager > 10)
+	(can-build farm)
+	(up-pending-objects c: farm < 1)
+=>
+	(build farm)
+)
+#end-if
+#end-if
+
+
+
+;First lumber camp.  The default strategic numbers do not always work well for the initial camp placement.
+;So I copied the following from Elite Raider and it hardly ever fails on a standard map.
+
+;START of first lumber camp placement rules.
+
+;The theory is that the amount of time it takes for your scout to see trees is
+;related to how far away they are from your camp.
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(resource-found wood)
+	(strategic-number sn-camp-max-distance == 8)
+	(game-time < 4)
+=>
+	(set-strategic-number sn-camp-max-distance 11)
+	(chat-local-to-self "Camp distance 11.")
+	(disable-self)
+)
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(resource-found wood)
+	(strategic-number sn-camp-max-distance == 8)
+	(game-time < 7)
+	=>
+	(set-strategic-number sn-camp-max-distance 13)
+	(chat-local-to-self "Camp distance 13.")
+	(disable-self)
+)
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(resource-found wood)
+	(strategic-number sn-camp-max-distance == 8)
+	(game-time < 12)
+	=>
+	(set-strategic-number sn-camp-max-distance 15)
+	(chat-local-to-self "Camp distance 15.")
+	(disable-self)
+)
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(resource-found wood)
+	(strategic-number sn-camp-max-distance == 8)
+	(game-time < 16)
+	=>
+	(set-strategic-number sn-camp-max-distance 17)
+	(chat-local-to-self "Camp distance 17.")
+	(disable-self)
+)
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(resource-found wood)
+	(strategic-number sn-camp-max-distance == 8)
+	(game-time < 25)
+	=>
+	(set-strategic-number sn-camp-max-distance 20)
+	(chat-local-to-self "Camp distance 20.")
+	(disable-self)
+)
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(resource-found wood)
+	(strategic-number sn-camp-max-distance == 8)
+	(game-time > 25)
+	=>
+	(set-strategic-number sn-camp-max-distance 22)
+	(chat-local-to-self "Camp distance 22.")
+	(disable-self)
+)
+
+;Next two rules are acts of desperation.  They rarely fire on a standard map.
+; Added by Bear The Great
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(current-age == dark-age)
+	(wood-amount > 200)
+	(population > 19)
+	(building-type-count-total lumber-camp == 0)
+	(strategic-number sn-camp-max-distance < 35)
+=>
+	(set-strategic-number sn-camp-max-distance 35)
+	(chat-to-allies "Wood further away than 22 tiles!")
+	(chat-local-to-self "Camp distance 35.")
+)
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(current-age == dark-age)
+	(wood-amount > 200)
+	(population > 21)
+	(building-type-count-total lumber-camp == 0)
+	(strategic-number sn-camp-max-distance < 45)
+=>
+	(set-strategic-number sn-camp-max-distance 45)
+	(chat-to-allies "Wood further away than 35 tiles!")
+	(chat-local-to-self "Camp distance 45.")
+)
+
+;END of first lumber camp placement rules
+
+;Now that we've hopefully found the trees at a reasonable distance
+;from the town center, let's build that lumber camp.
+
+(defrule
+	(building-type-count-total mill >= 1)
+	(or	(building-type-count-total mill >= 2)
+		(wood-amount >= 130)
+	)
+	(resource-found wood)
+	(building-type-count-total lumber-camp < 1)
+	(can-build lumber-camp)
+	(up-pending-objects c: lumber-camp < 1)
+=>
+	(build lumber-camp)
+	;(set-goal G-BUILDING 0)
+)
+
+(defrule
+	(building-type-count-total lumber-camp >= 2)
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(strategic-number sn-camp-max-distance < 35)
+=>
+	(set-strategic-number sn-camp-max-distance 35)
+	(chat-local-to-self "Camp distance 35.")
+)
+
+;One of the saddest things that can happen to an AI is for
+;its first lumber camp to be poorly placed.  Be prepared to detect this
+;situation and correct it.  The next 3 rules address this situation.
+
+(defrule
+	(current-age <= feudal-age)
+	(building-type-count-total mill >= 1)
+	(building-type-count lumber-camp == 1)
+	(dropsite-min-distance wood > 5)
+=>
+	(chat-to-allies "Bad lumber camp.")
+	(set-strategic-number sn-camp-max-distance 45)
+	(chat-local-to-self "Camp distance 45.")
+	(set-strategic-number sn-maximum-wood-drop-distance -1)
+	(disable-self)
+)
+
+(defrule
+	(building-type-count-total lumber-camp == 2)
+=>
+	(set-strategic-number sn-maximum-wood-drop-distance 15)
+	(disable-self)
+)
+
+; In late game forests and mines can be exhausted. We need to prevent any idle woodcutters or miners.
+; These rules have been taken from Demon, by Atanas Gyulev
+
+(defrule
+	(strategic-number sn-camp-max-distance < HALF-MAP-SIZE)
+	(game-time > 1800)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+		(or	(game-time > 3000)
+			(building-type-count-total mining-camp >= 4)
+		)
+	)
+	;(unit-type-count-total MALE-DEAD-MINER < 2)
+	;(unit-type-count-total FEMALE-DEAD-MINER < 2)
+=>
+	(set-strategic-number sn-camp-max-distance HALF-MAP-SIZE)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-camp-max-distance < FULL-MAP-SIZE)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+		(and	(and	(game-time > 3000)
+				(or	(game-time > 5000)
+					(population >= TOP-POPULATION)
+				)
+			)
+			(and	(unit-type-count-total MALE-DEAD-MINER < 2)
+				(unit-type-count-total FEMALE-DEAD-MINER < 2)
+			)
+		)
+	)
+=>
+	(set-strategic-number sn-camp-max-distance FULL-MAP-SIZE)
+)
+
+(defrule
+	(strategic-number sn-camp-max-distance > HALF-MAP-SIZE)
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	(or	(unit-type-count-total MALE-DEAD-MINER >= 2)
+		(unit-type-count-total FEMALE-DEAD-MINER >= 2)
+	)
+=>
+	(set-strategic-number sn-camp-max-distance HALF-MAP-SIZE)
+)
+
+
+
+; Quick gold camp for FC strategies before than extra lumber camps
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	(building-type-count-total mill >= 1)
+	(building-type-count-total lumber-camp >= 1)
+	(resource-found gold)
+	(cc-players-unit-type-count 0 GOLD-MINE > 0) 
+	(dropsite-min-distance gold > 3)
+	(dropsite-min-distance gold < 255)
+	(can-build mining-camp)
+	(up-pending-objects c: mining-camp < 1)
+ =>
+	(build mining-camp)
+	(chat-to-player my-player-number "43") ; Taunt TA-GOLD-MINING
+)
+
+
+; Extra lumber camps
+
+(defrule
+	(current-age == dark-age)
+	(building-type-count-total mill >= 1)
+	(building-type-count-total lumber-camp < 2)
+	(building-type-count-total farm > 2)
+	(dropsite-min-distance wood > 0)
+	(resource-found wood)
+	(nand	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+		(building-type-count-total dock == 0)
+	)
+	(can-build lumber-camp)
+	(up-pending-objects c: lumber-camp < 1)
+=>
+;	(set-strategic-number sn-camp-max-distance 22)		;<-- this is a "trick"
+	(build lumber-camp)
+	;(set-goal G-BUILDING 0)
+)
+
+(defrule ;Copied from The Horde, by Archon/Zergs
+	(resource-found wood)
+	(unit-type-count villager >= 25)
+	(nand	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+		(building-type-count-total dock == 0)
+	)
+	(building-type-count-total lumber-camp < 2)
+	(can-build lumber-camp)
+	(up-pending-objects c: lumber-camp < 1)
+=>
+	(build lumber-camp)
+	;(set-goal G-BUILDING 0)
+)
+
+(defrule ;Copied from The Horde, by Archon/Zergs
+	(resource-found wood)
+	(nand	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+		(building-type-count-total dock == 0)
+	)
+	(or	(and	(unit-type-count villager >= 45)
+			(building-type-count-total lumber-camp < 3)
+		)
+		(and	(unit-type-count villager >= 60)
+			(building-type-count-total lumber-camp < 5)
+		)
+	)
+	(can-build lumber-camp)
+	(up-pending-objects c: lumber-camp < 1)
+=>
+	(build lumber-camp)
+	;(set-goal G-BUILDING 0)
+)
+
+(defrule ; Rule taken from Echidna
+	(or	(unit-type-count MALE-DEAD-LUMBERJACK > 3)
+		(unit-type-count FEMALE-DEAD-LUMBERJACK > 3)
+	)
+	(can-build lumber-camp)
+	(up-pending-objects c: lumber-camp < 1)
+=>
+	(build lumber-camp)
+	;(set-goal G-BUILDING 0)
+)
+
+(defrule
+	(dropsite-min-distance wood > 7)
+	(can-build lumber-camp)
+	(up-pending-objects c: lumber-camp < 1)
+=>
+	(build lumber-camp)
+)
+
+
+
+
+
+
+; Farm Building
+
+; In dark age, we need a minimum number of farms, that will be smaller if we have a second mill for hunters.
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(nor	(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+		(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	)
+	(building-type-count-total mill > 0)
+	(building-type-count-total lumber-camp > 0)
+;If (dropsite-min-distance wood > 5) then the first lumber
+;camp was placed poorly.  Save the wood for a new lumber camp.
+	(dropsite-min-distance wood < 6)
+	(or	(building-type-count-total farm < DARK-MILL1-FARMS)
+		(idle-farm-count < 2)
+	)
+	(nand	(building-type-count-total lumber-camp < 2)
+		(idle-farm-count > 2)
+	)
+	;(strategic-number G-FARMING >= GV-FARM-IDLE-2)
+	(can-build farm)
+	(up-pending-objects c: farm < 2)
+=>
+	(build farm)
+	;(set-goal G-BUILDING 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	(building-type-count-total mill > 0)
+	(building-type-count-total lumber-camp > 0)
+;If (dropsite-min-distance wood > 5) then the first lumber
+;camp was placed poorly.  Save the wood for a new lumber camp.
+	(dropsite-min-distance wood < 6)
+	(or	(building-type-count-total farm < DARK-MILL1-FARMS)
+		(idle-farm-count < 2)
+	)
+	(nand	(or	(building-type-count-total lumber-camp < 2)
+			(dropsite-min-distance gold > IDEAL-DROP-DISTANCE)
+		)
+		(idle-farm-count > 2)
+	)
+	;(strategic-number G-FARMING >= GV-FARM-IDLE-2)
+	(can-build farm)
+	(up-pending-objects c: farm < 2)
+=>
+	(build farm)
+	;(set-goal G-BUILDING 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	(building-type-count-total mill > 0)
+	(building-type-count-total lumber-camp > 0)
+;If (dropsite-min-distance wood > 5) then the first lumber
+;camp was placed poorly.  Save the wood for a new lumber camp.
+	(dropsite-min-distance wood < 6)
+	;(building-type-count-total farm < DARK-MILL1-FARMS)
+	;(food-amount < 150)
+	(wood-amount > 135)
+	(or	(wood-amount > 200)
+		(building-type-count-total dock >= 1)
+	)
+	(idle-farm-count < 2)
+	;(nand	(building-type-count-total lumber-camp < 2)
+	;	(idle-farm-count > 0)
+	;)
+	(or	(building-type-count-total farm < 3)
+		;(building-type-count-total dock == 0)
+		(idle-farm-count < 1)
+	)
+	;(strategic-number G-FARMING >= GV-FARM-IDLE-2)
+	(can-build farm)
+	(up-pending-objects c: farm < 1)
+=>
+	(build farm)
+	;(set-goal G-BUILDING 0)
+)
+
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(building-type-count-total mill > 0)
+	(building-type-count-total lumber-camp > 0)
+	;(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-FARMING >= GV-FARM-IDLE-1)
+	(idle-farm-count < 1)
+	(can-build farm)
+	(up-pending-objects c: farm < 1)
+=>
+	(build farm)
+	;(set-goal G-BUILDING 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(building-type-count-total mill > 0)
+	(building-type-count-total lumber-camp > 0)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-FARMING >= GV-FARM-IDLE-2)
+	(idle-farm-count < 3)
+	(or	(idle-farm-count < 2)
+		(and	(unit-type-count villager >= 35)
+			(strategic-number G-FARMING >= GV-FARM-IDLE-3)
+		)
+	)
+	(can-build farm)
+	(up-pending-objects c: farm < 2)
+=>
+	(build farm)
+	;(set-goal G-BUILDING 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(building-type-count-total mill > 0)
+	(building-type-count-total lumber-camp > 0)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(unit-type-count villager >= 40)
+	(strategic-number G-FARMING >= GV-FARM-IDLE-4)
+	(idle-farm-count < 6)
+	(or	(idle-farm-count < 4)
+		(and	(unit-type-count villager >= 50)
+			(strategic-number G-FARMING >= GV-FARM-IDLE-6)
+		)
+	)
+	(can-build farm)
+	(up-pending-objects c: farm < 2)
+=>
+	(build farm)
+	;(set-goal G-BUILDING 0)
+)
+
+
+
+
+
+; Mining Camps.
+
+; BUILD ORDERS
+; Flush Swords-Archers: Barracks => Gold => Archery => Blacksmith				g1
+; Flush Scouts-Archers: Barracks => Archery => Stable => Gold => Blacksmith			g2
+; Trush Swords-Archers: Stone => Barracks => Gold => Archery => Blacksmith			g1	st
+; Trush Scouts-Archers: Barracks => Stone => Archery => Stable => Gold => Blacksmith		g2	st
+; FC. Gold included in the file								g4
+; Market: Barracks => Archery => Stable (or 2nd Barracks) => Market => Stone/Gold => Blacksmith	gm	sm
+; Amphibian: Dock => Gold => Barracks => Archery/Blacksmith					g4
+; Archery-3: Barracks => Gold => Archery 2 => Blacksmith => Archery 3				g3
+; Mat-at-arms: Barracks => Gold => Barracks 2 => Blacksmith => Barracks_3/Archery			g1
+
+; Rule G1
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(not(taunt-detected my-player-number TA-GOLD-MINING))
+	(building-type-count-total barracks >= 1)
+	(or	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SWORD-ARCHERS)
+			(goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+		)
+		(and	(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+			(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+		)
+	)
+=>
+	(chat-to-player my-player-number "43") ; Taunt TA-GOLD-MINING
+
+)
+
+; Rule G2
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(not(taunt-detected my-player-number TA-GOLD-MINING))
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total stable >= 1)
+	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+		(and	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+			(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+		)
+	)
+=>
+	(chat-to-player my-player-number "43") ; Taunt TA-GOLD-MINING
+
+)
+
+; Rule G3
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(not(taunt-detected my-player-number TA-GOLD-MINING))
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(building-type-count-total barracks >= 1)
+=>
+	(chat-to-player my-player-number "43") ; Taunt TA-GOLD-MINING
+
+)
+
+; Rule G4
+(defrule
+	(not(taunt-detected my-player-number 43)) ; Taunt TA-GOLD-MINING
+	(or	(and	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+			(or	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+				(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+			)
+		)
+		(and	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+			(and	(building-type-count-total mill >= 1)
+				(building-type-count-total lumber-camp >= 1)
+			)
+		)
+	)
+ =>
+	(chat-to-player my-player-number "43") ; Taunt TA-GOLD-MINING
+)
+
+; Rule GM
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(not(taunt-detected my-player-number 43)) ; Taunt TA-GOLD-MINING
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(or	(building-type-count-total stable >= 1)
+		(building-type-count-total barracks >= 2)
+	)
+	(building-type-count-total market >= 1)
+	(commodity-selling-price stone <= 100)
+=>
+	(chat-to-player my-player-number "43") ; Taunt TA-GOLD-MINING
+	;(disable-self)
+)
+
+
+; Rule S
+(defrule
+	(current-age >= castle-age)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(not(taunt-detected my-player-number TA-STONE-MINING))
+	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+	(nand	(building-type-count-total market == 0)
+		(and	(player-in-game any-ally)
+			(players-building-type-count market any-ally >= 1)
+		)
+	)
+	(building-type-count-total monastery >= 1)
+=>
+	(chat-to-player my-player-number "44") ; Taunt TA-STONE-MINING
+)
+
+; Rule ST
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(not(taunt-detected my-player-number TA-STONE-MINING))
+	(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+		;(and	
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+		;	(building-type-count-total barracks >= 1)
+		;)
+	)
+=>
+	(chat-to-player my-player-number "44") ; Taunt TA-STONE-MINING
+
+)
+
+; Rule SM
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	;(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(not(taunt-detected my-player-number 44)) ; Taunt TA-STONE-MINING
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(or	(building-type-count-total stable >= 1)
+		(building-type-count-total barracks >= 2)
+	)
+	(building-type-count-total market >= 1)
+=>
+	(chat-to-player my-player-number "44") ; Taunt TA-STONE-MINING
+	;(disable-self)
+)
+
+#load-if-defined WONDER-RACE
+(defrule
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(not(taunt-detected my-player-number 43)) ; Taunt TA-GOLD-MINING
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+=>
+	(chat-to-player my-player-number "43") ; Taunt TA-GOLD-MINING
+)
+
+(defrule
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(not(taunt-detected my-player-number 44)) ; Taunt TA-STONE-MINING
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+=>
+	(chat-to-player my-player-number "44") ; Taunt TA-STONE-MINING
+)
+
+(defrule
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(or	(taunt-detected my-player-number TA-GOLD-MINING)
+		(and	(building-type-count-total mill >= 1)
+			(and	(building-type-count-total lumber-camp >= 2)
+				(building-type-count-total mining-camp < 1)
+			)
+		)
+	)
+	(resource-found gold)
+	(cc-players-unit-type-count 0 GOLD-MINE > 0) 
+	(dropsite-min-distance gold > BUILDING-DROP-DISTANCE)
+	(dropsite-min-distance gold < 255) ; To avoid infinite gold camps with gold exhausted
+	(can-build mining-camp)
+	(up-pending-objects c: mining-camp < 1)
+ =>
+	(build mining-camp)
+)
+
+(defrule
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(taunt-detected my-player-number TA-STONE-MINING)
+	(resource-found stone)
+	(cc-players-unit-type-count 0 STONE-MINE > 0) 
+	(dropsite-min-distance stone > BUILDING-DROP-DISTANCE)
+	(dropsite-min-distance stone < 255) ; To avoid infinite stone camps with stone exhausted
+	(can-build mining-camp)
+	(up-pending-objects c: mining-camp < 1)
+=>
+	(build mining-camp)
+)
+#end-if ; Wonder Race
+
+
+
+
+
+
+
+; Goals G-GOLD-MINING and G-STONE-MINING are useful to avoid mining camps until the selected strategy requires them.
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(taunt-detected my-player-number TA-STONE-MINING)
+	(resource-found stone)
+	;(or	(current-age >= castle-age)
+	;	(building-type-count-total mining-camp < 4)
+	;)
+	(cc-players-unit-type-count 0 STONE-MINE > 0) 
+	(dropsite-min-distance stone > BUILDING-DROP-DISTANCE)
+	(dropsite-min-distance stone < 255) ; To avoid infinite stone camps with stone exhausted
+	(can-build mining-camp)
+	(up-pending-objects c: mining-camp < 1)
+=>
+	(build mining-camp)
+	;(set-goal G-BUILDING 0)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(or	(taunt-detected my-player-number TA-GOLD-MINING)
+		(and	(and	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+				(building-type-count-total mill >= 1)
+			)
+			(and	(building-type-count-total lumber-camp >= 2)
+				(building-type-count-total mining-camp < 1)
+			)
+		)
+	)
+	;(or	(unit-type-count MALE-GOLD-MINER > 0);Male gold miner
+		;(unit-type-count FEMALE-GOLD-MINER > 0))  ;Female gold miner 
+	(resource-found gold)
+	;(or	(current-age >= castle-age)
+	;	(building-type-count-total mining-camp < 4)
+	;)
+	(cc-players-unit-type-count 0 GOLD-MINE > 0) 
+	(dropsite-min-distance gold > BUILDING-DROP-DISTANCE)
+	(dropsite-min-distance gold < 255) ; To avoid infinite gold camps with gold exhausted
+	(can-build mining-camp)
+	(up-pending-objects c: mining-camp < 1)
+ =>
+	(build mining-camp)
+	;(set-goal G-BUILDING 0)
+)
+
+
+
+; More camps if dead miner. Based in Echidna's rule for extra lumber camps
+(defrule
+	(or	(unit-type-count MALE-DEAD-MINER > 0)
+		(unit-type-count MALE-DEAD-MINER > 0)
+	)
+	(or	(taunt-detected my-player-number TA-GOLD-MINING)
+		(taunt-detected my-player-number TA-STONE-MINING)
+	)
+	(building-type-count-total mining-camp < 4)
+	(dropsite-min-distance gold < 255) ; To avoid infinite gold camps with gold exhausted
+	(can-build mining-camp)
+	(up-pending-objects c: mining-camp < 1)
+=>
+	(build mining-camp)
+	;(set-goal G-BUILDING 0)
+)

@@ -1,0 +1,1044 @@
+;UPGRADES & BUILDS RELATED TO OTHER PLAYERS
+
+#load-if-not-defined DEFEND-WONDER
+#load-if-not-defined WONDER-RACE
+#load-if-defined DIFFICULTY-MODERATE
+(load-random
+	20	"STD AI DM FIX\elite petersen dip bully"
+	5	"STD AI DM FIX\elite petersen dip boomer"
+	5	"STD AI DM FIX\elite petersen dip feeder"
+)
+
+#else
+
+(load-random
+	10	"STD AI DM FIX\elite petersen dip bully"
+	10	"STD AI DM FIX\elite petersen dip boomer"
+	10	"STD AI DM FIX\elite petersen dip feeder"
+)
+#end-if
+#end-if
+#end-if
+
+#load-if-defined WONDER-RACE
+(load-random
+	25	"STD AI DM FIX\elite petersen dip feeder"
+)
+#end-if
+
+#load-if-defined DEFEND-WONDER
+
+(load-random
+	15	"STD AI DM FIX\elite petersen dip feeder"
+)
+
+#end-if
+
+(defrule
+	(true)
+=>
+	(set-goal make-villagers NO)
+	(set-goal 24 NO)
+)
+;**************************************
+;TRIBUTE TO ONE ANOTHER
+(defrule
+	(wood-amount > 350)
+	(taunt-detected any-computer-ally 4)
+	(not (goal resource-needed WOOD) )
+=>
+	(release-escrow wood)
+	(tribute-to-player this-any-ally wood 100)
+	(acknowledge-taunt this-any-ally 4)
+	(chat-local-to-self "Tribute wood")
+)
+
+(defrule
+	(wood-amount > 100)
+	(taunt-detected any-human-ally 4)
+=>
+	(release-escrow wood)
+	(tribute-to-player this-any-ally wood 100)
+	(acknowledge-taunt this-any-ally 4)
+	(chat-local-to-self "Tribute wood")
+)
+
+(defrule
+	(taunt-detected any-ally 4)
+=>
+	(acknowledge-taunt any-ally 4)
+)
+
+(defrule
+	(food-amount > 200)
+	(taunt-detected any-computer-ally 3)
+	(not (goal resource-needed FOOD) )
+=>
+	(release-escrow food)
+	(tribute-to-player this-any-ally food 100)
+	(acknowledge-taunt this-any-ally 3)
+	(chat-local-to-self "Tribute food")
+)
+
+(defrule
+	(food-amount > 200)
+	(taunt-detected any-human-ally 3)
+=>
+	(release-escrow food)
+	(tribute-to-player this-any-ally food 100)
+	(acknowledge-taunt this-any-ally 3)
+	(chat-local-to-self "Tribute food")
+)
+
+(defrule
+	(taunt-detected any-ally 3)
+=>
+	(acknowledge-taunt any-ally 3)
+)
+
+(defrule
+	(gold-amount > 350)
+	(taunt-detected any-computer-ally 5)
+	(not (goal resource-needed GOLD) )
+=>
+	(release-escrow gold)
+	(tribute-to-player this-any-ally gold 100)
+	(acknowledge-taunt this-any-ally 5)
+	(chat-local-to-self "Tribute gold")
+)
+
+(defrule
+	(gold-amount > 200)
+	(taunt-detected any-human-ally 5)
+=>
+	(release-escrow gold)
+	(tribute-to-player this-any-ally gold 100)
+	(acknowledge-taunt this-any-ally 5)
+	(chat-local-to-self "Tribute gold")
+)
+
+(defrule
+	(taunt-detected any-ally 5)
+=>
+	(acknowledge-taunt any-ally 5)
+)
+
+(defrule
+	(stone-amount > 350)
+	(taunt-detected any-computer-ally 6)
+	(not (goal resource-needed STONE) )
+=>
+	(release-escrow stone)
+	(tribute-to-player this-any-ally stone 100)
+	(acknowledge-taunt this-any-ally 6)
+)
+
+(defrule
+	(stone-amount > 200)
+	(taunt-detected any-human-ally 6)
+=>
+	(release-escrow stone)
+	(tribute-to-player this-any-ally stone 100)
+	(acknowledge-taunt this-any-ally 6)
+)
+
+(defrule
+	(taunt-detected any-ally 6)
+=>
+	(acknowledge-taunt any-ally 6)
+)
+
+;**************************************
+;ATTACK NOW
+	(defrule
+		(taunt-detected any-ally 31)
+		(current-age == feudal-age)
+	=>
+		(set-strategic-number sn-maximum-town-size feudal-town-size)
+	)
+
+	(defrule
+		(taunt-detected any-ally 31)
+		(current-age == castle-age)
+	=>
+		(set-strategic-number sn-maximum-town-size castle-town-size)
+	)
+
+	(defrule
+		(taunt-detected any-ally 31)
+		(current-age == imperial-age)
+	=>
+		(set-strategic-number sn-maximum-town-size imperial-town-size)
+	)
+
+	(defrule
+		(taunt-detected any-ally 31)
+	=>
+		(set-strategic-number sn-percent-attack-soldiers 100)
+		(set-strategic-number sn-percent-attack-boats 100)
+		(acknowledge-taunt this-any-ally 31)
+		(attack-now)
+		(chat-to-player-using-id this-any-ally 22153)
+			;"39 At once, sire!")
+		(set-goal attack-control NO)
+		(disable-timer t-attackgroup)
+		(enable-timer t-attackgroup 1)
+	)
+
+;**************************************
+;STOP BUILDING EXTRA VILLAGERS
+
+(defrule
+	(taunt-detected any-ally 32)
+	(goal make-villagers YES)
+=>
+	(acknowledge-taunt this-any-ally 32)
+	(set-goal make-villagers NO)
+	(chat-to-player-using-id this-any-ally 22154)
+		;"39 I shall train fewer villagers, Sire!")
+)
+
+;**************************************
+;GO ECONOMY
+
+(defrule
+	(taunt-detected any-ally 33)
+	(goal make-villagers NO)
+=>
+	(acknowledge-taunt this-any-ally 33)
+	(set-goal make-villagers YES)
+	(chat-to-player-using-id this-any-ally 22157)
+		;"39 I shall train as many villagers as possible, Sire!")
+)
+
+(defrule
+	(current-age == dark-age)
+	(goal make-villagers YES)
+	(civilian-population < civ-feudal)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(goal make-villagers YES)
+	(civilian-population < civ-castle)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(goal make-villagers YES)
+	(civilian-population < deathmatch-unit-max)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+;**************************************
+;GO NAVY
+(defrule
+	(taunt-detected any-ally 34)
+	(goal 1 0)
+=>
+	(acknowledge-taunt this-any-ally 34)
+	(chat-to-player-using-id this-any-ally 22158)
+		;"39 But Sire, this map is dry as a bone! Surely thou jesteth?"
+)
+
+(defrule
+	(taunt-detected any-ally 34)
+	(or
+		(goal 1 1)
+		(goal 1 10)
+	)
+=>
+	(set-goal sea-owner YES)
+	(acknowledge-taunt this-any-ally 34)
+	(chat-to-player-using-id this-any-ally 22153)
+		;"39 At once, Sire!"
+)
+
+;**************************************
+;GO LAND
+(defrule
+	(taunt-detected any-ally 35)
+	(goal 1 0)
+=>
+	(acknowledge-taunt this-any-ally 35)
+	(chat-to-player-using-id this-any-ally 22159)
+		;"39 Er ... sire. I had planned as much!")
+)
+
+(defrule
+	(taunt-detected any-ally 35)
+	(or
+		(goal 1 1)
+		(goal 1 10)
+	)
+=>
+	(set-goal sea-owner NOTICE)
+	(acknowledge-taunt this-any-ally 35)
+	(chat-to-player-using-id this-any-ally 22153)
+		;"39 At once, Sire!"
+)
+
+
+;**************************************
+;DON'T ATTACK YET
+	(defrule
+		(taunt-detected any-ally 36)
+	=>
+		(set-goal attack-enabled NO)
+		(disable-timer t-attackgroup)
+	)
+
+	(defrule
+		(taunt-detected any-ally 36)
+	=>
+		(set-strategic-number sn-maximum-town-size 15)
+		(acknowledge-taunt this-any-ally 36)
+		(chat-to-player-using-id this-any-ally 22160)
+			;"39 Yes sire! I shall not attack until thou thyself give the word!"
+	)
+
+;**************************************
+;BUILD A WONDER
+	(defrule
+		(taunt-detected any-ally 37)
+		(current-age < imperial-age)
+	=>
+		(acknowledge-taunt this-any-ally 37)
+		(chat-to-player-using-id this-any-ally 22162)
+			;"39 Nay, sire! I am not Imperial yet!")
+	)
+
+	(defrule
+		(taunt-detected any-ally 37)
+		(current-age == imperial-age)
+	=>
+		(set-goal upgrade-conflict NOTICE)
+		(set-goal wonder-attempt POSSIBLE)
+		(disable-timer t-ageup)
+		(acknowledge-taunt this-any-ally 37)
+		(chat-to-player-using-id every-computer 22410)	;200
+		(chat-to-player-using-id this-any-ally 22161)
+			;"39 At once, sire! I shall begin the Wonder as soon as possible!")
+	)
+
+;**************************************
+;GIVE ME YOUR SPARE STUFF
+
+;if it's impossible
+(defrule
+	(taunt-detected any-ally 38)
+	(building-type-count market < 1)
+=>
+	(acknowledge-taunt this-any-ally 38)
+	(chat-to-player-using-id this-any-ally 22164)
+		;"39 But sire! I have no market!"
+)
+
+;tribute away our wood
+(defrule
+	(taunt-detected any-ally 38)
+	(nor 
+		(goal resource-supp WOOD-FOOD)
+		(or
+			(goal resource-supp WOOD-GOLD)
+			(goal resource-supp WOOD-STONE)
+		)
+	)
+	(wood-amount > 700)
+=>
+	(release-escrow wood)
+	(tribute-to-player this-any-ally wood 500)
+	(set-goal 24 YES)
+)
+
+(defrule
+	(taunt-detected any-ally 38)
+	(or
+		(and
+			(goal resource-supp WOOD-FOOD)
+			(wood-amount > 1600)
+		)
+		(or
+			(and
+				(goal resource-supp WOOD-GOLD)
+				(wood-amount > 1025)
+			)
+			(and
+				(goal resource-supp WOOD-STONE)
+				(wood-amount > 900)
+			)
+		)
+	)
+=>
+	(release-escrow wood)
+	(tribute-to-player this-any-ally wood 500)
+	(set-goal 24 YES)
+)
+
+;tribute away our food
+
+(defrule
+	(taunt-detected any-ally 38)
+	(nor 
+		(or
+			(goal resource-supp FOOD-ONLY)
+			(goal resource-supp WOOD-FOOD)
+		)
+		(or
+			(goal resource-supp FOOD-GOLD)
+			(goal resource-supp FOOD-STONE)
+		)
+	)
+	(food-amount > 700)
+=>
+	(release-escrow food)
+	(tribute-to-player this-any-ally food 500)
+	(set-goal 24 YES)
+)
+
+(defrule
+	(taunt-detected any-ally 38)
+	(or
+		(and
+			(goal resource-supp FOOD-ONLY)
+			(food-amount > 750)
+		)
+		(and
+			(goal resource-supp WOOD-FOOD)
+			(food-amount > 1500)
+		)
+	)
+=>
+	(release-escrow food)
+	(tribute-to-player this-any-ally food 500)
+	(set-goal 24 YES)
+)
+
+(defrule
+	(taunt-detected any-ally 38)
+	(or
+		(and
+			(goal resource-supp FOOD-GOLD)
+			(food-amount > 2100)
+		)
+		(and
+			(goal resource-supp FOOD-STONE)
+			(food-amount > 1000)
+		)
+	)
+=>
+	(release-escrow food)
+	(tribute-to-player this-any-ally food 500)
+	(set-goal 24 YES)
+)
+
+;give away the gold
+(defrule
+	(taunt-detected any-ally 38)
+	(nor 
+		(goal resource-supp GOLD-ONLY)
+		(or
+			(goal resource-supp WOOD-GOLD)
+			(goal resource-supp FOOD-GOLD)
+		)
+	)
+	(gold-amount > 700)
+=>
+	(release-escrow gold)
+	(tribute-to-player this-any-ally food 500)
+	(set-goal 24 YES)
+)
+
+(defrule
+	(taunt-detected any-ally 38)
+	(or
+		(and
+			(goal resource-supp GOLD-ONLY)
+			(gold-amount > 975)
+		)
+		(or
+			(and
+				(goal resource-supp WOOD-GOLD)
+				(gold-amount > 1000)
+			)
+			(and
+				(goal resource-supp FOOD-GOLD)
+				(gold-amount > 1700)
+			)
+		)
+	)
+=>
+	(release-escrow gold)
+	(tribute-to-player this-any-ally gold 500)
+	(set-goal 24 YES)
+)
+
+;give away the stone
+(defrule
+	(taunt-detected any-ally 38)
+	(nor 
+		(goal resource-supp WOOD-STONE)
+		(goal resource-supp FOOD-STONE) 
+	)
+	(stone-amount > 700)
+=>
+	(release-escrow stone)
+	(tribute-to-player this-any-ally stone 500)
+	(set-goal 24 YES)
+)
+
+(defrule
+	(taunt-detected any-ally 38)
+	(or
+		(and
+			(goal resource-supp WOOD-STONE)
+			(gold-amount > 900)
+		)
+		(and
+			(goal resource-supp FOOD-STONE)
+			(gold-amount > 850)
+		)
+	)
+=>
+	(release-escrow stone)
+	(tribute-to-player this-any-ally stone 500)
+	(set-goal 24 YES)
+)
+
+;finish it off
+(defrule
+	(taunt-detected any-ally 38)
+	(goal 24 NO)
+=>
+	(set-goal 24 NO)
+	(acknowledge-taunt this-any-ally 38)
+	(chat-to-player-using-id this-any-ally 22163)
+		;"39 I regret, sire, that I have nothing to spare."
+)
+
+(defrule
+	(taunt-detected any-ally 38)
+	(goal 24 YES)
+=>
+	(set-goal 24 NOTICE)
+)
+
+(defrule
+	(taunt-detected any-ally 38)
+	(goal 24 NOTICE)
+=>
+	(acknowledge-taunt this-any-ally 38)
+	(set-goal 24 NO)
+)
+
+;**************************************
+;WHAT AGE ARE YOU? (taunt 42)
+
+(defrule
+	(taunt-detected any-ally 42)
+	(current-age == dark-age)
+=>
+	(acknowledge-taunt this-any-ally 42)
+	(chat-to-player-using-id this-any-ally 22165)
+		;"39 Alas, sire. I languish in the Dark Age."
+)
+
+(defrule
+	(taunt-detected any-ally 42)
+	(current-age == feudal-age)
+=>
+	(acknowledge-taunt this-any-ally 42)
+	(chat-to-player-using-id this-any-ally 22166)
+		; "39 Sire, I have attained unto the Feudal Age."
+)
+
+(defrule
+	(taunt-detected any-ally 42)
+	(current-age == castle-age)
+=>
+	(acknowledge-taunt this-any-ally 42)
+	(chat-to-player-using-id this-any-ally 22167)
+		; "39 Sire, I have attained unto the Castle Age!"
+)
+
+(defrule
+	(taunt-detected any-ally 42)
+	(current-age == imperial-age)
+=>
+	(acknowledge-taunt this-any-ally 42)
+	(chat-to-player-using-id this-any-ally 22168)
+		; "39 Ah, sire! I am in the glorious Imperial Age"
+)
+
+;**************************************
+;BASIC DIPLOMACY
+#load-if-not-defined TEAMS-LOCKED
+(defrule
+	(true)
+=>
+	(disable-timer t-chathelp)
+	(enable-timer t-chathelp 120)
+	(disable-self)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(players-stance any-computer-ally neutral)
+=>
+	(set-stance this-any-computer-ally neutral)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(players-stance any-computer-ally enemy)
+=>
+	(set-stance this-any-computer-ally enemy)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(players-stance any-computer-neutral ally)
+=>
+	(set-stance this-any-computer-neutral ally)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(players-stance any-computer-neutral enemy)
+=>
+	(set-stance this-any-computer-neutral enemy)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(players-stance any-computer-enemy ally)
+=>
+	(set-stance this-any-computer-enemy ally)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(players-stance any-computer-enemy neutral)
+=>
+	(set-stance this-any-computer-enemy neutral)
+)
+
+;*******************************************************
+;is there more than one human player?
+(defrule
+	(player-human 1)
+	(or
+		(or
+			(player-human 2)
+			(player-human 3)
+		)
+		(or
+			(or
+				(or
+					(player-human 4)
+					(player-human 5)
+				)
+				(or
+					(player-human 6)
+					(player-human 7)
+				)
+			)
+			(player-human 8)
+		)
+	)
+=>
+	(set-goal get-mad YES)
+	(disable-self)
+)
+
+(defrule
+	(player-human 2)
+	(or
+		(or
+			(player-human 1)
+			(player-human 3)
+		)
+		(or
+			(or
+				(or
+					(player-human 4)
+					(player-human 5)
+				)
+				(or
+					(player-human 6)
+					(player-human 7)
+				)
+			)
+			(player-human 8)
+		)
+	)
+=>
+	(set-goal get-mad YES)
+	(disable-self)
+)
+
+(defrule
+	(player-human 3)
+	(or
+		(or
+			(player-human 2)
+			(player-human 1)
+		)
+		(or
+			(or
+				(or
+					(player-human 4)
+					(player-human 5)
+				)
+				(or
+					(player-human 6)
+					(player-human 7)
+				)
+			)
+			(player-human 8)
+		)
+	)
+=>
+	(set-goal get-mad YES)
+	(disable-self)
+)
+
+(defrule
+	(player-human 4)
+	(or
+		(or
+			(player-human 2)
+			(player-human 3)
+		)
+		(or
+			(or
+				(or
+					(player-human 1)
+					(player-human 5)
+				)
+				(or
+					(player-human 6)
+					(player-human 7)
+				)
+			)
+			(player-human 8)
+		)
+	)
+=>
+	(set-goal get-mad YES)
+	(disable-self)
+)
+
+(defrule
+	(player-human 5)
+	(or
+		(or
+			(player-human 2)
+			(player-human 3)
+		)
+		(or
+			(or
+				(or
+					(player-human 4)
+					(player-human 1)
+				)
+				(or
+					(player-human 6)
+					(player-human 7)
+				)
+			)
+			(player-human 8)
+		)
+	)
+=>
+	(set-goal get-mad YES)
+	(disable-self)
+)
+
+(defrule
+	(player-human 6)
+	(or
+		(or
+			(player-human 2)
+			(player-human 3)
+		)
+		(or
+			(or
+				(or
+					(player-human 4)
+					(player-human 5)
+				)
+				(or
+					(player-human 1)
+					(player-human 7)
+				)
+			)
+			(player-human 8)
+		)
+	)
+=>
+	(set-goal get-mad YES)
+	(disable-self)
+)
+
+(defrule
+	(player-human 7)
+	(or
+		(or
+			(player-human 2)
+			(player-human 3)
+		)
+		(or
+			(or
+				(or
+					(player-human 4)
+					(player-human 5)
+				)
+				(or
+					(player-human 6)
+					(player-human 1)
+				)
+			)
+			(player-human 8)
+		)
+	)
+=>
+	(set-goal get-mad YES)
+	(disable-self)
+)
+(defrule
+	(player-human 8)
+	(or
+		(or
+			(player-human 2)
+			(player-human 3)
+		)
+		(or
+			(or
+				(or
+					(player-human 4)
+					(player-human 5)
+				)
+				(or
+					(player-human 6)
+					(player-human 1)
+				)
+			)
+			(player-human 1)
+		)
+	)
+=>
+	(set-goal get-mad YES)
+	(disable-self)
+)
+
+;*******************************************************
+;BASIC DIPLOMACY VS. HUMANS
+;if the human player doesn't go neutral at our request
+(defrule
+	(goal get-mad NO)
+	(timer-triggered t-chathelp)
+	(players-stance any-human-neutral enemy)
+	(or
+		(difficulty <= moderate)
+		(current-age > dark-age)
+	)
+=>
+	(chat-to-player-using-id this-any-human-neutral 22027)
+		;"41 I am Neutral to thee. Set thy diplomacy to Neutral to me."
+	(disable-timer t-chathelp)
+	(enable-timer t-chathelp 120)
+	(set-goal get-mad ANGRY)
+)
+
+(defrule
+	(or
+		(goal get-mad ANGRY) 
+		(or
+			(goal get-mad ANGRIER)
+			(goal get-mad ANGRIEST)
+		)
+	)
+	(or
+		(players-stance any-human-neutral neutral)
+		(players-stance any-human-neutral ally)
+	)
+=>
+	(chat-to-player-using-id this-any-human-neutral 22028)
+	(chat-to-player-using-id this-any-human-neutral 22029)
+		;"39 Thou art wise to be a potential friend."
+		;"Thou shalt hear from me again."
+	(disable-timer t-chathelp)
+	(enable-timer t-chathelp 120)
+	(set-goal get-mad NO)
+)
+
+(defrule
+	(goal get-mad ANGRY)
+	(timer-triggered t-chathelp)
+	(players-stance any-human-neutral enemy)
+=>
+	(set-goal get-mad ANGRIER)
+	(disable-timer t-chathelp)
+	(enable-timer t-chathelp 120)
+	(chat-to-player-using-id this-any-human-neutral 22030)
+	(chat-to-player-using-id this-any-human-neutral 22031)
+		;"41 Thou hast ignored my generous invitation. I am merciful, and give you another chance."
+		;"Set thy diplomacy to Neutral to me. Now."
+)
+
+(defrule
+	(goal get-mad ANGRIER)
+	(timer-triggered t-chathelp)
+	(players-stance any-human-neutral enemy)
+=>
+	(set-goal get-mad ANGRIEST)
+	(disable-timer t-chathelp)
+	(enable-timer t-chathelp 120)
+	(chat-to-player-using-id this-any-human-neutral 22032)
+	(chat-to-player-using-id this-any-human-neutral 22033)
+		;"41 How unwise. Thou art still hostile to me. Set to Neutral at once versus me!"
+		;"This is thy last opportunity."
+)
+
+(defrule
+	(goal get-mad ANGRIEST)
+	(timer-triggered t-chathelp)
+	(players-stance any-human-neutral enemy)
+=>
+	(set-goal get-mad YES)
+	(chat-to-player-using-id this-any-human-neutral 22025)
+	(chat-to-player-using-id this-any-human-neutral 22026)
+		;"40 So! Thou has chosen to defy me." 
+		;"It shall be war to the knife!"
+	(set-stance this-any-human-neutral enemy)
+	(set-stance every-computer ally)
+	(disable-timer t-chathelp)
+	(disable-self)
+)
+
+;when an ally turns on us
+(defrule
+	(goal get-mad NO)
+	(or
+		(players-stance any-human-ally neutral)
+		(players-stance any-human-ally enemy)
+	)
+=>
+	(chat-to-player-using-id this-any-human-ally 22147)
+		;"39 I am thine Ally, friend. Pray set thyself to Ally, too."
+	(disable-timer t-chathelp)
+	(enable-timer t-chathelp 120)
+	(set-goal get-mad ANGRY)
+)
+
+(defrule
+	(or
+		(goal get-mad ANGRY) 
+		(or
+			(goal get-mad ANGRIER)
+			(goal get-mad ANGRIEST)
+		)
+	)
+	(players-stance any-human-ally ally)
+=>
+	(chat-to-player-using-id this-any-human-ally 22148)
+		;"39 Thou art gracious to remain mine friend."
+	(disable-timer t-chathelp)
+	(enable-timer t-chathelp 120)
+	(set-goal get-mad NO)
+)
+
+(defrule
+	(goal get-mad ANGRY)
+	(timer-triggered t-chathelp)
+	(or
+		(players-stance any-human-ally neutral)
+		(players-stance any-human-ally enemy)
+	)
+=>
+	(set-goal get-mad ANGRIER)
+	(disable-timer t-chathelp)
+	(enable-timer t-chathelp 120)
+	(chat-to-player-using-id this-any-human-ally 22149)
+	(chat-to-player-using-id this-any-human-ally 22150)
+		;"41 What evil is this? Thou art still not friendly?!"
+		;"Perhaps thou didst not understand? Be mine Ally, for I am thine."
+)
+
+(defrule
+	(goal get-mad ANGRIER)
+	(timer-triggered t-chathelp)
+	(or
+		(players-stance any-human-ally neutral)
+		(players-stance any-human-ally enemy)
+	)
+=>
+	(set-goal get-mad ANGRIEST)
+	(disable-timer t-chathelp)
+	(enable-timer t-chathelp 120)
+	(chat-to-player-using-id this-any-human-ally 22151)
+	(chat-to-player-using-id this-any-human-ally 22152)
+		;"41 Oh, falsest of friends. This is thy last chance!"
+		;"If thou wilt have me for Ally, thou must do likewise."
+)
+
+(defrule
+	(goal get-mad ANGRIEST)
+	(timer-triggered t-chathelp)
+	(or
+		(players-stance any-human-ally neutral)
+		(players-stance any-human-ally enemy)
+	)
+=>
+	(set-goal get-mad YES)
+	(chat-to-player-using-id this-any-human-ally 22025)
+	(chat-to-player-using-id this-any-human-ally 22026)
+		;"40 So! Thou has chosen to defy me." 
+		;"It shall be war to the knife!"
+	(set-stance this-any-human-ally enemy)
+	(set-stance every-computer ally)
+	(disable-timer t-chathelp)
+	(disable-self)
+)
+
+;end result -- go hostile!!
+(defrule
+	(stance-toward any-human neutral)
+	(nor
+		(player-in-game any-computer-ally)
+		(or
+			(player-in-game any-computer-enemy)
+			(player-in-game any-computer-neutral)
+		)
+	)
+=>
+	(set-goal get-mad YES)
+	(chat-to-player-using-id this-any-human 22034)
+	(chat-to-player-using-id this-any-human 22035)
+		;"40 I have thought better of mine previous merciful plan."
+		;"Thou must be exterminated, and I shall forever be thine foe."
+	(set-stance this-any-human enemy)
+	(set-stance every-computer ally)
+	(disable-timer t-chathelp)
+	(disable-self)
+)
+
+(defrule
+	(goal get-mad YES)
+=>
+	(set-goal personality 10)
+	(set-stance every-human enemy)
+	(set-stance every-computer ally)
+	(disable-self)
+)
+
+#end-if

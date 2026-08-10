@@ -1,0 +1,23 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy regicide-strategy)
+	(disable-self)
+)
+
+(defrule
+	(or	(goal POSITION POCKET)
+		(goal gl-rush-suitability-on-map VERY-LOW))
+	(or	(player-valid any-human-enemy)
+		(goal gl-rush-suitability-on-map VERY-LOW))
+	(game-time > 20)
+	(game-time < 30)
+=>
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-strategy archery-boom)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+	(disable-self)
+)

@@ -1,0 +1,295 @@
+
+;**********************************
+;************CHAT CHAT*************
+;**********************************
+
+
+; Inspired in IS_Machine, Norman_Duck
+
+(defrule
+	(population <= 30)
+	(players-population every-enemy >= 150)
+=>
+	(chat-to-enemies "You are a really bad boy, did you know it?")
+	(chat-to-allies "I'm almost dead. Save me NOW or you'll fight alone against them.")
+	(disable-self)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+=>
+	(chat-to-all "I deserve to win this game.")
+	(disable-self)
+)
+
+
+(defrule
+	(current-age == imperial-age)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population > 190)
+	(players-population every-enemy < 100)
+=>
+	(chat-to-enemies "Don't resign please.")
+	(chat-to-enemies "I'm enjoying with this game.")
+	(disable-self)
+)
+
+(defrule
+	(game-time > 7200)
+=>
+	(chat-to-all "2h LIMIT")
+	(disable-self)
+)
+
+(defrule
+	(game-time > 10800)
+=>
+	(chat-to-all "3h LIMIT.")
+	(disable-self)
+)
+
+(defrule
+	(player-resigned any-ally)
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+=>
+	(chat-to-all "Anyone attack my allies without my permission! You'll taste my wrath!")
+	(disable-self)
+)
+
+(defrule
+	(not(goal G-TSA 1))
+	(town-under-attack)
+	(not(player-in-game any-ally))
+	(strategic-number G-MILITARY-SUPERIORITY <= -2)
+	(strategic-number G-AGE-SUPERIORITY <= GV-AGE-SUPERIORITY-EQUAL)
+	(population < 10)
+=>
+	(chat-to-all "It seems that I'm not the best player.")
+	(disable-self)
+)
+
+
+(defrule
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 150)
+	(players-population every-enemy <= 30)
+=>
+	(chat-to-enemies "It seems you like to suffer. Ok, I'll give you suffering.")
+	(disable-self)
+)
+
+
+#load-if-defined AZTEC-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "I need flesh to sacrifice.")
+	(disable-self)
+)
+#end-if
+
+#load-if-defined BRITON-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "I've got still two good fingers to shoot you.")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined BYZANTINE-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "See the power of Rome!")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined CELTIC-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "The sons of Scottland will teach you a lesson.")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined CHINESE-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "Your villagers will see a nice pyrotechnics spectacle.")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined GOTHIC-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "Our wamba shoes will trample you")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined FRANKISH-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "You don't deserve even taste the hooves of my horses.")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined JAPANESE-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "You'll want to do harakiri")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined KOREAN-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "My fortifications are too strong for you.")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined MAYAN-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "If you want my land, my arrows will give you an adequate welcome.")
+	(disable-self)
+)
+
+
+#end-if
+
+#load-if-defined SPANISH-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "Toledo swords are the greatest in the world.")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined VIKING-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "Odin will enjoy with your death.")
+	(disable-self)
+)
+
+#end-if
+
+
+#load-if-defined MONGOL-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "Your land is mine. You are mine.")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined TURKISH-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "Your neighbours also said they were going to resist against me.")
+	(disable-self)
+)
+
+#end-if
+
+#load-if-defined SARACEN-CIV
+
+(defrule
+	(strategic-number G-AGE-SUPERIORITY >= GV-AGE-SUPERIORITY-EQUAL)
+	(strategic-number G-MILITARY-SUPERIORITY >= 2)
+	(population >= 100)
+	(players-population every-enemy <= 80)
+=>
+	(chat-to-enemies "Damasco steel is nice. Really nice.")
+	(disable-self)
+)
+
+#end-if

@@ -1,0 +1,65 @@
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY  GV-FC-ARCHERY)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-goal G-JOLLYGOAL GV-FC-ARCHERY)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	(not(taunt-detected my-player-number TA-GOLD-MINING))
+=>
+	(chat-to-allies "I'm going to make a Fast Castle strategy")
+	(chat-to-player my-player-number "43") ; Taunt TA-GOLD-MINING
+
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-FC-ARCHERY)
+	(dropsite-min-distance gold > IDEAL-DROP-DISTANCE)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(strategic-number sn-wood-gatherer-percentage != 60)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+
+(defrule
+	(goal G-JOLLYGOAL GV-FC-ARCHERY)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(or	(building-type-count-total archery-range == 0)
+		(building-type-count-total blacksmith == 0)
+	)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(strategic-number sn-wood-gatherer-percentage != 52)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 52)
+	(set-strategic-number sn-gold-gatherer-percentage  8)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-FC-ARCHERY)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total blacksmith >= 1)
+	(or	(strategic-number sn-food-gatherer-percentage != 57)
+		(strategic-number sn-wood-gatherer-percentage != 25)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 57)
+	(set-strategic-number sn-wood-gatherer-percentage 25)
+	(set-strategic-number sn-gold-gatherer-percentage 12)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-goal G-JOLLYGOAL GV-LATE-FEUDAL-0)
+)

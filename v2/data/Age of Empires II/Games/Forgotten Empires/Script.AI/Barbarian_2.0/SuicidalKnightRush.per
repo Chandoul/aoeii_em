@@ -1,0 +1,642 @@
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined MAYAN-CIV
+
+(defrule
+	(not	(goal gl-strategy heavy-krush))
+=>
+	(up-jump-rule 49)
+)
+
+(defrule
+	(goal gl-eternal-drush NO)
+	(goal gl-strategy heavy-krush)
+	(or	(and	(commodity-buying-price food > 160)
+			(civ-selected saracen))
+		(game-time > 2400))
+	(nand	(civ-selected frankish)
+		(and	(goal MILITARY 1)
+			(game-time < 2800)))
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-eternal-drush YES)
+	(goal gl-strategy heavy-krush)
+	(game-time > 2400)
+	(or	(game-time > 2800)
+		(current-age-time > 750))
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(current-age >= castle-age)
+	(players-military-population any-enemy < 8)
+	(soldier-count > 5)
+	(strategic-number sn-maximum-town-size < 20)
+=>
+	(set-strategic-number sn-maximum-town-size 255)
+	(set-strategic-number sn-percent-enemy-sighted-response 100)
+	(set-strategic-number sn-enemy-sighted-response-distance 50)
+	(set-goal MILITARY 1)
+)
+
+(defrule
+	(or	(civ-selected saracen)
+		(civ-selected frankish))
+=>
+	(up-jump-rule 8)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == dark-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 57)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(set-strategic-number sn-skip-first-mining-camp 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 32)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 18)
+	(set-strategic-number sn-target-evaluation-distance 0)
+	(set-strategic-number sn-target-evaluation-time-kill-ratio 0)
+	(set-strategic-number sn-target-evaluation-hitpoints 0)
+	(set-strategic-number sn-target-evaluation-damage-capability 2000)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total stable > 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 37)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(building-type-count-total stable > 1)
+	(game-time > 1200)
+	(game-time < 1800)
+	(current-age == castle-age)
+	(strategic-number sn-gold-gatherer-percentage != 30)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 44)
+	(set-strategic-number sn-wood-gatherer-percentage 26)
+	(set-strategic-number sn-gold-gatherer-percentage 30)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(building-type-count-total stable > 1)
+	(game-time > 1800)
+	(game-time < 2100)
+	(building-type-count-total stable < 3)
+	(current-age == castle-age)
+	(strategic-number sn-gold-gatherer-percentage != 30)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 42)
+	(set-strategic-number sn-wood-gatherer-percentage 28)
+	(set-strategic-number sn-gold-gatherer-percentage 30)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(building-type-count-total stable > 1)
+	(game-time > 1800)
+	(game-time < 2100)
+	(building-type-count-total stable >= 3)
+	(current-age == castle-age)
+	(strategic-number sn-gold-gatherer-percentage != 32)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 43)
+	(set-strategic-number sn-wood-gatherer-percentage 25)
+	(set-strategic-number sn-gold-gatherer-percentage 32)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(building-type-count-total stable > 1)
+	(game-time > 2100)
+	(current-age == castle-age)
+	(or	(strategic-number sn-gold-gatherer-percentage != 35)
+		(strategic-number sn-wood-gatherer-percentage != 22))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 43)
+	(set-strategic-number sn-wood-gatherer-percentage 22)
+	(set-strategic-number sn-gold-gatherer-percentage 35)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(goal RAM 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(building-type-count-total stable > 1)
+	(food-amount > 250)
+	(gold-amount < 200)
+	(current-age == castle-age)
+	(or	(strategic-number sn-gold-gatherer-percentage != 40)
+		(strategic-number sn-wood-gatherer-percentage != 23))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 37)
+	(set-strategic-number sn-wood-gatherer-percentage 23)
+	(set-strategic-number sn-gold-gatherer-percentage 40)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal RAM 1)
+	(unit-type-count-total battering-ram-line < 1)
+	(current-age == castle-age)
+	(strategic-number sn-gold-gatherer-percentage != 23)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 37)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 23)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(not	(civ-selected saracen))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(can-research-with-escrow ri-double-bit-axe)
+		(or	(can-research-with-escrow ri-horse-collar)
+			(can-research-with-escrow ri-heavy-plow)))
+=>
+	(release-escrow food)
+	(release-escrow wood)
+	(research ri-double-bit-axe)
+	(research ri-horse-collar)
+	(research ri-heavy-plow)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal gl-strategy heavy-krush)
+	(or	(can-research ri-scale-barding)
+		(or	(can-research ri-bloodlines)
+			(and	(can-research ri-iron-casting)
+				(unit-type-count-total knight-line > 6))))
+=>
+	(research ri-bloodlines)
+	(research ri-scale-barding)
+	(research ri-iron-casting)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(or	(can-research ri-chain-barding)
+		(and	(up-research-status c: ri-chain-barding >= research-pending)
+			(or	(and	(can-research ri-husbandry)
+					(unit-type-count-total knight-line > 20))
+				(and	(can-research ri-forging)
+					(unit-type-count-total knight-line > 5)))))
+	(unit-type-count-total knight-line > 0)
+=>
+	(research ri-chain-barding)
+	(research ri-forging)
+	(research ri-husbandry)
+)
+
+; ============ BUILDINGS
+
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(civ-selected saracen)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total mining-camp < 3)
+	(or	(and	(resource-found stone)
+			(dropsite-min-distance stone > 4))
+		(and	(resource-found gold)
+			(building-type-count-total mining-camp < 2)))
+	(can-build mining-camp)
+=>
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(civ-selected saracen)
+	(building-type-count-total town-center > 0)
+	(building-type-count-total stable > 1)
+	(nand	(goal RAM 1)
+		(wood-amount < 300))
+	(building-type-count-total stable > 0)
+	(wood-amount > 89)
+	(building-type-count-total blacksmith > 0)
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(civ-selected saracen)
+=>
+	(up-jump-rule 5)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(building-type-count-total stable > 1)
+	(or	(and	(or	(game-time > 1200)
+				(town-under-attack))
+			(building-type-count-total mining-camp < 3))
+		(game-time > 1700))
+	(building-type-count-total mining-camp < 5)
+	(can-build mining-camp)
+=>
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(or	(and	(unit-type-count-total villager > 41)
+			(building-type-count-total stable < 3))
+		(or	(and	(unit-type-count-total villager > 53)
+				(building-type-count-total stable < 4))
+			(and	(unit-type-count-total villager > 65)
+				(building-type-count-total stable < 5))))
+	(building-type-count-total market > 0)
+	(building-type-count-total monastery > 0)
+	(can-build stable)
+=>
+	(build stable)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(or	(and	(unit-type-count-total villager > 76)
+			(building-type-count-total stable < 6))
+		(or	(and	(unit-type-count-total villager > 86)
+				(building-type-count-total stable < 7))
+			(and	(unit-type-count-total villager > 94)
+				(building-type-count-total stable < 9))))
+	(building-type-count-total market > 0)
+	(building-type-count-total monastery > 0)
+	(can-build stable)
+=>
+	(build stable)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(building-type-count-total stable > 1)
+	(nand	(goal RAM 1)
+		(wood-amount < 260))
+	(idle-farm-count < 2)
+	(building-type-count-total blacksmith > 0)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(unit-type-count-total monk < 7)
+	(research-completed ri-chain-barding)
+	(can-train monk)
+=>
+	(train monk)
+	(set-strategic-number sn-monk-trained 1)
+)
+
+; ============ ATTACKING
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(current-age >= castle-age)
+=>
+	(disable-timer 7)
+	(disable-self)
+)
+
+
+(defrule
+	(not	(civ-selected saracen))
+=>
+	(up-jump-rule 4)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(or	(soldier-count > 12)
+		(players-building-type-count any-enemy castle > 0))
+	(unit-type-count-total battering-ram-line < 2)
+	(or	(players-military-population every-enemy < 4)
+		(players-building-type-count target-player castle > 0))
+	(not	(goal RAM 1))
+=>
+	(set-goal RAM 1)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(or	(and	(players-military-population any-enemy >= 4)
+			(players-building-type-count target-player castle == 0))
+		(unit-type-count-total battering-ram-line > 1))
+	(not	(goal RAM 0))
+=>
+	(set-goal RAM 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(strategic-number sn-maximum-town-size != 255)
+	(nand	(unit-type-count battering-ram-line < 1)
+		(players-building-type-count target-player castle > 0))
+	(soldier-count > 4)
+	(or	(players-military-population every-enemy < 6)
+		(or	(and	(soldier-count > 6)
+				(players-military-population every-enemy < 10))
+			(soldier-count > 12)))
+=>
+	(set-strategic-number sn-maximum-town-size 255)
+	(set-strategic-number sn-enemy-sighted-response-distance 50)
+	(set-goal MILITARY 1)
+)
+
+#load-if-not-defined CUSTOM-MAP
+(defrule
+	(goal gl-strategy heavy-krush)
+	(strategic-number sn-maximum-town-size == 255)
+	(or	(and	(soldier-count <= 4)
+			(players-military-population any-enemy >= 6))
+		(or	(and	(soldier-count <= 6)
+				(players-military-population any-enemy >= 10))
+			(and	(unit-type-count-total battering-ram-line < 1)
+				(players-building-type-count any-enemy castle > 0))))
+=>
+	(set-strategic-number sn-maximum-town-size 14)
+	(set-strategic-number sn-enemy-sighted-response-distance 5)
+	(set-goal MILITARY 0)
+)
+#else
+(defrule
+	(goal gl-strategy heavy-krush)
+	(strategic-number sn-maximum-town-size == 255)
+	(or	(and	(soldier-count <= 4)
+			(players-military-population any-enemy >= 6))
+		(or	(and	(soldier-count <= 6)
+				(players-military-population any-enemy >= 10))
+			(and	(unit-type-count-total battering-ram-line < 1)
+				(players-building-type-count any-enemy castle > 0))))
+=>
+	(set-strategic-number sn-maximum-town-size 21)
+	(set-strategic-number sn-enemy-sighted-response-distance 5)
+	(set-goal MILITARY 0)
+)
+#end-if
+
+(defrule
+	(civ-selected saracen)
+=>
+	(up-jump-rule 14)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(current-age >= castle-age)
+=>
+	(set-strategic-number sn-threat-level -2)
+	(set-strategic-number sn-add-rams-in-attack 0)
+	(enable-timer 7 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(or	(and	(players-current-age every-enemy < castle-age)
+			(players-unit-type-count every-enemy spearman-line < 10))
+		(unit-type-count-total knight-line >= 35))
+	(strategic-number sn-threat-level != -4)
+=>
+	(set-strategic-number sn-threat-level -4)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(unit-type-count-total knight-line < 20)
+	(or	(and	(players-current-age every-enemy >= castle-age)
+			(players-unit-type-count every-enemy spearman-line < 6))
+		(and	(players-current-age every-enemy <= feudal-age)
+			(players-unit-type-count every-enemy spearman-line >= 10)))
+	(strategic-number sn-threat-level != -1)
+=>
+	(set-strategic-number sn-threat-level -1)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(unit-type-count-total knight-line >= 20)
+	(unit-type-count-total knight-line < 35)
+	(or	(and	(players-current-age every-enemy >= castle-age)
+			(players-unit-type-count every-enemy spearman-line < 6))
+		(and	(players-current-age every-enemy <= feudal-age)
+			(players-unit-type-count every-enemy spearman-line >= 10)))
+	(strategic-number sn-threat-level != -3)
+=>
+	(set-strategic-number sn-threat-level -3)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(unit-type-count-total knight-line < 20)
+	(players-current-age every-enemy >= castle-age)
+	(or	(players-unit-type-count every-enemy spearman-line > 5)
+		(or	(players-unit-type-count every-enemy camel-line > 2)
+			(players-unit-type-count every-enemy monk > 2)))
+	(strategic-number sn-threat-level < -1)
+=>
+	(set-strategic-number sn-threat-level -1)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(unit-type-count-total knight-line >= 20)
+	(unit-type-count-total knight-line < 35)
+	(players-current-age every-enemy >= castle-age)
+	(or	(players-unit-type-count every-enemy spearman-line > 5)
+		(or	(players-unit-type-count every-enemy camel-line > 2)
+			(players-unit-type-count every-enemy monk > 2)))
+	(strategic-number sn-threat-level < -2)
+=>
+	(set-strategic-number sn-threat-level -2)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(goal MILITARY 0)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 0)
+=>
+	(set-strategic-number sn-add-rams-in-attack 1)
+	(disable-timer 2)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(goal MILITARY 1)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 1)
+=>
+	(enable-timer 2 70)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(goal MILITARY 1)
+	(timer-triggered 2)
+	(building-type-count-total farm > 7)
+	(strategic-number sn-add-rams-in-attack == 0)
+	(building-type-count-total siege-workshop < 1)
+	(wood-amount < 200)
+=>
+	(set-escrow-percentage wood 100)
+	(set-strategic-number sn-add-rams-in-attack 2)
+)
+
+(defrule
+	(strategic-number sn-add-rams-in-attack == 2)
+	(or	(building-type-count-total siege-workshop > 0)
+		(or	(wood-amount >= 200)
+			(or	(goal MILITARY 0)
+				(building-type-count-total farm <= 7))))
+=>
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(goal MILITARY 1)
+	(timer-triggered 2)
+	(building-type-count-total siege-workshop < 1)
+	(can-build-with-escrow siege-workshop)
+=>
+	(set-strategic-number sn-maximum-town-size 14)
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(build siege-workshop)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(unit-type-count-total battering-ram-line < 2)
+	(or	(and	(goal MILITARY 1)
+			(timer-triggered 2))
+		(players-building-type-count target-player castle > 0))
+	(not	(goal RAM 1))
+=>
+	(set-goal RAM 1)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(or	(and	(goal MILITARY 0)
+			(players-building-type-count target-player castle == 0))
+		(unit-type-count battering-ram-line > 1))
+	(not	(goal RAM 0))
+=>
+	(set-goal RAM 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(current-age >= castle-age)
+	(game-time > 1500)
+	(or	(player-valid 3)
+		(goal gl-eternal-drush YES))
+	(building-type-count-total town-center < 3)
+	(strategic-number sn-wood-gatherer-percentage != 46)
+=>
+	(set-goal TC 1)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(set-strategic-number sn-wood-gatherer-percentage 46)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(research-completed ri-bodkin-arrow)
+	(research-completed ri-crossbow)
+	(unit-type-count-total archer-line < 22)
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(research-completed ri-bodkin-arrow)
+	(research-completed ri-elite-skirmisher)
+	(or	(players-unit-type-count focus-player archer-line > 5)
+		(or	(players-unit-type-count focus-player spearman-line > 5)
+			(or	(players-unit-type-count focus-player plumed-archer-line > 3)
+				(or	(players-unit-type-count focus-player cavalry-archer-line > 3)
+					(players-unit-type-count focus-player mangudai-line > 3)))))
+	(unit-type-count-total skirmisher-line < 22)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(research-completed ri-bodkin-arrow)
+	(research-completed ri-elite-skirmisher)
+	(or	(players-unit-type-count focus-player chu-ko-nu-line > 3)
+		(or	(players-unit-type-count focus-player longbowman-line > 3)
+			(players-unit-type-count focus-player mameluke-line > 2)))
+	(unit-type-count-total skirmisher-line < 22)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-krush)
+	(or	(up-compare-goal gl-current-age <= gv-feudal)
+		(civ-selected saracen))
+	(nand	(goal TC 1)
+		(stone-amount < 300))
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+	(sell-commodity stone)
+)
+#end-if
+#end-if
+#end-if

@@ -1,0 +1,9 @@
+(defconst GV-FEUDAL-STRATEGY-DEFAULT GV-FLUSH-MAN-AT-ARMS)
+
+(defrule
+	(true)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+	(chat-to-player my-player-number "Default Strategy: Man_at_arms Flush")
+	(disable-self)
+)

@@ -1,0 +1,121 @@
+; ========= PLAN
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(building-type-count-total dock == 0)
+=>
+	(up-jump-rule 8)
+)
+
+(defrule
+	(goal DOCK 2)
+	(goal gl-strategy default)
+	(strategic-number sn-target-evaluation-ally-proximity != 9999)
+=>
+	(set-goal DOCK 3)
+	(set-goal gl-strategy watermap-fc)
+	(disable-self)
+)
+
+(defrule
+	(goal DOCK 2)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+=>
+	(set-goal DOCK 3)
+)
+
+(defrule
+	(not	(taunt-detected any-human-ally 35))
+	(or	(players-building-type-count any-enemy dock > 0)
+		(not	(map-type custom)))
+	(game-time > mixed-map-navy-time); 300 in defend the wonder, otherwise 1200
+	(or	(game-time > 2100)
+		(goal gl-heavy-water-map YES))
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(current-age >= castle-age)
+	(up-compare-goal DOCK != 5)
+	(up-compare-goal DOCK != 6)
+=>
+	(set-goal DOCK 6)
+)
+
+; ========= ECO
+
+(defrule
+	(goal gl-strategy watermap-fc)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(not	(goal DOCK 0))
+	(or	(strategic-number sn-food-gatherer-percentage != 120)
+		(or	(strategic-number sn-wood-gatherer-percentage != 66)
+			(strategic-number sn-gold-gatherer-percentage != 14)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 66)
+	(set-strategic-number sn-gold-gatherer-percentage 14)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order >= 1)
+	(goal gl-strategy watermap-fc)
+	(nor	(goal DOCK 0)
+		(research-available ri-war-galley))
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == castle-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 8)
+		(or	(strategic-number sn-wood-gatherer-percentage != 75)
+			(strategic-number sn-gold-gatherer-percentage != 17)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 8)
+	(set-strategic-number sn-wood-gatherer-percentage 75)
+	(set-strategic-number sn-gold-gatherer-percentage 17)
+)
+
+; ========= DOCKS
+
+(defrule
+	(strategic-number sn-allow-new-build-order >= 1)
+	(nor	(goal DOCK 0)
+		(goal DOCK 1))
+	(or	(goal SLING 3)
+		(building-type-count-total town-center > 2))
+	(building-type-count-total blacksmith > 0)
+	(building-type-count-total dock < 5)
+	(or	(goal DOCK 2)
+		(up-compare-goal gl-current-age >= gv-feudal-up))
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(can-build dock)
+=>
+	(build dock)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order >= 1)
+	(nor	(goal DOCK 0)
+		(goal DOCK 1))
+	(or	(building-type-count-total dock < 2)
+		(building-type-count-total blacksmith > 0))
+	(or	(building-type-count-total dock < 3)
+		(unit-type-count-total villager > 70))
+	(building-type-count-total dock < 7)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(can-build dock)
+=>
+	(build dock)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order >= 1)
+	(nor	(goal DOCK 0)
+		(goal DOCK 1))
+	(or	(building-type-count-total dock < 2)
+		(building-type-count-total blacksmith > 0))
+	(or	(building-type-count-total dock < 3)
+		(unit-type-count-total villager > 70))
+	(building-type-count-total dock < 7)
+	(goal DOCK 2)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(can-build dock)
+=>
+	(build dock)
+)

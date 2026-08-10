@@ -1,0 +1,109 @@
+(defconst super-traitor-chat-id 22100); Your lands and your gold shall soon be mine!
+(defconst traitor-chat-id 22099); I and my troops can easily vanquish seven times your number!
+(defconst betrayed-chat-id 22071); From henceforth we are the bitterest of foes!
+(defconst wonder-game-time 6052)
+(defconst camp-raid-time-variance 2711)
+(defconst nomad-tc-up-chat "me")
+(defconst gg-chat "gg")
+#load-if-not-defined ISLANDS-MAP
+(defconst boar-stealing-nature 0)
+#else
+(defconst boar-stealing-nature 1)
+#end-if
+(defconst villager-laming-nature 0)
+
+#load-if-not-defined UP-SCENARIO-GAME
+(defrule
+	(game-time > 10372)
+	(population > almost-full-pop)
+	(players-population focus-player > almost-full-pop)
+	(goal MILITARY 1)
+=>
+	(chat-to-allies "I'm getting exhausted.")
+	(disable-self)
+)
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(up-compare-goal victory-time > 0)
+	(up-compare-goal victory-time < 5)
+	(or	(players-building-type-count every-ally wonder > 0)
+		(or	(building-type-count wonder > 0)
+			(hold-relics)))
+	(nor	(players-building-type-count any-enemy wonder > 0)
+		(enemy-captured-relics))
+=>
+	(chat-to-all "*gg")
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-nomad-style-start == 0)
+	(up-compare-goal threat-time > 300000)
+	(player-valid 4)
+	(game-time < 3000)
+	(goal MILITARY 1)
+	(or	(goal gl-strategy jaguar-boom)
+		(goal gl-strategy eew-strategy))
+	(current-age == imperial-age)
+	(game-time > 150)
+	(difficulty <= hard)
+	(goal gl-x-vs-one-challenge YES)
+=>
+	(chat-to-all "I want you to hit me with it all to determine who is the strongest.")
+	(chat-to-all "Now, bring it!")
+	(disable-self)
+)
+
+(defrule
+	(game-time > 3600)
+	(population > almost-full-pop)
+	(current-score > 20000)
+	(players-score every-enemy < 18000)
+	(players-score every-ally < 18000)
+	(difficulty <= hard)
+	(player-valid any-human-enemy)
+=>
+	(up-get-fact resource-amount amount-kills temporary-goal)
+	(chat-to-all "It's time for a random fact.") 
+	(up-chat-data-to-all "I have %d kills." g: temporary-goal)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 3600)
+	(population > almost-full-pop)
+	(population < full-pop)
+	(current-score > 30000)
+	(players-score every-enemy < 27000)
+	(players-score every-ally < 27000)
+	(difficulty <= hard)
+	(player-valid any-human-enemy)
+=>
+	(up-get-fact resource-amount amount-queued-count temporary-goal)
+	(chat-to-all "It's time for a random fact.") 
+	(up-chat-data-to-all "I have %d units queued." g: temporary-goal)
+	(disable-self)
+)
+
+#load-if-not-defined WONDER-RACE
+#load-if-not-defined KING-OF-THE-HILL
+#load-if-not-defined TURBO-RANDOM-MAP
+#load-if-defined DARK-AGE-START
+(defrule
+	(game-time > 7200)
+	(game-time < 7300)
+	(difficulty <= hard)
+	(goal MILITARY 1)
+	(gold-amount > 1000)
+=>
+	(chat-to-all "27 27?")
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+
+#end-if

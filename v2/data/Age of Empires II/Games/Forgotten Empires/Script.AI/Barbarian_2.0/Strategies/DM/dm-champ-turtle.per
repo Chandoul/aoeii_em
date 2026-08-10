@@ -1,0 +1,45 @@
+#load-if-not-defined MONGOL-CIV
+(defrule
+	(true)
+=>
+	(set-goal gl-strategy dm-champ-turtle)
+	(set-goal gl-dm-barracks-number 12)
+	(set-goal gl-dm-range-number 0)
+	(set-goal gl-dm-stable-number 0)
+	(set-goal gl-dm-workshop-number 0)
+	(set-goal gl-dm-food-to-sell 0)
+	(set-goal gl-dm-wood-to-sell 1500)
+	(set-goal gl-dm-stone-to-sell 500)
+	(set-goal gl-dm-allow-counter-halbs 1)
+	(set-goal gl-dm-allow-counter-skirms 1)
+	(set-goal gl-dm-main-unit champion)
+	(disable-self)
+)
+#else
+(defrule
+	(true)
+=>
+	(set-goal gl-strategy dm-champ-turtle)
+	(set-goal gl-dm-barracks-number 5)
+	(set-goal gl-dm-range-number 0)
+	(set-goal gl-dm-stable-number 0)
+	(set-goal gl-dm-workshop-number 0)
+	(set-goal gl-dm-food-to-sell 1000)
+	(set-goal gl-dm-wood-to-sell 500)
+	(set-goal gl-dm-stone-to-sell 0)
+	(set-goal gl-dm-allow-counter-halbs 0)
+	(set-goal gl-dm-allow-counter-skirms 1)
+	(set-goal gl-dm-main-unit champion)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy dm-champ-turtle)
+	(or	(game-time > 60)
+		(up-compare-const dm-cavalry-threat-likelihood == 1))
+	(up-compare-goal gl-dm-stable-number < 3)
+=>
+	(set-goal gl-dm-stable-number 3)
+	(set-goal gl-dm-barracks-number 3)
+)
+#end-if

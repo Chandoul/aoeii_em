@@ -1,0 +1,317 @@
+; Based on Eel's code which is based on Archon's code. :D
+
+
+(defrule
+	(can-research ri-cartography)
+=>
+	(research ri-cartography))
+(defrule
+	(research-completed ri-sanctity)
+	(unit-type-count-total monk-units >= 9)
+	(gold-amount >= 200)
+	(can-research ri-fervor)
+=>
+	(research ri-fervor))
+(defrule
+	(unit-type-count-total fishing-ship >= 5)
+	(strategic-number my-sn-military-superiority >= 1)
+	(can-research ri-gillnets)
+=>
+	(research ri-gillnets))
+(defrule
+	(unit-type-count-total eagle-warrior >= 8)
+	(can-research-with-escrow ri-eagle-warrior)
+=>
+	(up-release-escrow)
+	(research ri-eagle-warrior))
+(defrule
+(or	(unit-type-count-total genoese-crossbowman >= 4)
+(or	(unit-type-count-total kamayuk >= 4)
+(or	(unit-type-count-total magyar-huszar >= 4)
+(or	(unit-type-count-total elephant-archer >= 4)
+	(unit-type-count-total boyar >= 4)))))
+	(can-research-with-escrow my-unique-unit-upgrade)
+=>
+	(up-release-escrow)
+	(research my-unique-unit-upgrade))
+#load-if-defined AZTEC-CIV
+(defrule
+	(unit-type-count-total skirmisher-line >= 10)
+	(can-research ri-atlatl)
+=>
+	(research ri-atlatl))
+#end-if
+#load-if-defined BRITON-CIV
+(defrule
+(or	(unit-type-count-total trebuchet >= 2)
+	(unit-type-count-total unpacked-trebuchet >= 3))
+	(research-completed my-unique-research)
+	(can-research ri-war-wolf)
+=>
+	(research ri-war-wolf))
+#end-if
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(unit-type-count-total fire-ship-line >= 3)
+	(can-research-with-escrow ri-greek-fire)
+=>
+	(up-release-escrow)
+	(research ri-greek-fire))
+#end-if
+#load-if-defined CELTIC-CIV
+(defrule
+(or	(building-type-count-total castle >= 2)
+	(building-type-count-total watch-tower >= 4))
+(or	(town-under-attack)
+	(goal defend yes))
+	(can-research ri-stronghold)
+=>
+	(research ri-stronghold))
+#end-if
+#load-if-defined CHINESE-CIV
+(defrule
+	(strategic-number sn-current-age >= imperial)
+	(building-type-count-total castle >= 2); costs stone
+(or	(building-type-count-total bombard-tower >= 4)
+	(building-type-count-total watch-tower >= 4))
+	(can-research ri-great-wall)
+=>
+	(research ri-great-wall))
+#end-if
+#load-if-defined FRANKISH-CIV
+(defrule
+(or	(strategic-number sn-current-age >= imperial)
+	(death-match-game))
+	(can-research ri-chivalry)
+=>
+	(research ri-chivalry))
+#end-if
+#load-if-defined HUN-CIV
+(defrule
+	(unit-type-count-total my-unique-unit-line >= 4)
+	(can-research ri-marauders)
+=>
+	(research ri-marauders))
+#end-if
+#load-if-defined JAPANESE-CIV
+(defrule
+	(building-type-count-total watch-tower >= 3)
+	(can-research ri-yasama)
+=>
+	(research ri-yasama))
+#end-if
+#load-if-defined KOREAN-CIV
+(defrule
+	(unit-type-count-total turtle-ship-line >= 4)
+	(can-research ri-panokseon)
+=>
+	(research ri-panokseon))
+#end-if
+#load-if-defined MAYAN-CIV
+(defrule
+	(unit-type-count-total archer-line >= 15)
+	(strategic-number my-sn-military-superiority >= 2)
+(or	(strategic-number sn-percent-attack-soldiers >= 100)
+	(strategic-number sn-maximum-town-size >= 45))
+	(can-research ri-obsidian-arrows)
+=>
+	(research ri-obsidian-arrows))
+#end-if
+#load-if-defined MONGOL-CIV
+(defrule
+	(goal researchplan yes)
+	(strategic-number my-sn-military-superiority >= 0)
+	(can-research ri-nomads)
+=>
+	(research ri-nomads))
+(defrule
+	(building-type-count-total house > 0)
+	(research-completed ri-nomads)
+=>
+	(up-delete-objects c: house c: 32767))
+#end-if
+#load-if-defined PERSIAN-CIV
+(defrule
+	(building-type-count-total castle >= 1)
+(or	(goal defend yes)
+	(and	(town-under-attack)
+		(up-attacker-class == battering-ram-line)))	
+	(can-research ri-boiling-oil)
+=>
+	(research ri-boiling-oil))
+#end-if
+#load-if-defined SARACEN-CIV
+(defrule
+	(unit-type-count-total monk >= 7)
+	(can-research ri-madrasah)
+=>
+	(research ri-madrasah))
+#end-if
+#load-if-defined SPANISH-CIV
+(defrule
+	(unit-type-count-total monk >= 6)
+	(can-research-with-escrow ri-inquisition)
+=>
+	(up-release-escrow)
+	(research ri-inquisition))
+#end-if
+#load-if-defined TEUTONIC-CIV
+(defrule
+(or	(strategic-number sn-percent-attack-soldiers >= 100)
+	(strategic-number sn-maximum-town-size >= 45))
+	(unit-type-count-total siege-units >= 3)
+	(can-research ri-ironclad)
+=>
+	(research ri-ironclad))
+#end-if
+#load-if-defined TURKISH-CIV
+(defrule
+	(unit-type-count-total cavalry-archer-units >= 8)
+	(can-research ri-sipahi)
+=>
+	(research ri-sipahi))
+#end-if
+#load-if-defined VIKING-CIV
+(defrule
+	(unit-type-count-total berserk-line >= 6)
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number cavalry >= 7)
+	(can-research ri-chieftains)
+=>
+	(research ri-chieftains))
+#end-if
+#load-if-defined INCAN-CIV
+(defrule
+(or	(unit-type-count-total skirmisher-line >= 12)
+	(unit-type-count-total slinger >= 6))
+	(can-research ri-andean-sling)
+=>
+	(research ri-andean-sling))
+(defrule
+	(research-completed ri-conscription)
+(or	(unit-type-count-total eagle-warrior-line >= 7)
+(or	(unit-type-count-total kamayuk >= 7)
+	(unit-type-count-total slinger >= 7)))
+	(can-research ri-couriers)
+=>
+	(research ri-couriers))
+#end-if
+#load-if-defined INDIAN-CIV
+(defrule
+	(unit-type-count-total camel-line >= 6)
+	(can-research-with-escrow ri-imperial-camel)
+=>
+	(up-release-escrow)
+	(research ri-imperial-camel))
+(defrule
+	(can-research ri-sultans)
+=>
+	(research ri-sultans))
+(defrule
+	(unit-type-count-total hand-cannoneer >= 7)
+	(can-research ri-shatagni)
+=>
+	(research ri-shatagni))
+#end-if
+#load-if-defined ITALIAN-CIV
+(defrule
+(or	(unit-type-count-total genoese-crossbowman >= 8)
+	(research-completed my-unique-unit-upgrade))
+	(can-research ri-pavise)
+=>
+	(research ri-pavise))
+(defrule
+	(players-building-type-count any-ally market >= 1)
+	(strategic-number my-sn-military-superiority >= 1)
+	(can-research ri-silk-road)
+=>
+	(research ri-silk-road))
+#end-if
+#load-if-defined MAGYAR-CIV
+(defrule
+(or	(strategic-number sn-current-age >= imperial)
+	(game-time > 3000))
+	(can-research-with-escrow ri-mercenaries)
+=>
+	(up-release-escrow)
+	(research ri-mercenaries))
+(defrule
+	(unit-type-count-total cavalry-archer-line >= 7)
+	(can-research ri-recurve-bow)
+=>
+	(research ri-recurve-bow))
+#end-if
+#load-if-defined SLAVIC-CIV
+(defrule
+	(unit-type-count-total monk >= 7)
+	(can-research-with-escrow ri-orthodoxy)
+=>
+	(up-release-escrow)
+	(research ri-orthodoxy))
+(defrule
+(or	(research-completed ri-halberdier)
+	(research-completed ri-champion))
+	(unit-type-count-total infantry-units >= 10)
+	(can-research ri-druzhina)
+=>
+	(research ri-druzhina))
+#end-if
+
+#load-if-defined INCAN-CIV
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+(or	(strategic-number cavalry >= 25)
+	(strategic-number my-sn-military-superiority <= -2)))
+	(strategic-number moenche < 15)
+	(strategic-number cavalry >= 15)
+	(goal siegereq yes)
+	(unit-type-count-total kamayuk < 80)
+	(can-train kamayuk)
+=>
+	(train kamayuk))
+#end-if
+#load-if-defined INDIAN-CIV
+(defrule
+	(goal milunits yes)
+;t	(goal e-cata yes)
+	(strategic-number moenche < 15)
+	(goal siegereq yes)
+	(unit-type-count-total elephant-archer < 80)
+	(can-train elephant-archer)
+=>
+	(train elephant-archer))
+#end-if
+#load-if-defined ITALIAN-CIV
+(defrule
+	(goal milunits yes)
+;t	(goal e-cata yes)
+	(goal siegereq yes)
+;	(unit-type-count-total genoese-crossbowman < 90)
+	(can-train genoese-crossbowman)
+=>
+	(train genoese-crossbowman))
+#end-if
+#load-if-defined MAGYAR-CIV
+(defrule
+	(goal milunits yes)
+;t	(goal e-cata yes)
+(not	(players-unit-type-count any-enemy spearman-line >= 33))
+	(goal siegereq yes)
+;	(unit-type-count-total magyar-huszar < 90)
+	(can-train magyar-huszar)
+=>
+	(train magyar-huszar))
+#end-if
+#load-if-defined SLAVIC-CIV
+(defrule
+	(goal milunits yes)
+;t	(goal e-cata yes)
+(not	(players-unit-type-count any-enemy spearman-line >= 40))
+	(strategic-number moenche < 15)
+	(goal siegereq yes)
+;	(unit-type-count-total boyar < 90)
+	(can-train boyar)
+=>
+	(train boyar))
+#end-if

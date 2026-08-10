@@ -1,0 +1,321 @@
+; LATE GAME BUILDINGS
+
+; We build a lot of military buildings if we finally have a fully upgraded army or a wood excess.
+
+(defrule
+	(true)
+=>
+	(set-goal G-JOLLYGOAL 0)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(wood-amount > 300) ;We don't delay trebs or ballistic tech because spam buildings
+	(or	(goal G-ARMY-STRONG-PREPARED 1)
+		(wood-amount > TRASH-WOOD)
+	)
+	(building-type-count-total blacksmith >= 1)
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+	(building-type-count-total market >= 1)
+	(building-type-count-total university >= 1)
+	(or	(building-type-count-total town-center >= 3)
+		(stone-amount < 100)
+	)
+=>
+	(set-goal G-JOLLYGOAL 1)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(goal G-JOLLYGOAL 1)
+	(nor	(goal G-BARRACK-UNIT GV-NONE)
+		(building-type-count-total barracks >= BARRACKS-LATE-CASTLE)
+	)
+	(nor	(goal G-ARCHERY-UNIT GV-NONE)
+		(building-type-count-total archery-range >= ARCHERIES-LATE-CASTLE)
+	)
+	(nor	(goal G-STABLE-UNIT GV-NONE)
+		(building-type-count-total stable >= STABLES-LATE-CASTLE)
+	)
+=>
+	(set-goal G-JOLLYGOAL 0)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-JOLLYGOAL 1)
+	(nor	(goal G-BARRACK-UNIT GV-NONE)
+		(building-type-count-total barracks >= 1)
+	)
+	(nor	(goal G-ARCHERY-UNIT GV-NONE)
+		(building-type-count-total archery-range >= 1)
+	)
+	(nor	(goal G-STABLE-UNIT GV-NONE)
+		(or	(building-type-count-total stable >= 1)
+			(building-type-count-total stable >= STABLES-LATE-CASTLE)
+		)
+	)
+=>
+	(set-goal G-JOLLYGOAL 0)
+)
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(goal G-JOLLYGOAL 1)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(building-type-count castle >= 1)
+	(population >= TOP-POPULATION)
+	(nor	(research-available ri-pikeman)
+		(research-available ri-elite-skirmisher)
+	)
+=>
+	(chat-to-player my-player-number "49") ; TA-WONDER
+)
+
+(defrule
+	(or	(taunt-detected my-player-number TA-WONDER)
+		(and	(goal G-JOLLYGOAL 1)
+			(and	(goal G-ARMY-STRONG-PREPARED 1)
+				(and	(building-type-count castle >= 1)
+					(and	(wood-amount > 2000)
+						(and	(gold-amount > 2000)
+							(stone-amount > 2000)
+						)
+					)
+				)
+			)
+		)
+	)
+	(can-build wonder)
+	(up-pending-objects c: wonder < 1)
+=>
+	(build wonder)
+)
+#end-if
+
+(defrule
+	(current-age == imperial-age)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(building-type-count castle >= 1)
+	(not(taunt-detected my-player-number TA-WONDER))
+	(goal G-TSA 1)
+	(gold-amount > TRASH-GOLD)
+	(nor	(research-available ri-pikeman)
+		(research-available ri-elite-skirmisher)
+	)
+	(can-build bombard-tower)
+=>
+	(build-forward bombard-tower)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(building-type-count castle >= 1)
+	(nor	(taunt-detected my-player-number TA-WONDER)
+		(goal G-TSA 1)
+	)
+	(or	(town-under-attack)
+		(strategic-number G-MILITARY-SUPERIORITY < 0)
+	)
+	(gold-amount > TRASH-GOLD)
+	(nor	(research-available ri-pikeman)
+		(research-available ri-elite-skirmisher)
+	)
+	(can-build bombard-tower)
+=>
+	(build bombard-tower)
+)
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == monastery)
+	)
+	(goal G-JOLLYGOAL 1)
+	(building-type-count-total monastery < 2)
+	(building-type-count monastery == 1)
+	(can-build monastery)
+	(up-pending-objects c: monastery < 1)
+=>
+	(build monastery)
+)
+#end-if
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == stable)
+	)
+	(goal G-JOLLYGOAL 1)
+	(not(goal G-STABLE-UNIT GV-NONE))
+	(building-type-count-total stable < STABLES-IMPERIAL)
+	(food-amount > 80)
+	(gold-amount > 75)
+	(nor	(can-train-with-escrow knight-line)
+		(can-train-with-escrow scout-cavalry-line)
+	)
+	(can-build stable)
+	(up-pending-objects c: stable < 1)
+=>
+	(build stable)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(goal G-JOLLYGOAL 1)
+	(not(goal G-BARRACK-UNIT GV-NONE))
+	(building-type-count-total barracks < BARRACKS-IMPERIAL)
+	(food-amount > 60)
+	(gold-amount > 50)
+	(not(can-train-with-escrow militiaman-line))
+	(can-build barracks)
+	(up-pending-objects c: barracks < 1)
+=>
+	(build barracks)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == archery-range)
+	)
+	(goal G-JOLLYGOAL 1)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(building-type-count-total archery-range < ARCHERIES-IMPERIAL)
+	(food-amount > 50)
+	(gold-amount > 70)
+	(nor	(can-train-with-escrow archer-line)
+		(can-train-with-escrow skirmisher-line)
+	)
+	(can-build archery-range)
+	(up-pending-objects c: archery-range < 1)
+=>
+	(build archery-range)
+)
+
+#load-if-defined CELTIC-CIV
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == siege-workshop)
+	)
+	(goal G-JOLLYGOAL 1)
+	(building-type-count-total siege-workshop < 2)
+	(building-type-count siege-workshop == 1)
+	(can-build siege-workshop)
+=>
+	(build siege-workshop)
+)
+#end-if
+
+
+
+; DM
+
+(defrule
+	(not(goal G-STABLE-UNIT GV-NONE))
+	(food-amount > 5000)
+	(wood-amount > 2000)
+	(gold-amount > 3000)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == stable)
+	)
+	(building-type-count-total stable < STABLES-IMPERIAL)
+	(can-build stable)
+	(up-pending-objects c: stable < 3)
+=>
+	(build stable)
+)
+
+(defrule
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(food-amount > 5000)
+	(wood-amount > 2000)
+	(gold-amount > 3000)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == archery-range)
+	)
+	(building-type-count-total archery-range < ARCHERIES-IMPERIAL)
+	(can-build archery-range)
+	(up-pending-objects c: archery-range < 3)
+=>
+	(build archery-range)
+)
+
+(defrule
+	(not(goal G-BARRACK-UNIT GV-NONE))
+	(food-amount > 5000)
+	(wood-amount > 2000)
+	(gold-amount > 3000)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(building-type-count-total barracks < BARRACKS-IMPERIAL)
+	(can-build barracks)
+	(up-pending-objects c: barracks < 3)
+=>
+	(build barracks)
+)
+
+; Second market for team games
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total market < 2)
+	(goal G-JOLLYGOAL 1)
+	(building-type-count-total barracks >= BARRACKS-IMPERIAL)
+	(building-type-count-total archery-range >= ARCHERIES-IMPERIAL)
+	(building-type-count-total stable >= STABLES-IMPERIAL)
+	(players-building-type-count any-ally market >= 1)
+	(unit-type-count-total trade-cart >= 1)
+	(can-build market)
+	(up-pending-objects c: market < 1)
+=>
+	(build market)
+	;(chat-to-player my-player-number "Building market")
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total market < 2)
+	(goal G-JOLLYGOAL 1)
+	(building-type-count-total barracks >= BARRACKS-IMPERIAL)
+	(building-type-count-total archery-range >= ARCHERIES-IMPERIAL)
+	(building-type-count-total stable >= STABLES-IMPERIAL)
+	(players-building-type-count any-ally market >= 1)
+	(players-unit-type-count any-ally trade-cart >= 1)
+	(can-build market)
+	(up-pending-objects c: market < 1)
+=>
+	(build market)
+	;(chat-to-player my-player-number "Building market")
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)
+
+
+
+(defrule
+	(current-age >= castle-age)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == castle)
+	)
+	(building-type-count-total castle < 10)
+	(nand	(building-type-count-total castle >= 1)
+		(taunt-detected my-player-number TA-WONDER)
+	)
+	(can-build castle)
+=>
+	(build castle)
+	(set-strategic-number G-BUILDING-EXPANSION castle)
+)

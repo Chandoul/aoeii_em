@@ -1,0 +1,5004 @@
+; The idea of counting fish to detect water map originally from The Horde
+
+; =========== BASIC RULES
+
+#load-if-not-defined NOMAD-MAP
+#load-if-not-defined UP-NOMAD-RESOURCES
+
+(defrule
+	(or	(game-time > 1000)
+		(strategic-number sn-nomad-style-start == 0))
+=>
+	(up-jump-rule 7)
+)
+
+(defrule
+	(game-time < 1000)
+	(unit-type-count livestock-class >= 2)
+	(strategic-number sn-nomad-style-start == 1)
+	(building-type-count-total town-center == 0)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: livestock-class c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-candidate2-point-x)
+	(up-get-point position-center gl-point-x)
+	(up-lerp-tiles gl-candidate2-point-x gl-point-x c: 1)
+	(disable-self)
+)
+
+(defrule
+	(game-time < 1000)
+	(unit-type-count livestock-class >= 2)
+	(strategic-number sn-nomad-style-start == 1)
+	(building-type-count-total town-center == 0)
+	(up-timer-status 46 != timer-running)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: livestock-class c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-object-point-x)
+	(up-cross-tiles gl-object-point-x gl-candidate2-point-x c: 7)
+	(up-target-point gl-object-point-x action-move -1 -1)
+	(enable-timer 46 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(unit-type-count livestock-class <= 3)
+	(players-unit-type-count any-ally sheep > 5)
+	(or	(players-unit-type-count any-ally sheep > 9)
+		(game-time > 540))
+	(building-type-count-total town-center > 0)
+	(building-type-count lumber-camp > 0)
+=>
+	(chat-to-allies "188Could you share some sheep?")
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: lumber-camp c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-point-x)
+	(up-send-flare gl-point-x)
+	(disable-self)
+)
+
+(defrule
+	(or	(not	(taunt-detected any-ally 188))
+		(or	(strategic-number sn-nomad-style-start == 0)
+			(strategic-number sn-minimum-water-body-size-for-dock >= 1999)))
+=>
+	(up-jump-rule 4)
+)
+
+(defrule
+	(or	(and	(strategic-number sn-sheep-count <= 9)
+			(unit-type-count livestock-class <= 9)); In case sheep counter isn't on before TC is up
+		(unit-type-count livestock-class <= 5))
+=>
+	(chat-to-allies "Sorry, I can't share sheep this time.")
+	(acknowledge-taunt every-ally 188)
+	(up-jump-rule 3)
+)
+
+(defrule
+	(strategic-number sn-nomad-style-start == 1)
+	(or	(strategic-number sn-sheep-count > 9)
+		(unit-type-count livestock-class > 9))
+	(unit-type-count livestock-class > 5)
+	(taunt-detected any-ally 188)
+=>
+	(up-get-player-fact this-any-ally player-number 0 temporary-goal2)
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal2)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-remote c: lumber-camp c: 1)
+	(up-get-search-state gl-local-total)
+)
+
+(defrule
+	(up-compare-goal gl-remote-last > 0)
+	(strategic-number sn-nomad-style-start == 1)
+	(or	(strategic-number sn-sheep-count > 9)
+		(unit-type-count livestock-class > 9))
+	(unit-type-count livestock-class > 6)
+	(taunt-detected any-ally 188)
+=>
+	(up-filter-exclude actionid-move -1 orderid-move -1)
+	(up-find-local c: livestock-class c: 4)
+	(up-target-objects -1 action-move -1 -1)
+	(up-chat-data-to-player my-player-number "Sending 4 sheep to you, player %d." g: temporary-goal2)
+	(up-chat-data-to-player every-ally "Sending 4 sheep to you, player %d." g: temporary-goal2)
+)
+
+(defrule
+	(strategic-number sn-nomad-style-start == 1)
+	(or	(strategic-number sn-sheep-count > 9)
+		(unit-type-count livestock-class > 9))
+	(unit-type-count livestock-class > 5)
+	(taunt-detected any-ally 188)
+=>
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(acknowledge-taunt every-ally 188)
+)
+
+(defrule
+	(game-time > 2100)
+	(building-type-count town-center > 0)
+=>
+	(up-jump-rule 13)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+)
+
+(defrule
+	(game-time < 10)
+	(soldier-count > 0)
+=>
+	(set-goal gl-start-with-scout YES)
+	(disable-self)
+)
+
+(defrule
+	(game-time < 5)
+	(cc-players-unit-type-count 0 wild-boar == 0)
+	(cc-players-unit-type-count 0 javelina == 0)
+=>
+	(chat-to-player my-player-number "Countdown to Extinction has reached boars")
+	(set-strategic-number sn-boars-on-map NONE)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 45)
+	(game-time < 55)
+	(strategic-number sn-boars-on-map == NONE)
+=>
+	(chat-to-player my-player-number "The hunt is canned")
+	(set-strategic-number sn-maximum-hunt-drop-distance 27)
+	(disable-self)
+)
+
+(defrule
+	(game-time < 10)
+	(building-type-count-total town-center < 1)
+=>
+	(set-strategic-number sn-town-center-start 0)
+	(set-strategic-number sn-nomad-style-start 1)
+	(set-strategic-number sn-target-evaluation-range 1)
+	(set-strategic-number sn-maximum-town-size 15)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 2)
+	(game-time < 10)
+	(building-type-count-total town-center < 1)
+=>
+	(up-get-fact gaia-type-count-total wood gl-wood-to-be-seen)
+	(up-modify-goal gl-wood-to-be-seen c:+ extra-wood-to-be-seen)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-town-center-start == 0)
+	(building-type-count town-center > 0)
+=>
+	(set-strategic-number sn-town-center-start 1); Nomad-style-start is still 0 so Barbarian will remember it didn't start with tc, this just enables stuff that isn't wanted without tc
+)
+
+(defrule
+	(building-type-count-total lumber-camp == 1)
+	(building-type-count-total mill == 0)
+	(stone-amount == 100)
+	(goal gl-current-age gv-dark)
+	(building-type-count town-center > 0)
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-builders 0)
+	(set-strategic-number sn-percent-civilian-gatherers 100)
+	(set-strategic-number sn-cap-civilian-gatherers 200)
+	(set-strategic-number sn-number-explore-groups 0)
+	(set-strategic-number sn-total-number-explorers 0)
+	(disable-self)
+)
+
+(defrule
+	(game-time < 5)
+	(soldier-count > 1)
+	(soldier-count < 4)
+=>
+	(up-get-fact soldier-count 0 gl-starting-scout-count)
+	(up-modify-sn sn-number-explore-groups g:= gl-starting-scout-count)
+	(up-modify-sn sn-total-number-explorers g:= gl-starting-scout-count)
+	(chat-to-player my-player-number "Extra scouts - add more explorers")
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-starting-scout-count >= 2)
+	(or	(up-compare-goal gl-current-age >= gv-dark-up)
+		(and 	(up-compare-goal threat-time < 3000)
+			(up-attacker-class != wolf-class)))
+=>
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(up-reset-scouts)
+	(up-retreat-now)
+	(disable-self)
+)
+
+(defrule
+	(building-type-count-total lumber-camp == 1)
+	(stone-amount == 100)
+	(goal gl-current-age gv-dark)
+	(building-type-count town-center > 0)
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-maximum-hunt-drop-distance 17)
+	(set-strategic-number sn-percent-civilian-gatherers 100)
+	(set-strategic-number sn-cap-civilian-gatherers 200)
+	(set-strategic-number sn-number-explore-groups 0)
+	(set-strategic-number sn-total-number-explorers 0)
+	(set-strategic-number sn-nomad-style-start 1)
+	(disable-self)
+)
+
+(defrule
+	(game-time < 5)
+	(not	(death-match-game))
+	(building-type-count town-center > 1)
+=>
+	(set-strategic-number sn-camp-max-distance 60); Many TCs - enable dropping camps with other TCs
+	(set-strategic-number sn-mill-max-distance 60)
+	(set-strategic-number sn-maximum-town-size 16)
+	(chat-to-player my-player-number "Multi TC start - high camp distances")
+	(disable-self)
+)
+
+(defrule
+	(goal gl-current-age gv-dark)
+	(game-time < 30)
+	(up-compare-goal gl-scattered-islets-style <= 0)
+	(building-type-count-total town-center == 0)
+	(building-type-count-total lumber-camp == 0)
+	(strategic-number sn-number-explore-groups != 7)
+=>
+	(set-strategic-number sn-number-explore-groups 7)
+	(set-strategic-number sn-total-number-explorers 7)
+	(set-strategic-number sn-percent-civilian-gatherers 0)
+	(set-strategic-number sn-cap-civilian-gatherers 0)
+	(set-strategic-number sn-cap-civilian-explorers 100)
+	(set-strategic-number sn-percent-civilian-explorers 100)
+	(set-strategic-number sn-camp-max-distance 45)
+)
+
+(defrule
+	(goal gl-current-age gv-dark)
+	(wood-amount < 275)
+	(game-time < 300)
+	(building-type-count-total town-center == 0)
+	(building-type-count-total lumber-camp == 1)
+	(or	(strategic-number sn-number-explore-groups != 1)
+		(strategic-number sn-percent-civilian-explorers != 0))
+=>
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-percent-civilian-gatherers 0)
+	(set-strategic-number sn-cap-civilian-gatherers 200)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-minimum-civilian-explorers 0)
+)
+
+(defrule
+	(game-time > 2100)
+	(building-type-count town-center > 0)
+=>
+	(up-jump-rule 11)
+)
+
+(defrule
+	(up-compare-goal gl-scattered-islets-style <= 0)
+	(game-time > 129)
+	(goal gl-current-age gv-dark)
+	(building-type-count-total town-center == 0)
+	(building-type-count-total lumber-camp == 0)
+	(resource-found wood)
+	(can-build lumber-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 1)
+	(build lumber-camp)
+	(set-strategic-number sn-lumber-camp-security 1)
+	(set-strategic-number sn-wood-gatherer-percentage 100)
+	(set-strategic-number sn-target-evaluation-ally-proximity 50)
+	(set-strategic-number sn-maximum-food-drop-distance 20)
+	(chat-to-player my-player-number "Nomad-style start - build lumber")
+	(set-strategic-number sn-maximum-wood-drop-distance 25)
+	(enable-timer 10 5)
+)
+
+(defrule
+	(game-time >= min-lumber-time)
+	(up-compare-goal gl-scattered-islets-style <= 0)
+	(up-gaia-type-count-total c: wood g:>= gl-wood-to-be-seen)
+	(up-gaia-type-count-total c: wood >= wood-to-be-seen)
+	(goal gl-current-age gv-dark)
+	(building-type-count-total town-center == 0)
+	(building-type-count-total lumber-camp == 0)
+	(can-build lumber-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 1)
+	(build lumber-camp)
+	(set-strategic-number sn-lumber-camp-security 1)
+	(set-strategic-number sn-wood-gatherer-percentage 100)
+	(set-strategic-number sn-target-evaluation-ally-proximity 50)
+	(set-strategic-number sn-maximum-food-drop-distance 20)
+;	(chat-to-player my-player-number "Nomad-style start - build lumber")
+	(set-strategic-number sn-maximum-wood-drop-distance 25)
+	(enable-timer 10 5)
+)
+
+(defrule
+	(game-time < 8)
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-wood-gatherer-percentage != 100)
+	(building-type-count-total town-center == 0)
+	(building-type-count-total lumber-camp > 0)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 100)
+	(set-strategic-number sn-food-gatherer-percentage 0)
+	(set-strategic-number sn-target-evaluation-ally-proximity 50)
+	(set-strategic-number sn-maximum-wood-drop-distance -1)
+	(chat-to-player my-player-number "24Some weird map")
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 0)
+	(strategic-number sn-nomad-style-start == 1)
+	(building-type-count-total town-center > 0)
+	(strategic-number sn-wood-gatherer-percentage == 100)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 84)
+	(set-strategic-number sn-wood-gatherer-percentage 16)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 0)
+	(strategic-number sn-nomad-style-start == 1)
+	(building-type-count-total town-center > 0)
+	(unit-type-count-total villager == 9)
+	(strategic-number sn-food-gatherer-percentage == 84)
+	(strategic-number sn-wood-gatherer-percentage == 16)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 70)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(up-compare-goal gl-start-with-scout != YES)
+	(up-compare-const gv-multiplayer-game == 0); MP+rec bugs villager explorers
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-cap-civilian-explorers == 0)
+	(goal gl-current-age gv-dark)
+	(unit-type-count-total villager > 8)
+	(or	(and	(unit-type-count-total villager == 17)
+			(strategic-number sn-nomad-style-start == 1))
+		(soldier-count == 0))
+=>
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-cap-civilian-explorers 1)
+	(set-strategic-number sn-percent-civilian-explorers 5)
+)
+
+(defrule
+	(up-compare-goal gl-scattered-islets-style <= 0)
+	(up-compare-goal gl-nothing-style-map != YES)
+	(up-compare-goal gl-start-with-scout != YES)
+	(up-compare-const gv-multiplayer-game == 0)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(strategic-number sn-cap-civilian-explorers == 0)
+	(unit-type-count-total villager < 25)
+	(goal gl-current-age gv-dark)
+	(unit-type-count-total villager > 8)
+	(soldier-count == 0)
+=>
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-cap-civilian-explorers 1)
+	(set-strategic-number sn-percent-civilian-explorers 5)
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(up-compare-goal gl-start-with-scout != YES)
+	(unit-type-count-total villager == 17)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-nomad-style-start == 1)
+=>
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-cap-civilian-explorers 1)
+	(set-strategic-number sn-target-evaluation-range 0)
+	(set-strategic-number sn-percent-civilian-explorers 5)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+=>
+	(up-jump-rule 2)
+)
+
+(defrule
+	(game-time < 1800)
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(building-type-count-total lumber-camp > 0)
+	(strategic-number sn-cap-civilian-explorers != 0)
+	(or	(and	(or	(soldier-count > 0)
+				(up-compare-goal gl-current-age >= gv-feudal-up))
+			(strategic-number sn-nomad-style-start == 1))
+		(and	(strategic-number sn-nomad-style-start == 0)
+			(up-compare-goal gl-current-age >= gv-dark-up)))
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+)
+
+(defrule
+	(game-time < 1800)
+	(building-type-count-total dock > 0)
+	(building-type-count-total lumber-camp > 0)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(strategic-number sn-cap-civilian-explorers != 0)
+	(or	(and	(or	(soldier-count > 0)
+				(up-compare-goal gl-current-age >= gv-feudal-up))
+			(strategic-number sn-nomad-style-start == 1))
+		(and	(strategic-number sn-nomad-style-start == 0)
+			(unit-type-count-total villager > 24)))
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+)
+
+(defrule
+	(goal gl-outward-bound-style 0)
+	(game-time > 2100)
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1000)
+	(disable-self)
+)
+
+(defrule
+	(or	(and	(game-time > 300)
+			(and	(up-compare-goal gl-outward-bound-style <= 0)
+				(up-compare-goal gl-scattered-islets-style <= 0)))
+		(map-type migration))
+=>
+	(up-jump-rule 46)
+)
+
+(defrule
+	(goal gl-outward-bound-style 1)
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(game-time < 10)
+	(unit-type-count transport-ship > 0)
+	(building-type-count-total town-center == 0)
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-find-remote c: villager-class c: 1)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-objects -1 action-move -1 -1)
+	(set-strategic-number sn-number-garrison-units 10)
+	(set-strategic-number sn-maximum-garrison-fill 10)
+	(up-garrison transport-ship c: villager-class)
+	(set-goal gl-scattered-islets-style 2)
+	(set-goal gl-migration-progress 100)
+	(set-strategic-number sn-maximum-food-drop-distance -1)
+	(disable-self)
+)
+
+(defrule
+	(game-time < 10)
+	(unit-type-count transport-ship > 0)
+	(building-type-count-total town-center > 0)
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-find-remote c: villager-class c: 1)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-objects -1 action-move -1 -1)
+	(set-strategic-number sn-number-garrison-units 10)
+	(set-strategic-number sn-maximum-garrison-fill 10)
+	(up-garrison transport-ship c: villager-class)
+	(set-goal gl-outward-bound-style 1)
+	(set-goal gl-migration-progress 5464)
+	(set-strategic-number sn-maximum-food-drop-distance -1)
+	(disable-self)
+)
+
+(defrule
+	(game-time < 10)
+	(unit-type-count transport-ship > 0)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-find-local c: villager-class c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-starting-island-x)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-outward-bound-style 1)
+=>
+	(up-get-point position-center gl-main-island-x)
+	(up-get-point position-self gl-saved-point-x)
+	(up-get-point-distance gl-main-island-x gl-saved-point-x gl-point-distance)
+	(up-modify-goal gl-saved-point-x g:- gl-main-island-x)
+	(up-modify-goal gl-saved-point-y g:- gl-main-island-y)
+	(up-modify-goal gl-saved-point-x c:* N-x); Side lenght/2
+	(up-modify-goal gl-saved-point-y c:* N-x)
+	(up-modify-goal gl-saved-point-x g:/ gl-point-distance)
+	(up-modify-goal gl-saved-point-y g:/ gl-point-distance)
+	(up-modify-goal gl-main-island-x g:+ gl-saved-point-x)
+	(up-modify-goal gl-main-island-y g:+ gl-saved-point-y)
+	(set-goal gl-transport-time 60)
+	(set-goal gl-scattered-islets-style 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-outward-bound-style 1)
+	(research-completed ri-loom)
+=>
+	(up-delete-objects c: town-center c: 32767)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-outward-bound-style 1)
+	(unit-type-count villager > 5)
+	(game-time < 50)
+=>
+	(delete-unit villager)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-outward-bound-style 1)
+	(building-type-count-total town-center == 0)
+=>
+	(set-strategic-number sn-town-center-start 0)
+	(set-strategic-number sn-nomad-style-start 1)
+	(set-strategic-number sn-maximum-wood-drop-distance -1)
+	(set-goal gl-normal-milling 0)
+)
+
+(defrule
+	(goal gl-outward-bound-style 1)
+	(game-time > 120)
+	(building-type-count-total town-center > 0)
+=>
+	(set-goal gl-scattered-islets-style 0)
+	(set-goal gl-outward-bound-style 0)
+	(set-strategic-number sn-town-center-start 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-outward-bound-style 1)
+	(game-time g:< gl-transport-time)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 -1 -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range transport-max-villagers -1 -1 -1)
+	(up-set-target-point gl-main-island-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-point gl-main-island-x action-move -1 -1)
+	(set-goal gl-scattered-islets-style 2)
+	(set-strategic-number sn-number-garrison-units 10)
+	(set-strategic-number sn-maximum-garrison-fill 10)
+	(up-garrison transport-ship c: villager-class)
+	(up-reset-placement c: house)
+)
+
+(defrule
+	(goal gl-outward-bound-style 1)
+=>
+	(up-jump-rule 14)
+)
+
+(defrule
+	(player-number 1)
+	(game-time g:<= gl-transport-time)
+	(goal gl-scattered-islets-style 2)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-range transport-max-villagers -1 -1 -1)
+	(set-goal gl-point-x N-y)
+	(set-goal gl-point-y N-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-point gl-point-x action-move -1 -1)
+)
+
+(defrule
+	(player-number 2)
+	(game-time g:<= gl-transport-time)
+	(goal gl-scattered-islets-style 2)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-range transport-max-villagers -1 -1 -1)
+	(set-goal gl-point-x S-y)
+	(set-goal gl-point-y S-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-point gl-point-x action-move -1 -1)
+)
+
+(defrule
+	(player-number 3)
+	(game-time g:<= gl-transport-time)
+	(goal gl-scattered-islets-style 2)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-range transport-max-villagers -1 -1 -1)
+	(set-goal gl-point-x E-y)
+	(set-goal gl-point-y E-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-point gl-point-x action-move -1 -1)
+)
+
+(defrule
+	(player-number 4)
+	(game-time g:<= gl-transport-time)
+	(goal gl-scattered-islets-style 2)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-range transport-max-villagers -1 -1 -1)
+	(set-goal gl-point-x W-y)
+	(set-goal gl-point-y W-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-point gl-point-x action-move -1 -1)
+)
+
+(defrule
+	(player-number 5)
+	(game-time g:<= gl-transport-time)
+	(goal gl-scattered-islets-style 2)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-range transport-max-villagers -1 -1 -1)
+	(set-goal gl-point-x NW-y)
+	(set-goal gl-point-y NW-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-point gl-point-x action-move -1 -1)
+)
+
+(defrule
+	(player-number 6)
+	(game-time g:<= gl-transport-time)
+	(goal gl-scattered-islets-style 2)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-range transport-max-villagers -1 -1 -1)
+	(set-goal gl-point-x SW-y)
+	(set-goal gl-point-y SW-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-point gl-point-x action-move -1 -1)
+)
+
+(defrule
+	(player-number 7)
+	(game-time g:<= gl-transport-time)
+	(goal gl-scattered-islets-style 2)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-range transport-max-villagers -1 -1 -1)
+	(set-goal gl-point-x SE-y)
+	(set-goal gl-point-y SE-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-point gl-point-x action-move -1 -1)
+)
+
+(defrule
+	(player-number 8)
+	(game-time g:<= gl-transport-time)
+	(goal gl-scattered-islets-style 2)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-range transport-max-villagers -1 -1 -1)
+	(set-goal gl-point-x NE-y)
+	(set-goal gl-point-y NE-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-point gl-point-x action-move -1 -1)
+)
+
+(defrule
+	(game-time g:> gl-migration-progress)
+	(goal gl-point-y N-y)
+	(building-type-count-total lumber-camp == 0)
+	(up-compare-goal gl-scattered-islets-style >= 2)
+	(up-compare-goal gl-scattered-islets-style <= 3)
+=>
+	(set-goal gl-point-y 30)
+)
+
+(defrule
+	(game-time g:> gl-migration-progress)
+	(up-compare-goal gl-point-y >= NE-y)
+	(up-compare-goal gl-point-y < N-y)
+	(building-type-count-total lumber-camp == 0)
+	(up-compare-goal gl-scattered-islets-style >= 2)
+	(up-compare-goal gl-scattered-islets-style <= 3)
+=>
+	(set-goal gl-point-y N-y)
+)
+
+(defrule
+	(game-time g:> gl-migration-progress)
+	(up-compare-goal gl-point-y < NE-y)
+	(up-compare-goal gl-point-y >= S-y)
+	(building-type-count-total lumber-camp == 0)
+	(up-compare-goal gl-scattered-islets-style >= 2)
+	(up-compare-goal gl-scattered-islets-style <= 3)
+=>
+	(set-goal gl-point-y N-y)
+	(up-modify-goal gl-point-y c:- 30)
+)
+
+; ...
+
+(defrule
+	(game-time g:> gl-migration-progress)
+	(up-compare-goal gl-point-x >= N-x)
+	(up-compare-goal gl-point-x < NE-x)
+	(building-type-count-total lumber-camp == 0)
+	(up-compare-goal gl-scattered-islets-style >= 2)
+	(up-compare-goal gl-scattered-islets-style <= 3)
+=>
+	(set-goal gl-point-x NE-x)
+)
+
+(defrule
+	(game-time g:> gl-migration-progress)
+	(goal gl-point-x NE-x)
+	(building-type-count-total lumber-camp == 0)
+	(up-compare-goal gl-scattered-islets-style >= 2)
+	(up-compare-goal gl-scattered-islets-style <= 3)
+=>
+	(set-goal gl-point-x SW-x)
+	(up-modify-goal gl-point-x c:+ 30)
+)
+
+(defrule
+	(game-time g:> gl-migration-progress)
+	(up-compare-goal gl-point-x >= SW-x)
+	(up-compare-goal gl-point-x < N-x)
+	(building-type-count-total lumber-camp == 0)
+	(up-compare-goal gl-scattered-islets-style >= 2)
+	(up-compare-goal gl-scattered-islets-style <= 3)
+=>
+	(set-goal gl-point-x N-x)
+	(up-modify-goal gl-point-x c:- 30)
+)
+
+(defrule
+	(goal gl-outward-bound-style 1)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 actionid-move -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range 1 -1 -1 -1)
+)
+
+(defrule
+	(up-find-local c: transport-ship c: 1)
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(game-time g:> gl-migration-progress)
+	(building-type-count-total lumber-camp == 0)
+	(up-compare-goal gl-scattered-islets-style >= 2)
+	(up-compare-goal gl-scattered-islets-style <= 3)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-set-target-point gl-point-x)
+	(up-target-point gl-point-x action-move -1 -1)
+	(up-modify-goal gl-migration-progress c:+ 100)
+)
+
+(defrule
+	(game-time g:> gl-transport-time)
+	(up-compare-goal gl-scattered-islets-style >= 2)
+	(up-compare-goal gl-scattered-islets-style <= 3)
+	(building-type-count lumber-camp == 0)
+=>
+	(up-ungarrison c: transport-ship)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-cap-civilian-explorers 100)
+	(set-strategic-number sn-percent-civilian-explorers 100)
+	(set-strategic-number sn-percent-civilian-gatherers 0)
+	(set-strategic-number sn-cap-civilian-gatherers 0)
+	(set-strategic-number sn-number-explore-groups 7)
+	(set-strategic-number sn-total-number-explorers 7)
+	(set-strategic-number sn-minimum-civilian-explorers 6)
+	(set-strategic-number sn-maximum-wood-drop-distance -1)
+	(set-strategic-number sn-maximum-gold-drop-distance -1)
+	(set-strategic-number sn-maximum-stone-drop-distance -1)
+)
+
+(defrule
+	(game-time g:> gl-transport-time)
+	(goal gl-scattered-islets-style 2)
+	(dropsite-min-distance wood == 255)
+	(can-build lumber-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 1)
+	(build lumber-camp)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-minimum-civilian-explorers 0)
+	(set-strategic-number sn-lumber-camp-security 1)
+	(set-strategic-number sn-wood-gatherer-percentage 100)
+	(set-strategic-number sn-target-evaluation-ally-proximity 50)
+	(set-goal gl-scattered-islets-style 3)
+	(enable-timer 10 5)
+)
+
+(defrule
+	(or	(goal gl-scattered-islets-style 3)
+		(goal gl-scattered-islets-style 4))
+	(building-type-count lumber-camp > 0)
+	(building-type-count-total town-center == 0)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 1)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-minimum-civilian-explorers 0)
+	(set-strategic-number sn-lumber-camp-security 1)
+	(set-strategic-number sn-wood-gatherer-percentage 100)
+	(set-strategic-number sn-target-evaluation-ally-proximity 50)
+	(set-strategic-number sn-maximum-food-drop-distance 20)
+	(set-goal gl-scattered-islets-style 4)
+)
+
+(defrule
+	(or	(not	(civ-selected chinese))
+		(or	(building-type-count-total lumber-camp == 0)
+			(or	(and	(up-compare-goal gl-scattered-islets-style <= 1)
+					(up-compare-goal gl-outward-bound-style <= 0))
+				(game-time > 900))))
+=>
+	(up-jump-rule 5)
+)
+
+(defrule
+	(true)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 -1 -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range -1 0 -1 -1)
+	(up-find-local c: transport-ship c: 1)
+	(up-set-target-point gl-starting-island-x)
+	(up-target-point gl-starting-island-x action-move -1 -1)
+	(enable-timer 41 65)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered 41)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-filter-range -1 0 -1 -1)
+	(up-find-remote c: transport-ship c: 1)
+	(up-set-target-object search-remote c: 0)
+	(up-get-point position-object gl-object-point-x)
+	(up-set-target-point gl-starting-island-x)
+	(up-filter-range -1 -1 -1 20)
+	(up-find-local c: villager-class c: 1)
+	(up-target-objects -1 action-default -1 -1)
+	(enable-timer 41 45)
+	(disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-remote c: lumber-camp c: 1)
+	(up-set-target-object search-remote c: 0)
+	(up-get-point position-object gl-object-point-x)
+	(up-filter-range 1 -1 -1 -1)
+	(up-find-local c: transport-ship c: 1)
+	(up-target-objects -1 action-move -1 -1)
+)
+
+(defrule
+	(timer-triggered 41)
+=>
+	(enable-timer 29 25)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered 29)
+=>
+	(up-ungarrison c: transport-ship)
+)
+
+(defrule
+	(up-compare-goal gl-scattered-islets-style >= 4)
+	(building-type-count-total dock == 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 0)
+	(set-strategic-number sn-wood-gatherer-percentage 100)
+)
+
+(defrule
+	(up-compare-goal gl-scattered-islets-style >= 4)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(game-time > 90)
+	(building-type-count town-center > 0)
+=>
+	(set-goal gl-strategy grush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-feudal-archery 0)
+	(set-goal gl-feudal-infantry 0)
+	(set-goal gl-feudal-trash 0)
+	(set-goal DOCK 11)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-scattered-islets-style >= 4)
+	(up-compare-goal gl-outward-bound-style <= 0)
+	(building-type-count-total lumber-camp > 0)
+	(or	(civ-selected chinese)
+		(building-type-count-total town-center > 0))
+	(or	(building-type-count-total dock < 1)
+		(and	(wood-amount > 300)
+			(unit-type-count-total fishing-ship > 3)))
+	(building-type-count-total dock < 3)
+	(can-build dock)
+=>
+	(build dock)
+	(chat-to-player my-player-number "Dock")
+)
+
+(defrule
+	(up-compare-goal gl-scattered-islets-style >= 4)
+	(building-type-count-total lumber-camp > 0)
+	(building-type-count-total town-center > 0)
+	(unit-type-count-total fishing-ship < 16)
+	(goal gl-current-age gv-dark)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+(defrule
+	(up-compare-goal gl-scattered-islets-style >= 4)
+	(building-type-count lumber-camp > 0)
+	(building-type-count town-center > 0)
+	(dropsite-min-distance wood == 255)
+=>
+	(up-delete-objects c: lumber-camp c: 32767)
+)
+
+(defrule
+	(game-time > 1100)
+	(unit-type-count transport-ship > 0)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-find-remote c: villager-class c: 1)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-objects -1 action-move -1 -1)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 1200)
+	(goal gl-scattered-islets-style 4)
+	(unit-type-count transport-ship > 0)
+	(unit-type-count villager > 4)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-find-remote c: villager-class c: 1)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-objects -1 action-move -1 -1)
+	(set-strategic-number sn-number-garrison-units 10)
+	(set-strategic-number sn-maximum-garrison-fill 10)
+	(up-garrison transport-ship c: villager-class)
+	(set-goal gl-scattered-islets-style 5)
+	(enable-timer 41 60)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered 41)
+	(goal gl-scattered-islets-style 5)
+=>
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-range 1 -1 -1 -1)
+	(set-goal gl-point-x 80)
+	(set-goal gl-point-y 30)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: transport-ship-class c: 1)
+	(up-target-point gl-point-x action-move -1 -1)
+	(enable-timer 41 30)
+	(set-goal gl-scattered-islets-style 5)
+)
+
+(defrule
+	(timer-triggered 41)
+	(goal gl-scattered-islets-style 6)
+=>
+	(up-ungarrison c: transport-ship)
+)
+
+(defrule
+	(goal gl-outward-bound-style 1)
+	(building-type-count-total lumber-camp > 0)
+	(dropsite-min-distance wood < 255)
+	(dropsite-min-distance wood >= 0)
+	(building-type-count-total town-center == 0)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 1)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-minimum-civilian-explorers 0)
+	(set-strategic-number sn-lumber-camp-security 1)
+	(set-strategic-number sn-wood-gatherer-percentage 100)
+	(set-strategic-number sn-target-evaluation-ally-proximity 50)
+	(set-strategic-number sn-maximum-food-drop-distance 20)
+	(set-strategic-number sn-maximum-wood-drop-distance -1)
+)
+
+#load-if-defined ISLANDS-MAP
+(defrule
+	(game-time > 900)
+=>
+	(up-jump-rule 30)
+)
+
+(defrule
+	(dropsite-min-distance live-boar > 10)
+	(dropsite-min-distance live-boar < 255)
+	(goal gl-boar-stealing -1)
+	(timer-triggered 12)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: scout-unit c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-object-data object-data-hitpoints temporary-goal)
+)
+
+(defrule
+	(dropsite-min-distance live-boar > 10)
+	(dropsite-min-distance live-boar < 255)
+	(strategic-number sn-boars-on-map != NONE)
+	(or	(goal gl-boar-stealing -1)
+		(up-compare-goal gl-boar-stealing >= 3))
+	(nor	(up-compare-goal temporary-goal < 23)
+		(unit-type-count scout-unit == 0))
+	(dropsite-min-distance boar-hunting < 31)
+	(up-compare-goal gl-villagers-to-start-boar-hunt < 22)
+	(timer-triggered 12)
+=>
+	(set-goal gl-villagers-to-start-boar-hunt 22)
+	(set-goal gl-loomless-boar-hunting YES)
+)
+
+(defrule
+	(dropsite-min-distance live-boar > 10)
+	(dropsite-min-distance live-boar < 255)
+	(goal gl-boar-stealing -1)
+	(or	(up-compare-goal temporary-goal < 23)
+		(unit-type-count scout-unit == 0))
+	(timer-triggered 12)
+=>
+	(set-goal gl-villagers-to-start-boar-hunt 16)
+	(set-goal gl-loomless-boar-hunting NO)
+	(disable-self)
+)
+
+(defrule
+	(unit-type-count scout-unit == 1)
+	(dropsite-min-distance live-boar > 10)
+	(dropsite-min-distance live-boar < 255)
+	(up-compare-goal temporary-goal > 22)
+	(goal gl-boar-stealing -1)
+	(timer-triggered 12)
+=>
+	(set-goal gl-boar-stealing 3)
+	(disable-timer 12)
+	(disable-timer 29)
+	(disable-timer 46)
+	(set-goal 344 -1)
+	(set-goal gl-point-distance -1)
+	(set-goal gl-point-distance2 -1)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 5)
+;	(up-timer-status 46 != timer-running)
+;	(unit-type-count villager-hunter > 0)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: scout-unit c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-object-point-x)
+	(up-get-point position-self gl-point-x)
+	(up-get-point position-self gl-saved-point-x)
+	(up-cross-tiles gl-object-point-x gl-point-x c: 5)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 5)
+;	(up-timer-status 46 != timer-running)
+;	(unit-type-count villager-hunter > 0)
+=>
+	(up-modify-goal gl-saved-point-x g:- gl-object-point-x)
+	(up-modify-goal gl-saved-point-y g:- gl-object-point-y)
+	(up-modify-goal gl-saved-point-x c:* 6)
+	(up-modify-goal gl-saved-point-y c:* 6)
+	(up-get-point-distance gl-point-x gl-object-point-x gl-point-distance)
+	(up-modify-goal gl-saved-point-x g:/ gl-point-distance)
+	(up-modify-goal gl-saved-point-y g:/ gl-point-distance)
+	(up-modify-goal gl-point-x g:- gl-saved-point-x)
+	(up-modify-goal gl-point-y g:- gl-saved-point-y)
+	(up-target-point gl-point-x action-move -1 -1)
+;	(enable-timer 46 1)
+)
+
+(defrule
+	(or	(and	(up-compare-goal gl-point-distance2 < 8)
+			(up-compare-goal gl-point-distance2 >= 0))
+		(up-compare-goal gl-boar-stealing != 4))
+=>
+	(up-jump-rule 13)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 4)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: scout-unit c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-saved-point-x)
+	(up-set-target-point gl-saved-point-x)
+	(up-filter-range -1 -1 -1 15)
+	(up-find-remote g: gl-boar-unit c: 1)
+	(up-set-target-by-id g: gl-stored-boar-id)
+	(up-get-object-data object-data-action gl-max-scout-hp); Well, not the correct goal anymore
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+)
+
+(defrule
+	(up-timer-status 29 != timer-running)
+	(or	(goal threat-target infantry-class)
+		(goal threat-target scout-cavalry-class))
+	(up-compare-goal threat-time < 3000)
+	(up-object-data object-data-action == actionid-attack)
+=>
+	(enable-timer 29 0)
+)
+
+(defrule
+	(not	(timer-triggered 29))
+=>
+	(up-jump-rule 6)
+)
+
+(defrule
+;	(timer-triggered 29)
+;	(up-compare-goal 344 != 1)
+;	(up-timer-status 46 != timer-running)
+	(up-compare-goal gl-point-distance >= 0)
+	(up-compare-goal gl-point-distance < 4)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: scout-unit c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-saved-point-x)
+	(up-set-target-point gl-saved-point-x)
+	(up-filter-range -1 -1 -1 15)
+)
+
+(defrule
+;	(timer-triggered 29)
+;	(up-compare-goal 344 != 1)
+;	(up-timer-status 46 != timer-running)
+	(up-compare-goal gl-point-distance >= 0)
+	(up-compare-goal gl-point-distance < 4)
+=>
+	(up-find-remote g: gl-boar-unit c: 1)
+	(up-set-target-by-id g: gl-stored-boar-id)
+	(up-get-point position-object gl-object-point-x)
+	(up-get-point position-object gl-saved-point-x)
+	(up-get-point position-self gl-point-x)
+;	(up-lerp-tiles gl-object-point-x gl-point-x c: 15)
+;	(up-cross-tiles gl-object-point-x gl-saved-point-x c: boar-tiles-to-left)
+	(up-target-point gl-point-x action-move -1 no-attack)
+;	(enable-timer 46 1)
+	(set-goal 344 0)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+;	(chat-to-all "Run")
+)
+
+(defrule
+;	(timer-triggered 29)
+	(up-compare-goal 345 != 1)
+	(up-timer-status 46 != timer-running)
+	(up-compare-goal gl-point-distance >= 3)
+	(up-compare-goal gl-point-distance < 7)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: scout-unit c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-saved-point-x)
+	(up-set-target-point gl-saved-point-x)
+	(up-filter-range -1 -1 -1 15)
+)
+
+(defrule
+;	(timer-triggered 29)
+	(up-compare-goal 345 != 1)
+	(up-timer-status 46 != timer-running)
+	(up-compare-goal gl-point-distance >= 3)
+	(up-compare-goal gl-point-distance < 7)
+=>
+	(up-get-point position-object gl-point-x)
+	(up-find-remote g: gl-boar-unit c: 1)
+	(up-set-target-by-id g: gl-stored-boar-id)
+	(up-get-point position-object gl-object-point-x)
+;	(up-get-point position-object gl-saved-point-x)
+;	(up-get-point position-self gl-point-x)
+	(up-lerp-tiles gl-object-point-x gl-point-x c: 4); 8
+	(up-cross-tiles gl-object-point-x gl-saved-point-x c: boar-tiles-to-left)
+	(up-target-point gl-object-point-x action-move -1 no-attack)
+	(enable-timer 46 1)
+	(set-goal 344 1)
+	(set-goal 345 1)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+;	(chat-to-all "zig")
+)
+
+(defrule
+;	(timer-triggered 29)
+	(up-compare-goal 345 != 2)
+	(up-timer-status 46 != timer-running)
+	(up-compare-goal gl-point-distance >= 3)
+	(up-compare-goal gl-point-distance < 7)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: scout-unit c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-saved-point-x)
+	(up-set-target-point gl-saved-point-x)
+	(up-filter-range -1 -1 -1 15)
+)
+
+(defrule
+;	(timer-triggered 29)
+	(up-compare-goal 345 != 2)
+	(up-timer-status 46 != timer-running)
+	(up-compare-goal gl-point-distance >= 3)
+	(up-compare-goal gl-point-distance < 7)
+=>
+	(up-get-point position-object gl-point-x)
+	(up-find-remote g: gl-boar-unit c: 1)
+	(up-set-target-by-id g: gl-stored-boar-id)
+	(up-get-point position-object gl-object-point-x)
+;	(up-get-point position-object gl-saved-point-x)
+;	(up-get-point position-self gl-point-x)
+	(up-lerp-tiles gl-object-point-x gl-point-x c: 4)
+	(up-cross-tiles gl-object-point-x gl-saved-point-x c: boar-tiles-to-right)
+	(up-target-point gl-object-point-x action-move -1 no-attack)
+	(enable-timer 46 1)
+	(set-goal 344 2)
+	(set-goal 345 2)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+;	(chat-to-all "zag")
+)
+
+(defrule
+	(up-compare-goal 344 < 0)
+;	(up-timer-status 46 != timer-running)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: scout-unit c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-saved-point-x)
+	(up-set-target-point gl-saved-point-x)
+	(up-filter-range -1 -1 -1 15)
+	(up-find-remote g: gl-boar-unit c: 1)
+	(up-set-target-object search-remote c: 0)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal 344 < 0)
+;	(up-timer-status 46 != timer-running)
+=>
+	(up-get-point position-object gl-object-point-x)
+	(up-target-objects gl-object-point-x action-default -1 -1)
+	(up-get-point-distance gl-saved-point-x gl-object-point-x gl-point-distance)
+;	(up-chat-data-to-all "Distance: %d" g: gl-point-distance)
+;	(enable-timer 46 20)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(disable-timer 46)
+	(disable-timer 29)
+	(enable-timer 12 25)
+	(up-get-object-data object-data-id gl-stored-boar-id)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 4)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: scout-unit c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-saved-point-x)
+	(up-set-target-point gl-saved-point-x)
+	(up-filter-range -1 -1 -1 8)
+	(up-find-remote g: gl-boar-unit c: 1)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 4)
+=>
+	(up-set-target-by-id g: gl-stored-boar-id)
+	(up-get-point position-object gl-object-point-x)
+	(up-get-point-distance gl-saved-point-x gl-object-point-x gl-point-distance)
+;	(up-chat-data-to-all "Distance: %d" g: gl-point-distance)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 4)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0)
+	(set-strategic-number sn-number-explore-groups 0)
+	(set-strategic-number sn-total-number-explorers 0)
+	(set-strategic-number sn-home-exploration-time 0)
+	(up-reset-scouts)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: scout-unit c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object temporary-goal)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 4)
+=>
+	(up-set-target-point temporary-goal)
+	(up-filter-range -1 -1 -1 15)
+	(up-find-remote g: gl-boar-unit c: 1)
+	(up-set-target-by-id g: gl-stored-boar-id)
+	(up-get-point position-object temporary-goal2)
+	(up-get-point position-self gl-point-x)
+	(up-get-point-distance gl-point-x temporary-goal2 gl-point-distance2)
+;	(up-chat-data-to-all "Distance2: %d" g: gl-point-distance2)
+	(up-get-target-fact player-distance 0 gl-distance-to-enemy)
+	(up-modify-goal gl-distance-to-enemy c:+ 2)
+	(up-get-object-data object-data-action gl-max-scout-hp)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 4)
+	(up-compare-goal gl-point-distance2 >= 0)
+	(up-compare-goal gl-point-distance2 < 13)
+	(dropsite-min-distance live-boar < 15)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-get-point position-self gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-filter-range -1 -1 -1 15)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 4)
+	(up-compare-goal gl-point-distance2 >= 0)
+	(up-compare-goal gl-point-distance2 < 13)
+	(dropsite-min-distance live-boar < 15)
+=>
+	(up-find-local c: villager-class c: 6)
+	(up-set-target-by-id g: gl-stored-boar-id)
+	(up-find-remote g: gl-boar-unit c: 1)
+	(up-target-objects -1 action-default -1 -1)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(set-goal gl-boar-stealing 5)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 4)
+	(or	(and	(up-compare-goal gl-point-distance2 > 15)
+			(up-compare-goal gl-point-distance > 15))
+		(or	(unit-type-count scout-unit == 0)
+			(and	(up-object-data object-data-action != actionid-attack)
+				(timer-triggered 12))))
+=>
+	(set-goal gl-boar-stealing -1)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(chat-to-player my-player-number "Give up with boar stealing")
+	(up-set-attack-stance -1 c: aggressive)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-boar-stealing >= 4)
+	(or	(and	(map-type arena)
+			(up-compare-goal gl-distance-to-enemy g:< gl-point-distance2))
+		(or	(and	(goal gl-point-distance 0)
+				(goal gl-point-distance2 0))
+			(game-time > 800)))
+=>
+	(set-goal gl-boar-stealing -1)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(chat-to-player my-player-number "Give up with boar stealing")
+	(up-set-attack-stance -1 c: aggressive)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-boar-stealing 5)
+	(dropsite-min-distance boar-hunting < 15)
+	(dropsite-min-distance live-boar >= 15)
+=>
+	(set-goal gl-boar-stealing -1)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(up-set-attack-stance -1 c: aggressive)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 1)
+	(game-time < 600)
+	(goal gl-boar-stealing 3)
+	(up-compare-const boar-stealing-nature == 1)
+	(unit-type-count scout-unit > 0)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0)
+	(up-get-point position-self gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-filter-range -1 -1 min-boar-distance max-boar-distance); 40/110 on most maps
+)
+
+(defrule
+	(game-time > 1)
+	(game-time < 600)
+	(goal gl-boar-stealing 3)
+	(up-find-remote g: gl-boar-unit c: 1)
+	(up-compare-const boar-stealing-nature == 1)
+	(unit-type-count scout-unit > 0)
+=>
+	(set-goal gl-boar-stealing 4)
+	(chat-to-player my-player-number "A boar found!")
+	(set-strategic-number sn-number-explore-groups 0)
+	(set-strategic-number sn-total-number-explorers 0)
+	(set-strategic-number sn-home-exploration-time 0)
+	(up-reset-scouts)
+	(up-reset-unit c: scout-unit)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 1)
+	(game-time < 600)
+	(goal gl-boar-stealing 3)
+	(up-compare-const boar-stealing-nature == 1)
+	(unit-type-count scout-unit > 0)
+=>
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+)
+#end-if
+
+#end-if
+#end-if
+
+#load-if-defined MIGRATION-MAP
+(defrule
+	(goal gl-migration-progress 5)
+	(timer-triggered 42)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 -1 -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range -1 -1 -1 -1)
+	(up-find-local c: transport-ship c: 1)
+	(up-get-point position-center gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-target-point gl-point-x action-move -1 -1)
+;	(chat-to-all "Moving!")
+	(set-goal gl-migration-progress 6)
+	(enable-timer 42 5); 60
+)
+
+(defrule
+	(goal gl-migration-progress 6)
+	(timer-triggered 42)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 actionid-move -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range -1 -1 -1 -1)
+)
+
+(defrule
+	(goal gl-migration-progress 6)
+	(timer-triggered 42)
+	(not	(up-find-local c: transport-ship c: 1))
+=>
+	(up-ungarrison c: transport-ship)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-goal gl-migration-progress 7)
+	(enable-timer 42 5)
+	(set-strategic-number sn-maximum-gold-drop-distance -1)
+	(set-strategic-number sn-maximum-wood-drop-distance -1)
+	(set-strategic-number sn-maximum-food-drop-distance -1)
+	(set-strategic-number sn-maximum-hunt-drop-distance -1)
+	(set-strategic-number sn-maximum-stone-drop-distance -1)
+;	(chat-to-all "Transport has stopped - ungarrison")
+)
+
+(defrule
+	(up-compare-goal gl-migration-progress >= 5)
+	(building-type-count-total town-center < 3)
+	(can-build town-center)
+=>
+	(build town-center)
+)
+
+(defrule
+	(unit-type-count villager > 45)
+	(up-compare-goal gl-migration-progress <= 4)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 -1 -1 on-mainland)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range -1 -1 -1 -1)
+)
+
+(defrule
+	(unit-type-count villager > 45)
+	(up-compare-goal gl-migration-progress <= 4)
+	(building-type-count-total town-center > 2)
+	(not	(up-find-local c: villager-class c: 1))
+=>
+	(delete-building town-center)
+	(set-goal gl-migration-progress 4)
+)
+
+(defrule
+	(or	(unit-type-count villager <= 45)
+		(or	(building-type-count town-center > 2)
+			(or	(up-pending-objects c: town-center > 0)
+				(or	(up-compare-goal gl-migration-progress > 4)
+					(building-type-count town-center < 2)))))
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(not	(up-find-local c: villager-class c: 1))
+=>
+	(delete-building town-center)
+	(up-delete-objects c: farm c: 32767)
+	(up-delete-objects c: barracks c: 32767)
+	(up-delete-objects c: siege-workshop c: 32767)
+	(up-delete-objects c: archery-range c: 32767)
+	(up-delete-objects c: stable c: 32767)
+	(up-delete-objects c: mining-camp c: 32767)
+	(up-delete-objects c: market c: 32767)
+	(up-delete-objects c: monastery c: 32767)
+	(up-delete-objects c: battering-ram-line c: 32767)
+	(up-delete-objects c: mill c: 32767)
+	(set-goal gl-migration-progress 5)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1000)
+	(set-goal DOCK 1)
+)
+
+(defrule
+	(up-compare-goal gl-migration-progress > 3)
+=>
+	(up-jump-rule 19)
+)
+
+(defrule
+	(up-compare-goal gl-migration-progress <= 3)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(unit-type-count-total transport-ship < 1)
+	(can-train transport-ship)
+=>
+	(train transport-ship)
+	(set-goal gl-migration-progress 0); We're about to start migration progress or the old ship has died - reset progress
+)
+
+(defrule
+	(up-compare-goal gl-migration-progress <= 3)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-range -1 -1 -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-include -1 -1 -1 off-mainland)
+)
+
+(defrule
+	(up-find-local c: scout-unit c: 1)
+	(up-compare-goal gl-migration-progress <= 3)
+=>
+	(set-strategic-number sn-number-explore-groups 2)
+	(set-strategic-number sn-total-number-explorers 2)
+	(up-reset-unit c: scout-unit)
+	(up-reset-scouts)
+	(disable-self)
+)
+
+(defrule
+	(unit-type-count villager > 42)
+	(building-type-count town-center > 1)
+	(up-compare-goal gl-migration-progress <= 3)
+	(up-timer-status 31 != timer-running)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-range -1 -1 -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-include -1 actionid-train -1 on-mainland)
+	(up-find-local c: town-center c: 240)
+	(up-target-point 0 action-stop -1 -1)
+	(enable-timer 31 4)
+;	(chat-to-all "Reset TC")
+)
+
+(defrule
+	(unit-type-count transport-ship > 0)
+	(up-compare-goal gl-migration-progress <= 0)
+	(up-timer-status 42 != timer-running)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 -1 -1 on-mainland)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range -1 -1 -1 -1)
+	(up-find-local c: scout-unit c: 1); Scout
+	(up-find-local c: villager-class c: 5)
+	(up-filter-include -1 -1 -1 -1)
+	(up-find-remote c: transport-ship c: 1)
+)
+
+(defrule
+	(unit-type-count transport-ship > 0)
+	(up-compare-goal gl-migration-progress <= 0)
+	(up-timer-status 42 != timer-running)
+=>
+	(up-get-point position-object gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-target-objects -1 action-default -1 -1)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(set-goal gl-migration-progress 1)
+	(enable-timer 42 10)
+;	(chat-to-all "Garrisoning")
+)
+
+(defrule
+	(unit-type-count transport-ship > 0)
+	(goal gl-migration-progress 1)
+	(timer-triggered 42)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 -1 -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range 5 -1 -1 -1)
+	(up-find-local c: transport-ship c: 1)
+	(up-get-search-state gl-local-total)
+)
+
+(defrule
+	(unit-type-count transport-ship > 0)
+	(up-compare-goal gl-local-last > 0)
+	(goal gl-migration-progress 1)
+	(timer-triggered 42)
+=>
+	(up-get-point position-center gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-target-point gl-point-x action-move -1 -1)
+;	(chat-to-all "Enough units - moving!")
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(set-goal gl-migration-progress 2)
+	(enable-timer 42 5); 60
+	(enable-timer 30 30)
+)
+
+(defrule
+	(unit-type-count transport-ship > 0)
+	(up-compare-goal gl-local-last <= 0)
+	(goal gl-migration-progress 1)
+	(timer-triggered 42)
+=>
+	(set-goal gl-migration-progress 0)
+;	(chat-to-all "Not enough units garrisoned")
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+)
+
+(defrule
+	(unit-type-count transport-ship > 0)
+	(goal gl-migration-progress 2)
+	(timer-triggered 42)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 actionid-move -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range 5 -1 -1 -1)
+)
+
+(defrule
+	(goal gl-migration-progress 2)
+	(timer-triggered 42)
+	(up-find-local c: transport-ship c: 1)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 actionid-move -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range 5 -1 -1 -1)
+	(up-find-local c: transport-ship c: 1)
+	(up-modify-goal gl-home-point-x g:= gl-temporary-point-x)
+	(up-modify-goal gl-home-point-y g:= gl-temporary-point-y)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-temporary-point-x)
+)
+
+(defrule
+	(goal gl-migration-progress 2)
+	(timer-triggered 42)
+	(timer-triggered 30)
+	(up-point-distance gl-home-point-x gl-temporary-point-x < 4)
+=>
+	(up-ungarrison c: transport-ship)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-goal gl-migration-progress 3)
+	(enable-timer 42 5)
+;	(chat-to-all "Transport has stopped2 - ungarrison")
+	(set-strategic-number sn-maximum-gold-drop-distance -1)
+	(set-strategic-number sn-maximum-wood-drop-distance -1)
+	(set-strategic-number sn-maximum-food-drop-distance -1)
+	(set-strategic-number sn-maximum-hunt-drop-distance -1)
+	(set-strategic-number sn-maximum-stone-drop-distance -1)
+)
+
+(defrule
+	(unit-type-count transport-ship > 0)
+	(goal gl-migration-progress 2)
+	(timer-triggered 42)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 actionid-move -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range 5 -1 -1 -1)
+)
+
+(defrule
+	(goal gl-migration-progress 2)
+	(timer-triggered 42)
+	(up-find-local c: transport-ship c: 1)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 actionid-move -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range 5 -1 -1 -1)
+	(up-find-local c: transport-ship c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-point-x)
+	(up-get-point position-center gl-saved-point-x)
+	(up-set-target-point gl-point-x)
+	(up-lerp-tiles gl-point-x gl-saved-point-x c: 25)
+	(up-target-point gl-point-x action-move -1 -1)
+;	(chat-to-all "Moving towards the island")
+	(enable-timer 42 3)
+)
+
+(defrule
+	(unit-type-count transport-ship > 0)
+	(goal gl-migration-progress 2)
+	(timer-triggered 42)
+	(not	(up-find-local c: transport-ship c: 1))
+=>
+	(up-ungarrison c: transport-ship)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-goal gl-migration-progress 3)
+	(enable-timer 42 5)
+;	(chat-to-all "Transport has stopped - ungarrison")
+	(set-strategic-number sn-maximum-gold-drop-distance -1)
+	(set-strategic-number sn-maximum-wood-drop-distance -1)
+	(set-strategic-number sn-maximum-food-drop-distance -1)
+	(set-strategic-number sn-maximum-hunt-drop-distance -1)
+	(set-strategic-number sn-maximum-stone-drop-distance -1)
+)
+
+(defrule
+	(goal gl-migration-progress 3)
+	(timer-triggered 42)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 -1 -1 off-mainland)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range -1 -1 -1 -1)
+)
+
+(defrule
+	(goal gl-migration-progress 3)
+	(timer-triggered 42)
+	(or	(up-find-local c: town-center c: 1)
+		(or	(up-find-local c: unbuilt-town-center c: 1)
+			(up-pending-objects c: town-center > 0)))
+=>
+	(set-goal gl-migration-progress 0)
+	(disable-timer 42)
+)
+
+(defrule
+	(goal gl-migration-progress 3)
+	(up-pending-objects c: town-center < 1)
+	(timer-triggered 42)
+	(can-build town-center)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number my-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 -1 -1 off-mainland)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range -1 -1 -1 -1)
+	(up-find-remote c: villager c: 1)
+	(up-get-point position-object gl-point-x)
+	(up-set-target-point gl-point-x)
+)
+
+(defrule
+	(goal gl-migration-progress 3)
+	(up-pending-objects c: town-center < 1)
+	(timer-triggered 42)
+	(can-build town-center)
+=>
+	(up-assign-builders c: town-center c: 4)
+	(up-assign-builders c: unbuilt-town-center c: 4)
+	(set-strategic-number sn-camp-max-distance 255)
+	(set-strategic-number sn-maximum-town-size 255)
+	(up-build place-point gl-point-x c: town-center)
+;	(chat-to-all "Building!")
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(set-goal gl-migration-progress 0)
+	(disable-timer 42)
+)
+#end-if
+
+; Nothing-map support
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(up-compare-goal gl-current-age > gv-feudal-up)
+=>
+	(up-jump-rule 44)
+)
+
+(defrule
+	(or	(goal gl-nothing-style-map YES)
+		(and	(soldier-count == 0)
+			(and	(goal gl-current-age gv-feudal-up)
+				(and	(strategic-number sn-nomad-style-start == 1)
+					(and	(players-building-count any-enemy == 0)
+						(up-compare-goal threat-time > 60000))))))
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(disable-self)
+)
+
+(defrule
+	(or	(goal gl-nothing-style-map YES)
+		(and	(soldier-count == 1)
+			(and	(goal gl-current-age gv-feudal-up)
+				(strategic-number sn-nomad-style-start == 1))))
+	(unit-type-count spearman-line == 1)
+=>
+	(up-send-scout group-type-land-explore scout-flank)
+	(chat-to-player my-player-number "Trying to find the nearest enemy")
+	(disable-self)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(game-time > 440)
+	(current-age == dark-age)
+	(building-type-count-total lumber-camp > 0)
+	(building-type-count-total town-center > 0)
+	(or	(building-type-count-total house > 0)
+		(or	(civ-selected hun)
+			(civ-selected chinese)))
+	(building-type-count-total mill == 0)
+	(can-build mill)
+=>
+	(set-strategic-number sn-placement-zone-size 30)
+	(up-set-placement-data my-player-number town-center c: -9)
+	(up-build place-control 0 c: mill)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(current-age == dark-age)
+	(building-type-count-total lumber-camp > 0)
+	(building-type-count-total town-center > 0)
+	(or	(building-type-count-total house > 0)
+		(or	(civ-selected hun)
+			(civ-selected chinese)))
+	(building-type-count-total mill == 0)
+	(can-build mill)
+=>
+	(build mill)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age <= gv-dark-up)
+	(idle-farm-count < 1)
+	(or	(building-type-count-total farm < nothing-number-dark-farms)
+		(and	(wood-amount > 120)
+			(and	(game-time < 1140)
+				(and	(goal gl-current-age gv-dark)
+					(building-type-count-total farm < 14)))))
+	(building-type-count-total town-center >= 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(or	(and	(building-type-count-total town-center > 0)
+			(building-type-count-total mill > 0))
+		(and	(building-type-count-total town-center == 0)
+			(and	(building-type-count-total lumber-camp == 1)
+				(dropsite-min-distance wood > 5))))
+	(dropsite-min-distance wood < 255)
+	(resource-found wood)
+	(dropsite-min-distance wood > 4)
+	(can-build lumber-camp)
+=>
+	(build lumber-camp)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(game-time > 30)
+	(or	(and	(building-type-count-total lumber-camp == 1)
+			(building-type-count-total farm >= nothing-number-dark-farms))
+		(and	(building-type-count-total lumber-camp == 0)
+			(building-type-count town-center > 0)))
+	(resource-found wood)
+	(can-build lumber-camp)
+=>
+	(build lumber-camp)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-feudal)
+	(goal gl-nothing-style-map YES)
+	(current-age == feudal-age)
+	(or	(and	(gold-amount > 200)
+			(building-type-count-total farm < nothing-number-dark-farms))
+		(up-compare-goal gl-strategy-type <= controlled-flush))
+	(building-type-count-total farm g:< gl-max-farm-count)
+	(building-type-count-total town-center >= 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(or	(goal gl-current-age gv-feudal-up)
+		(and	(wood-amount > 400)
+			(or	(and	(research-completed ri-horse-collar)
+					(goal gl-nothing-selling-started YES))
+				(current-age-time > 180))))
+	(current-age == feudal-age)
+	(building-type-count-total farm g:< gl-max-farm-count)
+	(building-type-count-total town-center >= 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age > gv-feudal-up)
+	(nand	(building-type-count-total monastery < 1)
+		(cc-players-unit-type-count 0 relic > 0))
+	(or	(building-type-count-total farm < 10)
+		(or	(and	(building-type-count-total farm < 15)
+				(building-type-count-total town-center > 1))
+			(and	(current-age-time > 240)
+				(building-type-count-total farm g:< gl-max-farm-count))))
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(building-type-count town-center > 0)
+	(building-type-count-total monastery < 1)
+	(can-build monastery)
+=>
+	(build monastery)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(building-type-count town-center > 0)
+;	(or	(up-compare-goal gl-strategy-type >= FC)
+;		(goal gl-strategy nothing-market-flush))
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(build market)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(or	(building-type-count-total monastery > 0)
+		(or	(and	(up-compare-goal gl-current-age >= gv-feudal-up)
+				(gold-amount > 500))
+			(goal gl-strategy nothing-feudal-boom)))
+	(up-compare-goal gl-strategy-type > controlled-flush)
+	(or	(building-type-count-total market < 2)
+		(goal gl-strategy nothing-feudal-boom))
+	(building-type-count-total market < 3)
+	(can-build market)
+=>
+	(up-set-placement-data my-player-number town-center c: -10)
+	(up-build place-control 0 c: market)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(or	(and	(up-compare-goal gl-strategy-type >= FC)
+			(and	(building-type-count-total market > 0)
+				(food-amount > 500)))
+		(soldier-count > 5))
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(or	(up-compare-goal gl-strategy-type <= controlled-flush)
+		(or	(up-compare-goal gl-current-age >= gv-feudal-up)
+			(goal gl-strategy nothing-feudal-boom)))
+	(up-research-status c: ri-wheel-barrow >= research-pending)
+	(or	(can-research ri-horse-collar)
+		(and	(can-research ri-heavy-plow)
+			(nand	(goal gl-nothing-caravan-status take-fast)
+				(food-amount < 300))))
+=>
+	(research ri-horse-collar)
+	(research ri-heavy-plow)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(or	(can-research ri-wheel-barrow)
+		(or	(can-research ri-double-bit-axe)
+			(and	(can-research ri-bow-saw)
+				(nand	(goal gl-nothing-caravan-status take-fast)
+					(food-amount < 350)))))
+=>
+	(research ri-wheel-barrow)
+	(research ri-double-bit-axe)
+	(research ri-bow-saw)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(goal gl-nothing-caravan-status take-fast)
+		(and	(goal gl-nothing-caravan-status take-late)
+			(unit-type-count-total trade-cart > 9)))
+	(can-research ri-cartography)
+=>
+	(research ri-cartography)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(goal gl-nothing-caravan-status take-fast)
+		(unit-type-count-total trade-cart > 10))
+	(can-research ri-caravan)
+=>
+	(research ri-caravan)
+	(set-goal gl-nothing-caravan-status taken)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+=>
+	(set-goal gl-nothing-caravan-status NO)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-research-status c: ri-caravan < research-pending)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(and	(up-compare-goal gl-strategy-type >= FC)
+			(gold-amount > 300))
+		(and	(or	(up-compare-goal gl-strategy-type < FC)
+				(up-compare-goal gl-current-age > gv-feudal-up))
+			(unit-type-count-total trade-cart > 10)))
+	(current-age >= feudal-age)
+=>
+	(set-goal gl-nothing-caravan-status take-fast)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-strategy-type > controlled-flush)
+	(current-age == feudal-age)
+	(gold-amount < 200)
+=>
+	(set-goal gl-nothing-caravan-status take-late)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(goal gl-current-age gv-dark)
+	(current-age == dark-age)
+	(food-amount > 300)
+	(or	(and	(unit-type-count-total villager >= nothing-number-flush-villagers)
+			(up-compare-goal gl-strategy-type <= controlled-flush))
+;		(or	(and	(unit-type-count-total villager < nothing-number-flush-market-villagers)
+;				(goal STRATEGY FLUSH-MARKET))
+			(and	(unit-type-count-total villager >= nothing-number-fc-villagers)
+				(up-compare-goal gl-strategy-type > controlled-flush)));)
+=>
+	(set-strategic-number sn-allow-new-build-order -7)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(can-research-with-escrow feudal-age)
+	(strategic-number sn-allow-new-build-order == -7)
+=>
+	(research feudal-age)
+	(set-goal gl-current-age gv-dark-up)
+	(set-strategic-number sn-allow-new-build-order 1)
+	(set-goal DOCK 10)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age < gv-feudal-up)
+	(current-age == feudal-age)
+	(or	(unit-type-count-total trade-cart < 1)
+		(gold-amount >= 250))
+	(not	(town-under-attack))
+	(players-building-type-count any-ally market > 0)
+	(unit-type-count-total trade-cart < 50)
+	(nand	(commodity-selling-price wood >= 50)
+		(gold-amount < 400))
+	(can-train trade-cart)
+=>
+	(train trade-cart)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(goal gl-current-age gv-feudal-up)
+	(or	(goal gl-nothing-caravan-status take-late)
+		(and	(gold-amount >= 300)
+			(goal gl-nothing-caravan-status take-fast)))
+	(not	(town-under-attack))
+	(players-building-type-count any-ally market > 0)
+	(unit-type-count-total trade-cart < 50)
+	(nand	(commodity-selling-price wood >= 40)
+		(gold-amount < 300))
+	(can-train trade-cart)
+=>
+	(train trade-cart)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(current-age >= castle-age)
+	(or	(strategic-number sn-monk-trained == 1)
+		(gold-amount >= 150))
+	(or	(goal gl-nothing-caravan-status take-late)
+		(up-research-status c: ri-caravan >= research-pending))
+	(or	(not	(town-under-attack))
+		(goal MILITARY 1))
+	(players-building-type-count any-ally market > 0)
+	(unit-type-count-total trade-cart < 50)
+	(can-train trade-cart)
+=>
+	(train trade-cart)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(game-time < 2100)
+	(goal gl-strategy nothing-FC-boom)
+	(or	(and	(commodity-selling-price wood < 55)
+			(commodity-selling-price food > 65))
+		(or	(and	(commodity-selling-price wood < 45)
+				(commodity-selling-price food > 60))
+			(and	(commodity-selling-price wood < 40)
+				(commodity-selling-price food > 55))))
+	(up-compare-goal gl-nothing-selling-started != YES)
+=>
+	(set-goal gl-strategy nothing-feudal-boom)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(game-time < 2100)
+	(goal gl-strategy nothing-FC-boom)
+	(commodity-selling-price wood > 40)
+	(commodity-selling-price wood < 55)
+	(commodity-selling-price food <= 55)
+	(up-compare-goal gl-nothing-selling-started != YES)
+=>
+	(set-goal gl-strategy nothing-FC-rush)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(game-time < 2100)
+	(goal gl-strategy nothing-FC-boom)
+	(commodity-selling-price wood <= 40)
+	(commodity-selling-price food <= 55)
+	(up-compare-goal gl-nothing-selling-started != YES)
+=>
+	(set-goal gl-strategy nothing-FC-rush)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(game-time < 2100)
+	(not	(goal gl-strategy nothing-flush))
+	(building-type-count-total market == 0)
+	(commodity-selling-price wood < 40)
+	(commodity-selling-price food < 55)
+	(up-compare-goal gl-nothing-selling-started != YES)
+=>
+	(set-goal gl-strategy nothing-market-flush)
+	(set-goal gl-nothing-flush-control nothing-default-flush-style)
+	(set-goal gl-strategy-type controlled-flush)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(goal gl-strategy nothing-feudal-boom)
+	(can-sell-commodity food)
+	(up-compare-goal gl-nothing-selling-started != YES)
+=>
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(set-goal gl-nothing-selling-started YES)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(goal gl-strategy nothing-feudal-boom)
+	(game-time < 1800)
+	(gold-amount < 600)
+	(food-amount >= 150)
+	(goal gl-nothing-selling-started YES)
+	(commodity-selling-price food >= 45)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age <= gv-feudal)
+;	(not	(goal gl-strategy nothing-flush))
+	(can-sell-commodity wood)
+	(up-compare-goal gl-nothing-selling-started != YES)
+	(commodity-selling-price wood >= 45)
+=>
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(set-goal gl-nothing-selling-started YES)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age <= gv-feudal)
+;	(not	(goal gl-strategy nothing-flush))
+	(goal gl-nothing-selling-started YES)
+	(or	(food-amount < 600)
+		(building-type-count-total blacksmith > 0))
+	(or	(commodity-selling-price wood >= 40)
+		(gold-amount < 250))
+	(commodity-selling-price wood >= 35)
+	(can-sell-commodity wood)
+=>
+	(sell-commodity wood)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age > gv-feudal)
+	(game-time < 2400)
+	(food-amount >= 150)
+	(nand	(or	(current-age-time > 240)
+			(current-age == castle-age))
+		(and	(food-amount < 250)
+			(goal gl-nothing-caravan-status take-fast)))
+	(gold-amount < 600)
+	(commodity-selling-price food >= 45)
+=>
+	(sell-commodity food)
+)
+
+(defrule
+	(up-compare-goal gl-current-age <= gv-castle)
+	(or	(and	(goal gl-nothing-flush-control flush-scout-skirm)
+			(and	(research-available ri-bloodlines)
+				(and	(commodity-selling-price wood < 45)
+					(commodity-selling-price food < 55))))
+		(or	(goal gl-strategy nothing-feudal-boom)
+			(and	(goal gl-nothing-boom-style 1TC-4MARKET)
+				(goal gl-strategy nothing-FC-boom))))
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-nothing-boom-style != 1TC-4MARKET)
+	(or	(building-type-count-total town-center == 1)
+		(and	(building-type-count-total town-center == 2)
+			(goal gl-nothing-boom-style 3TC-1MARKET)))
+	(building-type-count-total town-center < preferred-TC-number)
+	(can-build-with-escrow town-center)
+=>
+	(up-modify-sn sn-camp-max-distance g:= gl-my-town-size)
+	(set-strategic-number sn-town-center-placement lumber-camp)
+	(release-escrow wood)
+	(build town-center)
+	(chat-to-player my-player-number "Town center")
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(current-age >= castle-age)
+	(game-time > 2100)
+	(unit-type-count-total trade-cart > 35)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-current-age > gv-castle)
+	(unit-type-count-total trade-cart > 40)
+	(stone-amount < castle-stone)
+	(building-type-count-total castle < 1)
+	(can-buy-commodity stone)
+=>
+	(buy-commodity stone)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(wood-amount > 500)
+	(food-amount < 200)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 65)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(wood-amount > 800)
+	(food-amount < 200)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 70)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(wood-amount < 200)
+	(food-amount > 400)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 37)
+	(set-strategic-number sn-wood-gatherer-percentage 63)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(wood-amount < 200)
+	(food-amount > 700)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 70)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-nothing-style-map YES)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(wood-amount < 200)
+	(food-amount > 1100)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 80)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+; ...
+
+(defrule
+	(unit-type-count transport-ship > 0)
+	(or	(game-time < 30)
+		(building-type-count town-center == 0))
+=>
+	(up-jump-rule 1)
+)
+
+#load-if-not-defined ARABIA-MAP
+#load-if-not-defined ARENA-MAP
+#load-if-not-defined BLACK-FOREST-MAP
+#load-if-not-defined GHOST-LAKE-MAP
+#load-if-not-defined GOLD-RUSH-MAP
+#load-if-not-defined MONGOLIA-MAP
+#load-if-not-defined OASIS-MAP
+
+#load-if-not-defined FORTRESS-MAP
+#load-if-not-defined YUCATAN-MAP
+(defrule
+	(or 	(cc-players-unit-type-count 0 deep-fish > 20)
+		(or	(cc-players-unit-type-count 0 shore-fish > 25)
+			(and	(cc-players-unit-type-count 0 deep-fish > 9)
+				(cc-players-unit-type-count 0 shore-fish > 9))))
+	(goal gl-current-age gv-dark)
+	(building-type-count town-center > 0)
+=>
+	(enable-wall-placement 2)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1000)
+	(set-strategic-number sn-home-exploration-time water-home-exploring-time)
+	(chat-to-player my-player-number "Water map - enable docking")
+	(set-goal DOCK 1)
+	(disable-self)
+)
+#else
+#load-if-not-defined UP-HUMAN-IN-GAME
+(defrule
+	(goal gl-current-age gv-dark)
+	(building-type-count town-center > 0)
+=>
+	(enable-wall-placement 2)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1000)
+	(set-strategic-number sn-home-exploration-time water-home-exploring-time)
+	(chat-to-player my-player-number "Water map - enable docking")
+	(set-goal DOCK 1)
+	(disable-self)
+)
+#else
+(defrule
+	(goal gl-current-age gv-dark)
+	(building-type-count town-center > 0)
+=>
+	(enable-wall-placement 2)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1000)
+	(set-strategic-number sn-home-exploration-time water-home-exploring-time)
+	(chat-to-player my-player-number "Water map - enable docking")
+	(set-goal gl-heavy-water-map YES)
+;	(set-strategic-number sn-dock-avoidance-factor -10000)
+	(set-goal DOCK 1)
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(game-time > 30)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(or 	(cc-players-unit-type-count 0 deep-fish > high-fish-amount)
+		(or	(cc-players-unit-type-count 0 shore-fish > high-fish-amount)
+			(or	(and	(cc-players-unit-type-count 0 deep-fish > average-fish-amount)
+					(cc-players-unit-type-count 0 shore-fish > average-fish-amount))
+				(map-type highland))))
+=>
+	(set-goal gl-heavy-water-map YES)
+	(chat-to-player my-player-number "The map seems to have a lot of water")
+;	(set-strategic-number sn-dock-avoidance-factor -10000)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 600)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(nand	(goal gl-heavy-water-map YES)
+		(warboat-count < 7))
+	(warboat-count > 2)
+=>
+	(set-strategic-number sn-dock-training-filter 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-heavy-water-map YES)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(taunt-detected any-human-ally 35)
+=>
+	(set-goal gl-heavy-water-map NO)
+	(chat-to-all "I'll build less navy")
+)
+
+(defrule
+	(up-compare-goal gl-heavy-water-map != YES)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(taunt-detected any-human-ally 34)
+=>
+	(set-goal gl-heavy-water-map YES)
+	(acknowledge-taunt this-any-human-ally 34)
+	(acknowledge-taunt this-any-human-ally 35)
+	(chat-to-all "I'll build more navy")
+)
+
+(defrule
+	(warboat-count > 0)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(not	(town-under-attack))
+	(players-building-type-count every-enemy dock == 0)
+	(strategic-number sn-allow-new-build-order >= 0)
+=>
+	(set-strategic-number sn-number-boat-explore-groups 1)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(or	(players-building-type-count any-enemy dock > 0)
+		(and	(unit-type-count-total fishing-ship < 5)
+			(and	(warboat-count > 0)
+				(warboat-count < 6))))
+	(game-time > 360)
+	(strategic-number sn-allow-new-build-order >= 0)
+=>
+	(set-strategic-number sn-number-boat-explore-groups 0)
+	(disable-self)
+)
+
+(defrule
+	(or	(map-type islands)
+		(or	(map-type team-islands)
+			(strategic-number sn-minimum-water-body-size-for-dock >= 1999)))
+	(current-age-time > 5)
+	(or	(current-age == feudal-age)
+		(building-type-count-total town-center > 1))
+	(strategic-number sn-maximum-town-size < 17)
+=>
+	(set-strategic-number sn-maximum-town-size 17)
+)
+
+#load-if-defined CUSTOM-MAP
+(defrule
+	(goal gl-current-age gv-feudal)
+	(building-type-count-total town-center > 1)
+	(strategic-number sn-maximum-town-size < 21)
+=>
+	(set-strategic-number sn-maximum-town-size 21)
+)
+#end-if
+
+(defrule
+	(or	(map-type custom)
+		(strategic-number sn-minimum-water-body-size-for-dock != 998))
+	(current-age >= castle-age)
+	(current-age-time > 180)
+	(or	(and	(current-age-time > 800)
+			(nand	(players-military-population any-enemy > 7)
+				(soldier-count < 6)))
+		(strategic-number sn-minimum-water-body-size-for-dock >= 1999))
+	(strategic-number sn-minimum-water-body-size-for-dock != 2002)
+	(strategic-number sn-maximum-town-size < 31)
+=>
+	(set-strategic-number sn-maximum-town-size 31)
+)
+
+(defrule
+	(or	(map-type islands)
+		(or	(map-type team-islands)
+			(strategic-number sn-minimum-water-body-size-for-dock >= 1999)))
+	(strategic-number sn-minimum-water-body-size-for-dock != 2002)
+	(game-time > 2000)
+	(strategic-number sn-maximum-town-size < 41)
+=>
+	(set-strategic-number sn-maximum-town-size 41)
+)
+
+(defrule
+	(or	(goal gl-strategy boom)
+		(and	(goal gl-strategy CA-rush)
+			(game-time > 1660)))
+	(game-time > 1460)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-strategy default)
+)
+
+#load-if-not-defined BALTIC-MAP
+#load-if-not-defined COASTAL-MAP
+#load-if-not-defined CONTINENTAL-MAP
+#load-if-not-defined CRATER-LAKE-MAP
+#load-if-not-defined MEDITERRANEAN-MAP
+#load-if-not-defined YUCATAN-MAP
+
+#load-if-defined TEAM-TOGETHER
+(defrule
+	(game-time <= 11)
+	(or	(map-type islands)
+		(map-type team-islands))
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 2001)
+	(set-strategic-number sn-minimum-boat-attack-group-size 1)
+	(set-strategic-number sn-maximum-boat-attack-group-size 1)
+	(set-goal DOCK 2)
+	(set-goal gl-strategy flush-overwrite)
+	(set-goal gl-islands-style YES)
+)
+#else
+(defrule
+	(game-time <= 11)
+	(map-type islands)
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 2001)
+	(set-strategic-number sn-minimum-boat-attack-group-size 1)
+	(set-strategic-number sn-maximum-boat-attack-group-size 1)
+	(set-goal DOCK 2)
+	(set-goal gl-strategy flush-overwrite)
+	(set-goal gl-islands-style YES)
+)
+#end-if
+
+(defrule
+	(game-time <= 22)
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(wall-completed-percentage 2 == 100)
+	(building-type-count-total stone-wall-line < 1)
+	(building-type-count-total palisade-wall < 1)
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 2001)
+	(set-strategic-number sn-minimum-boat-attack-group-size 1)
+	(set-strategic-number sn-maximum-boat-attack-group-size 1)
+	(set-goal DOCK 2)
+	(set-goal gl-strategy flush-overwrite)
+	(chat-to-player my-player-number "Islands, huh?")
+	(set-goal gl-islands-style YES)
+)
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-not-defined REGICIDE
+#load-if-defined DARK-AGE-START
+#load-if-defined UP-POCKET-POSITION
+(load-random 90 "Barbarian_2.0\Strategies\PocketWaterFC")
+#else
+(load-random 50 "Barbarian_2.0\Strategies\PocketWaterFC")
+#end-if
+#else
+(load "Barbarian_2.0\Strategies\PocketWaterFC")
+#end-if
+#else
+(load "Barbarian_2.0\Strategies\PocketWaterFC")
+#end-if
+#load-if-defined POPULATION-CAP-200
+#load-if-defined KOREAN-CIV
+(load-random 70 "Barbarian_2.0\Strategies\Turtles")
+#end-if
+#else
+(load "Barbarian_2.0\Strategies\PocketWaterFC")
+#end-if
+
+(load "Barbarian_2.0\Strategies\WarGalleys")
+
+(defrule
+	(or	(and	(warboat-count > 10)
+			(and	(warboat-count <= 20)
+				(strategic-number sn-minimum-water-body-size-for-dock == 1999)))
+		(and	(goal MILITARY 0)
+			(and	(game-time > 1500)
+				(players-building-count target-player > 0))))
+	(strategic-number sn-number-boat-explore-groups > 0)
+=>
+	(set-strategic-number sn-number-boat-explore-groups 0)
+	(chat-to-player my-player-number "Boat explorers 0")
+)
+
+(defrule
+	(up-compare-goal threat-time >= 20000)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(strategic-number sn-number-boat-explore-groups != 1)
+	(or	(and	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+			(warboat-count > 20))
+		(and	(game-time > 1200)
+			(and	(not	(goal MILITARY 0))
+				(players-building-type-count target-player dock == 0))))
+=>
+	(set-strategic-number sn-number-boat-attack-groups 0)
+	(set-strategic-number sn-number-boat-explore-groups 1)
+	(chat-to-player my-player-number "Boat explorers 1")
+)
+
+; ================== MORE ECO BALANCING
+
+(defrule
+	(game-time > 2100)
+	(building-type-count town-center > 0)
+	(strategic-number sn-camp-max-distance >= 30)
+=>
+	(up-jump-rule 6)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock >= 1999); The nearest gold at islands can be almost 30 tiles away
+		(strategic-number sn-nomad-style-start == 1))
+	(strategic-number sn-camp-max-distance < 30)
+=>
+	(set-strategic-number sn-camp-max-distance 30)
+)
+
+(defrule
+	(goal gl-current-age gv-dark)
+	(current-age == dark-age)
+	(not	(goal DOCK 0))
+	(unit-type-count-total villager > 23)
+	(food-amount > 460)
+	(building-type-count-total town-center == 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 45)
+	(set-strategic-number sn-wood-gatherer-percentage 55)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-GRUSH-CONTROL NO)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(up-compare-goal gl-strategy != turtle-rush)
+	(current-age == dark-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 32)
+		(or	(strategic-number sn-wood-gatherer-percentage != 55)
+			(or	(strategic-number sn-gold-gatherer-percentage != 13)
+				(strategic-number sn-skip-first-mining-camp != 0))))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 32)
+	(set-strategic-number sn-wood-gatherer-percentage 55)
+	(set-strategic-number sn-gold-gatherer-percentage 13)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal DOCK 0)
+	(current-age == feudal-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 25)
+		(or	(strategic-number sn-wood-gatherer-percentage != 65)
+			(strategic-number sn-gold-gatherer-percentage != 10)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 25)
+	(set-strategic-number sn-wood-gatherer-percentage 65)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+)
+
+(defrule
+	(goal gl-strategy boom)
+	(goal DOCK 0)
+	(current-age-time <= 120)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == castle-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 30)
+		(or	(strategic-number sn-wood-gatherer-percentage != 65)
+			(strategic-number sn-gold-gatherer-percentage != 5)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 65)
+	(set-strategic-number sn-gold-gatherer-percentage 5)
+)
+
+(defrule
+	(goal gl-strategy boom)
+	(goal DOCK 0)
+	(current-age-time > 120)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == castle-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 35)
+		(or	(strategic-number sn-wood-gatherer-percentage != 55)
+			(strategic-number sn-gold-gatherer-percentage != 10)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 55)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+)
+
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined VIKING-CIV
+(load "Barbarian_2.0\IslandsFireEco")
+#end-if
+#end-if
+
+#load-if-defined SARACEN-CIV
+(load "Barbarian_2.0\IslandsGalleyEco")
+#end-if
+#load-if-defined VIKING-CIV
+(load "Barbarian_2.0\IslandsGalleyEco")
+#end-if
+
+; ================== SOME STRATEGY FOR MAPS
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(not	(regicide-game))
+	(building-type-count town-center < 2)
+	(starting-age == dark-age)
+	(game-time < 25)
+=>
+	(set-strategic-number sn-allow-new-build-order -2)
+	(set-goal gl-strategy grush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-feudal-archery 0)
+	(set-goal gl-feudal-infantry 0)
+	(set-goal gl-feudal-trash 0)
+	(set-goal DOCK 11)
+)
+
+#load-if-not-defined CUSTOM-MAP
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(strategic-number sn-minimum-water-body-size-for-dock != 2002)
+=>
+	(set-goal gl-normal-milling 0)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-allow-new-build-order <= -2)
+	(strategic-number sn-allow-new-build-order >= -4)
+	(or	(up-compare-goal gl-current-age >= gv-dark-up)
+		(and	(goal gl-strategy sling)
+			(and	(building-type-count-total dock > 0)
+				(building-type-count-total mill > 0))))
+=>
+	(set-strategic-number sn-allow-new-build-order 2)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order <= -2)
+	(strategic-number sn-allow-new-build-order >= -4)
+	(up-compare-goal gl-strategy != sling)
+	(up-compare-goal gl-strategy != landing)
+	(up-compare-goal gl-strategy != grush)
+	(building-type-count-total mill > 0)
+	(unit-type-count-total fishing-ship > 1)
+	(building-type-count-total dock > 0)
+=>
+	(set-strategic-number sn-allow-new-build-order 2)
+)
+
+; =========== ECO
+
+(defrule
+	(game-time > 1500)
+	(current-age > feudal-age)
+	(building-type-count town-center > 0)
+	(up-compare-goal gl-strategy != grush)
+=>
+	(up-jump-rule 27)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 8)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 87)
+	(set-strategic-number sn-wood-gatherer-percentage 13)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 9)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 78)
+	(set-strategic-number sn-wood-gatherer-percentage 22)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 10)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 70)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 11)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 64)
+	(set-strategic-number sn-wood-gatherer-percentage 36)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 12)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 67)
+	(set-strategic-number sn-wood-gatherer-percentage 33)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 13)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 62)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 14)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 57)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 15)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 60)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 16)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 63)
+	(set-strategic-number sn-wood-gatherer-percentage 37)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 17)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 65)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 18)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 67)
+	(set-strategic-number sn-wood-gatherer-percentage 33)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 19)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 68)
+	(set-strategic-number sn-wood-gatherer-percentage 32)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 20)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 70)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 21)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 67)
+	(set-strategic-number sn-wood-gatherer-percentage 33)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 22)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 68)
+	(set-strategic-number sn-wood-gatherer-percentage 32)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 23)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 70)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 24)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 67)
+	(set-strategic-number sn-wood-gatherer-percentage 33)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == -2)
+	(current-age == dark-age)
+	(unit-type-count villager == 25)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 68)
+	(set-strategic-number sn-wood-gatherer-percentage 32)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == dark-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 13)
+		(or	(strategic-number sn-wood-gatherer-percentage != 73)
+			(strategic-number sn-gold-gatherer-percentage != 14)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 13)
+	(set-strategic-number sn-wood-gatherer-percentage 73)
+	(set-strategic-number sn-gold-gatherer-percentage 14)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == dark-age)
+=>
+	(up-retask-gatherers food c:< 13)
+	(set-goal gl-GRUSH-CONTROL GRUSHING)
+	(set-goal gl-MICRO-CONTROL YES)
+	(set-strategic-number sn-stone-dropsite-distance 255)
+	(up-set-offense-priority c: dock c: 11)
+	(up-set-defense-priority c: dock c: 15000)
+	(set-goal group-enabler 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(goal gl-GRUSH-CONTROL GRUSHING)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(current-age-time < 180)
+	(unit-type-count-total fishing-ship > 3)
+	(current-age == feudal-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 14)
+		(or	(strategic-number sn-wood-gatherer-percentage != 70)
+			(strategic-number sn-gold-gatherer-percentage != 16)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 14)
+	(set-strategic-number sn-wood-gatherer-percentage 70)
+	(set-strategic-number sn-gold-gatherer-percentage 16)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(goal gl-GRUSH-CONTROL GRUSHING)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(current-age-time >= 180)
+	(unit-type-count-total fishing-ship > 3)
+	(current-age == feudal-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 23)
+		(or	(strategic-number sn-wood-gatherer-percentage != 60)
+			(strategic-number sn-gold-gatherer-percentage != 17)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 23)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 17)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(goal gl-GRUSH-CONTROL GRUSHING)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(current-age-time < 180)
+	(unit-type-count-total fishing-ship < 4)
+	(current-age == feudal-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 26)
+		(or	(strategic-number sn-wood-gatherer-percentage != 58)
+			(strategic-number sn-gold-gatherer-percentage != 16)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 26)
+	(set-strategic-number sn-wood-gatherer-percentage 58)
+	(set-strategic-number sn-gold-gatherer-percentage 16)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(goal gl-GRUSH-CONTROL GRUSHING)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(current-age-time >= 180)
+	(unit-type-count-total fishing-ship < 4)
+	(current-age == feudal-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(or	(strategic-number sn-wood-gatherer-percentage != 43)
+			(strategic-number sn-gold-gatherer-percentage != 17)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(set-strategic-number sn-gold-gatherer-percentage 17)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(goal gl-GRUSH-CONTROL GET-AGE-UP)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(current-age == feudal-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 42)
+		(or	(strategic-number sn-wood-gatherer-percentage != 40)
+			(strategic-number sn-gold-gatherer-percentage != 18)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 42)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 18)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(current-age == feudal-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 22)
+		(or	(strategic-number sn-wood-gatherer-percentage != 60)
+			(strategic-number sn-gold-gatherer-percentage != 18)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 22)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 18)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-number-boat-explore-groups 0)
+	(up-reset-scouts)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+=>
+	(set-goal gl-GRUSH-CONTROL NO)
+	(set-goal gl-MICRO-CONTROL NO)
+	(set-goal DOCK 1)
+	(set-goal gl-strategy default)
+	(set-goal gl-islands-style NO); Return the true value to not cause any stupid behavior
+	(enable-timer 1 0)
+)
+
+(defrule
+	(or	(goal gl-strategy grush)
+		(and	(goal gl-strategy turtle-rush)
+			(game-time > 2400)))
+	(current-age >= castle-age)
+=>
+	(set-goal gl-GRUSH-CONTROL NO)
+	(set-goal gl-MICRO-CONTROL NO)
+	(set-goal DOCK 2)
+	(set-goal gl-strategy default)
+	(set-strategic-number sn-dock-proximity-factor 1000)
+	(set-strategic-number sn-dock-placement-mode 0)
+	(set-strategic-number sn-disable-builder-assistance 1)
+	(enable-timer 1 0)
+)
+
+; ================ SUPERIORITY
+
+(defrule
+	(up-compare-goal gl-strategy != grush)
+	(up-compare-goal gl-strategy != sling)
+	(up-compare-goal gl-current-age >= gv-feudal)
+	(strategic-number sn-target-evaluation-damage-capability != 12434)
+=>
+	(up-jump-rule 19)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(goal MILITARY 0)
+	(up-timer-status 16 != timer-running)
+	(up-compare-goal threat-time > 25000)
+=>
+	(up-retreat-to dock c: galley-line)
+	(enable-timer 16 40)
+)
+
+(defrule
+;	(goal gl-strategy grush)
+	(unit-type-count-total fishing-ship > 0)
+=>
+	(enable-timer 12 53)
+	(set-strategic-number sn-total-number-explorers 2)
+	(set-strategic-number sn-number-boat-explore-groups 1)
+	(set-strategic-number sn-target-evaluation-damage-capability 12434)
+	(chat-to-player my-player-number "Boat explorers 1")
+	(disable-self)
+)
+
+(defrule
+;	(goal gl-strategy grush)
+	(unit-type-count-total fishing-ship > 0)
+	(strategic-number sn-number-boat-explore-groups != 1)
+	(strategic-number sn-target-evaluation-damage-capability == 12434)
+=>
+	(set-strategic-number sn-total-number-explorers 2)
+	(set-strategic-number sn-number-boat-explore-groups 1)
+	(chat-to-player my-player-number "Boat explorers 1")
+)
+
+(defrule
+;	(goal gl-strategy grush)
+	(timer-triggered 12)
+	(building-type-count-total dock > 0)
+	(unit-type-count-total fishing-ship > 0)
+=>
+	(disable-timer 12)
+	(set-strategic-number sn-number-boat-explore-groups 0)
+	(set-strategic-number sn-target-evaluation-damage-capability 200)
+	(up-reset-scouts)
+	(chat-to-player my-player-number "Boat explorers 0")
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy grush)
+=>
+	(up-get-fact warboat-count 0 gl-my-warboat-count)
+	(up-modify-goal gl-my-warboat-count c:+ 1)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal gl-my-warboat-count > 9)
+=>
+	(set-goal gl-my-warboat-count 9)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(warboat-count > 0)
+	(players-military-population every-enemy < 8)
+	(or	(strategic-number sn-number-boat-explore-groups < 8)
+		(strategic-number sn-total-number-explorers != 9))
+	(players-building-type-count every-enemy dock == 0)
+	(strategic-number sn-total-number-explorers g:!= gl-my-warboat-count)
+	(up-compare-goal threat-time >= 20000)
+=>
+	(up-modify-sn sn-total-number-explorers g:= gl-my-warboat-count)
+	(up-modify-goal gl-my-warboat-count c:- 1)
+	(up-modify-sn sn-number-boat-explore-groups g:= gl-my-warboat-count)
+	(up-chat-data-to-player my-player-number "Boat explorers %d" g: gl-my-warboat-count)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(players-military-population every-enemy < 8)
+	(or	(strategic-number sn-number-boat-explore-groups > 1)
+		(strategic-number sn-total-number-explorers > 2))
+	(players-building-type-count any-enemy dock > 0)
+=>
+	(set-strategic-number sn-number-boat-attack-groups 0)
+	(set-strategic-number sn-total-number-explorers 2)
+	(set-strategic-number sn-number-boat-explore-groups 1)
+	(chat-to-player my-player-number "Boat explorers 1")
+	(up-reset-unit c: galley-line)
+	(up-reset-scouts)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(warboat-count > 0)
+	(or	(players-military-population every-enemy < 8)
+		(warboat-count > 4))
+	(strategic-number sn-number-boat-explore-groups < 1)
+	(players-building-type-count every-enemy dock == 0)
+	(up-compare-goal threat-time >= 20000)
+=>
+	(set-strategic-number sn-number-boat-attack-groups 0)
+	(set-strategic-number sn-total-number-explorers 2)
+	(set-strategic-number sn-number-boat-explore-groups 1)
+;	(chat-to-player my-player-number "Boat explorers 1")
+	(up-reset-unit c: galley-line)
+	(up-reset-scouts)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(or	(strategic-number sn-number-boat-explore-groups != 0)
+		(strategic-number sn-total-number-explorers != 1))
+	(or	(and	(players-military-population any-enemy > 4)
+			(or	(warboat-count < 5)
+				(players-building-type-count any-enemy dock > 0)))
+		(up-compare-goal threat-time < 20000))
+	(game-time > 720)
+=>
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-number-boat-explore-groups 0)
+;	(chat-to-player my-player-number "Boat explorers 0")
+	(up-reset-unit c: galley-line)
+	(up-reset-scouts)
+)
+
+#load-if-not-defined UP-2-PLAYER-GAME
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal gl-scattered-islets-style <= 0)
+	(or	(warboat-count > 14)
+		(and	(food-amount >= 550)
+			(game-time > 1020)))
+	(or	(players-military-population focus-player < 6)
+		(or	(players-military-population every-enemy < 6)
+			(food-amount >= 400)))
+=>
+	(set-goal gl-GRUSH-CONTROL GET-AGE-UP)
+	(disable-self)
+)
+#else
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal gl-scattered-islets-style <= 0)
+	(or	(warboat-count > 14)
+		(and	(food-amount >= 550)
+			(game-time > 1020)))
+	(or	(players-military-population every-enemy < 6)
+		(food-amount >= 400))
+	(nand	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+		(game-time < 1200))
+=>
+	(set-goal gl-GRUSH-CONTROL GET-AGE-UP)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(goal gl-strategy grush)
+	(warboat-count > 27)
+	(players-current-age focus-player >= castle-age)
+	(players-current-age-time focus-player > 35)
+	(game-time > 1300)
+	(or	(players-military-population focus-player > 20)
+		(up-compare-goal gl-scattered-islets-style >= 1))
+=>
+	(set-goal gl-GRUSH-CONTROL GET-AGE-UP)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal gl-scattered-islets-style <= 0)
+	(or	(and	(nor	(goal gl-GRUSH-CONTROL GET-AGE-UP)
+				(town-under-attack))
+			(warboat-count > 7))
+		(and	(not	(goal gl-GRUSH-CONTROL GET-AGE-UP))
+			(game-time > 1500)))
+	(game-time > 1020)
+	(player-valid 3)
+=>
+	(set-goal gl-GRUSH-CONTROL GET-AGE-UP)
+)
+
+; ========== BUILDINGS AND UNITS ETC
+
+(defrule
+	(goal gl-strategy grush)
+	(game-time > 1030)
+	(building-type-count-total lumber-camp == 2)
+	(can-build lumber-camp)
+=>
+	(build lumber-camp)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(or	(goal gl-GRUSH-CONTROL GET-AGE-UP)
+		(current-age-time > 60))
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(or	(goal gl-GRUSH-CONTROL GET-AGE-UP)
+		(game-time > 940))
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(build market)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(or	(goal POSITION POCKET)
+		(strategic-number sn-boars-on-map == NONE))
+	(current-age == dark-age)
+	(or	(research-completed ri-loom)
+		(unit-type-count-total villager < 16))
+	(unit-type-count-total villager < 31)
+	(or	(food-amount < 400)
+		(unit-type-count-total villager < 29))
+	(can-train villager)
+=>
+	(train villager)
+	(enable-timer 2 22)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal gl-scattered-islets-style <= 0)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(game-time > 60)
+=>
+	(set-strategic-number sn-dock-avoidance-factor -10000)
+	(set-strategic-number sn-dock-proximity-factor -7000)
+	(set-strategic-number sn-dock-placement-mode 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(current-age == dark-age)
+	(building-type-count-total mill > 0)
+	(building-type-count-total dock > 1)
+	(unit-type-count-total fishing-ship < 14)
+	(not	(map-type yucatan))
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(current-age == dark-age)
+	(building-type-count-total mill > 0)
+	(building-type-count-total dock > 1)
+	(unit-type-count-total fishing-ship < 8)
+	(map-type yucatan)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+#load-if-defined COASTAL-MAP
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-dock-avoidance-factor -10000)
+	(set-strategic-number sn-dock-proximity-factor 500)
+	(set-strategic-number sn-dock-placement-mode -1)
+	(disable-self)
+)
+#end-if
+#load-if-defined CONTINENTAL-MAP
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-dock-avoidance-factor -10000)
+	(set-strategic-number sn-dock-proximity-factor 500)
+	(set-strategic-number sn-dock-placement-mode -1)
+	(disable-self)
+)
+#end-if
+#load-if-defined RIVERS-MAP
+(defrule
+	(up-compare-const gv-aofe-game == 1)
+=>
+	(set-strategic-number sn-dock-avoidance-factor -10000)
+	(set-strategic-number sn-dock-proximity-factor 500)
+	(set-strategic-number sn-dock-placement-mode -1)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(or	(and	(goal gl-strategy grush)
+			(goal POSITION POCKET))
+		(and	(goal gl-strategy sling)
+			(current-age == dark-age)))
+	(game-time > 30)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(building-type-count-total mill > 0)
+	(building-type-count-total dock < 2)
+	(can-build dock)
+=>
+	(build dock)
+	(chat-to-player my-player-number "Dock")
+)
+
+#load-if-not-defined YUCATAN-MAP
+(defrule
+	(or	(and	(or	(and	(goal gl-strategy grush)
+					(goal POSITION POCKET))
+				(goal gl-strategy sling))
+			(building-type-count-total dock > 1))
+		(and	(unit-type-count-total fishing-ship < 10)
+			(wood-amount >= 350)))
+	(current-age == dark-age)
+	(building-type-count-total mill > 0)
+	(unit-type-count-total fishing-ship < 14)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal MILITARY >= 1)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(building-type-count-total dock > 1)
+	(building-type-count-total market > 0)
+	(players-military-population focus-player < 2)
+	(military-population > 8)
+	(or	(unit-type-count-total fishing-ship < 7)
+		(military-population > 12))
+	(unit-type-count-total fishing-ship < 12)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+#else
+(defrule
+	(or	(and	(goal gl-strategy grush)
+			(goal POSITION POCKET))
+		(goal gl-strategy sling))
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(current-age == dark-age)
+	(building-type-count-total mill > 0)
+	(building-type-count-total dock > 1)
+	(unit-type-count-total fishing-ship < 7)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal MILITARY >= 1)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(building-type-count-total dock > 1)
+	(building-type-count-total market > 0)
+	(players-military-population focus-player < 2)
+	(military-population > 8)
+	(unit-type-count-total fishing-ship < 7)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(or	(goal gl-strategy grush)
+		(and	(not	(goal gl-strategy grush))
+			(and	(unit-type-count-total villager > 27)
+				(strategic-number sn-minimum-water-body-size-for-dock >= 1999))))
+	(unit-type-count-total villager > 25)
+	(can-research-with-escrow feudal-age)
+=>
+	(research feudal-age)
+	(set-goal gl-current-age gv-dark-up)
+)
+
+(defrule
+	(or	(nor	(goal gl-strategy grush)
+			(goal gl-strategy landing))
+		(goal gl-TC-lost YES))
+=>
+	(up-jump-rule 9)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(can-research ri-double-bit-axe)
+=>
+  	(research ri-double-bit-axe)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(or	(goal gl-GRUSH-CONTROL GET-AGE-UP)
+		(current-age-time > 300))
+	(can-research ri-horse-collar)
+=>
+  	(research ri-horse-collar)
+)
+
+(defrule
+	(or	(goal gl-strategy grush)
+		(goal gl-strategy landing))
+	(current-age == dark-age)
+	(or	(research-completed ri-loom)
+		(unit-type-count-total villager < 16))
+	(unit-type-count-total villager < 28)
+	(or	(food-amount < 400)
+		(unit-type-count-total villager < 26))
+	(can-train villager)
+=>
+	(train villager)
+	(enable-timer 2 22)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(or	(goal gl-current-age gv-dark)
+		(unit-type-count-total fishing-ship < 6))
+	(or	(current-age == dark-age)
+		(and	(up-compare-goal MILITARY >= 1)
+			(building-type-count-total market > 0)))
+	(or	(unit-type-count-total fishing-ship < 2)
+		(building-type-count-total mill > 0))
+	(unit-type-count-total fishing-ship < 13)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(current-age == feudal-age)
+	(or	(unit-type-count-total fishing-ship < 4)
+		(or	(goal gl-GRUSH-CONTROL GET-AGE-UP)
+			(and	(current-age-time > 300)
+				(building-type-count-total farm < 4))))
+	(or	(building-type-count-total farm < 7)
+		(building-type-count-total market > 0))
+	(building-type-count-total farm < 12)
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(or	(goal gl-GRUSH-CONTROL GRUSHING)
+		(or	(gold-amount >= 230)
+			(food-amount < 500)))
+	(nand	(goal gl-GRUSH-CONTROL GET-AGE-UP)
+		(building-type-count-total market < 1))
+	(nand	(up-compare-goal gl-current-age >= gv-feudal-up)
+		(wood-amount < 400))
+	(can-train galley-line)
+=>
+	(train galley-line)
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(game-time > 30)
+	(or	(building-type-count-total lumber-camp > 0)
+		(wood-amount > 250))
+	(or	(building-type-count-total dock < 1)
+		(up-compare-goal gl-current-age >= gv-dark-up))
+	(or	(building-type-count-total dock < 3)
+		(game-time > 870))
+	(building-type-count-total dock < 4)
+	(can-build dock)
+=>
+	(build dock)
+	(chat-to-player my-player-number "Dock")
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(building-type-count-total market > 0)
+	(game-time > 1000)
+	(or	(building-type-count-total dock < 5)
+		(game-time > 1200))
+	(or	(building-type-count-total dock < 6)
+		(game-time > 1400))
+	(building-type-count-total dock < 7)
+	(nand	(up-compare-goal gl-current-age >= gv-feudal-up)
+		(wood-amount < 400))
+	(can-build dock)
+=>
+	(build dock)
+	(chat-to-player my-player-number "Dock")
+)
+
+(defrule
+	(goal gl-strategy grush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(goal SLING 3)
+	(building-type-count-total dock < 7)
+	(can-build dock)
+=>
+	(build dock)
+	(set-goal gl-GRUSH-CONTROL GET-AGE-UP)
+	(chat-to-player my-player-number "Dock")
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order <= -2)
+	(strategic-number sn-allow-new-build-order >= -4)
+	(nor	(goal gl-strategy grush)
+		(goal gl-strategy landing))
+	(current-age == dark-age)
+	(or	(research-completed ri-loom)
+		(unit-type-count-total villager < 16))
+	(unit-type-count-total villager < 30)
+	(or	(food-amount < 400)
+		(unit-type-count-total villager < 28))
+	(can-train villager)
+=>
+	(train villager)
+	(enable-timer 2 22)
+)
+
+(defrule
+	(goal gl-strategy flush-overwrite)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-feudal-archery 0)
+	(set-goal gl-feudal-infantry 0)
+	(set-goal gl-feudal-trash 0)
+)
+
+(defrule
+	(goal DOCK 2)
+	(strategic-number sn-target-evaluation-ally-proximity == 9999)
+=>
+	(set-goal DOCK 1)
+	(disable-self)
+)
+
+(defrule
+	(goal DOCK 2)
+	(goal gl-strategy default)
+	(strategic-number sn-target-evaluation-ally-proximity != 9999)
+	(food-amount >= 500)
+	(current-age-time > 150)
+=>
+	(set-goal gl-strategy watermap-fc)
+	(disable-self)
+)
+
+#load-if-not-defined AZTEC-CIV
+(defrule
+	(goal DOCK 4)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(civ-selected celtic)
+		(or	(civ-selected chinese)
+			(or	(civ-selected hun)
+				(or	(civ-selected saracen)
+					(or	(civ-selected turkish)
+						(civ-selected indian))))))
+=>
+	(set-goal DOCK 3)
+	(chat-to-player my-player-number "No fast fires - switch to galleons")
+)
+
+#load-if-not-defined YUCATAN-MAP
+(defrule
+	(goal DOCK 5)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(civ-selected celtic)
+		(or	(civ-selected chinese)
+			(or	(civ-selected hun)
+				(or	(civ-selected saracen)
+					(or	(civ-selected turkish)
+						(civ-selected indian))))))
+=>
+	(set-goal DOCK 6)
+	(chat-to-player my-player-number "No fast fires - switch to galleons")
+)
+#end-if
+#end-if
+
+#load-if-defined YUCATAN-MAP
+(defrule
+	(goal DOCK 5)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal DOCK 6)
+)
+#end-if
+
+(defrule
+	(population-cap < 65)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+=>
+	(set-strategic-number sn-allow-new-build-order 1)
+	(set-goal DOCK 0)
+	(chat-to-player my-player-number "2With low pop cap mixed maps will be played like land maps")
+	(set-strategic-number sn-minimum-water-body-size-for-dock 998)
+	(up-reset-placement c: dock)
+)
+
+; =============== BUILDINGS
+
+(defrule
+	(building-type-count-total town-center > 1)
+	(current-age <= feudal-age)
+	(or	(unit-type-count-total villager > 20)
+		(unit-type-count villager-forager > 0))
+	(building-type-count-total mill == 1)
+	(building-type-count-total lumber-camp > 0)
+	(resource-found food)
+	(can-build mill)
+=>
+	(build mill)
+	(chat-to-player my-player-number "Mill")
+)
+
+(defrule
+	(or	(and	(or	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+				(strategic-number sn-minimum-water-body-size-for-dock == 2002))
+			(building-type-count-total dock == 0))
+		(or	(and	(building-type-count-total lumber-camp == 0)
+				(or	(starting-age != dark-age)
+					(or	(starting-resources != low-resources)
+						(regicide-game))))
+			(goal gl-TC-lost YES)))
+=>
+	(up-jump-rule 15)
+)
+
+(defrule
+	(or	(and	(unit-type-count-total fishing-ship < 1)
+			(and	(game-time < 60)
+				(and	(or	(starting-age != dark-age)
+						(or	(starting-resources != low-resources)
+							(regicide-game)))
+					(building-type-count-total dock == 1))))
+		(and	(goal gl-strategy landing)
+			(building-type-count-total dock > 0)))
+=>
+	(up-jump-rule 14)
+)
+
+(defrule
+	(game-time > 1800)
+	(current-age > feudal-age)
+=>
+	(up-jump-rule 5)
+)
+
+(defrule
+	(nor	(goal DOCK 0)
+		(goal DOCK 10))
+	(game-time > 300)
+	(unit-type-count-total villager-food == 0)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(building-type-count-total lumber-camp > 0)
+	(building-type-count-total dock < 1)
+	(can-build dock)
+=>
+	(build dock)
+	(chat-to-player my-player-number "Dock")
+)
+
+(defrule
+	(game-time > 30)
+	(up-compare-goal DOCK != 0)
+	(up-compare-goal DOCK != 10)
+	(or	(building-type-count-total lumber-camp > 0)
+		(wood-amount > 350))
+	(building-type-count-total dock < 1)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(game-time < 1300)
+	(nand	(or	(players-unit-type-count any-enemy galley-line > 0)
+			(players-unit-type-count any-enemy fire-ship-line > 0))
+		(unit-type-count-total galley-line < 1))
+	(can-build dock)
+=>
+	(build dock)
+)
+
+(defrule
+	(game-time > 30)
+	(strategic-number sn-allow-new-build-order >= 0)
+	(up-compare-goal DOCK != 0)
+	(up-compare-goal DOCK != 10)
+	(or	(building-type-count-total lumber-camp > 0)
+		(wood-amount > 350))
+	(or	(building-type-count-total dock < 1)
+		(building-type-count-total mill > 0))
+	(building-type-count-total dock < 1); 2
+	(goal gl-current-age gv-dark)
+	(game-time < 1300)
+	(can-build dock)
+=>
+	(build dock)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order >= 1)
+	(up-compare-goal DOCK != 0)
+	(up-compare-goal DOCK != 10)
+	(building-type-count-total mill > 0)
+	(building-type-count-total lumber-camp > 0)
+	(building-type-count-total dock < 2)
+	(current-age-time > 60)
+	(goal gl-current-age gv-feudal)
+	(game-time < 1300)
+	(nand	(or	(players-unit-type-count any-enemy galley-line > 0)
+			(players-unit-type-count any-enemy fire-ship-line > 0))
+		(unit-type-count-total galley-line < 1))
+	(can-build dock)
+=>
+	(build dock)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(up-compare-goal DOCK != 0)
+	(up-compare-goal DOCK != 10)
+	(up-pending-placement c: dock); Don't cancel docking if there is no attempt to place one
+	(wood-amount > 200)
+	(building-type-count-total mill > 0)
+	(building-type-count-total dock == 0)
+	(unit-type-count-total villager > 20)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(game-time > 300)
+	(game-time < 1200)
+=>
+	(set-strategic-number sn-allow-new-build-order 1)
+	(set-goal DOCK 0)
+	(chat-to-player my-player-number "Placing dock has failed")
+	(set-strategic-number sn-minimum-water-body-size-for-dock 998); Might be undockable map so play it as so
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(game-time > 300)
+	(building-type-count town-center > 0)
+	(building-type-count-total dock > 0)
+=>
+	(set-goal DOCK 1)
+	(chat-to-player my-player-number "Placing dock was successful after all!")
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1000)
+)
+
+(defrule
+	(up-compare-goal DOCK >= 2)
+	(up-compare-goal DOCK != 10)
+	(nand	(goal gl-strategy turtle-rush)
+		(unit-type-count turtle-ship < 3))
+	(wood-amount > 450)
+	(building-type-count-total town-center > 2)
+	(or	(game-time > 1320)
+		(and	(goal SLING 3)
+			(up-compare-goal gl-current-age >= gv-feudal-up)))
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(building-type-count-total dock < 8)
+	(can-build dock)
+=>
+	(build dock)
+)
+
+(defrule
+	(game-time > 30)
+	(up-compare-goal DOCK >= 2)
+	(up-compare-goal DOCK != 10)
+	(up-compare-goal gl-strategy != turtle-rush)
+	(or	(building-type-count-total dock < 5)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(or	(current-age == imperial-age)
+		(building-type-count-total dock < 3))
+	(building-type-count-total town-center > 2)
+	(unit-type-count-total villager > 55)
+	(building-type-count-total dock < 8)
+	(can-build dock)
+=>
+	(build dock)
+)
+
+; ============= RESEARCHES
+
+(defrule
+	(unit-type-count-total fire-ship-line > 12)
+	(research-available ri-fast-fire-ship)
+=>
+	(set-escrow-percentage gold 70)
+	(set-escrow-percentage wood 70)
+	(up-add-research-cost c: ri-fast-fire-ship c: -1)
+)
+
+(defrule
+	(unit-type-count-total galley-line > 10)
+	(research-available ri-galleon)
+=>
+	(set-escrow-percentage food 70)
+	(set-escrow-percentage wood 70)
+	(up-add-research-cost c: ri-galleon c: -1)
+)
+
+(defrule
+	(unit-type-count-total galley-line > 10)
+	(research-available ri-war-galley)
+=>
+	(set-escrow-percentage food 70)
+	(set-escrow-percentage gold 70)
+	(up-add-research-cost c: ri-war-galley c: -1)
+)
+
+(defrule
+	(or	(can-research ri-war-galley)
+		(unit-type-count-total galley-line > 7))
+	(or	(and	(unit-type-count-total fire-ship-line > 5)
+			(up-compare-goal gl-current-age >= gv-castle-up))
+		(unit-type-count-total galley-line > 1))
+	(can-research-with-escrow ri-war-galley)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(research ri-war-galley)
+	(set-strategic-number sn-allow-resource-spending 3)
+)
+
+(defrule
+	(can-research-with-escrow ri-galleon)
+	(or	(unit-type-count-total galley-line > 5)
+		(population > 190))
+	(or	(can-research ri-galleon)
+		(unit-type-count-total galley-line > 13))
+=>
+	(release-escrow food)
+	(release-escrow wood)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage wood 0)
+	(research ri-galleon)
+	(set-strategic-number sn-allow-resource-spending 3)
+)
+
+(defrule
+	(current-age-time > 30)
+	(or	(unit-type-count-total fire-ship-line > 13)
+		(or	(unit-type-count-total galley-line > 16)
+			(or	(unit-type-count-total transport-ship > 0)
+				(unit-type-count-total turtle-ship-line > 5))))
+	(or	(can-research ri-careening)
+		(and	(can-research ri-dry-dock)
+			(strategic-number sn-allow-resource-spending > 2)))
+=>
+	(research ri-careening)
+	(research ri-dry-dock)
+)
+
+#load-if-not-defined SARACEN-CIV
+(defrule
+	(or	(unit-type-count-total fire-ship-line > 5)
+		(and	(unit-type-count-total fire-ship-line > 0)
+			(population > 190)))
+	(can-research-with-escrow ri-fast-fire-ship)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(set-escrow-percentage wood 0)
+	(set-escrow-percentage gold 0)
+	(research ri-fast-fire-ship)
+	(set-strategic-number sn-allow-resource-spending 3)
+)
+#end-if
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined KOREAN-CIV
+(defrule
+	(or	(players-unit-type-count any-enemy fire-ship-line > 5)
+		(unit-type-count-total demolition-ship > 2))
+	(can-research ri-heavy-demolition-ship)
+=>
+	(research ri-heavy-demolition-ship)
+)
+#end-if
+#end-if
+
+#load-if-not-defined TEUTONIC-CIV
+(defrule
+	(strategic-number sn-allow-resource-spending > 2)
+	(or	(goal DOCK 3)
+		(or	(goal DOCK 4)
+			(or	(and	(or	(goal MILITARY 1)
+						(goal SLING 3))
+					(or	(goal DOCK 5)
+						(goal DOCK 6)))
+				(strategic-number sn-minimum-water-body-size-for-dock >= 1999))))
+	(can-research ri-shipwright)
+=>
+	(research ri-shipwright)
+)
+#end-if
+
+#load-if-defined KOREAN-CIV
+(defrule
+	(or	(goal MILITARY 1)
+		(unit-type-count-total turtle-ship-line > 7))
+	(unit-type-count-total turtle-ship-line > 3)
+	(can-research ri-elite-turtle-ship)
+=>
+	(research ri-elite-turtle-ship)
+)
+#end-if
+
+(defrule
+	(goal MILITARY 1)
+	(or	(warboat-count > 12)
+		(players-building-type-count any-enemy dock == 0))
+	(strategic-number sn-minimum-water-body-size-for-dock != 998)
+	(or	(can-research ri-cannon-galleon)
+		(can-research ri-deck-guns))
+=>
+	(research ri-cannon-galleon)
+	(research ri-deck-guns)
+)
+
+; =================== UNITS
+
+#load-if-not-defined DARK-AGE-START
+(defrule
+	(game-time < 600)
+	(building-type-count-total lumber-camp > 0)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(up-attacker-class != warship-class)
+	(unit-type-count-total fishing-ship < 9)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+#end-if
+
+(defrule
+	(building-type-count-total town-center > 1)
+	(current-age == dark-age)
+	(unit-type-count-total villager < imperial-villager-cap)
+	(unit-type-count-total villager < difficulty-villager-cap)
+	(unit-type-count-total villager < 100)
+	(nand	(unit-type-count-total villager > 47)
+		(and	(food-amount > 370)
+			(goal gl-current-age gv-dark)))
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(or	(goal DOCK 2)
+		(building-type-count-total town-center > 1))
+	(current-age == feudal-age)
+	(unit-type-count-total villager < imperial-villager-cap)
+	(unit-type-count-total villager < difficulty-villager-cap)
+	(unit-type-count-total villager < 100)
+	(nand	(can-research-with-escrow castle-age)
+		(research-available castle-age))
+	(nor	(can-research-with-escrow feudal-age)
+		(can-research-with-escrow ri-wheel-barrow))
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(or	(and	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+			(building-type-count-total dock == 0))
+		(or	(goal gl-TC-lost YES)
+			(and	(population-cap < 65)
+				(population > almost-full-pop))))
+=>
+	(up-jump-rule 20)
+)
+
+(defrule
+	(or	(and	(starting-age != dark-age)
+			(goal gl-current-age gv-dark))
+		(and	(building-type-count-total town-center < 3)
+			(and	(warboat-count > 18)
+				(and	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+					(and	(goal gl-strategy-class basic-class)
+						(game-time < 2100))))))
+=>
+	(up-jump-rule 18)
+)
+
+(defrule
+	(not	(map-type team-islands))
+	(players-building-type-count any-ally dock > 0)
+	(game-time > 2200)
+	(or	(warboat-count > 30)
+		(population > 130))
+	(warboat-count > 15)
+	(up-compare-goal gl-gathering-inside != EVEN-CASTLE)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+		(map-type archipelago))
+	(unit-type-count-total trade-cog < max-ti-carts)
+	(unit-type-count-total trade-cog < 15)
+	(can-train trade-cog)
+=>
+	(train trade-cog)
+)
+
+(defrule
+	(or	(goal DOCK 1)
+		(and	(goal MILITARY 1)
+			(soldier-count > 15)))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(or	(unit-type-count-total transport-ship < relative-3-units)
+		(and	(soldier-count > 30)
+			(unit-type-count-total transport-ship < 6)))
+	(can-train transport-ship)
+=>
+	(train transport-ship)
+)
+
+(defrule
+	(nand	(players-unit-type-count any-enemy galley-line > 1)
+		(or	(goal DOCK 0)
+			(goal DOCK 1)))
+	(or	(players-unit-type-count focus-player fire-ship-line > 4)
+		(players-unit-type-count target-player fire-ship-line > 4))
+	(or	(unit-type-count-total demolition-ship-line < 1)
+		(or	(players-unit-type-count focus-player fire-ship-line > 7)
+			(players-unit-type-count target-player fire-ship-line > 7)))
+	(unit-type-count-total demolition-ship-line < 3)
+	(can-train demolition-ship)
+=>
+	(train demolition-ship)
+)
+
+(defrule
+	(goal gl-heavy-water-map YES)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(current-age >= castle-age)
+	(current-age-time > 100)
+	(nand	(or	(goal gl-eew-strategy-type fast-imp)
+			(goal gl-strategy turkish-fast-imp))
+		(up-compare-goal gl-current-age <= gv-castle))
+	(players-unit-type-count every-enemy galley-line == 0)
+	(players-unit-type-count every-enemy fire-ship-line == 0)
+	(players-unit-type-count every-enemy longboat-line == 0)
+	(players-building-type-count every-enemy dock == 0)
+	(unit-type-count-total galley-line < 4)
+	(can-train galley-line)
+=>
+	(train galley-line)
+)
+
+(defrule
+	(up-compare-goal gl-current-age > gv-dark-up)
+	(or	(and	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+			(and	(or	(goal DOCK 4)
+					(goal gl-strategy turtle-rush))
+				(goal gl-current-age gv-feudal-up)))
+		(unit-type-count-total fire-ship-line > 6))
+	(nand	(players-unit-type-count focus-player fire-ship-line > 6)
+		(unit-type-count-total fire-ship-line < 15))
+	(unit-type-count-total galley-line < 1)
+	(can-train galley-line)
+=>
+	(train galley-line)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(or	(goal DOCK 2)
+		(and	(goal DOCK 3)
+			(up-compare-goal gl-current-age >= gv-feudal-up)))
+	(unit-type-count-total galley-line < 85)
+	(can-train galley-line)
+	(nand	(and	(unit-type-count-total galley-line > 7)
+			(and	(building-type-count-total town-center < 2)
+				(current-age >= castle-age)))
+		(players-military-population every-enemy < 8))
+=>
+	(train galley-line)
+)
+
+(defrule
+	(goal DOCK 6)
+	(or	(unit-type-count-total galley-line < 25)
+		(or	(players-unit-type-count any-enemy galley-line > 10)
+			(players-unit-type-count any-enemy fire-ship-line > 10)))
+	(unit-type-count-total galley-line < 40)
+	(can-train galley-line)
+	(nand	(and	(unit-type-count-total galley-line > 7)
+			(building-type-count-total town-center < 2))
+		(or	(players-military-population every-enemy < 8)
+			(strategic-number sn-allow-resource-spending < 1)))
+=>
+	(train galley-line)
+)
+
+(defrule
+	(goal DOCK 3)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(current-age == imperial-age)
+	(or	(and	(unit-type-count-total galley-line < 12)
+			(unit-type-count-total fire-ship-line > 18))
+		(and	(research-completed ri-galleon)
+			(unit-type-count-total galley-line < 22)))
+	(can-train galley-line)
+=>
+	(train galley-line)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(goal DOCK 4)
+	(unit-type-count-total fire-ship-line > 15)
+	(unit-type-count-total galley-line < 35)
+	(can-train galley-line)
+	(nand	(and	(unit-type-count-total fire-ship-line > 7)
+			(building-type-count-total town-center < 2))
+		(players-military-population every-enemy < 8))
+=>
+	(train galley-line)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(or	(goal DOCK 4)
+		(and	(goal gl-strategy turtle-rush)
+			(and	(unit-type-count-total turtle-ship > 2)
+				(unit-type-count-total fire-ship-line < 2))))
+	(unit-type-count-total fire-ship-line < 50)
+	(can-train fire-ship-line)
+	(nand	(and	(unit-type-count-total fire-ship-line > 7)
+			(building-type-count-total town-center < 2))
+		(players-military-population every-enemy < 8))
+=>
+	(train fire-ship-line)
+)
+
+(defrule
+	(goal DOCK 5)
+	(or	(unit-type-count-total galley-line < 10)
+		(or	(players-unit-type-count any-enemy galley-line > 10)
+			(players-unit-type-count any-enemy fire-ship-line > 10)))
+	(nand	(players-unit-type-count focus-player fire-ship-line > 6)
+		(unit-type-count-total fire-ship-line < 15))
+	(unit-type-count-total fire-ship-line > 10)
+	(or	(unit-type-count-total galley-line < 15)
+		(building-type-count-total town-center > 2))
+	(unit-type-count-total galley-line < 20)
+	(can-train galley-line)
+=>
+	(train galley-line)
+)
+
+(defrule
+	(goal DOCK 5)
+	(or	(unit-type-count-total fire-ship-line < 15)
+		(or	(players-unit-type-count any-enemy galley-line > 10)
+			(players-unit-type-count any-enemy fire-ship-line > 10)))
+	(unit-type-count-total fire-ship-line < 25)
+	(can-train fire-ship-line)
+	(nand	(and	(unit-type-count-total fire-ship-line > 7)
+			(building-type-count-total town-center < 2))
+		(or	(players-military-population every-enemy < 8)
+			(strategic-number sn-allow-resource-spending < 1)))
+=>
+	(train fire-ship-line)
+)
+
+(defrule
+	(or	(goal gl-heavy-water-map YES)
+		(not	(map-type custom)))
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(up-compare-goal gl-current-age == gv-feudal)
+	(up-compare-goal gl-strategy-type <= controlled-flush)
+	(strategic-number sn-target-evaluation-ally-proximity != 9999)
+	(or	(unit-type-count-total galley-line < 20)
+		(up-compare-const gv-feudal-age-end == 1))
+	(unit-type-count-total galley-line < 35)
+	(players-building-type-count any-enemy dock > 0)
+	(can-train galley-line)
+=>
+	(train galley-line)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(or	(civ-selected viking)
+		(research-completed ri-galleon))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(unit-type-count-total galley-line < 23)
+	(players-building-type-count any-enemy dock > 0)
+	(can-train galley-line)
+	(nand	(and	(unit-type-count-total galley-line > 5)
+			(building-type-count-total town-center < 2))
+		(players-military-population every-enemy < 8))
+=>
+	(train galley-line)
+)
+
+(defrule
+	(up-compare-goal gl-current-age > gv-dark-up)
+	(up-compare-goal gl-strategy != turtle-rush)
+	(current-age >= castle-age)
+	(players-unit-type-count any-enemy galley-line > 0)
+	(or	(and	(players-unit-type-count any-enemy galley-line > 5)
+			(and	(unit-type-count-total fire-ship-line > 2)
+				(unit-type-count-total fire-ship-line < 9)))
+		(and	(unit-type-count-total fire-ship-line < 4)
+			(players-unit-type-count every-enemy galley-line < 6)))
+	(can-train fire-ship-line)
+=>
+	(train fire-ship-line)
+)
+
+(defrule
+	(up-compare-goal gl-current-age > gv-dark-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(current-age == castle-age)
+	(unit-type-count-total fire-ship-line < 10)
+	(up-compare-goal gl-strategy != xbow-rush)
+	(or	(players-building-type-count any-enemy dock > 0)
+		(up-compare-goal threat-source == warship-class))
+	(can-train fire-ship-line)
+	(nand	(and	(unit-type-count-total fire-ship-line > 5)
+			(building-type-count-total town-center < 2))
+		(players-military-population every-enemy < 8))
+=>
+	(train fire-ship-line)
+)
+
+(defrule
+	(up-compare-goal gl-current-age > gv-dark-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(or	(research-completed ri-fast-fire-ship)
+		(and	(goal gl-strategy xbow-rush)
+			(nand	(goal RAM 1)
+				(unit-type-count-total battering-ram-line < 1))))
+	(unit-type-count-total fire-ship-line < 10)
+	(players-building-type-count any-enemy dock > 0)
+	(can-train fire-ship-line)
+=>
+	(train fire-ship-line)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(and	(unit-type-count-total galley-line < 15)
+			(up-compare-const extra-galley-value == 1))
+		(unit-type-count-total galley-line < 6))
+	(can-train galley-line)
+=>
+	(train galley-line)
+)
+
+(defrule
+	(strategic-number sn-enable-training-queue == 1)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(building-type-count-total dock < 2)
+	(or	(goal gl-strategy sling)
+		(and	(goal gl-strategy grush)
+			(goal POSITION POCKET)))
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+)
+
+#load-if-not-defined AZTEC-CIV
+(defrule
+	(up-compare-goal gl-current-age > gv-dark-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+	(current-age == imperial-age)
+	(unit-type-count-total galley-line < 18)
+	(can-train galley-line)
+=>
+	(train galley-line)
+)
+#else
+(defrule
+	(up-compare-goal gl-current-age > gv-dark-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+	(current-age == imperial-age)
+	(unit-type-count-total fire-ship-line < 18)
+	(can-train fire-ship-line)
+=>
+	(train fire-ship-line)
+)
+#end-if
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(up-compare-goal gl-current-age > gv-dark-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+	(current-age == imperial-age)
+	(unit-type-count-total fire-ship-line < 18)
+	(can-train fire-ship-line)
+=>
+	(train fire-ship-line)
+)
+#end-if
+
+#load-if-not-defined YUCATAN-MAP
+(defrule
+	(goal gl-GRUSH-CONTROL NO)
+	(goal gl-strategy-type basic-flush)
+	(strategic-number sn-allow-new-build-order >= 1)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(game-time < 1800)
+	(or	(building-type-count-total lumber-camp > 0)
+		(wood-amount > 200))
+	(players-unit-type-count every-enemy galley-line < 1)
+	(players-unit-type-count every-enemy fire-ship-line < 1)
+	(or	(unit-type-count-total fishing-ship < 15)
+		(wood-amount > 350))
+	(unit-type-count-total fishing-ship < 20)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+(defrule
+	(goal gl-GRUSH-CONTROL NO)
+	(up-compare-goal gl-strategy-type != basic-flush)
+	(up-compare-goal gl-current-age <= gv-dark-up)
+	(strategic-number sn-allow-new-build-order >= 1)
+	(or	(goal gl-current-age gv-dark)
+		(unit-type-count-total fishing-ship < 8))
+	(game-time < 1800)
+	(or	(building-type-count-total lumber-camp > 0)
+		(wood-amount > 200))
+	(players-unit-type-count every-enemy galley-line < 1)
+	(players-unit-type-count every-enemy fire-ship-line < 1)
+	(unit-type-count-total fishing-ship < 15)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+#else
+(defrule
+	(goal gl-GRUSH-CONTROL NO)
+	(goal gl-strategy-type basic-flush)
+	(strategic-number sn-allow-new-build-order >= 1)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(game-time < 1800)
+	(or	(building-type-count-total lumber-camp > 0)
+		(wood-amount > 200))
+	(players-unit-type-count every-enemy galley-line < 1)
+	(players-unit-type-count every-enemy fire-ship-line < 1)
+	(or	(unit-type-count-total fishing-ship < 6)
+		(wood-amount > 350))
+	(unit-type-count-total fishing-ship < 7)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+(defrule
+	(goal gl-GRUSH-CONTROL NO)
+	(up-compare-goal gl-strategy-type != basic-flush)
+	(strategic-number sn-allow-new-build-order >= 1)
+	(goal gl-current-age gv-dark)
+	(game-time < 1800)
+	(or	(building-type-count-total lumber-camp > 0)
+		(wood-amount > 200))
+	(players-unit-type-count every-enemy galley-line < 1)
+	(players-unit-type-count every-enemy fire-ship-line < 1)
+	(or	(unit-type-count-total fishing-ship < 6)
+		(wood-amount > 350))
+	(unit-type-count-total fishing-ship < 7)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+#end-if
+
+(defrule
+	(goal gl-current-age gv-dark)
+	(nand	(and	(strategic-number sn-allow-new-build-order <= -2)
+			(strategic-number sn-allow-new-build-order >= -4))
+		(unit-type-count-total villager > 25))
+	(or	(food-amount < 400)
+		(unit-type-count-total villager < 27))
+	(nand	(unit-type-count-total villager >= 28)
+		(strategic-number sn-minimum-water-body-size-for-dock >= 1999))
+	(nand	(unit-type-count-total villager g:>= gl-villagers-to-start-boar-hunt)
+		(research-available ri-loom))
+=>
+	(set-strategic-number sn-enable-training-queue 1)
+)
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined MAYAN-CIV
+(defrule
+	(goal MILITARY 1)
+	(or	(warboat-count > 12)
+		(or	(players-building-type-count any-enemy dock == 0)
+			(population-cap < 150)))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+		(or	(goal DOCK 5)
+			(goal DOCK 6)))
+	(unit-type-count-total cannon-galleon-line < 6)
+	(can-train cannon-galleon-line)
+=>
+	(train cannon-galleon-line)
+)
+#end-if
+#end-if
+
+#load-if-defined KOREAN-CIV
+(defrule
+	(goal MILITARY 1)
+	(players-building-type-count any-enemy dock > 0)
+	(or	(unit-type-count-total turtle-ship-line < 2)
+		(or	(gold-amount > 900)
+			(and	(research-completed ri-elite-turtle-ship)
+				(strategic-number sn-allow-resource-spending > 5))))
+	(unit-type-count-total turtle-ship-line < 7)
+	(can-train turtle-ship-line)
+=>
+	(train turtle-ship-line)
+)
+
+#end-if
+
+(defrule
+	(goal MILITARY 1)
+	(game-time > 3000)
+	(warboat-count > 20)
+	(population < 175)
+	(food-amount < 300)
+	(or 	(cc-players-unit-type-count 0 deep-fish > 12)
+		(or	(cc-players-unit-type-count 0 shore-fish > 25)
+			(and	(cc-players-unit-type-count 0 deep-fish > 8)
+				(cc-players-unit-type-count 0 shore-fish > 8))))
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(unit-type-count-total fishing-ship < 4)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+(defrule
+	(or	(and	(cc-players-unit-type-count 0 deep-fish == 0)
+			(cc-players-unit-type-count 0 shore-fish == 0))
+		(and	(game-time > 3000)
+			(and	(population > 190)
+				(and	(population-cap < 210)
+					(and	(unit-type-count-total fishing-ship > 3)
+						(food-amount > 500))))))
+	(unit-type-count-total fishing-ship > 0)
+=>
+	(delete-unit fishing-ship)
+)
+
+(defrule
+	(population-cap < 65)
+	(or	(current-age == gv-maximum-age)
+		(and	(current-age >= castle-age)
+			(or	(goal gl-strategy-class basic-class)
+				(and	(population >= pop-to-full-pop-attack)
+					(goal gl-strategy castle-push)))))
+	(population >= 23)
+	(unit-type-count-total villager == imperial-villager-cap)
+	(unit-type-count-total fishing-ship > 0)
+=>
+	(delete-unit fishing-ship)
+)
+
+; ======================== ATTACKING
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(building-type-count-total dock == 0)
+=>
+	(up-jump-rule 8)
+)
+
+(defrule
+	(goal MILITARY 0)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(strategic-number sn-unit-spreading == 1)
+=>
+	(set-strategic-number sn-task-ungrouped-soldiers 0)
+	(set-strategic-number sn-unit-spreading 0)
+)
+
+(defrule
+	(goal MILITARY 1)
+	(military-population > 10)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(strategic-number sn-unit-spreading == 0)
+=>
+	(set-strategic-number sn-task-ungrouped-soldiers 1)
+	(set-strategic-number sn-unit-spreading 1)
+)
+
+(defrule
+	(timer-triggered 1)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(warboat-count > 25)
+	(town-under-attack)
+	(timer-triggered 9)
+=>
+	(enable-timer 1 80)
+	(enable-timer 6 10)
+	(up-get-fact warboat-count 0 gl-my-warboat-count)
+	(up-modify-goal gl-my-warboat-count s:- sn-number-boat-explore-groups)
+	(up-modify-sn sn-number-boat-attack-groups g:= gl-my-warboat-count)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+	(warboat-count < 50)
+	(nand	(players-building-type-count any-enemy wonder > 0)
+		(and	(victory-condition standard)
+			(map-type custom)))
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 2001)
+	(set-goal DOCK 2)
+	(chat-to-player my-player-number "Start training more navy again")
+)
+
+(defrule
+	(strategic-number sn-number-attack-groups == 199)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+		(and	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+			(goal MILITARY 0)))
+=>
+	(set-strategic-number sn-number-attack-groups 0)
+)
+
+(defrule
+	(timer-triggered 1)
+	(goal MILITARY 1)
+	(or	(goal DOCK 1)
+		(population > 190))
+	(soldier-count > 20)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+=>
+	(set-strategic-number sn-disable-attack-groups 0)
+	(enable-timer 1 240)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-scale-minimum-attack-group-size 10)
+	(set-strategic-number sn-scale-maximum-attack-group-size 25)
+	(set-strategic-number sn-group-form-distance 30)
+	(set-strategic-number sn-attack-group-gather-spacing 80)
+	(chat-to-player my-player-number "Attack now (landing)")
+	(set-strategic-number sn-number-attack-groups 199)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2002)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(strategic-number sn-disable-attack-groups != 0)
+=>
+	(set-strategic-number sn-disable-attack-groups 0)
+	(enable-timer 1 240)
+)
+
+(defrule
+	(timer-triggered 1)
+	(population > almost-full-pop)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+=>
+	(set-strategic-number sn-disable-attack-groups 0)
+	(enable-timer 1 150)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-scale-minimum-attack-group-size 10)
+	(set-strategic-number sn-scale-maximum-attack-group-size 25)
+	(set-strategic-number sn-group-form-distance 30)
+	(set-strategic-number sn-attack-group-gather-spacing 80)
+	(set-goal MILITARY 1)
+	(set-strategic-number sn-hitting-pop-cap YES)
+	(chat-to-player my-player-number "Assume to have military superiority due high population")
+)
+
+(defrule
+	(game-time > 10)
+	(or	(unit-type-count transport-ship > 0)
+		(and	(game-time > 300)
+			(up-idle-unit-count idle-type-villager > 3)))
+	(strategic-number sn-percent-civilian-explorers > 0)
+	(up-idle-unit-count idle-type-villager > 1)
+=>
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-percent-civilian-gatherers 100)
+	(set-strategic-number sn-cap-civilian-gatherers 200)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-target-evaluation-ally-proximity 50)
+	(set-strategic-number sn-minimum-civilian-explorers 0)
+)
+
+

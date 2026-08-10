@@ -1,0 +1,133 @@
+(defrule
+	(difficulty >= easy)
+	(game-time > 600)
+	(soldier-count < five-percent-pop)
+	(unit-type-count-total villager <= 4)
+	(nor 
+		(hold-relics)
+		(hold-koh-ruin)
+	)
+=>
+	(set-goal 1 19)
+	(disable-self)
+)
+
+(defrule
+	(difficulty == moderate)
+	(game-time > 600)
+	(building-type-count wonder < 1)
+	(soldier-count < five-percent-pop)
+	(unit-type-count-total villager <= 2)
+	(nor 
+		(hold-relics)
+		(hold-koh-ruin)
+	)
+=>
+	(set-goal 1 19)
+	(disable-self)
+)
+
+(defrule
+	(difficulty <= hard)
+	(game-time > 600)
+	(building-type-count wonder < 1)
+	(soldier-count <= 3)
+	(unit-type-count cannon-galleon-line == 0)
+	(unit-type-count-total villager == 0)
+	(nor 
+		(hold-relics)
+		(hold-koh-ruin)
+	)
+=>
+	(set-goal 1 19)
+	(disable-self)
+)
+
+(defrule
+	(goal 1 19)
+	(stance-toward any-human ally)
+	(difficulty <= moderate)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(release-escrow gold)
+	(release-escrow stone)
+	(tribute-to-player this-any-human wood 10000)
+	(tribute-to-player this-any-human food 10000)
+	(tribute-to-player this-any-human gold 10000)
+	(tribute-to-player this-any-human stone 10000)
+	(disable-self)
+)
+
+(defrule
+	(goal 1 19)
+	(players-population any-ally > 10)
+	(difficulty <= moderate)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(release-escrow gold)
+	(release-escrow stone)
+	(tribute-to-player this-any-ally wood 10000)
+	(tribute-to-player this-any-ally food 10000)
+	(tribute-to-player this-any-ally gold 10000)
+	(tribute-to-player this-any-ally stone 10000)
+	(disable-self)
+)
+
+;*****************************
+;delete all buildings
+(defrule
+	(goal 1 19)
+=>
+	(delete-unit villager)
+)
+
+(defrule
+	(goal 1 19)
+=>
+	(delete-building dock)
+	(delete-building town-center)
+	(delete-building monastery)
+
+	(delete-building barracks)
+	(delete-building archery-range)
+	(delete-building stable)
+
+	(delete-building siege-workshop)
+)
+
+(defrule
+	(goal 1 19)
+	(not (stance-toward any-human ally) )
+=>
+	(delete-building watch-tower)
+	(delete-building guard-tower)
+	(delete-building keep)
+
+	(delete-building bombard-tower)
+	(delete-building castle)
+)
+
+(defrule
+	(goal 1 19)
+	(building-type-count barracks == 0)
+	(building-type-count archery-range == 0)
+	(building-type-count stable == 0)
+	(building-type-count siege-workshop == 0)
+=>
+	(set-goal 1 9)
+	(disable-self)
+)
+
+;*****************************
+;** All random taunts moved to aiexpert.txt 
+(defrule
+	(goal 1 9)
+=>
+	(chat-to-all-using-range 22300  22)
+	(chat-to-all-using-id 22322)
+		;"No wonder thou wert victorious! I shalt abdicate."
+	(resign)
+	(disable-self)
+)

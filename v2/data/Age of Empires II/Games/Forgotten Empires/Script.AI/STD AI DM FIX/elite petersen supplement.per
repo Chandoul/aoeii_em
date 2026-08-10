@@ -1,0 +1,1165 @@
+(defrule
+	(goal siege-available YES)
+	(or
+		(or
+			(players-building-type-count any-enemy watch-tower-line > 1)
+			(players-building-type-count any-enemy castle > 0)
+		)
+		(or
+			(players-building-type-count any-enemy bombard-tower > 0)
+			(players-building-type-count any-enemy town-center > 1)
+		)
+	)
+=>
+	(set-goal siege-available NO)
+)
+
+(defrule
+	(goal siege-available YES)
+	(or
+		(players-building-type-count any-enemy stone-wall > 10)
+		(players-building-type-count any-enemy fortified-wall > 10)
+	)
+=>
+	(set-goal siege-available NO)
+)
+
+(defrule
+	(goal siege-available NO)
+	(or
+		(population >= pop-cap)
+		(or
+			(or
+				(unit-type-count battering-ram-line > 0)
+				(unit-type-count mangonel-line > 0)
+			)
+			(or
+				(unit-type-count bombard-cannon > 0)
+				(unit-type-count trebuchet > 0)
+			)
+		)
+	)
+=>
+	(set-goal siege-available YES)
+)
+
+(defrule
+	(goal siege-available NO)
+	(goal 1 10)
+	(unit-type-count cannon-galleon > 1)
+=>
+	(set-goal siege-available YES)
+)
+
+(defrule
+	(goal siege-available NO)
+	(unit-type-count petard >= ten-percent-pop)
+=>
+	(set-goal siege-available YES)
+)
+
+(defrule
+	(goal soldiers-available NO)
+	(or
+		(or
+			(unit-type-count militiaman-line > five-percent-pop)
+			(unit-type-count knight-line > five-percent-pop)
+		)
+		(or
+			(or
+				(unit-type-count scout-cavalry-line > five-percent-pop)
+				(unit-type-count cavalry-archer-line > five-percent-pop)
+			)
+			(or
+				(unit-type-count archer-line > five-percent-pop)
+				(unit-type-count my-unique-unit-line > five-percent-pop)
+			)
+		)
+	)
+=>
+	(set-goal soldiers-available YES)
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(unit-type-count militiaman-line < five-percent-pop)
+	(unit-type-count knight-line < five-percent-pop)
+	(unit-type-count scout-cavalry-line < five-percent-pop)
+	(unit-type-count cavalry-archer-line < five-percent-pop)
+	(unit-type-count archer-line < five-percent-pop)
+	(unit-type-count my-unique-unit-line < five-percent-pop)
+=>
+	(set-goal soldiers-available NO)
+)
+
+;*****************************************
+;PETARD
+(defrule
+	(goal siege-available NO)
+	(or
+		(or
+			(building-type-count siege-workshop == 0)
+			(building-type-count castle == 0)
+		)
+		(or
+			(wood-amount < 160)
+			(gold-amount < 75)
+		)
+	)
+	(can-train petard)
+=>
+	(train petard)
+)
+
+;*****************************************
+;MANGONEL/ONAGER
+
+(defrule
+	(goal siege-available NO)
+	(can-train-with-escrow mangonel-line)
+	(nor
+		(can-train mangonel-line)
+		(goal upgrade-conflict NOTICE)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train mangonel-line)
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(unit-type-count-total mangonel-line < five-percent-pop)
+	(can-train mangonel-line)
+	(not (unit-available bombard-cannon) )
+=>
+	(train mangonel-line)
+)
+
+(defrule
+	(goal archer-upgrades YES)
+	(goal soldiers-available YES)
+	(difficulty <= moderate)
+	(unit-type-count-total mangonel-line < ten-percent-pop)
+	(can-train mangonel-line)
+	(research-completed ri-onager)
+	(or
+		(cc-players-building-type-count any-enemy watch-tower-line > 2)
+		(or
+			(cc-players-building-type-count any-enemy castle > 0)
+			(cc-players-building-type-count any-enemy town-center > 1)
+		)
+	)
+	(not (unit-available bombard-cannon) )
+=>
+	(train mangonel-line)
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(unit-type-count-total mangonel-line < ten-percent-pop)
+	(can-train siege-onager)
+=>
+	(train siege-onager)
+)
+
+(defrule
+	(civ-selected korean)
+	(goal soldiers-available YES)
+	(unit-type-count-total mangonel-line < fifteen-percent-pop)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line)
+)
+
+;****************************************
+;RAMS
+(defrule
+	(goal siege-available NO)
+	(can-train-with-escrow battering-ram-line)
+	(or
+		(unit-type-count militiaman-line > 0)
+		(unit-type-count spearman-line > 0)
+	)
+	(nor
+		(can-train battering-ram-line)
+		(or
+			(goal upgrade-conflict NOTICE)
+			(town-under-attack)
+		)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train battering-ram-line)
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(unit-type-count-total battering-ram-line < five-percent-pop)
+	(can-train battering-ram-line)
+	(or
+		(unit-type-count militiaman-line > 0)
+		(unit-type-count spearman-line > 0)
+	)
+	(nor
+		(unit-available bombard-cannon)
+		(town-under-attack)
+	)
+=>
+	(train battering-ram-line)
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(unit-type-count-total battering-ram-line < ten-percent-pop)
+	(cc-players-building-type-count any-enemy bombard-tower == 0)
+	(research-completed ri-capped-ram)
+	(can-train battering-ram)
+	(or
+		(cc-players-building-type-count any-enemy castle > 0)
+		(or
+			(cc-players-building-type-count any-enemy town-center > 1)
+			(cc-players-building-type-count any-enemy watch-tower-line > 2)
+		)
+	)
+	(nor
+		(unit-available bombard-cannon)
+		(town-under-attack)
+	)
+=>
+	(train battering-ram)
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(unit-type-count-total battering-ram-line < ten-percent-pop)
+	(can-train siege-ram)
+	(or
+		(unit-type-count militiaman-line > 0)
+		(unit-type-count spearman-line > 0)
+	)
+	(not (town-under-attack) )
+=>
+	(train siege-ram)
+)
+
+
+;****************************************
+;BOMBARD CANNONS
+(defrule
+	(goal siege-available NO)
+	(difficulty <= moderate)
+	(can-train-with-escrow bombard-cannon)
+	(nor
+		(can-train bombard-cannon)
+		(or
+			(goal upgrade-conflict NOTICE)
+			(town-under-attack)
+		)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train bombard-cannon)
+	(chat-local-to-self "bombard")
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(difficulty <= moderate)
+	(unit-type-count-total bombard-cannon < five-percent-pop)
+	(can-train bombard-cannon)
+	(not (town-under-attack) )
+=>
+	(train bombard-cannon)
+	(chat-local-to-self "bombard")
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(difficulty <= hard)
+	(unit-type-count-total bombard-cannon < ten-percent-pop)
+	(can-train bombard-cannon)
+	(or
+		(soldier-count > twenty-percent-pop)
+		(map-type black-forest)
+	)
+	(not (town-under-attack) )
+=>
+	(train bombard-cannon)
+	(chat-local-to-self "bombard")
+)
+
+;***********************
+;TREBUCHETS
+(defrule
+	(goal siege-available NO)
+	(can-train-with-escrow trebuchet)
+	(nor
+		(can-train trebuchet)
+		(or
+			(goal upgrade-conflict NOTICE)
+			(town-under-attack)
+		)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train trebuchet)
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(unit-type-count-total trebuchet < 3)
+	(soldier-count > fifteen-percent-pop)
+	(can-train trebuchet)
+	(not (town-under-attack) )
+=>
+	(train trebuchet)
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(unit-type-count-total trebuchet < 3)
+	(can-train-with-escrow trebuchet)
+	(nor 
+		(can-train trebuchet)
+		(or
+			(goal upgrade-conflict NOTICE)
+			(town-under-attack)
+		)
+	)
+	(or
+		(cc-players-building-type-count any-enemy town-center > 1)
+		(map-type black-forest)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train trebuchet)
+)
+
+(defrule
+	(goal soldiers-available YES)
+	(unit-type-count-total trebuchet < 3)
+	(can-train-with-escrow trebuchet)
+	(nor 
+		(can-train trebuchet)
+		(or
+			(goal upgrade-conflict NOTICE)
+			(town-under-attack)
+		)
+	)
+	(or
+		(cc-players-building-type-count any-enemy castle > 0)
+		(cc-players-building-type-count any-enemy watch-tower-line > 3)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train trebuchet)
+)
+
+;*********************************
+#load-if-not-defined DEATH-MATCH
+
+;build superunits
+(defrule
+	(current-age == imperial-age)
+=>
+	(disable-timer t-ageup)
+	(enable-timer t-ageup 30)
+	(disable-self)
+)
+
+(defrule
+	(population < unit-max)
+	(timer-triggered t-ageup)
+	(or	(can-train my-unique-unit-line)
+		(can-train my-unique-unit))
+=>
+	(train my-unique-unit-line)
+	(train my-unique-unit)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(population < unit-max)
+	(timer-triggered t-ageup)
+	(can-train champion)
+=>
+	(train champion)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(population < unit-max)
+	(timer-triggered t-ageup)
+	(can-train paladin)
+=>
+	(train paladin)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(population < unit-max)
+	(timer-triggered t-ageup)
+	(can-train heavy-cavalry-archer)
+=>
+	(train heavy-cavalry-archer)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(population < unit-max)
+	(timer-triggered t-ageup)
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(population < unit-max)
+	(timer-triggered t-ageup)
+	(can-train arbalest)
+	(or
+		(goal secondary-build 0)
+		(not (unit-available hand-cannoneer) )
+	)
+=>
+	(train arbalest)
+	(set-goal secondary-build 1)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(timer-triggered t-ageup)
+=>
+	(disable-timer t-ageup)
+	(enable-timer t-ageup 30)
+)
+#end-if
+;******************************************************
+;train specialty units
+(defrule
+	(unit-type-count-total camel-line < 1)
+	(can-train camel-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy knight-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy cavalry-archer-line >= five-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy light-cavalry >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy camel-line >= five-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train camel-line)
+)
+
+(defrule
+	(unit-type-count-total camel-line < 1)
+	(can-train camel-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy cataphract-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy war-elephant-line >= five-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy mameluke-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy mangudai-line >= five-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train camel-line)
+)
+
+(defrule
+	(unit-type-count-total camel-line < 1)
+	(can-train camel-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy tarkan-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy war-wagon-line >= five-percent-pop)
+		)
+		(cc-players-unit-type-count any-enemy conquistador-line >= five-percent-pop)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train camel-line)
+)
+
+(defrule
+	(unit-type-count-total camel-line < five-percent-pop)
+	(can-train camel-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy knight-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy cavalry-archer-line >= ten-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy light-cavalry >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy camel-line >= ten-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train camel-line)
+)
+
+(defrule
+	(unit-type-count-total camel-line < five-percent-pop)
+	(can-train camel-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy cataphract-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy war-elephant-line >= ten-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy mameluke-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy mangudai-line >= ten-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train camel-line)
+)
+
+(defrule
+	(unit-type-count-total camel-line < five-percent-pop)
+	(can-train camel-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy tarkan-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy war-wagon-line >= ten-percent-pop)
+		)
+		(cc-players-unit-type-count any-enemy conquistador-line >= ten-percent-pop)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train camel-line)
+)
+
+(defrule
+	(unit-type-count-total spearman-line < 3)
+	(can-train spearman-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy knight-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy cavalry-archer-line >= five-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy light-cavalry >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy camel-line >= five-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(unit-type-count-total spearman-line < 3)
+	(can-train spearman-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy cataphract-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy war-elephant-line >= five-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy mameluke-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy mangudai-line >= five-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(unit-type-count-total spearman-line < 3)
+	(can-train spearman-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy tarkan-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy war-wagon-line >= five-percent-pop)
+		)
+		(cc-players-unit-type-count any-enemy conquistador-line >= five-percent-pop)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(unit-type-count-total spearman-line < five-percent-pop)
+	(can-train spearman-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy knight-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy cavalry-archer-line >= ten-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy light-cavalry >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy camel-line >= ten-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(unit-type-count-total spearman-line < five-percent-pop)
+	(can-train spearman-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy cataphract-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy war-elephant-line >= ten-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy mameluke-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy mangudai-line >= ten-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(unit-type-count-total spearman-line < five-percent-pop)
+	(can-train spearman-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy tarkan-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy war-wagon-line >= ten-percent-pop)
+		)
+		(cc-players-unit-type-count any-enemy conquistador-line >= ten-percent-pop)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(unit-type-count-total skirmisher-line < 3)
+	(can-train skirmisher-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy archer-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy cavalry-archer-line >= five-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy skirmisher-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy hand-cannoneer >= five-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(unit-type-count-total skirmisher-line < 3)
+	(can-train skirmisher-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy longbowman-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy chu-ko-nu-line >= five-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy mangudai-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy janissary-line >= five-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(unit-type-count-total skirmisher-line < 3)
+	(can-train skirmisher-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy plumed-archer-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy war-wagon-line >= five-percent-pop)
+		)
+		(cc-players-unit-type-count any-enemy conquistador-line >= five-percent-pop)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(unit-type-count-total skirmisher-line < five-percent-pop)
+	(can-train skirmisher-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy archer-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy cavalry-archer-line >= ten-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy skirmisher-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy hand-cannoneer >= ten-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(unit-type-count-total skirmisher-line < five-percent-pop)
+	(can-train skirmisher-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy longbowman-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy chu-ko-nu-line >= ten-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy mangudai-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy janissary-line >= ten-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(unit-type-count-total skirmisher-line < five-percent-pop)
+	(can-train skirmisher-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy plumed-archer-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy conquistador-line >= ten-percent-pop)
+		)
+		(cc-players-unit-type-count any-enemy war-wagon-line >= ten-percent-pop)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(unit-type-count-total scout-cavalry-line < 1)
+	(can-train scout-cavalry-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy archer-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy cavalry-archer-line >= five-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy skirmisher-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy monk >= five-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(unit-type-count-total eagle-warrior-line < 1)
+	(can-train eagle-warrior-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy archer-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy cavalry-archer-line >= five-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy skirmisher-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy monk >= five-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(unit-type-count-total scout-cavalry-line <= five-percent-pop)
+	(can-train scout-cavalry-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy archer-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy cavalry-archer-line >= ten-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy skirmisher-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy monk >= ten-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(unit-type-count-total scout-cavalry-line < five-percent-pop)
+	(can-train scout-cavalry-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy longbowman-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy chu-ko-nu-line >= ten-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy mangudai-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy janissary-line >= ten-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(unit-type-count-total scout-cavalry-line < five-percent-pop)
+	(can-train scout-cavalry-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy plumed-archer-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy conquistador-line >= ten-percent-pop)
+		)
+		(cc-players-unit-type-count any-enemy war-wagon-line >= ten-percent-pop)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(unit-type-count-total scout-cavalry-line <= five-percent-pop)
+	(can-train scout-cavalry-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy mangonel-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy scorpion-line >= five-percent-pop)
+		)
+		(cc-players-unit-type-count any-enemy trebuchet >= 3)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(unit-type-count-total eagle-warrior-line <= five-percent-pop)
+	(can-train eagle-warrior-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy archer-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy cavalry-archer-line >= ten-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy skirmisher-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy monk >= ten-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(unit-type-count-total eagle-warrior-line < five-percent-pop)
+	(can-train eagle-warrior-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy longbowman-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy chu-ko-nu-line >= ten-percent-pop)
+		)
+		(or
+			(cc-players-unit-type-count any-enemy mangudai-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy janissary-line >= ten-percent-pop)
+		)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(unit-type-count-total eagle-warrior-line < five-percent-pop)
+	(can-train eagle-warrior-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy plumed-archer-line >= ten-percent-pop)
+			(cc-players-unit-type-count any-enemy conquistador-line >= ten-percent-pop)
+		)
+		(cc-players-unit-type-count any-enemy war-wagon-line >= ten-percent-pop)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(unit-type-count-total eagle-warrior-line <= five-percent-pop)
+	(can-train eagle-warrior-line)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy mangonel-line >= five-percent-pop)
+			(cc-players-unit-type-count any-enemy scorpion-line >= five-percent-pop)
+		)
+		(cc-players-unit-type-count any-enemy trebuchet >= 3)
+	)
+	(or
+		(goal siege-available YES)
+		(town-under-attack)
+	)
+=>
+	(train eagle-warrior-line)
+)
+
+;**********************************
+;monks
+;decide who is to be the monk-builder par excellence. 
+
+(defrule
+	(goal monk-rating GOOD)
+	(difficulty <= moderate)
+	(taunt-detected any-ally 230)
+=>
+	(set-goal monk-rating FAIR)
+	(acknowledge-taunt this-any-ally 230)
+	(disable-self)
+)
+
+(defrule
+	(taunt-detected any-ally 230)
+	(difficulty <= moderate)
+	(or
+		(goal monk-rating FAIR)
+		(goal monk-rating POOR)
+	)
+=>
+	(set-goal monk-rating NO)
+	(acknowledge-taunt this-any-ally 230)
+	(disable-self)
+)
+
+(defrule
+	(goal monk-rating GOOD)
+	(difficulty <= moderate)
+	(game-time >= 600)
+	(player-computer any-ally)
+=>
+	(chat-to-player-using-id every-ally 22409)	;230
+	(disable-self)
+)
+
+(defrule
+	(goal monk-rating FAIR)
+	(difficulty <= moderate)
+	(game-time >= 700)
+	(player-computer any-ally)
+=>
+	(set-goal monk-rating GOOD)
+	(chat-to-player-using-id every-ally 22409)	;230
+	(disable-self)
+)
+
+(defrule
+	(goal siege-available YES)
+	(soldier-count >= five-percent-pop)
+	(unit-type-count-total monk < 1)
+	(can-train monk)
+	(not (goal monk-rating NO) )
+=>
+	(train monk)
+)
+
+;make a few monks 
+(defrule
+	(goal siege-available YES)
+	(soldier-count > ten-percent-pop)
+	(difficulty <= moderate)
+	(unit-type-count-total monk < five-percent-pop)
+	(or
+		(goal monk-rating GOOD)
+		(and
+			(goal monk-rating FAIR)
+			(gold-amount >= 300)
+		)
+	)
+	(not (civ-selected spanish) )
+	(can-train monk)
+=>
+	(train monk)
+)
+
+;make more monks
+(defrule
+	(goal siege-available YES)
+	(soldier-count > ten-percent-pop)
+	(current-age == imperial-age)
+	(difficulty <= moderate)
+	(unit-type-count-total monk < ten-percent-pop)
+	(or
+		(goal monk-rating GOOD)
+		(and
+			(goal monk-rating FAIR)
+			(gold-amount >= 300)
+		)
+	)
+	(not (civ-selected spanish) )
+	(can-train monk)
+=>
+	(train monk)
+)
+
+;if we have lots of gold, build monks sans restraint
+(defrule
+	(goal siege-available YES)
+	(goal monk-rating GOOD)
+	(difficulty <= moderate)
+	(soldier-count > ten-percent-pop)
+	(gold-amount >= 300)
+	(unit-type-count-total monk < fifteen-percent-pop)
+	(not (civ-selected spanish) )
+	(can-train monk)
+=>
+	(train monk)
+)
+
+#load-if-defined SPANISH-CIV
+;make missionaries if we're spanish
+(defrule
+	(goal siege-available YES)
+	(soldier-count > ten-percent-pop)
+	(difficulty <= moderate)
+	(unit-type-count-total missionary < five-percent-pop)
+	(or
+		(goal monk-rating GOOD)
+		(and
+			(goal monk-rating FAIR)
+			(gold-amount >= 300)
+		)
+	)
+	(can-train missionary)
+=>
+	(train missionary)
+)
+
+(defrule
+	(goal siege-available YES)
+	(soldier-count > ten-percent-pop)
+	(current-age == imperial-age)
+	(difficulty <= moderate)
+	(unit-type-count-total missionary < ten-percent-pop)
+	(or
+		(goal monk-rating GOOD)
+		(and
+			(goal monk-rating FAIR)
+			(gold-amount >= 300)
+		)
+	)
+	(can-train missionary)
+=>
+	(train missionary)
+)
+
+;if we have lots of gold, build monks sans restraint
+(defrule
+	(goal siege-available YES)
+	(goal monk-rating GOOD)
+	(difficulty <= moderate)
+	(soldier-count > ten-percent-pop)
+	(gold-amount >= 300)
+	(unit-type-count-total missionary < fifteen-percent-pop)
+	(can-train missionary)
+=>
+	(train missionary)
+)
+#end-if
+

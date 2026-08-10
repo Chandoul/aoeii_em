@@ -1,0 +1,490 @@
+;DARK AGE
+(defrule
+	(current-age == dark-age)
+	(civilian-population < 9)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 0)
+	(set-strategic-number sn-food-gatherer-percentage 100)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(disable-self)
+)
+
+(defrule
+	(current-age == dark-age)
+	(civilian-population >= 9)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-food-gatherer-percentage 70)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(disable-self)
+)
+
+#load-if-not-defined SCENARIO-MAP
+(defrule
+	(or	(and	(current-age > feudal-age)
+			(game-time > 1200))
+		(or	(death-match-game)
+			(difficulty < hard)))
+=>
+	(up-jump-rule 9)
+)
+
+(defrule
+	(true)
+=>
+	(up-get-threat-data threat-time threat-player threat-source threat-target)
+)
+
+(defrule
+	(not	(research-available ri-loom))
+	(unit-type-count villager > 15)
+	(dropsite-min-distance hunting > 1)
+	(dropsite-min-distance hunting <= 31)
+=>
+	(up-retask-gatherers food c: 1)
+	(set-strategic-number sn-maximum-hunt-drop-distance 31)
+	(set-strategic-number sn-minimum-number-hunters 1)
+	(set-strategic-number sn-enable-boar-hunting 2)
+	(enable-timer 11 90)
+	(disable-self)
+)
+
+(defrule
+	(unit-type-count villager > 15)
+	(strategic-number sn-minimum-number-hunters == 1)
+	(unit-type-count villager-hunter > 0)
+=>
+	(set-strategic-number sn-minimum-number-hunters 0)
+)
+
+(defrule
+	(unit-type-count villager > 15)
+	(dropsite-min-distance boar-hunting < 8)
+	(strategic-number sn-maximum-hunt-drop-distance == 31)
+=>
+	(set-strategic-number sn-minimum-number-hunters 8)
+	(set-strategic-number sn-minimum-boar-hunt-group-size 6)
+	(up-request-hunters c: 4)
+	(disable-self)
+)
+
+(defrule
+	(unit-type-count villager > 15)
+	(timer-triggered 11)
+	(strategic-number sn-enable-boar-hunting >= 1)
+	(or	(and	(dropsite-min-distance boar-hunting < 8)
+			(strategic-number sn-minimum-boar-hunt-group-size != 10))
+		(game-time > 400))
+	(strategic-number sn-maximum-hunt-drop-distance == 31)
+=>
+	(up-retask-gatherers boar-food c: 2)
+	(enable-timer 11 30)
+	(set-strategic-number sn-minimum-boar-hunt-group-size 0)
+	(set-strategic-number sn-minimum-number-hunters 10)
+	(set-strategic-number sn-maximum-hunt-drop-distance 32)
+	(disable-self)
+)
+
+(defrule
+	(unit-type-count villager > 15)
+	(dropsite-min-distance boar-hunting < 9)
+	(up-compare-goal threat-time < 50000)
+	(or	(and	(strategic-number sn-maximum-hunt-drop-distance == 32)
+			(timer-triggered 11))
+		(and	(dropsite-min-distance live-boar < 9)
+			(up-remaining-boar-amount < 330)))
+=>
+	(up-retask-gatherers boar-food c: 2)
+	(up-retask-gatherers food c: 3)
+	(set-strategic-number sn-minimum-boar-hunt-group-size 10)
+	(up-request-hunters c: 3)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 540)
+=>
+	(set-strategic-number sn-minimum-number-hunters 0)
+	(set-strategic-number sn-minimum-boar-hunt-group-size 6)
+	(set-strategic-number sn-maximum-hunt-drop-distance 30)
+	(set-strategic-number sn-enable-boar-hunting 1)
+	(disable-self)
+)
+#end-if
+;***********************************************
+;***********************************************
+;FEUDAL AGE
+(defrule
+	(current-age == feudal-age)
+=>
+	(set-goal resource-needed NO)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(building-type-count mining-camp == 0)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-food-gatherer-percentage 70)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(building-type-count mining-camp == 1)
+	(nor
+		(goal age-advancement NOTICE)
+		(goal personality 1)
+	)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(building-type-count mining-camp == 1)
+	(or
+		(goal age-advancement NOTICE)
+		(goal personality 1)
+	)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 25)
+	(set-strategic-number sn-food-gatherer-percentage 55)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(building-type-count mining-camp > 1)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-stone-gatherer-percentage 10)
+)
+
+;***********************************************
+;***********************************************
+;CASTLE AGE
+
+(defrule
+	(current-age == castle-age)
+	(building-type-count mining-camp == 0)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-food-gatherer-percentage 70)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(current-age == castle-age)
+	(building-type-count mining-camp == 1)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 25)
+	(set-strategic-number sn-food-gatherer-percentage 55)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(current-age == castle-age)
+	(building-type-count mining-camp > 1)
+	(difficulty <= moderate)
+	(or
+		(building-type-count-total town-center < 2)
+		(and
+			(goal castle-attempt 1)
+			(building-type-count-total castle == 0)
+		)
+	)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-stone-gatherer-percentage 15)
+)
+
+(defrule
+	(current-age == castle-age)
+	(building-type-count mining-camp > 1)
+	(difficulty <= moderate)
+	(or
+		(building-type-count-total town-center > 1)
+		(or
+			(goal castle-attempt 0)
+			(building-type-count-total castle > 0)
+		)
+	)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+	(set-strategic-number sn-stone-gatherer-percentage 10)
+)
+
+(defrule
+	(current-age == castle-age)
+	(difficulty > moderate)
+	(building-type-count mining-camp > 1)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+	(set-strategic-number sn-stone-gatherer-percentage 10)
+)
+;***********************************************
+;***********************************************
+;IMPERIAL AGE
+(defrule
+	(current-age == imperial-age)
+=>
+	(set-goal resource-needed NO)
+)
+
+(defrule
+	(goal resource-supp FOOD-ONLY)
+	(current-age == imperial-age)
+	(food-amount < 250)
+=>
+	(set-goal resource-needed FOOD)
+)
+
+(defrule
+	(goal resource-supp GOLD-ONLY)
+	(current-age == imperial-age)
+	(gold-amount < 475)
+=>
+	(set-goal resource-needed GOLD)
+)
+
+(defrule
+	(goal resource-supp WOOD-FOOD)
+	(goal upgrade-conflict 33)
+	(current-age == imperial-age) 
+	(wood-amount < 1100)
+	(food-amount > 1000)
+=>
+	(set-goal resource-needed WOOD)
+)
+
+(defrule
+	(goal resource-supp WOOD-FOOD)
+	(goal upgrade-conflict 33)
+	(current-age == imperial-age) 
+	(wood-amount > 1100)
+	(food-amount < 1000)
+=>
+	(set-goal resource-needed FOOD)
+)
+
+(defrule
+	(goal resource-supp WOOD-FOOD)
+	(current-age == imperial-age) 
+	(wood-amount < 600)
+	(food-amount > 500)
+	(not (goal upgrade-conflict 33) )
+=>
+	(set-goal resource-needed WOOD)
+)
+
+(defrule
+	(goal resource-supp WOOD-FOOD)
+	(current-age == imperial-age) 
+	(wood-amount > 600)
+	(food-amount < 500)
+	(not (goal upgrade-conflict 33) )
+=>
+	(set-goal resource-needed FOOD)
+)
+
+(defrule
+	(goal resource-supp WOOD-GOLD)
+	(current-age == imperial-age) 
+	(wood-amount > 525)
+	(gold-amount < 500)
+=>
+	(set-goal resource-needed GOLD)
+)
+
+(defrule
+	(goal resource-supp WOOD-GOLD)
+	(current-age == imperial-age) 
+	(wood-amount < 525)
+	(gold-amount > 500)
+=>
+	(set-goal resource-needed WOOD)
+)
+
+(defrule
+	(goal resource-supp WOOD-STONE)
+	(current-age == imperial-age) 
+	(wood-amount > 400)
+	(stone-amount < 400)
+=>
+	(set-goal resource-needed STONE)
+)
+
+(defrule
+	(goal resource-supp WOOD-STONE)
+	(current-age == imperial-age) 
+	(wood-amount < 400)
+	(stone-amount > 400)
+=>
+	(set-goal resource-needed WOOD)
+)
+
+(defrule
+	(goal resource-supp FOOD-GOLD)
+	(current-age == imperial-age) 
+	(food-amount > 1600)
+	(gold-amount < 1200)
+=>
+	(set-goal resource-needed GOLD)
+)
+
+(defrule
+	(goal resource-supp FOOD-GOLD)
+	(current-age == imperial-age) 
+	(food-amount < 1600)
+	(gold-amount > 1200)
+=>
+	(set-goal resource-needed FOOD)
+)
+
+(defrule
+	(goal resource-supp FOOD-STONE)
+	(current-age == imperial-age) 
+	(food-amount > 500)
+	(stone-amount < 350)
+=>
+	(set-goal resource-needed STONE)
+)
+
+(defrule
+	(goal resource-supp FOOD-STONE)
+	(current-age == imperial-age) 
+	(food-amount < 500)
+	(stone-amount > 350)
+=>
+	(set-goal resource-needed FOOD)
+)
+
+(defrule
+	(goal castle-attempt YES)
+	(current-age == imperial-age)
+	(stone-amount < 650)
+=>
+	(set-goal resource-needed STONE)
+)
+
+(defrule
+	(goal sea-owner YES)
+	(current-age == imperial-age)
+	(warboat-count < twenty-percent-pop)
+	(wood-amount < 200)
+	(gold-amount > 150)
+=>
+	(set-goal resource-needed WOOD)
+)
+
+(defrule
+	(goal sea-owner YES)
+	(current-age == imperial-age)
+	(warboat-count < twenty-percent-pop)
+	(wood-amount > 200)
+	(gold-amount < 150)
+=>
+	(set-goal resource-needed GOLD)
+)
+
+;***********************************************
+;WONDERING
+(defrule
+	(goal wonder-attempt POSSIBLE)
+	(wood-amount < 1000)
+	(gold-amount > 1000)
+	(stone-amount > 1000)
+=>
+	(set-goal resource-needed WOOD)
+)
+
+(defrule
+	(goal wonder-attempt POSSIBLE)
+	(wood-amount > 1000)
+	(gold-amount < 1000)
+	(stone-amount > 1000)
+=>
+	(set-goal resource-needed GOLD)
+)
+
+(defrule
+	(goal wonder-attempt POSSIBLE)
+	(wood-amount > 1000)
+	(gold-amount > 1000)
+	(stone-amount < 1000)
+=>
+	(set-goal resource-needed STONE)
+)
+;***********************************************
+;***********************************************
+(defrule
+	(goal resource-needed NO)
+	(current-age == imperial-age)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+;extra wood
+(defrule
+	(goal resource-needed WOOD)
+	(current-age == imperial-age)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+;extra food
+(defrule
+	(goal resource-needed FOOD)
+	(current-age == imperial-age)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+;extra gold
+(defrule
+	(goal resource-needed GOLD)
+	(current-age == imperial-age)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+;extra stone
+(defrule
+	(goal resource-needed STONE)
+	(current-age == imperial-age)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-stone-gatherer-percentage 15)
+)

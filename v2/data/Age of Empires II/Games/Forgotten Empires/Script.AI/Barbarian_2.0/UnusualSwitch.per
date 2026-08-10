@@ -1,0 +1,42 @@
+#load-if-defined UP-2-PLAYER-GAME
+#load-if-not-defined UP-BYZANTINE-CIV-ENEMY
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined HUN-CIV
+(defrule
+	(goal gl-strategy-type basic-flush)
+	(current-age == feudal-age)
+	(game-time > 1400)
+	(game-time < 1500)
+	(goal gl-current-age gv-feudal)
+	(players-unit-type-count every-enemy knight-line < 4)
+	(players-unit-type-count every-enemy camel-line < 3)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(or	(unit-type-count-total scout-cavalry-line > 3)
+		(unit-type-count-total skirmisher-line > 5))
+=>
+	(set-goal gl-strategy-control UNUSUAL-SWITCH)
+	(disable-self)
+)
+#else
+(defrule
+	(goal gl-strategy-type basic-flush)
+	(current-age == feudal-age)
+	(game-time > 1400)
+	(game-time < 1500)
+	(goal gl-current-age gv-feudal)
+	(players-unit-type-count every-enemy knight-line < 4)
+	(players-unit-type-count every-enemy camel-line < 3)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(or	(unit-type-count-total scout-cavalry-line > 3)
+		(or	(unit-type-count-total militiaman-line > 3)
+			(players-current-age focus-player == castle-age)))
+=>
+	(set-goal gl-strategy-control UNUSUAL-SWITCH)
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if

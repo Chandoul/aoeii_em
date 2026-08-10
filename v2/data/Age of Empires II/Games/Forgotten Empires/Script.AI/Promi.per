@@ -1,0 +1,54 @@
+;=================================================================================================
+;
+; Plays every map, prefers a dark age start, pop 75+ (prefers 200+), any civ.
+;
+; Regularly check for more recent versions as i will try to improve this AI from time to time.
+;
+; A shoutout to the awesome scripting + AFK community which is one of the main reasons why i script!
+; I love everyone of you but special thanks go to: II2N, scripter64 (who is that? 11), Xhip,
+; Eel, Archon, Marathon, ryshep, Campi and all the other scripters!
+;
+; This version of Promi only works with the userpatch enabled (userpatch.aiscripters.net).
+; The userpatch is automatically used in AoFE too. For non Userpatch users: Use the non-UP version
+; of Promi, you can find it at aiscripters.com and the AoKH blacksmith.
+;
+; Made by Promiskuitiv (you can find me at aok.heavengames.com or aiscripters.com).
+;
+;=================================================================================================
+
+#load-if-defined UP-AVAILABLE
+(load "Promi\Const")
+(load "Promi\Init")
+(load "Promi\threats")
+(load "Promi\TSA")
+(load "Promi\General")
+(load "Promi\researches")
+(load "Promi\buildings")
+(load "Promi\units")
+#load-if-defined UP-GAME-AGE2-X2
+(load "Promi\aofe")
+#end-if
+(load "Promi\trade")
+(load "Promi\Teamsuperiority")
+#load-if-not-defined DIFFICULTY-EASIEST
+#load-if-not-defined DIFFICULTY-EASY
+#load-if-not-defined DIFFICULTY-MODERATE
+(load "Promi\boarhunting")
+#end-if
+#end-if
+#end-if
+(load "Promi\gatherers")
+(load "Promi\interaction")
+(load "Promi\resign")
+#else ; No UP
+(defrule
+	(game-time >= 10)
+=>
+	(chat-to-all "This AI requires the userpatch to play.")
+	(chat-to-all "Search for the non-UP version of Promi on aiscripters.net")
+	(disable-self))
+(defrule
+	(game-time >= 18)
+=>
+	(resign))
+#end-if

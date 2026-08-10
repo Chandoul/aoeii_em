@@ -1,0 +1,112 @@
+(defconst super-traitor-chat-id 2310); Your petty offerings will not sway my determination to crush your empire!
+(defconst traitor-chat-id 22100); Your lands and your gold shall soon be mine!
+(defconst betrayed-chat-id 22102); Beware the sword of justice!
+(defconst wonder-game-time 4100)
+(defconst camp-raid-time-variance 1377)
+(defconst nomad-tc-up-chat "I'm here")
+(defconst gg-chat "gg, well played")
+#load-if-not-defined ISLANDS-MAP
+(defconst boar-stealing-nature 0)
+#else
+(defconst boar-stealing-nature 1)
+#end-if
+(defconst villager-laming-nature 0)
+
+#load-if-not-defined UP-SCENARIO-GAME
+
+#load-if-not-defined WONDER-RACE
+#load-if-not-defined KING-OF-THE-HILL
+#load-if-not-defined TURBO-RANDOM-MAP
+#load-if-defined DARK-AGE-START
+#load-if-defined DIFFICULTY-HARD
+(defrule
+	(goal MILITARY 0)
+	(soldier-count < 10)
+	(current-age-time > 360)
+	(current-age == imperial-age)
+	(unit-type-count-total villager < 40)
+=>
+	(chat-to-all "24 24")
+	(disable-self)
+)
+
+(defrule
+	(goal MILITARY 0)
+	(game-time > 3333)
+	(game-time < 3600)
+	(gold-amount > 400)
+	(population < almost-full-pop)
+=>
+	(chat-to-all "Still, alive... and well?")
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(up-compare-goal victory-time > 300)
+	(up-compare-goal victory-time < 900)
+	(not	(hold-relics))
+	(players-building-type-count every-ally wonder == 0)
+	(players-building-type-count my-player-number wonder == 0)
+	(or	(players-building-type-count any-enemy wonder > 0)
+		(enemy-captured-relics))
+	(goal MILITARY 1)
+	(population > almost-full-pop)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(unit-type-count trebuchet-set > 4)
+=>
+	(chat-to-all "You don't leave me with many options.")
+	(chat-to-all "The following battle shall determine the winner!")
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal victory-time > 0)
+	(up-compare-goal victory-time < 4)
+	(or	(players-building-type-count every-ally wonder > 0)
+		(or	(building-type-count wonder > 0)
+			(hold-relics)))
+	(nor	(players-building-type-count any-enemy wonder > 0)
+		(enemy-captured-relics))
+=>
+	(chat-to-all "gg")
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(population-cap >= 200)
+	(goal SLING 0)
+	(players-population focus-player >= almost-full-pop)
+	(population > 80)
+	(population < 120)
+	(town-under-attack)
+	(game-time > 3000)
+=>
+	(chat-to-all "May we have a parley?")
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-nomad-style-start == 0)
+	(up-compare-goal threat-time > 300000)
+	(player-valid 4)
+	(game-time < 2400)
+	(goal MILITARY 1)
+	(goal gl-strategy knight-boom)
+	(or	(research-completed ri-paladin)
+		(research-completed ri-imperial-camel))
+	(game-time > 150)
+	(difficulty <= hard)
+	(goal gl-x-vs-one-challenge YES)
+=>
+	(chat-to-all "I want you to hit me with it all to see who is the strongest.")
+	(chat-to-all "Now, bring it!")
+	(disable-self)
+)
+#end-if

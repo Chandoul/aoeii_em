@@ -1,0 +1,2674 @@
+;start the run-through
+(defrule
+	(true)
+=>
+	(set-goal infantry-upgrades NO)
+	(set-goal archer-upgrades NO)
+	(set-goal cav-upgrades NO)
+)
+
+;infantry civs
+(defrule
+	(soldier-count >= five-percent-pop)
+	(or
+		(or
+			(goal combat-arm INFANTRY)
+			(goal combat-supp INFANTRY)
+		)
+		(goal pre-unique-arm INFANTRY)
+	)
+=>
+	(set-goal infantry-upgrades YES)
+)
+
+(defrule
+	(building-type-count castle > 0)
+	(soldier-count >= five-percent-pop)
+	(or
+		(or
+			(civ-selected celtic)
+			(civ-selected frankish)
+		)
+		(or
+			(civ-selected aztec)
+			(or
+				(or
+					(civ-selected gothic)
+					(civ-selected japanese)
+				)
+				(or
+					(civ-selected teutonic)
+					(civ-selected viking)
+				)
+			)
+		)
+	)
+=>
+	(set-goal infantry-upgrades YES)
+)
+
+;archer civs
+(defrule
+	(soldier-count >= five-percent-pop)
+	(or
+		(or
+			(goal combat-arm CAVARCHER)
+			(goal combat-arm ARCHER)
+		)
+		(or
+			(or
+				(goal combat-supp CAVARCHER)
+				(goal combat-supp ARCHER)
+			)
+			(or
+				(goal pre-unique-arm CAVARCHER)
+				(goal pre-unique-arm ARCHER)
+			)
+		)
+	)
+=>
+	(set-goal archer-upgrades YES)
+)
+
+(defrule
+	(building-type-count castle > 0)
+	(soldier-count >= five-percent-pop)
+	(or
+		(or
+			(civ-selected korean)
+			(or
+				(civ-selected mayan)
+				(civ-selected spanish)
+			)
+		)
+		(or
+			(or
+				(civ-selected briton)
+				(civ-selected chinese)
+			)
+			(or
+				(civ-selected mongol)
+				(civ-selected turkish)
+			)
+		)
+	)
+=>
+	(set-goal archer-upgrades YES)
+)
+
+;cav civs
+(defrule
+	(soldier-count >= five-percent-pop)
+	(or
+		(goal pre-unique-arm CAVALRY)
+		(or
+			(or
+				(goal combat-arm CAVALRY)
+				(goal combat-arm LIGHTCAV)
+			)
+			(or
+				(goal combat-supp CAVALRY)
+				(goal combat-supp LIGHTCAV)
+			)
+		)
+	)
+=>
+	(set-goal cav-upgrades YES)
+)
+
+(defrule
+	(building-type-count castle > 0)
+	(soldier-count >= five-percent-pop)
+	(or
+		(or
+			(civ-selected byzantine)
+			(civ-selected persian)
+		)
+		(or
+			(civ-selected hun)
+			(civ-selected saracen)
+		)
+	)
+=>
+	(set-goal cav-upgrades YES)
+)
+
+;*************************************************
+(defrule
+	(or
+		(current-age >= feudal-age)
+		(goal upgrade-conflict NOTICE)
+	)
+=>
+	(set-escrow-percentage wood 50)
+	(set-escrow-percentage food 50)
+	(set-escrow-percentage gold 50)
+	(set-escrow-percentage stone 50)
+)
+
+(defrule
+	(current-age > feudal-age)
+	(difficulty <= moderate)
+	(building-type-count-total town-center < 2)
+	(or
+		(building-type-count-total castle > 0)
+		(goal castle-attempt 0)
+	)
+=>
+	(set-escrow-percentage wood 70)
+	(set-escrow-percentage stone 100)
+)
+
+;********************************************
+(defrule
+	(true)
+=>
+	(generate-random-number 31000)
+)
+
+(defrule
+	(goal upgrade-conflict NO)
+	(current-age >= feudal-age)
+	(current-age-time > 300)
+	(nor
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(generate-random-number 47)
+)
+
+(defrule
+	(difficulty <= moderate)
+	(food-amount >= 400)
+	(gold-amount >= 400)
+	(building-type-count castle > 0)
+	(unit-type-count my-unique-unit > five-percent-pop)
+	(or
+		(research-available my-unique-unit-upgrade)
+		(research-available ri-elite-longboat)
+	)
+	(not (goal upgrade-conflict NOTICE) )
+=>
+	(set-goal upgrade-conflict 90)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 90)
+	(can-research-with-escrow my-unique-unit-upgrade)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research my-unique-unit-upgrade)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;750 food, 475 gold
+	(goal upgrade-conflict 90)
+	(unit-type-count my-unique-unit < five-percent-pop)
+	(unit-type-count-total longboat > 2)
+	(can-research-with-escrow ri-elite-longboat)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-elite-longboat)
+	(set-goal resource-supp NO)
+)
+
+(defrule
+	(goal upgrade-conflict NO)
+	(difficulty <= hard)
+	(building-type-count castle > 0)
+=>
+	(set-goal upgrade-conflict 94)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+	(or
+		(or
+			(civ-selected aztec)
+			(civ-selected celtic)
+		)
+		(or
+			(civ-selected gothic)
+			(civ-selected persian)
+		)
+	)
+=>
+	(set-goal upgrade-conflict 95)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+	(or
+		(or
+			(civ-selected saracen)
+			(civ-selected spanish)
+		)
+		(or
+			(civ-selected viking)
+			(civ-selected korean)
+		)
+	)
+=>
+	(set-goal upgrade-conflict 95)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+	(civ-selected chinese)
+=>
+	(set-goal upgrade-conflict 95)
+	(set-goal resource-supp WOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+	(civ-selected briton)
+	(research-completed ri-bracer)
+=>
+	(set-goal upgrade-conflict 95)
+	(set-goal resource-supp WOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+	(civ-selected byzantine)
+=>
+	(set-goal upgrade-conflict 95)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+	(civ-selected frankish)
+	(or
+		(or
+			(cc-players-unit-type-count any-enemy archer-line >= 6)
+			(cc-players-unit-type-count any-enemy chu-ko-nu-line >= 6)
+		)
+		(or
+			(or
+				(cc-players-unit-type-count any-enemy janissary-line >= 6)
+				(cc-players-unit-type-count any-enemy longbowman-line >= 6)
+			)
+			(cc-players-unit-type-count any-enemy mangudai-line >= 6)
+		)
+	)
+=>
+	(set-goal upgrade-conflict 95)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+	(civ-selected hun)
+	(cc-players-building-type-count any-enemy wonder > 0)
+=>
+	(set-goal upgrade-conflict 95)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+	(building-type-count siege-workshop > 0)
+	(or
+		(civ-selected japanese)
+		(civ-selected mongol)
+	)
+=>
+	(set-goal upgrade-conflict 95)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+	(civ-selected mayan)
+	(goal combat-supp EAGLEMAN)
+=>
+	(set-goal upgrade-conflict 95)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+	(civ-selected turkish)
+	(or
+		(or
+			(unit-type-count-total cannon-galleon-line > 3)
+			(unit-type-count-total bombard-cannon > 3)
+		)
+		(unit-type-count-total bombard-tower > 3)
+	)
+=>
+	(set-goal upgrade-conflict 95)
+	(set-goal resource-supp FOOD-STONE)
+)
+
+(defrule
+	(goal upgrade-conflict 94)
+=>
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule
+	(goal upgrade-conflict 95)
+	(can-research-with-escrow my-unique-research)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(release-escrow gold)
+	(release-escrow stone)
+	(research my-unique-research)
+	(set-goal upgrade-conflict NO)
+)
+
+;*************
+;TOWN CENTER RESEARCH
+(defrule	;50 gold
+	(can-research ri-loom)
+	(or
+		(not (can-train villager) )
+		(civilian-population > 7)
+	)
+=>
+	(research ri-loom)
+)
+
+(defrule	;75 food
+	(goal upgrade-conflict NO)
+	(random-number <= 2)
+	(building-type-count town-center > 0)
+	(research-available ri-town-watch)
+	(or
+		(goal age-advancement NOTICE)
+		(food-amount > 700)
+	)
+=>
+	(set-goal upgrade-conflict 2)
+	(set-goal resource-supp FOOD-ONLY)
+)
+
+(defrule	;300 food, 200 gold
+	(goal upgrade-conflict NO)
+	(current-age == imperial-age)
+	(random-number <= 2)
+	(building-type-count town-center > 0)
+	(research-available ri-town-patrol)
+	(or
+		(difficulty > moderate)
+		(building-type-count town-center > 1)
+	)
+=>
+	(set-goal upgrade-conflict 2)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 2)
+	(can-research-with-escrow ri-town-watch)
+=>
+	(release-escrow food)
+	(research ri-town-watch)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule
+	(goal upgrade-conflict 2)
+	(can-research-with-escrow ri-town-patrol)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-town-patrol)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;50 wood, 175 food
+	(difficulty <= moderate)
+	(can-research-with-escrow ri-wheel-barrow)
+	(current-age >= castle-age)
+	(or
+		(difficulty > moderate)
+		(building-type-count town-center > 1)
+	)
+	(nor
+		(goal upgrade-conflict NOTICE)
+		(or
+			(can-research ri-wheel-barrow)
+			(goal rush-control IMPERIAL)
+		)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(research ri-wheel-barrow)
+)
+
+(defrule
+	(difficulty <= moderate)
+	(can-research ri-wheel-barrow)
+	(nor 
+		(goal upgrade-conflict NOTICE)
+		(goal rush-control IMPERIAL)
+	)
+	(current-age >= castle-age)
+=>
+	(research ri-wheel-barrow)
+)
+
+(defrule	;200 wood, 300 food
+	(civilian-population >= civ-castle)
+	(difficulty <= hard)
+	(can-research-with-escrow ri-hand-cart)
+	(or
+		(difficulty > moderate)
+		(building-type-count town-center > 1)
+	)
+	(nor
+		(goal upgrade-conflict NOTICE)
+		(or
+			(can-research ri-hand-cart)
+			(goal rush-control IMPERIAL)
+		)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(research ri-hand-cart)
+)
+
+(defrule
+	(civilian-population >= civ-castle)
+	(difficulty <= hard)
+	(can-research ri-hand-cart)
+	(nor
+		(goal upgrade-conflict NOTICE)
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(research ri-hand-cart)
+)
+
+;*************
+;MINING-CAMP
+(defrule	;75 wood, 100 food
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 3)
+	(civilian-population >= civ-castle)
+	(building-type-count mining-camp > 1)
+	(research-completed ri-gold-mining)
+	(research-available ri-stone-mining)
+=>
+	(set-goal upgrade-conflict 3)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule	;150 wood, 200 food
+	(goal upgrade-conflict NO)
+	(goal resource-needed STONE)
+	(difficulty <= hard)
+	(random-number <= 3)
+	(civilian-population >= civ-castle)
+	(building-type-count mining-camp > 0)
+	(research-completed ri-gold-shaft-mining)
+	(research-available ri-stone-shaft-mining)
+=>
+	(set-goal upgrade-conflict 3)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule
+	(goal upgrade-conflict 3)
+	(or
+		(can-research-with-escrow ri-stone-mining)
+		(can-research-with-escrow ri-stone-shaft-mining)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(research ri-stone-mining)
+	(research ri-stone-shaft-mining)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;75 wood, 100 food
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(current-age > feudal-age)
+	(random-number <= 4)
+	(civilian-population >= civ-castle)
+	(building-type-count mining-camp > 0)
+	(research-available ri-gold-mining)
+=>
+	(set-goal upgrade-conflict 4)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule	;150 wood, 200 food
+	(goal upgrade-conflict NO)
+	(difficulty <= hard)
+	(random-number <= 4)
+	(civilian-population >= civ-castle)
+	(building-type-count mining-camp > 0)
+	(research-available ri-gold-shaft-mining)
+=>
+	(set-goal upgrade-conflict 4)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule
+	(goal upgrade-conflict 4)
+	(or
+		(can-research-with-escrow ri-gold-mining)
+		(can-research-with-escrow ri-gold-shaft-mining)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(research ri-gold-mining)
+	(research ri-gold-shaft-mining)
+	(set-goal upgrade-conflict NO)
+)
+;*************
+;LUMBER-CAMP
+(defrule	;50 wood, 100 food
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 5)
+	(building-type-count lumber-camp > 0)
+	(research-available ri-double-bit-axe)
+	(or
+		(current-age > feudal-age)
+		(goal age-advancement NOTICE)
+	)
+=>
+	(set-goal upgrade-conflict 5)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule	;100 wood, 150 food
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 5)
+	(civilian-population >= civ-castle)
+	(building-type-count lumber-camp > 0)
+	(research-available ri-bow-saw)
+=>
+	(set-goal upgrade-conflict 5)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule	;200 wood, 300 food
+	(goal upgrade-conflict NO)
+	(difficulty <= hard)
+	(random-number <= 5)
+	(civilian-population >= civ-castle)
+	(building-type-count lumber-camp > 0)
+	(research-available ri-two-man-saw)
+=>
+	(set-goal upgrade-conflict 5)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule
+	(goal upgrade-conflict 5)
+	(or
+		(can-research-with-escrow ri-double-bit-axe)
+		(or
+			(can-research-with-escrow ri-bow-saw)
+			(can-research-with-escrow ri-two-man-saw)
+		)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(research ri-double-bit-axe)
+	(research ri-bow-saw)
+	(research ri-two-man-saw)
+	(set-goal upgrade-conflict NO)
+)
+;*************
+;DOCK
+(defrule	;200 wood, 300 gold
+	(goal upgrade-conflict NO)
+	(difficulty <= hard)
+	(random-number <= 6)
+	(building-type-count dock > 0)
+	(research-available ri-heavy-demolition-ship)
+	(not (goal 1 0) )
+=>
+	(set-goal upgrade-conflict 6)
+	(set-goal resource-supp WOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 6)
+	(can-research-with-escrow ri-heavy-demolition-ship)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(research ri-heavy-demolition-ship)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;600 food, 400 gold
+	(goal upgrade-conflict NO)
+	(building-type-count dock > 0)
+	(research-available ri-dry-dock)
+	(random-number <= 7)
+	(not (goal 1 0) )
+=>
+	(set-goal upgrade-conflict 7)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 7)
+	(can-research-with-escrow ri-dry-dock)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-dry-dock)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;1000 food, 300 gold
+	(goal upgrade-conflict NO)
+	(building-type-count dock > 0)
+	(research-available ri-shipwright)
+	(warboat-count > five-percent-pop)
+	(random-number <= 8)
+=>
+	(set-goal upgrade-conflict 8)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 8)
+	(can-research-with-escrow ri-shipwright)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-shipwright)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;250 food, 150 gold
+	(building-type-count dock > 0)
+	(can-research-with-escrow ri-careening)
+	(not (goal rush-control IMPERIAL) )
+	(nor
+		(goal 1 0)
+		(can-research ri-careening)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-careening)
+)
+
+(defrule
+	(building-type-count dock > 0)
+	(can-research ri-careening)
+	(nor
+		(goal 1 0) 
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(research ri-careening)
+)
+
+(defrule	;280 wood, 250 gold
+	(building-type-count dock > 0)
+	(unit-type-count-total fire-ship-line > 1)
+	(can-research-with-escrow ri-fast-fire-ship)
+	(nor
+		(goal 1 0)
+		(can-research ri-fast-fire-ship)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(research ri-fast-fire-ship)
+)
+
+(defrule
+	(building-type-count dock > 0)
+	(unit-type-count-total fire-ship-line > 1)
+	(can-research ri-fast-fire-ship)
+	(not (goal 1 0) )
+=>
+	(research ri-fast-fire-ship)
+)
+
+(defrule	;500 wood, 400 food
+	(difficulty <= moderate)
+	(building-type-count dock > 0)
+	(can-research-with-escrow ri-cannon-galleon)
+	(nor
+		(goal 1 0)
+		(can-research ri-cannon-galleon)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(research ri-cannon-galleon)
+)
+
+(defrule
+	(difficulty <= moderate)
+	(building-type-count dock > 0)
+	(can-research ri-cannon-galleon)
+	(not (goal 1 0) )
+=>
+	(research ri-cannon-galleon)
+)
+
+(defrule	;525 wood, 500 gold
+	(difficulty <= hard)
+	(building-type-count dock > 0)
+	(unit-type-count-total cannon-galleon > 0)
+	(can-research-with-escrow ri-deck-guns)
+	(not (can-research ri-deck-guns) )
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(research ri-deck-guns)
+)
+
+(defrule
+	(difficulty <= hard)
+	(building-type-count dock > 0)
+	(unit-type-count-total cannon-galleon > 0)
+	(can-research ri-deck-guns)
+=>
+	(research ri-deck-guns)
+)
+
+(defrule	;230 food, 100 gold
+	(building-type-count dock > 0)
+	(unit-type-count-total galley-line > 1)
+	(can-research-with-escrow ri-war-galley)
+	(nand
+		(civ-selected viking)
+		(building-type-count-total castle > 0)
+	)
+	(nor
+		(goal 1 0)
+		(or
+			(can-research ri-war-galley)
+			(goal rush-control IMPERIAL)
+		)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-war-galley)
+)
+
+(defrule
+	(building-type-count dock > 0)
+	(unit-type-count-total galley-line > 1)
+	(can-research ri-war-galley)
+	(nand
+		(civ-selected viking)
+		(building-type-count-total castle > 0)
+	)
+	(nor
+		(goal 1 0)
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(research ri-war-galley)
+)
+
+(defrule	;315 wood, 400 food
+	(building-type-count dock > 0)
+	(can-research-with-escrow ri-galleon)
+	(nand
+		(civ-selected viking)
+		(building-type-count-total castle > 0)
+	)
+	(nor
+		(goal 1 0)
+		(can-research ri-galleon)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(research ri-galleon)
+)
+
+(defrule
+	(building-type-count dock > 0)
+	(can-research ri-galleon)
+	(nand
+		(civ-selected viking)
+		(building-type-count-total castle > 0)
+	)
+	(not (goal 1 0) )
+=>
+	(research ri-galleon)
+)
+
+
+;*************
+;MILL
+(defrule	;75 wood, 75 food
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 9)
+	(building-type-count-total farm >= 8)
+	(building-type-count mill > 0)
+	(research-available ri-horse-collar)
+	(current-age-time > 30)
+	(or
+		(current-age > feudal-age)
+		(goal age-advancement NOTICE)
+	)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(set-goal upgrade-conflict 9)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule	;125 wood, 125 food
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 9)
+	(building-type-count-total farm >= 10)
+	(building-type-count mill > 0)
+	(research-available ri-heavy-plow)
+=>
+	(set-goal upgrade-conflict 9)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule	;250 wood, 250 food
+	(goal upgrade-conflict NO)
+	(difficulty <= hard)
+	(random-number <= 9)
+	(building-type-count-total farm >= 12)
+	(building-type-count mill > 0)
+	(research-available ri-crop-rotation)
+=>
+	(set-goal upgrade-conflict 9)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule
+	(goal upgrade-conflict 9)
+	(or
+		(can-research-with-escrow ri-horse-collar)
+		(or
+			(can-research-with-escrow ri-heavy-plow)
+			(can-research-with-escrow ri-crop-rotation)
+		)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(research ri-horse-collar)
+	(research ri-heavy-plow)
+	(research ri-crop-rotation)
+	(set-goal upgrade-conflict NO)
+)
+
+;*************
+;MARKET
+(defrule
+	(can-research ri-caravan)
+	(not (goal rush-control IMPERIAL) )
+	(or
+		(unit-type-count-total trade-cart > 0)
+		(unit-type-count-total trade-cog > 0)
+	)
+=>
+	(research ri-caravan)
+)
+
+(defrule	;150 food, 50 gold
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 10)
+	(player-in-game any-ally)
+	(building-type-count market > 0)
+	(research-available ri-coinage)
+	(or
+		(current-age > feudal-age)
+		(goal age-advancement NOTICE)
+	)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(set-goal upgrade-conflict 10)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule	;200 food, 100 gold
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 10)
+	(player-in-game any-ally)
+	(building-type-count market > 0)
+	(research-available ri-banking)
+=>
+	(set-goal upgrade-conflict 10)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 10)
+	(or
+		(can-research-with-escrow ri-coinage)
+		(can-research-with-escrow ri-banking)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-coinage)
+	(research ri-banking)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;100 food, 100 gold
+	(player-in-game any-ally)
+	(building-type-count market > 0)
+	(can-research-with-escrow ri-cartography)
+	(not (goal rush-control IMPERIAL) )
+	(or
+		(current-age > feudal-age)
+		(or
+			(goal age-advancement NOTICE)
+			(gold-amount > 300)
+		)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-cartography)
+)
+
+(defrule	;300 food, 200 gold
+	(can-research-with-escrow ri-guilds)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-guilds)
+)
+;*************
+;BARRACKS
+(defrule	;75 food
+	(goal upgrade-conflict NO)
+	(goal infantry-upgrades YES)
+	(random-number <= 11)
+	(research-available ri-tracking)
+	(or
+		(current-age > feudal-age)
+		(goal age-advancement NOTICE)
+	)
+=>
+	(set-goal upgrade-conflict 11)
+	(set-goal resource-supp FOOD-ONLY)
+)
+
+(defrule
+	(goal upgrade-conflict 11)
+	(can-research-with-escrow ri-tracking)
+=>
+	(release-escrow food)
+	(research ri-tracking)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;750 food, 350 gold
+	(goal upgrade-conflict NO)
+	(building-type-count barracks > 0)
+	(research-available ri-champion)
+	(random-number <= 12)
+	(goal combat-arm INFANTRY)
+=>
+	(set-goal upgrade-conflict 12)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 12)
+	(can-research-with-escrow ri-champion)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-champion)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;200 food
+	(goal upgrade-conflict NO)
+	(goal infantry-upgrades YES)
+	(building-type-count barracks > 0)
+	(research-available ri-squires)
+	(random-number <= 13)
+=>
+	(set-goal upgrade-conflict 13)
+	(set-goal resource-supp FOOD-ONLY)
+)
+
+(defrule
+	(goal upgrade-conflict 13)
+	(can-research-with-escrow ri-squires)
+=>
+	(release-escrow food)
+	(research ri-squires)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;215 food, 90 gold
+	(unit-type-count spearman > 2)
+	(can-research-with-escrow ri-pikeman)
+	(or
+		(goal upgrade-conflict NO)
+		(current-age == imperial-age)
+	)
+	(nor
+		(goal upgrade-conflict NOTICE)
+		(or
+			(can-research ri-pikeman)
+			(goal rush-control IMPERIAL)
+		)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-pikeman)
+)
+
+(defrule
+	(unit-type-count spearman > 2)
+	(can-research ri-pikeman)
+	(or
+		(goal upgrade-conflict NO)
+		(current-age == imperial-age)
+	)
+	(nor
+		(goal upgrade-conflict NOTICE) 
+		 (goal rush-control IMPERIAL)
+	)
+=>
+	(research ri-pikeman)
+)
+
+(defrule ; food, gold
+	(goal upgrade-conflict NO)
+	(unit-type-count pikeman > 4)
+	(random-number <= 14)
+	(research-available ri-halberdier)
+=>
+	(set-goal upgrade-conflict 14)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 14)
+	(can-research-with-escrow ri-halberdier)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-halberdier)
+	(set-goal upgrade-conflict NO)
+)
+
+
+(defrule	;100 food, 40 goldman-at-arms
+	(can-research-with-escrow ri-man-at-arms)
+	(or
+		(current-age > feudal-age)
+		(goal age-advancement NOTICE)
+	)
+	(or
+		(or
+			(goal combat-arm INFANTRY)
+			(goal combat-supp INFANTRY)
+		)
+		(goal pre-unique-arm INFANTRY)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-man-at-arms)
+)
+
+(defrule	;200 food, 65 gold
+	(can-research-with-escrow ri-long-swordsman)
+	(not (goal rush-control IMPERIAL) )
+	(or
+		(or
+			(goal combat-arm INFANTRY)
+			(goal combat-supp INFANTRY)
+		)
+		(goal pre-unique-arm INFANTRY)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-long-swordsman)
+)
+
+(defrule	;300 food, 100 gold
+	(can-research-with-escrow ri-two-handed-swordsman)
+	(or
+		(goal combat-arm INFANTRY)
+		(goal combat-supp INFANTRY)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-two-handed-swordsman)
+)
+;*************
+;STABLE
+(defrule	;325 food, 360 gold
+	(goal upgrade-conflict NO)
+	(building-type-count stable > 0)
+	(unit-type-count camel > 2)
+	(research-available ri-heavy-camel)
+	(random-number <= 15)
+=>
+	(set-goal upgrade-conflict 15)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 15)
+	(can-research-with-escrow ri-heavy-camel)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-heavy-camel)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule
+	(unit-type-count camel > 0)
+	(can-research-with-escrow ri-imperial-camel)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-imperial-camel)
+)
+
+(defrule	;300 food, 300 gold
+	(can-research-with-escrow ri-cavalier)
+	(or
+		(goal combat-arm CAVALRY)
+		(goal combat-supp CAVALRY)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-cavalier)
+)
+
+(defrule	;1300 food, 750 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 16)
+	(building-type-count stable > 0)
+	(or
+		(goal combat-arm CAVALRY)
+		(goal combat-supp CAVALRY)
+	)
+	(or
+		(research-available ri-paladin)
+		(research-available ri-cavalier)
+	)
+=>
+	(set-goal upgrade-conflict 16)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 16)
+	(or
+		(can-research-with-escrow ri-cavalier)
+		(can-research-with-escrow ri-paladin)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-cavalier)
+	(research ri-paladin)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;250 food
+	(goal upgrade-conflict NO)
+	(building-type-count stable > 0)
+	(research-available ri-husbandry)
+	(random-number <= 17)
+	(or
+		(or
+			(goal cav-upgrades YES)
+			(goal combat-arm CAVARCHER)
+		)
+		(or
+			(goal combat-supp CAVARCHER)
+			(or
+				(civ-selected mongol)
+				(civ-selected spanish)
+			)
+		)
+	)
+=>
+	(set-goal upgrade-conflict 17)
+	(set-goal resource-supp FOOD-ONLY)
+)
+
+(defrule
+	(goal upgrade-conflict 17)
+	(can-research-with-escrow ri-husbandry)
+=>
+	(release-escrow food)
+	(research ri-husbandry)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	; food, gold
+	(goal upgrade-conflict NO)
+	(building-type-count stable > 0)
+	(research-available ri-bloodlines)
+	(random-number <= 18)
+	(or
+		(or
+			(goal cav-upgrades YES)
+			(goal combat-arm CAVARCHER)
+		)
+		(or
+			(goal combat-supp CAVARCHER)
+			(unit-type-count-total camel-line > 4)
+		)
+	)
+	(not (goal rush-control CASTLE) )
+=>
+	(set-goal upgrade-conflict 18)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule	; food, gold
+	(goal upgrade-conflict NO)
+	(building-type-count stable > 0)
+	(research-available ri-bloodlines)
+	(random-number <= 18)
+	(or
+		(civ-selected saracen)
+		(or
+			(civ-selected mongol)
+			(civ-selected spanish)
+		)
+	)
+	(not (goal rush-control CASTLE) )
+=>
+	(set-goal upgrade-conflict 18)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 18)
+	(can-research-with-escrow ri-bloodlines)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-bloodlines)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;150 food, 50 gold
+	(can-research-with-escrow ri-light-cavalry)
+	(not (goal rush-control IMPERIAL) )
+	(or
+		(or
+			(goal combat-arm LIGHTCAV)
+			(goal combat-supp LIGHTCAV)
+		)
+		(unit-type-count-total scout-cavalry > 2)
+	)
+	(or
+		(goal upgrade-conflict NO)
+		(current-age == imperial-age)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-light-cavalry)
+)
+
+(defrule	;lotsa food, lotsa gold
+	(goal upgrade-conflict NO)
+	(building-type-count stable > 0)
+	(random-number <= 19)
+	(can-research-with-escrow ri-hussar)
+	(or
+		(or
+			(goal combat-arm LIGHTCAV)
+			(goal combat-supp LIGHTCAV)
+		)
+		(unit-type-count-total light-cavalry > 6)
+	)
+=>
+	(set-goal upgrade-conflict 19)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 19)
+	(can-research-with-escrow ri-hussar)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-hussar)
+	(set-goal upgrade-conflict NO)
+)
+
+
+;*************
+;ARCHERY RANGE
+(defrule	;350 food, 300 gold
+	(goal upgrade-conflict NO)
+	(building-type-count archery-range > 0)
+	(research-available ri-arbalest)
+	(random-number <= 20)
+	(nor
+		(research-available ri-hand-cannon)
+		(research-completed ri-hand-cannon)
+	)
+	(or
+		(goal combat-arm ARCHER)
+		(goal combat-supp ARCHER)
+	)
+=>
+	(set-goal upgrade-conflict 20)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 20)
+	(can-research-with-escrow ri-arbalest)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-arbalest)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule
+	(goal upgrade-conflict 20)
+	(research-completed ri-hand-cannon)
+=>
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;450 food, 200 gold
+	(can-research-with-escrow ri-hand-cannon)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-hand-cannon)
+)
+
+(defrule	;900 food, 500 gold
+	(goal upgrade-conflict NO)
+	(goal combat-arm CAVARCHER)
+	(building-type-count archery-range > 0)
+	(research-available ri-heavy-cavalry-archer)
+	(random-number <= 21)
+=>
+	(set-goal upgrade-conflict 21)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 21)
+	(can-research-with-escrow ri-heavy-cavalry-archer)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-heavy-cavalry-archer)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;250 wood, 160 gold
+	(unit-type-count skirmisher > 2)
+	(can-research-with-escrow ri-elite-skirmisher)
+	(or
+		(goal upgrade-conflict NO)
+		(current-age-time > 300)
+	)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(research ri-elite-skirmisher)
+)
+
+(defrule	;125 food, 75 gold
+	(research-available ri-crossbow)
+	(nor
+		(research-available ri-hand-cannon)
+		(or
+			(research-completed ri-hand-cannon)
+			(goal rush-control IMPERIAL)
+		)
+	)
+	(or
+		(goal combat-arm ARCHER)
+		(or
+			(goal combat-supp ARCHER)
+			(goal pre-unique-arm ARCHER)
+		)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-crossbow)
+)
+
+(defrule	;350 wood, 250 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 22)
+	(difficulty <= hard)
+	(building-type-count blacksmith > 0)
+	(research-available ri-thumb-ring)
+	(goal archer-upgrades YES)
+=>
+	(set-goal upgrade-conflict 22)
+	(set-goal resource-supp WOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 22)
+	(can-research-with-escrow ri-thumb-ring)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(research ri-thumb-ring)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;400 food, 250 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 23)
+	(research-available ri-parthian-tactics)
+	(research-completed ri-leather-archer-armor)
+	(not (research-available ri-ring-archer-armor) )
+	(or
+		(or
+			(goal combat-arm CAVARCHER)
+			(goal combat-supp CAVARCHER)
+		)
+		(and
+			(civ-selected mongol)
+			(goal combat-arm UNIQUE)
+		)
+	)
+=>
+	(set-goal upgrade-conflict 23)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 23)
+	(can-research-with-escrow ri-parthian-tactics)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-parthian-tactics)
+	(set-goal upgrade-conflict NO)
+)
+
+
+;*************
+;BLACKSMITH
+(defrule	;100 food
+	(difficulty <= moderate)
+	(goal infantry-upgrades YES)
+	(can-research-with-escrow ri-scale-mail)
+	(or
+		(current-age > feudal-age)
+		(goal age-advancement NOTICE)
+	)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(release-escrow food)
+	(research ri-scale-mail)
+)
+
+(defrule	;200 food, 100 gold
+	(difficulty <= moderate)
+	(goal infantry-upgrades YES)
+	(can-research-with-escrow ri-chain-mail)
+	(or
+		(goal upgrade-conflict NO)
+		(or
+			(current-age-time > 300)
+			(goal age-advancement NOTICE)
+		)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-chain-mail)
+)
+
+(defrule	;300 food, 150 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 24)
+	(difficulty <= hard)
+	(goal infantry-upgrades YES)
+	(building-type-count blacksmith > 0)
+	(research-available ri-plate-mail)
+=>
+	(set-goal upgrade-conflict 24)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 24)
+	(can-research-with-escrow ri-plate-mail)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-plate-mail)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;150 food
+	(difficulty <= moderate)
+	(goal cav-upgrades YES)
+	(can-research-with-escrow ri-scale-barding)
+	(or
+		(current-age > feudal-age)
+		(goal age-advancement NOTICE)
+	)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(release-escrow food)
+	(research ri-scale-barding)
+)
+
+(defrule	;250 food, 150 gold
+	(difficulty <= moderate)
+	(goal cav-upgrades YES)
+	(can-research-with-escrow ri-chain-barding)
+	(or
+		(goal upgrade-conflict NO)
+		(or
+			(current-age-time > 300)
+			(goal age-advancement NOTICE)
+		)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-chain-barding)
+)
+
+(defrule	;350 food, 200 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 25)
+	(difficulty <= hard)
+	(goal cav-upgrades YES)
+	(building-type-count blacksmith > 0)
+	(research-available ri-plate-barding)
+=>
+	(set-goal upgrade-conflict 25)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 25)
+	(can-research-with-escrow ri-plate-barding)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-plate-barding)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;100 food
+	(difficulty <= moderate)
+	(goal archer-upgrades YES)
+	(can-research-with-escrow ri-padded-archer-armor)
+	(or
+		(current-age > feudal-age)
+		(goal age-advancement NOTICE)
+	)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(release-escrow food)
+	(research ri-padded-archer-armor)
+)
+
+(defrule	;150 food, 150 gold
+	(difficulty <= moderate)
+	(goal archer-upgrades YES)
+	(can-research-with-escrow ri-leather-archer-armor)
+	(or
+		(goal upgrade-conflict NO)
+		(or
+			(current-age-time > 300)
+			(goal age-advancement NOTICE)
+		)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-leather-archer-armor)
+)
+
+(defrule	;250 food, 250 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 26)
+	(difficulty <= hard)
+	(goal archer-upgrades YES)
+	(building-type-count blacksmith > 0)
+	(research-available ri-ring-archer-armor)
+=>
+	(set-goal upgrade-conflict 26)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 26)
+	(can-research-with-escrow ri-ring-archer-armor)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-ring-archer-armor)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;150 food
+	(difficulty <= moderate)
+	(can-research-with-escrow ri-forging)
+	(or
+		(goal infantry-upgrades YES)
+		(goal cav-upgrades YES)
+	)
+	(or
+		(current-age > feudal-age)
+		(goal age-advancement NOTICE)
+	)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(release-escrow food)
+	(research ri-forging)
+)
+
+(defrule	;220 food, 120 gold
+	(difficulty <= moderate)
+	(can-research-with-escrow ri-iron-casting)
+	(or
+		(goal infantry-upgrades YES)
+		(goal cav-upgrades YES)
+	)
+	(or
+		(goal upgrade-conflict NO)
+		(or
+			(current-age-time > 300)
+			(goal age-advancement NOTICE)
+		)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-iron-casting)
+)
+
+(defrule	;275 food, 225 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 27)
+	(difficulty <= hard)
+	(building-type-count blacksmith > 0)
+	(research-available ri-blast-furnace)
+	(or
+		(goal infantry-upgrades YES)
+		(goal cav-upgrades YES)
+	)
+=>
+	(set-goal upgrade-conflict 27)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 27)
+	(can-research-with-escrow ri-blast-furnace)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-blast-furnace)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;100 food, 50 gold
+	(difficulty <= moderate)
+	(can-research-with-escrow ri-fletching)
+	(or
+		(goal archer-upgrades YES)
+		(or
+			(unit-type-count galley-line > five-percent-pop)
+			(building-type-count watch-tower-line > five-percent-pop)
+		)
+	)
+	(or
+		(current-age > feudal-age)
+		(goal age-advancement NOTICE)
+	)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-fletching)
+)
+
+(defrule	;200 food, 100 gold
+	(can-research-with-escrow ri-bodkin-arrow)
+	(or
+		(goal archer-upgrades YES)
+		(or
+			(unit-type-count galley-line > five-percent-pop)
+			(building-type-count watch-tower-line > five-percent-pop)
+		)
+	)
+	(or
+		(goal upgrade-conflict NO)
+		(or
+			(current-age-time > 300)
+			(goal age-advancement NOTICE)
+		)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-bodkin-arrow)
+)
+
+(defrule	;300 food, 200 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 28)
+	(difficulty <= hard)
+	(building-type-count blacksmith > 0)
+	(research-available ri-bracer)
+	(or
+		(goal archer-upgrades YES)
+		(or
+			(unit-type-count galley-line > five-percent-pop)
+			(building-type-count watch-tower-line > five-percent-pop)
+		)
+	)
+=>
+	(set-goal upgrade-conflict 28)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 28)
+	(can-research-with-escrow ri-bracer)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-bracer)
+	(set-goal upgrade-conflict NO)
+)
+
+
+;*************
+;SIEGE-WORKSHOP
+(defrule	;1100 wood, 1000 food
+	(goal upgrade-conflict NO)
+	(goal combat-supp SCORPION)
+	(difficulty <= moderate)
+	(random-number <= 29)
+	(building-type-count siege-workshop > 0)
+	(research-available ri-heavy-scorpion)
+=>
+	(set-goal upgrade-conflict 29)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule
+	(goal upgrade-conflict 29)
+	(can-research-with-escrow ri-heavy-scorpion)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(research ri-heavy-scorpion)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule
+	(goal upgrade-conflict 29)
+	(not (goal combat-supp SCORPION) )
+=>
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;300 food, 250 gold
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 30)
+	(building-type-count siege-workshop > 0)
+	(research-available ri-capped-ram)
+	(or
+		(unit-type-count militiaman-line > 0)
+		(unit-type-count spearman-line > 0)
+	)
+=>
+	(set-goal upgrade-conflict 30)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule	;1000 food, 800 gold
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 30)
+	(building-type-count siege-workshop > 0)
+	(unit-type-count-total capped-ram > 1)
+	(research-available ri-siege-ram)
+	(nor 
+		(research-completed ri-bombard-cannon)
+		(research-completed ri-siege-onager)
+	)
+	(or
+		(unit-type-count militiaman-line > 0)
+		(unit-type-count spearman-line > 0)
+	)
+=>
+	(set-goal upgrade-conflict 30)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 30)
+	(or
+		(can-research-with-escrow ri-capped-ram)
+		(can-research-with-escrow ri-siege-ram)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-capped-ram)
+	(research ri-siege-ram)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;800 food, 500 gold
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 31)
+	(building-type-count siege-workshop > 0)
+	(research-available ri-onager)
+=>
+	(set-goal upgrade-conflict 31)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule	;1450 food, 1000 gold
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 31)
+	(unit-type-count-total onager > 1)
+	(building-type-count siege-workshop > 0)
+	(research-available ri-siege-onager)
+	(nor
+		(research-completed ri-bombard-cannon)
+		(research-completed ri-siege-ram)
+	)
+=>
+	(set-goal upgrade-conflict 31)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 31)
+	(or
+		(can-research-with-escrow ri-onager)
+		(can-research-with-escrow ri-siege-onager)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-onager)
+	(research ri-siege-onager)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;500 food, 250 gold
+	(difficulty <= moderate)
+	(can-research-with-escrow ri-bombard-cannon)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-bombard-cannon)
+)
+
+(defrule	;600 wood, 500 food
+	(goal upgrade-conflict NO)
+	(difficulty <= moderate)
+	(random-number <= 32)
+	(building-type-count siege-workshop > 0)
+	(research-available ri-siege-engineers)
+	(or
+		(or
+			(unit-type-count battering-ram-line > 1)
+			(unit-type-count mangonel-line > 1)
+		)
+		(or
+			(unit-type-count bombard-cannon > 1)
+			(unit-type-count trebuchet > 0)
+		)
+	)
+=>
+	(set-goal upgrade-conflict 32)
+	(set-goal resource-supp WOOD-FOOD)
+)
+
+(defrule
+	(goal upgrade-conflict 32)
+	(can-research-with-escrow ri-siege-engineers)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(research ri-siege-engineers)
+	(set-goal upgrade-conflict NO)
+)
+
+;*************
+;monastery
+(defrule	;475 gold
+	(goal upgrade-conflict NO)
+	(goal monk-rating GOOD)
+	(building-type-count monastery > 0)
+	(unit-type-count-total monk > 2)
+	(research-available ri-redemption)
+	(random-number <= 33)
+=>
+	(set-goal upgrade-conflict 33)
+	(set-goal resource-supp GOLD-ONLY)
+)
+
+(defrule
+	(goal upgrade-conflict 33)
+	(can-research-with-escrow ri-redemption)
+=>
+	(release-escrow gold)
+	(research ri-redemption)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;325 gold
+	(goal upgrade-conflict NO)
+	(goal monk-rating GOOD)
+	(cc-players-unit-type-count any-enemy monk > 2)
+	(building-type-count monastery > 0)
+	(unit-type-count-total monk > 1)
+	(research-available ri-atonement)
+	(random-number <= 34)
+=>
+	(set-goal upgrade-conflict 34)
+	(set-goal resource-supp GOLD-ONLY)
+)
+
+(defrule
+	(goal upgrade-conflict 34)
+	(can-research-with-escrow ri-atonement)
+=>
+	(release-escrow gold)
+	(research ri-atonement)
+	(set-goal upgrade-conflict NO)
+	(set-goal resource-supp GOLD-ONLY)
+)
+
+(defrule	;200 gold
+	(goal upgrade-conflict NO)
+	(goal monk-rating GOOD)
+	(building-type-count monastery > 0)
+	(unit-type-count-total monk > 1)
+	(research-available ri-block-printing)
+	(random-number <= 35)
+=>
+	(set-goal upgrade-conflict 35)
+	(set-goal resource-supp GOLD-ONLY)
+)
+
+(defrule
+	(goal upgrade-conflict 35)
+	(can-research-with-escrow ri-block-printing)
+=>
+	(release-escrow gold)
+	(research ri-block-printing)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;140 gold
+	(goal upgrade-conflict NO)
+	(building-type-count monastery > 0)
+	(unit-type-count-total monk > 0)
+	(research-available ri-fervor)
+	(random-number <= 36)
+	(or
+		(goal monk-rating GOOD)
+		(goal monk-rating FAIR)
+	)
+=>
+	(set-goal upgrade-conflict 36)
+	(set-goal resource-supp GOLD-ONLY)
+)
+
+(defrule
+	(goal upgrade-conflict 36)
+	(can-research-with-escrow ri-fervor)
+=>
+	(release-escrow gold)
+	(research ri-fervor)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;120 gold
+	(goal upgrade-conflict NO)
+	(building-type-count monastery > 0)
+	(unit-type-count-total monk > 0)
+	(research-available ri-illumination)
+	(random-number <= 37)
+	(or
+		(goal monk-rating GOOD)
+		(goal monk-rating FAIR)
+	)
+=>
+	(set-goal upgrade-conflict 37)
+	(set-goal resource-supp GOLD-ONLY)
+)
+
+(defrule
+	(goal upgrade-conflict 37)
+	(can-research-with-escrow ri-illumination)
+=>
+	(release-escrow gold)
+	(research ri-illumination)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;120 gold
+	(goal upgrade-conflict NO)
+	(building-type-count monastery > 0)
+	(unit-type-count-total monk > 0)
+	(research-available ri-sanctity)
+	(random-number <= 38)
+	(or
+		(goal monk-rating GOOD)
+		(goal monk-rating FAIR)
+	)
+=>
+	(set-goal upgrade-conflict 38)
+	(set-goal resource-supp GOLD-ONLY)
+)
+
+(defrule
+	(goal upgrade-conflict 38)
+	(can-research-with-escrow ri-sanctity)
+=>
+	(release-escrow gold)
+	(research ri-sanctity)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;1000 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 39)
+	(cc-players-unit-type-count any-enemy monk > 3)
+	(building-type-count monastery > 0)
+	(research-available ri-heresy)
+	(or
+		(not (research-completed ri-faith) )
+		(cc-players-unit-type-count any-enemy monk > 6)
+	)
+=>
+	(set-goal upgrade-conflict 39)
+	(set-goal resource-supp GOLD-ONLY)
+)
+
+(defrule
+	(goal upgrade-conflict 39)
+	(can-research-with-escrow ri-heresy)
+=>
+	(release-escrow gold)
+	(research ri-heresy)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;750 food, 1000 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 40)
+	(cc-players-unit-type-count any-enemy monk > 3)
+	(building-type-count monastery > 0)
+	(research-available ri-faith)
+	(or
+		(not (research-completed ri-heresy) )
+		(cc-players-unit-type-count any-enemy monk > 6)
+	)
+=>
+	(set-goal upgrade-conflict 40)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 40)
+	(can-research-with-escrow ri-faith)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-faith)
+	(set-goal upgrade-conflict NO)
+)
+
+;*************
+;UNIVERSITY
+(defrule	;175 wood, 150 stone
+	(goal upgrade-conflict NO)
+	(random-number <= 41)
+	(building-type-count university > 0)
+	(research-available ri-masonry)
+=>
+	(set-goal upgrade-conflict 41)
+	(set-goal resource-supp WOOD-STONE)
+)
+
+(defrule	;200 wood, 300 stone
+	(goal upgrade-conflict NO)
+	(random-number <= 41)
+	(building-type-count university > 0)
+	(research-available ri-architecture)
+	(not (goal wonder-attempt POSSIBLE) )
+=>
+	(set-goal upgrade-conflict 35)
+	(set-goal resource-supp WOOD-STONE)
+)
+
+(defrule
+	(goal upgrade-conflict 41)
+	(or
+		(can-research-with-escrow ri-masonry)
+		(can-research-with-escrow ri-architecture)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow stone)
+	(research ri-masonry)
+	(research ri-architecture)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;200 wood, 300 stone
+	(goal upgrade-conflict NO)
+	(random-number <= 42)
+	(building-type-count university > 0)
+	(research-available ri-stonecutting)
+	(not (goal wonder-attempt POSSIBLE) )
+=>
+	(set-goal upgrade-conflict 42)
+	(set-goal resource-supp WOOD-STONE)
+)
+
+(defrule
+	(goal upgrade-conflict 42)
+	(can-research-with-escrow ri-stonecutting)
+=>
+	(release-escrow wood)
+	(release-escrow stone)
+	(research ri-stonecutting)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;100 food, 250 stone
+	(building-type-count watch-tower > 2)
+	(can-research-with-escrow ri-guard-tower)
+	(or
+		(goal upgrade-conflict NO)
+		(current-age-time > 600)
+	)
+=>
+	(release-escrow food)
+	(release-escrow stone)
+	(research ri-guard-tower)
+)
+
+(defrule	;500 food, 350 stone
+	(goal upgrade-conflict NO)
+	(random-number <= 43)
+	(building-type-count university > 0)
+	(building-type-count guard-tower > 0)
+	(research-available ri-keep)
+=>
+	(set-goal upgrade-conflict 43)
+	(set-goal resource-supp FOOD-STONE)
+)
+
+(defrule
+	(goal upgrade-conflict 43)
+	(can-research-with-escrow ri-keep)
+=>
+	(release-escrow food)
+	(release-escrow stone)
+	(research ri-keep)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;800 food, 400 stone
+	(goal upgrade-conflict NO)
+	(random-number <= 44)
+	(building-type-count university > 0)
+	(building-type-count watch-tower-line > 2)
+	(research-available ri-bombard-tower)
+=>
+	(set-goal upgrade-conflict 44)
+	(set-goal resource-supp FOOD-STONE)
+)
+
+(defrule
+	(goal upgrade-conflict 44)
+	(can-research-with-escrow ri-bombard-tower)
+=>
+	(release-escrow food)
+	(release-escrow stone)
+	(research ri-bombard-tower)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;200 food, 200 stone
+	(can-research-with-escrow ri-murder-holes)
+	(or
+		(building-type-count watch-tower-line > 1)
+		(building-type-count castle > 0)
+	)
+=>
+	(release-escrow food)
+	(release-escrow stone)
+	(research ri-murder-holes)
+)
+
+(defrule	;200 food, 100 stone
+	(goal wall-build YES)
+	(can-research-with-escrow ri-fortified-wall)
+=>
+	(release-escrow food)
+	(release-escrow stone)
+	(research ri-fortified-wall)
+)
+
+(defrule	;350 food, 100 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 45)
+	(building-type-count university > 0)
+	(research-available ri-heated-shot)
+	(nor
+		(goal 1 0)
+		(goal 2 YES)
+	)
+=>
+	(set-goal upgrade-conflict 45)
+	(set-goal resource-supp FOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 45)
+	(can-research-with-escrow ri-heated-shot)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-heated-shot)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;300 wood, 175 gold
+	(goal upgrade-conflict NO)
+	(random-number <= 46)
+	(building-type-count university > 0)
+	(research-available ri-ballistics)
+	(or
+		(unit-type-count galley-line >= five-percent-pop)
+		(or
+			(goal archer-upgrades YES)
+			(research-completed ri-guard-tower)
+		)
+	)
+=>
+	(set-goal upgrade-conflict 46)
+	(set-goal resource-supp WOOD-GOLD)
+)
+
+(defrule
+	(goal upgrade-conflict 46)
+	(can-research-with-escrow ri-ballistics)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(research ri-ballistics)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;300 food, 200 gold
+	(building-type-count university > 0)
+	(can-research-with-escrow ri-chemistry)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-chemistry)
+)
+;*************
+;CASTLE
+(defrule	;400 wood, 400 stone
+	(goal upgrade-conflict NO)
+	(random-number <= 47)
+	(building-type-count castle > 0)
+	(research-available ri-hoardings)
+	(not (goal wonder-attempt POSSIBLE) )
+=>
+	(set-goal upgrade-conflict 47)
+	(set-goal resource-supp WOOD-STONE)
+)
+
+(defrule
+	(goal upgrade-conflict 47)
+	(can-research-with-escrow ri-hoardings)
+=>
+	(release-escrow wood)
+	(release-escrow stone)
+	(research ri-hoardings)
+	(set-goal upgrade-conflict NO)
+)
+
+(defrule	;150 food, 150 gold
+	(can-research-with-escrow ri-conscription)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-conscription)
+)
+
+(defrule
+	(population < 20)
+	(game-time < 1500)
+=>
+	(up-jump-rule 6)
+)
+
+(defrule
+	(civ-selected incan)
+	(or	(unit-type-count-total kamayuk > 0)
+		(unit-type-count-total elite-kamayuk > 0))
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected indian)
+	(or	(unit-type-count-total elephant-archer > 0)
+		(unit-type-count-total elite-elephant-archer > 0))
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-bloodlines)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-parthian-tactics)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(civ-selected italian)
+	(or	(unit-type-count-total genoese-crossbowman > 0)
+		(unit-type-count-total elite-genoese-crossbowman > 0))
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+	(research ri-pavise)
+)
+
+(defrule
+	(civ-selected magyar)
+	(or	(unit-type-count-total magyar-huszar > 0)
+		(unit-type-count-total elite-magyar-huszar > 0))
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-mercenaries)
+	(research ri-bloodlines)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected slavic)
+	(or	(unit-type-count-total boyar > 0)
+		(unit-type-count-total elite-boyar > 0))
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-bloodlines)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(or	(goal combat-supp EAGLEMAN)
+		(or	(unit-type-count eagle-warrior-line > 2)
+			(unit-type-count heavy-eagle-warrior > 2)))
+=>
+	(research ri-eagle-warrior)
+	(research ri-elite-eagle-warrior)
+)
+
+(defrule
+	(unit-type-count villager-hunter > 0)
+	(or	(difficulty >= hard)
+		(unit-type-count villager-hunter > 4))
+	(food-amount >= 90)
+	(can-research ri-hunting-dogs)
+=>
+	(research ri-hunting-dogs)
+)
+
+(defrule
+	(unit-type-count fishing-ship > 0)
+	(can-research ri-gillnets)
+=>
+	(research ri-gillnets)
+)
+
+(defrule
+	(unit-type-count-total skirmisher-line > 0)
+	(can-research ri-atlatl)
+=>
+	(research ri-atlatl)
+)
+
+(defrule
+	(unit-type-count-total trebuchet-set > 0)
+	(can-research ri-war-wolf)
+=>
+	(research ri-war-wolf)
+)
+
+(defrule
+	(unit-type-count-total fire-ship-line > 0)
+	(can-research ri-greek-fire)
+=>
+	(research ri-greek-fire)
+)
+
+(defrule
+	(building-type-count castle > 1)
+	(can-research ri-stronghold)
+=>
+	(research ri-stronghold)
+)
+
+(defrule
+	(building-type-count stone-wall-line > 5)
+	(can-research ri-great-wall)
+=>
+	(research ri-great-wall)
+)
+
+(defrule
+	(building-type-count stable > 2)
+	(can-research ri-chivalry)
+=>
+	(research ri-chivalry)
+)
+
+(defrule
+	(unit-type-count-total skirmisher-line > 0)
+	(can-research ri-andean-sling)
+=>
+	(research ri-andean-sling)
+)
+
+(defrule
+	(can-research ri-couriers)
+=>
+	(research ri-couriers)
+)
+
+(defrule
+	(can-research ri-sultans)
+=>
+	(research ri-sultans)
+)
+
+(defrule
+	(civ-selected indian)
+	(unit-type-count-total hand-cannoneer > 0)
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(building-type-count watch-tower > 3)
+	(can-research ri-yasama)
+=>
+	(research ri-yasama)
+)
+
+(defrule
+	(unit-type-count-total turtle-ship-line > 2)
+	(can-research ri-panokseon)
+=>
+	(research ri-panokseon)
+)
+
+(defrule
+	(goal combat-arm CAVARCHER)
+	(unit-type-count cavalry-archer-line > 0)
+	(can-research ri-recurve-bow)
+=>
+	(research ri-recurve-bow)
+)
+
+(defrule
+	(can-research ri-nomads)
+=>
+	(research ri-nomads)
+)
+
+(defrule
+	(building-type-count-total castle > 2)
+	(can-research ri-boiling-oil)
+=>
+	(research ri-boiling-oil)
+)
+
+(defrule
+	(unit-type-count-total monk-set > 2)
+	(can-research ri-madrasah)
+=>
+	(research ri-madrasah)
+)
+
+(defrule
+	(unit-type-count-total monk-set > 2)
+	(can-research-with-escrow ri-orthodoxy)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-orthodoxy)
+)
+
+(defrule
+	(civ-selected slavic)
+	(or	(unit-type-count-total spearman-line > 0)
+		(unit-type-count-total militiaman-line > 0))
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(unit-type-count-total monk-set > 2)
+	(can-research-with-escrow ri-inquisition)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-inquisition)
+)
+
+(defrule
+	(building-type-count siege-workshop > 0)
+	(can-research ri-ironclad)
+=>
+	(research ri-ironclad)
+)
+
+(defrule
+	(goal combat-arm CAVARCHER)
+	(unit-type-count cavalry-archer-line > 0)
+	(can-research ri-sipahi)
+=>
+	(research ri-sipahi)
+)
+
+(defrule
+	(unit-type-count berserk-line > 0)
+	(research-completed my-unique-unit-upgrade)
+	(can-research ri-chieftains)
+=>
+	(research ri-chieftains)
+)

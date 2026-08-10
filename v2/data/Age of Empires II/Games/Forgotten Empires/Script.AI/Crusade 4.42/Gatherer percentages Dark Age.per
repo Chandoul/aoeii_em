@@ -1,0 +1,367 @@
+
+; Gatherer percentages:
+; First 9 villagers on food,  decrease them until 7 in food and 8 wood. Next again in food, until we are near to 500 food.
+; More on wood in late Dark Age for a less radical transition to wood and to get military buildings earlier.
+
+; You can see the a "detailed explanation" of my gatherer percentages in the Excel files.
+; You also can see another Excel with Marathon's gatherer percentages, with a more beastiful and clearer organization
+; in the  "Calculate gatherers wood-marathon.xls" file
+
+#load-if-defined UP-AVAILABLE
+(defrule
+	(nand	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	)
+	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 2)
+)
+#else
+(defrule
+	(nand	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	)
+	;(goal G-GATHER-LEVEL-WOOD 1)
+	(unit-type-count villager == 17)
+	(strategic-number G-SHEEP-TOTAL < 8)
+	;(unit-type-count-total MALE-SHEPHERD == 0)
+	;(unit-type-count-total FEMALE-SHEPHERD == 0)
+	(unit-type-count-total MALE-HUNTER == 0)
+	(unit-type-count-total FEMALE-HUNTER == 0)
+	(unit-type-count-total FISHERMAN == 0)
+	(unit-type-count-total FISHERWOMAN == 0)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 2)
+)
+
+(defrule
+	(nand	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	)
+	(or	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+		(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 2)
+)
+#end-if
+
+#load-if-defined WONDER-RACE
+(defrule
+	(nand	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	)
+=>
+	(set-goal G-GATHER-LEVEL-WOOD 2)
+)
+#end-if
+
+(defrule
+	(nand	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	)
+	(unit-type-count villager <= 9)
+=>
+        (set-strategic-number sn-food-gatherer-percentage	 95)
+        (set-strategic-number sn-wood-gatherer-percentage 	  5)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(nand	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	)
+	(unit-type-count villager == 10)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 	 86)
+        (set-strategic-number sn-wood-gatherer-percentage 	 14)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(nand	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	)
+	(unit-type-count villager == 11)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 78)
+        (set-strategic-number sn-wood-gatherer-percentage 	 22)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(nand	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	)
+	(unit-type-count villager == 12)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 63)
+        (set-strategic-number sn-wood-gatherer-percentage 	 37)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+
+(defrule
+	(nand	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	)
+	(unit-type-count villager == 13)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 58)
+        (set-strategic-number sn-wood-gatherer-percentage 	 42)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+
+
+
+; FC strategy
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager == 14)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 54)
+        (set-strategic-number sn-wood-gatherer-percentage 	 46)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager == 15)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 51)
+        (set-strategic-number sn-wood-gatherer-percentage 	 49)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager >= 16)
+	(unit-type-count villager <= 17)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 49)
+        (set-strategic-number sn-wood-gatherer-percentage 	 51)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager == 18)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 52)
+        (set-strategic-number sn-wood-gatherer-percentage 	 48)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager >= 19)
+	(unit-type-count villager <= 22)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 55)
+        (set-strategic-number sn-wood-gatherer-percentage 	 45)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager == 23)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 58)
+        (set-strategic-number sn-wood-gatherer-percentage 	 42)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager >= 24)
+	(unit-type-count villager <= 25)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 60)
+        (set-strategic-number sn-wood-gatherer-percentage 	 40)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager >= 26)
+	(unit-type-count villager <= 27)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 63)
+        (set-strategic-number sn-wood-gatherer-percentage 	 37)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager >= 28)
+	(unit-type-count villager <= 29)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 66)
+        (set-strategic-number sn-wood-gatherer-percentage 	 34)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager >= 30)
+	(or	(food-amount < 500)
+		(unit-type-count villager < DARK-VILLAGERS-FC)
+	)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 67)
+        (set-strategic-number sn-wood-gatherer-percentage 	 33)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(goal G-GATHER-LEVEL-WOOD 2)
+	(unit-type-count villager >= DARK-VILLAGERS-FC)
+	(food-amount >= 500)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 58)
+        (set-strategic-number sn-wood-gatherer-percentage 	 42)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+
+; FLUSH
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-GATHER-LEVEL-WOOD 2))
+	(unit-type-count villager >= 14)
+	(unit-type-count villager <= 16)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 47)
+        (set-strategic-number sn-wood-gatherer-percentage 	 53)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-GATHER-LEVEL-WOOD 2))
+	(unit-type-count villager == 17)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 53)
+        (set-strategic-number sn-wood-gatherer-percentage 	 47)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-GATHER-LEVEL-WOOD 2))
+	(unit-type-count villager == 18)
+	(unit-type-count villager <= 19)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 58)
+        (set-strategic-number sn-wood-gatherer-percentage 	 42)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-GATHER-LEVEL-WOOD 2))
+	(unit-type-count villager >= 20)
+	(unit-type-count villager <= 21)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 62)
+        (set-strategic-number sn-wood-gatherer-percentage 	 38)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-GATHER-LEVEL-WOOD 2))
+	(food-amount < 500)
+	(unit-type-count villager >= 22)
+	(unit-type-count villager <= 23)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 65)
+        (set-strategic-number sn-wood-gatherer-percentage 	 35)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-GATHER-LEVEL-WOOD 2))
+	(food-amount < 500)
+	(unit-type-count villager >= 24)
+	(unit-type-count villager <= 25)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 68)
+        (set-strategic-number sn-wood-gatherer-percentage 	 32)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-GATHER-LEVEL-WOOD 2))
+	(food-amount < 500)
+	(unit-type-count villager >= 26)
+	(unit-type-count villager <= 28)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 71)
+        (set-strategic-number sn-wood-gatherer-percentage 	 29)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-GATHER-LEVEL-WOOD 2))
+	(food-amount < 500)
+	(unit-type-count villager >= 29)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 74)
+        (set-strategic-number sn-wood-gatherer-percentage 	 26)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-GATHER-LEVEL-WOOD 2))
+	(food-amount >= 500)
+	(unit-type-count villager >= 22)
+=>
+        (set-strategic-number sn-food-gatherer-percentage 	 60)
+        (set-strategic-number sn-wood-gatherer-percentage 	 40)
+        (set-strategic-number sn-gold-gatherer-percentage 	  0)
+        (set-strategic-number sn-stone-gatherer-percentage 	  0)
+)

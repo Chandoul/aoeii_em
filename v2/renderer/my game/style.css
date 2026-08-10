@@ -1,0 +1,29 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    cursor: url(../assets/arrow.png), auto;
+    background-image: url(../assets/back.bmp);
+}
+
+.back-main {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: url(../assets/hand.png), auto;
+    background-image: url(../assets/000_50212.bmp);
+    border: none;
+    outline: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    color: #fff;
+    width: 150px;
+    height: 30px;
+    font-weight: bold;
+    transition: all ease 0.1s;
+}
+
+.back-main:hover {
+    font-size: 13px;
+}

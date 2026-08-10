@@ -1,0 +1,59 @@
+#load-if-not-defined UP-MICHI-STYLE
+#load-if-not-defined DIFFICULTY-EASIEST
+#load-if-not-defined DIFFICULTY-EASY
+#load-if-not-defined DIFFICULTY-MODERATE
+
+#load-if-not-defined REGICIDE
+#load-if-not-defined UP-3-PLAYER-GAME; 1v3+
+#load-if-defined UP-ALLY-IN-GAME
+#load-if-not-defined UP-MULTIPLE-ENEMIES
+#load-if-defined DARK-AGE-START
+
+#load-if-defined UP-GROUPED-BY-TEAM
+#load-if-defined ARENA-MAP
+(defrule
+	(game-time > 30)
+	(goal SLING 0)
+	(up-compare-goal gl-strategy != castle-sling)
+	(goal gl-current-age gv-dark)
+	(taunt-detected every-ally 254); No screwing when there are other AIs in team
+	(up-allied-goal every-ally gl-my-player-number g:> gl-my-player-number)
+=>
+	(set-goal gl-anti-cysion YES)
+	(set-goal gl-strategy flush); One Barbarian will ensure that they don't get badly forwarded
+	(set-goal gl-strategy-type basic-flush)
+	(set-goal gl-feudal-infantry FLUSH-DEFENCE-MAA)
+	(set-goal gl-feudal-archery FLUSH-DEFENCE-ARCHER)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+	(disable-self)
+)
+#end-if
+#end-if
+(defrule
+	(game-time > 30)
+	(goal SLING 0)
+	(goal POSITION FLANK)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal gl-current-age gv-dark)
+	(goal gl-rush-suitability-on-map GOOD)
+=>
+	(set-goal gl-anti-cysion YES)
+	(set-goal gl-strategy flush)
+	(set-goal gl-strategy-type basic-flush)
+	(set-goal gl-feudal-infantry FLUSH-DEFENCE-MAA)
+	(set-goal gl-feudal-archery FLUSH-DEFENCE-ARCHER)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#end-if
+#end-if
+#end-if
+#end-if

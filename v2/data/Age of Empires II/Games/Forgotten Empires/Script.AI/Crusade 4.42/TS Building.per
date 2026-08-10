@@ -1,0 +1,847 @@
+;--------------------------------------------------
+;Building Expansion Management; taken from Chameleon, by Scripter64
+;--------------------------------------------------
+
+
+
+
+;------------------------------
+;Item: house
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(game-time > 100) ; Villagers need more than 25'' to build the first house
+	(housing-headroom == 0)
+	(population-headroom > 3)
+	(wood-amount > 230)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION house)
+	(chat-to-player my-player-number "I NEED MORE SPACE FOR HOUSES")
+)
+
+
+;------------------------------
+;Item: town-center
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == town-center)
+	(building-type-count-total town-center >= 1)
+	(or
+		(building-type-count town-center < 1)
+		(building-type-count-total town-center >= 2)
+	)
+	(or
+		(building-type-count town-center < 2)
+		(building-type-count-total town-center >= 3)
+	)
+	(or
+		(building-type-count town-center < 3)
+		(building-type-count-total town-center >= 4)
+	)
+	(or
+		(building-type-count town-center < 4)
+		(building-type-count-total town-center >= 5)
+	)
+	(building-type-count town-center < 5)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+;------------------------------
+;Item: market
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == market)
+	(building-type-count-total market >= 1)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+
+;------------------------------
+;Item: barracks
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == barracks)
+	(building-type-count-total barracks >= 1)
+	(or
+		(building-type-count barracks < 1)
+		(building-type-count-total barracks >= 2)
+	)
+	(or
+		(building-type-count barracks < 2)
+		(building-type-count-total barracks >= 3)
+	)
+	(or
+		(building-type-count barracks < 3)
+		(building-type-count-total barracks >= 4)
+	)
+	(or
+		(building-type-count barracks < 4)
+		(building-type-count-total barracks >= 5)
+	)
+	(building-type-count barracks < 5)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == barracks)
+	(building-type-count-total barracks >= 6)
+	(or
+		(building-type-count barracks < 6)
+		(building-type-count-total barracks >= 7)
+	)
+	(or
+		(building-type-count barracks < 7)
+		(building-type-count-total barracks >= 8)
+	)
+	(or
+		(building-type-count barracks < 8)
+		(building-type-count-total barracks >= 9)
+	)
+	(or
+		(building-type-count barracks < 9)
+		(building-type-count-total barracks >= 10)
+	)
+	(building-type-count barracks < 10)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+;------------------------------
+;Item: archery-range
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == archery-range)
+	(building-type-count-total archery-range >= 1)
+	(or
+		(building-type-count archery-range < 1)
+		(building-type-count-total archery-range >= 2)
+	)
+	(or
+		(building-type-count archery-range < 2)
+		(building-type-count-total archery-range >= 3)
+	)
+	(or
+		(building-type-count archery-range < 3)
+		(building-type-count-total archery-range >= 4)
+	)
+	(or
+		(building-type-count archery-range < 4)
+		(building-type-count-total archery-range >= 5)
+	)
+	(building-type-count archery-range < 5)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == archery-range)
+	(building-type-count-total archery-range >= 6)
+	(or
+		(building-type-count archery-range < 6)
+		(building-type-count-total archery-range >= 7)
+	)
+	(or
+		(building-type-count archery-range < 7)
+		(building-type-count-total archery-range >= 8)
+	)
+	(or
+		(building-type-count archery-range < 8)
+		(building-type-count-total archery-range >= 9)
+	)
+	(or
+		(building-type-count archery-range < 9)
+		(building-type-count-total archery-range >= 10)
+	)
+	(building-type-count archery-range < 10)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+;------------------------------
+;Item: stable
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == stable)
+	(building-type-count-total stable >= 1)
+	(or
+		(building-type-count stable < 1)
+		(building-type-count-total stable >= 2)
+	)
+	(or
+		(building-type-count stable < 2)
+		(building-type-count-total stable >= 3)
+	)
+	(or
+		(building-type-count stable < 3)
+		(building-type-count-total stable >= 4)
+	)
+	(or
+		(building-type-count stable < 4)
+		(building-type-count-total stable >= 5)
+	)
+	(building-type-count stable < 5)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == stable)
+	(building-type-count-total stable >= 6)
+	(or
+		(building-type-count stable < 6)
+		(building-type-count-total stable >= 7)
+	)
+	(or
+		(building-type-count stable < 7)
+		(building-type-count-total stable >= 8)
+	)
+	(or
+		(building-type-count stable < 8)
+		(building-type-count-total stable >= 9)
+	)
+	(or
+		(building-type-count stable < 9)
+		(building-type-count-total stable >= 10)
+	)
+	(building-type-count stable < 10)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+;------------------------------
+;Item: siege-workshop
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == siege-workshop)
+	(building-type-count-total siege-workshop >= 1)
+	(or
+		(building-type-count siege-workshop < 1)
+		(building-type-count-total siege-workshop >= 2)
+	)
+	(or
+		(building-type-count siege-workshop < 2)
+		(building-type-count-total siege-workshop >= 3)
+	)
+	(or
+		(building-type-count siege-workshop < 3)
+		(building-type-count-total siege-workshop >= 4)
+	)
+	(or
+		(building-type-count siege-workshop < 4)
+		(building-type-count-total siege-workshop >= 5)
+	)
+	(building-type-count siege-workshop < 5)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+;------------------------------
+;Item: monastery
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == monastery)
+	(building-type-count-total monastery >= 1)
+	(or
+		(building-type-count monastery < 1)
+		(building-type-count-total monastery >= 2)
+	)
+	(or
+		(building-type-count monastery < 2)
+		(building-type-count-total monastery >= 3)
+	)
+	(or
+		(building-type-count monastery < 3)
+		(building-type-count-total monastery >= 4)
+	)
+	(or
+		(building-type-count monastery < 4)
+		(building-type-count-total monastery >= 5)
+	)
+	(building-type-count monastery < 5)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+;------------------------------
+;Item: castle
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == castle)
+	(building-type-count-total castle >= 1)
+	(or
+		(building-type-count castle < 1)
+		(building-type-count-total castle >= 2)
+	)
+	(or
+		(building-type-count castle < 2)
+		(building-type-count-total castle >= 3)
+	)
+	(or
+		(building-type-count castle < 3)
+		(building-type-count-total castle >= 4)
+	)
+	(or
+		(building-type-count castle < 4)
+		(building-type-count-total castle >= 5)
+	)
+	(building-type-count castle < 5)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == castle)
+	(building-type-count-total castle >= 6)
+	(or
+		(building-type-count castle < 6)
+		(building-type-count-total castle >= 7)
+	)
+	(or
+		(building-type-count castle < 7)
+		(building-type-count-total castle >= 8)
+	)
+	(or
+		(building-type-count castle < 8)
+		(building-type-count-total castle >= 9)
+	)
+	(or
+		(building-type-count castle < 9)
+		(building-type-count-total castle >= 10)
+	)
+	(building-type-count castle < 10)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+
+;------------------------------
+;Item: blacksmith
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == blacksmith)
+	(building-type-count-total blacksmith >= 1)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+;------------------------------
+;Item: university
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == university)
+	(building-type-count-total university >= 1)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+;------------------------------
+;Item: wonder
+;------------------------------
+(defrule
+	(strategic-number G-BUILDING-EXPANSION == wonder)
+	(building-type-count-total wonder >= 1)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)
+
+
+;------------------------------
+;Finalize Expansion, thanks Scripter64 ;)
+;------------------------------
+
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number sn-maximum-town-size < 10)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 10)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 10")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number sn-maximum-town-size < 12)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 12)
+=>
+	(set-strategic-number sn-maximum-town-size 12)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 12")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number sn-maximum-town-size < 14)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 14)
+=>
+	(set-strategic-number sn-maximum-town-size 14)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 14")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number sn-maximum-town-size < 16)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 16)
+=>
+	(set-strategic-number sn-maximum-town-size 16)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 16")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number sn-maximum-town-size < 18)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 18)
+=>
+	(set-strategic-number sn-maximum-town-size 18)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 18")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number sn-maximum-town-size < 20)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 20)
+=>
+	(set-strategic-number sn-maximum-town-size 20)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 20")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 22)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 22)
+=>
+	(set-strategic-number sn-maximum-town-size 22)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 22")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 24)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 24)
+=>
+	(set-strategic-number sn-maximum-town-size 24)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 24")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 26)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 26)
+=>
+	(set-strategic-number sn-maximum-town-size 26)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 26")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 28)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 28)
+=>
+	(set-strategic-number sn-maximum-town-size 28)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 28")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 30)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 30)
+=>
+	(set-strategic-number sn-maximum-town-size 30)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 30")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 32)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 32)
+=>
+	(set-strategic-number sn-maximum-town-size 32)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 32")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 34)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 34)
+=>
+	(set-strategic-number sn-maximum-town-size 34)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 34")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 36)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 36)
+=>
+	(set-strategic-number sn-maximum-town-size 36)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 36")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 38)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 38)
+=>
+	(set-strategic-number sn-maximum-town-size 38)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 38")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 40)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 40)
+=>
+	(set-strategic-number sn-maximum-town-size 40)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 40")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 42)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 42)
+=>
+	(set-strategic-number sn-maximum-town-size 42)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 42")
+)
+
+(defrule
+	(goal G-TSA 0)
+	(strategic-number sn-maximum-town-size < 44)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number G-TSA-PAUSED-TOWN-SIZE >= 44)
+=>
+	(set-strategic-number sn-maximum-town-size 44)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Readjusting town size: TS 44")
+)
+
+#load-if-not-defined POST-IMPERIAL-AGE-START
+#load-if-not-defined IMPERIAL-AGE-START
+#load-if-not-defined DEFEND-THE-WONDER
+#load-if-not-defined CASTLE-AGE-START
+(defrule
+	(goal G-TSA 0)
+	(current-age >= castle-age)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(not(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY))
+	(strategic-number sn-maximum-town-size < 24)
+=>
+	(set-strategic-number sn-maximum-town-size 24)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 24)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	;(chat-to-player my-player-number "High age or population: Increasing TS to 20")
+	;(disable-timer T-BUILDING)
+)
+#end-if
+(defrule
+	(goal G-TSA 0)
+	(current-age == imperial-age)
+	(strategic-number G-BUILDING-EXPANSION == 0)
+	(strategic-number sn-maximum-town-size < 30)
+=>
+	(set-strategic-number sn-maximum-town-size 30)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 30)
+	;(set-strategic-number G-BUILDING-EXPANSION 0)
+	;(chat-to-player my-player-number "High age or population: Increasing TS to 20")
+	;(disable-timer T-BUILDING)
+)
+#end-if
+#end-if
+#end-if
+
+
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 10)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 10)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 10")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 12)
+=>
+	(set-strategic-number sn-maximum-town-size 12)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 12)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 12")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 14)
+=>
+	(set-strategic-number sn-maximum-town-size 14)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 14)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 14")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 16)
+=>
+	(set-strategic-number sn-maximum-town-size 16)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 16)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 16")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 18)
+=>
+	(set-strategic-number sn-maximum-town-size 18)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 18)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 18")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 20)
+=>
+	(set-strategic-number sn-maximum-town-size 20)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 20)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 20")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 22)
+=>
+	(set-strategic-number sn-maximum-town-size 22)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 22)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 22")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 24)
+=>
+	(set-strategic-number sn-maximum-town-size 24)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 24)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 24")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 26)
+=>
+	(set-strategic-number sn-maximum-town-size 26)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 26)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 26")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 28)
+=>
+	(set-strategic-number sn-maximum-town-size 28)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 28)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 28")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 30)
+=>
+	(set-strategic-number sn-maximum-town-size 30)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 30)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 30")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 32)
+=>
+	(set-strategic-number sn-maximum-town-size 32)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 32)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 32")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 34)
+=>
+	(set-strategic-number sn-maximum-town-size 34)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 34)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 34")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 36)
+=>
+	(set-strategic-number sn-maximum-town-size 36)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 36)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 36")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 38)
+=>
+	(set-strategic-number sn-maximum-town-size 38)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 38)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 38")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 40)
+=>
+	(set-strategic-number sn-maximum-town-size 40)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 40)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 40")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 42)
+=>
+	(set-strategic-number sn-maximum-town-size 42)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 42)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 42")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+(defrule
+	;(goal G-TSA 0)
+	(strategic-number G-BUILDING-EXPANSION != 0)
+	(timer-triggered T-BUILDING)
+	(strategic-number sn-maximum-town-size < 44)
+=>
+	(set-strategic-number sn-maximum-town-size 44)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 44)
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+	(chat-to-player my-player-number "Space for buildings: TS 44")
+	(disable-timer T-BUILDING)
+	(enable-timer T-BUILDING TV-BUILDING)
+)
+
+; To avoid non farm placement if TS set to 44 is not enough for the next building
+(defrule
+	(true)
+=>
+	(set-strategic-number G-BUILDING-EXPANSION 0)
+)

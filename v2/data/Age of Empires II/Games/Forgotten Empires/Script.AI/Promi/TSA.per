@@ -1,0 +1,774 @@
+;=============================================================
+; TSA timer for enemy building detection
+;=============================================================
+(defrule
+	(strategic-number sn-current-age >= feudal)
+=>
+	(enable-timer TSA-timer 60)
+	(set-goal TSA-goal 1)
+	(disable-self))
+
+(defrule
+	(strategic-number sn-current-age >= feudal)
+	(goal TSA-goal 0)
+	(enemy-buildings-in-town)
+=>
+	(enable-timer TSA-timer 1800); 240
+	(chat-local-to-self "Enemy found.")
+	(set-goal TSA-goal 1))
+
+(defrule
+	(goal TSA-goal 1)
+	(timer-triggered TSA-timer)
+=>
+	(disable-timer TSA-timer)
+	(set-goal TSA-goal 0)
+	(chat-local-to-self "Resetting townsize.")
+	(set-strategic-number sn-maximum-town-size 10))
+
+(defrule
+	(goal attacking no)
+	(goal underattack no)
+	(strategic-number my-sn-military-superiority <= 1)
+	(strategic-number sn-maximum-town-size >= 24)
+	(enemy-buildings-in-town)
+=>
+	(up-retreat-now)
+	(chat-local-to-self "TS too big: Retreating and resetting townsize.")
+	(set-strategic-number sn-maximum-town-size 10)
+	(disable-self))
+(defrule
+	(goal attacking no)
+	(goal underattack no)
+	(strategic-number my-sn-military-superiority <= 1)
+	(strategic-number sn-maximum-town-size >= 70)
+	(enemy-buildings-in-town)
+=>
+	(up-retreat-now)
+	(chat-local-to-self "TS too big: Retreating and resetting townsize.")
+	(set-strategic-number sn-maximum-town-size 10)
+;	(disable-self)
+)
+;=============================================================
+; Townsize and attacking
+;=============================================================
+(defrule; mainly used for TC placement
+	(up-compare-sn sn-safe-town-size s:> sn-maximum-town-size)
+=>
+	(up-modify-sn sn-safe-town-size s:= sn-maximum-town-size))
+(defrule
+	(up-compare-sn sn-safe-town-size s:< sn-maximum-town-size)
+	(strategic-number sn-safe-town-size < 45)
+=>
+	(up-modify-sn sn-safe-town-size s:= sn-maximum-town-size))
+(defrule
+	(strategic-number sn-safe-town-size > 45)
+=>
+	(set-strategic-number sn-safe-town-size 45))
+(defrule
+(nor	(goal strategy r-flush)
+	(goal strategy krush))
+=>
+	(up-jump-rule 1))
+(defrule
+(or	(up-building-type-in-town c: watch-tower <= 0)
+	(strategic-number sn-maximum-town-size >= 36))
+(or	(players-building-type-count target-player town-center >= 1)
+;(or	(players-building-type-count target-player mill >= 1)
+(or	(players-building-type-count target-player lumber-camp >= 1)
+	(players-building-type-count target-player mining-camp >= 1)));)
+	(up-building-type-in-town c: town-center <= 0)
+;	(up-building-type-in-town c: mill <= 0)
+	(up-building-type-in-town c: lumber-camp <= 0)
+	(up-building-type-in-town c: mining-camp <= 0)
+	(goal attacking yes)
+	(goal attackmethod TSA)
+=>
+	(up-modify-sn sn-maximum-town-size c:+ 6))
+(defrule
+	(goal strategy r-flush)
+	(unit-type-count siege-units <= 0)
+	(up-building-type-in-town c: town-center >= 1)
+	(up-projectile-detected projectile-town-center c:< 2000)
+	(up-timer-status resetnow == timer-running)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(chat-to-player my-player-number "Enemy TC in TS: Resetting townsize.")
+	(disable-self))
+(defrule
+(nor	(gold-amount >= 200)
+(or	(cc-players-unit-type-count 0 gold-mine > 0)
+(or	(unit-type-count-total trade-cart >= 5)
+(or	(unit-type-count-total trade-cog >= 5)
+(or	(up-compare-goal gl-relics >= 3)
+	(population >= max-pop))))))
+=>
+	(up-jump-rule 2))
+(defrule
+	(strategic-number sn-maximum-town-size <= 249)
+(or	(and	(enemy-captured-relics)
+		(and	(players-building-type-count target-player monastery > 0)
+			(up-building-type-in-town c: monastery == 0)))
+	(and	(players-building-type-count target-player wonder > 0)
+		(up-building-type-in-town c: wonder == 0)))
+	(goal attacking yes)
+	(goal attackmethod TSA)
+=>
+	(up-modify-sn sn-maximum-town-size c:+ 6))
+(defrule
+	(strategic-number sn-maximum-town-size <= 249)
+	(not(enemy-buildings-in-town))
+	(goal attacking yes)
+	(goal attackmethod TSA)
+=>
+	(up-modify-sn sn-maximum-town-size c:+ 6))
+(defrule
+	(goal attacking yes)
+	(goal attackmethod groups)
+(or	(strategic-number sn-percent-attack-soldiers < 100)
+	(strategic-number sn-number-attack-groups < 1000))
+=>
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-number-attack-groups 1000)
+	(set-strategic-number sn-percent-attack-boats 100)
+	(set-strategic-number sn-number-boat-attack-groups 1000))
+
+(defrule
+(nand	(players-population target-player < 75)
+		(population > 100))
+	(goal map land)
+	(goal islands no)
+	(players-building-type-count every-enemy stone-wall-line <= 0)
+	(players-building-type-count every-enemy 939 <= 0); gates
+	(goal attackmethod groups)
+=>
+	(set-strategic-number sn-percent-attack-soldiers 0)
+	(set-strategic-number sn-number-attack-groups 0)
+;	(set-strategic-number sn-percent-attack-boats 0)
+	(set-strategic-number sn-number-boat-attack-groups 0)
+	(set-goal attackmethod TSA)
+	(chat-local-to-self "TSA."))
+(defrule
+(or	(goal map water)
+(or	(goal islands yes)
+(or	(and	(players-population target-player < 70)
+		(population > 105))
+(or	(players-building-type-count any-enemy stone-wall-line >= 1)
+	(players-building-type-count any-enemy 939 >= 1))))); gates
+	(goal attackmethod TSA)
+=>
+;	(set-strategic-number sn-maximum-town-size 10)
+;	(chat-local-to-self "Resetting townsize.")
+	(set-goal attackmethod groups)
+	(chat-local-to-self "groups."))
+(defrule
+	(goal attacking no)
+	(strategic-number sn-maximum-town-size >= 70)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(chat-to-player my-player-number "Debugging town-size."))
+(defrule
+	(goal attacking no)
+	(up-compare-goal strategy != drush)
+(or	(strategic-number sn-percent-attack-soldiers > 0)
+(or	(strategic-number sn-number-attack-groups > 0)
+	(strategic-number sn-number-boat-attack-groups > 0)))
+=>
+	(set-strategic-number sn-percent-attack-soldiers 0)
+	(set-strategic-number sn-number-attack-groups 0)
+;	(set-strategic-number sn-percent-attack-boats 0)
+	(set-strategic-number sn-number-boat-attack-groups 0)
+	(chat-to-player my-player-number "Debugging attack-groups."))
+
+
+
+(defrule
+(or	(goal researchplan yes)
+	(strategic-number my-sn-military-superiority >= 4))
+	(strategic-number my-sn-military-superiority >= 1)
+(or	(strategic-number my-sn-military-superiority >= 3)
+(or	(gold-amount >= 4300)
+	(and	(strategic-number my-sn-military-superiority >= 2); else got "interaction" anyway
+		(goal assistance yes))))
+	(strategic-number sn-current-age >= imperial)
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+(defrule
+	(current-age-time > 240)
+	(current-age >= imperial-age)
+	(players-current-age target-player <= castle-age)
+	(strategic-number my-sn-military-superiority >= 1)
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+(defrule
+	(current-age-time > 1500); Emergency attack rule for super-lategame.
+	(unit-type-count-total 579 < 1) ;Male gold miner
+	(unit-type-count-total 581 < 1) ;female gold miner
+	(cc-players-unit-type-count 0 gold-mine < 10)
+	(population >= max-pop)
+(or	(unit-type-count-total trade-cart == 0)
+	(gold-amount >= 4300))
+(not	(town-under-attack))
+	(goal underattack no)
+	(strategic-number sn-current-age >= imperial)
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+(defrule
+	(population >= max-pop)
+;	(player-in-game any-ally)
+;	(players-population any-ally < max-civ-pop)
+	(strategic-number my-sn-military-superiority >= 1)
+	(strategic-number sn-current-age >= imperial)
+	(goal siegereq yes)
+	(goal researchplan yes)
+	(goal retreat yes)
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+(defrule
+	(population >= max-civ-pop)
+	(strategic-number my-sn-military-superiority >= 4)
+	(unit-type-count battering-ram-line >= 6)
+	(gold-amount >= 200)
+	(players-current-age target-player < imperial-age)
+	(strategic-number sn-current-age >= castlea)
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+
+(defrule
+	(goal assistance yes)
+	(goal researchplan yes)
+	(population >= del-civ-pop)
+	(goal attacking no)
+=>
+	(set-goal attacking yes)
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 1)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-percent-attack-boats 100)
+	(set-strategic-number sn-number-attack-groups 1000)
+	(set-strategic-number sn-number-boat-attack-groups 1000))
+
+(defrule
+	(population > up-max-civ)
+	(strategic-number my-sn-military-superiority >= 2)
+	(current-age >= imperial-age)
+(or	(unit-type-count battering-ram-line >= 5)
+(or	(unit-type-count trebuchet-set >= 3)
+	(strategic-number my-sn-military-superiority >= 4)))
+	(players-current-age target-player <= castle-age)
+	(goal attacking no)
+=>
+	(set-goal attacking yes)
+	(chat-local-to-self "Attack now! They're still not in the imperial-age."))
+(defrule
+	(population > up-max-civ)
+	(strategic-number my-sn-military-superiority >= 2)
+	(current-age >= castle-age)
+(or	(unit-type-count battering-ram-line >= 3)
+(or	(unit-type-count trebuchet-set >= 1)
+	(strategic-number my-sn-military-superiority >= 4)))
+	(players-current-age target-player <= feudal-age)
+	(goal attacking no)
+=>
+	(set-goal attacking yes)
+	(chat-local-to-self "Attack now! They're still not in the castle-age."))
+(defrule
+	(population > up-max-civ)
+	(strategic-number my-sn-military-superiority >= 2)
+	(current-age >= feudal-age)
+(or	(unit-type-count battering-ram-line >= 1)
+(or	(unit-type-count trebuchet-set >= 1)
+	(strategic-number my-sn-military-superiority >= 3)))
+	(players-current-age target-player <= dark-age)
+	(goal attacking no)
+=>
+	(set-goal attacking yes)
+	(chat-local-to-self "Attack now! They're still not in the feudal-age."))
+
+
+
+
+
+
+(defrule
+(or	(game-time >= 2880)
+(or	(military-population >= 32)
+(or	(goal islands yes)
+	(strategic-number my-sn-military-superiority >= 1))))
+	(strategic-number sn-current-age >= imperial)
+	(not(enemy-buildings-in-town))
+	(strategic-number sn-maximum-town-size <= 30)
+	(strategic-number sn-maximum-town-size >= 28)
+=>
+	(set-strategic-number sn-maximum-town-size 31))
+(defrule
+(or	(game-time >= 2760)
+(or	(military-population >= 31)
+(or	(goal islands yes)
+	(strategic-number my-sn-military-superiority >= 1))))
+	(strategic-number sn-current-age >= imperial)
+	(not(enemy-buildings-in-town))
+	(strategic-number sn-maximum-town-size <= 27)
+	(strategic-number sn-maximum-town-size >= 25)
+=>
+	(set-strategic-number sn-maximum-town-size 28))
+(defrule
+(or	(and	(military-population >= 20)
+		(strategic-number my-sn-military-superiority >= 2))
+(or		(game-time >= 2940)
+	(goal islands yes)))
+	(strategic-number sn-current-age == castlea)
+	(not(enemy-buildings-in-town))
+	(strategic-number sn-maximum-town-size <= 30)
+	(strategic-number sn-maximum-town-size >= 28)
+=>
+	(set-strategic-number sn-maximum-town-size 31))
+(defrule
+(or	(and	(military-population >= 18)
+		(strategic-number my-sn-military-superiority >= 2))
+(or		(game-time >= 2710)
+	(goal islands yes)))
+	(strategic-number sn-current-age == castlea)
+	(not(enemy-buildings-in-town))
+	(strategic-number sn-maximum-town-size <= 27)
+	(strategic-number sn-maximum-town-size >= 25)
+=>
+	(set-strategic-number sn-maximum-town-size 28))
+(defrule
+(or	(goal dreitc yes)
+(or	(goal islands yes)
+	(game-time >= 2610)))
+(or	(goal islands yes)
+	(and	(game-time >= 1850)
+		(strategic-number my-sn-military-superiority >= 2)))
+	(not(enemy-buildings-in-town))
+	(strategic-number sn-maximum-town-size <= 24)
+	(strategic-number sn-maximum-town-size >= 22)
+=>
+	(set-strategic-number sn-maximum-town-size 25))
+(defrule
+(or	(game-time >= 1800)
+(or	(goal islands yes)
+(or	(goal dreitc yes)
+	(strategic-number my-sn-military-superiority >= 2))))
+	(strategic-number sn-current-age >= castlea)
+	(not(enemy-buildings-in-town))
+	(strategic-number sn-maximum-town-size <= 21)
+	(strategic-number sn-maximum-town-size >= 19)
+=>
+	(set-strategic-number sn-maximum-town-size 22))
+(defrule
+(or	(game-time >= 1600)
+(or	(goal islands yes)
+(or	(goal dreitc yes)
+	(strategic-number my-sn-military-superiority >= 1))))
+	(strategic-number sn-current-age >= castlea)
+	(not(enemy-buildings-in-town))
+	(strategic-number sn-maximum-town-size <= 18)
+	(strategic-number sn-maximum-town-size >= 16)
+=>
+	(set-strategic-number sn-maximum-town-size 19))
+(defrule
+(or	(game-time >= 1410)
+	(goal kloster yes))
+(or	(game-time >= 1320)
+(or	(goal tc yes)
+	(strategic-number my-sn-military-superiority >= 0)))
+	(strategic-number sn-current-age >= castlea)
+	(not(enemy-buildings-in-town))
+	(strategic-number sn-maximum-town-size <= 15)
+	(strategic-number sn-maximum-town-size >= 14)
+=>
+	(set-strategic-number sn-maximum-town-size 16))
+(defrule
+(or	(game-time >= 1230)
+	(strategic-number sn-current-age >= castlea))
+(or	(goal kloster yes)
+	(wood-amount >= 201))
+; test	(not(enemy-buildings-in-town))
+	(strategic-number sn-maximum-town-size <= 13)
+	(strategic-number sn-maximum-town-size >= 12)
+=>
+	(set-strategic-number sn-maximum-town-size 14))
+(defrule
+(or	(building-type-count-total archery-range >= 1)
+(or	(building-type-count-total stable >= 1)
+(or	(building-type-count-total blacksmith >= 1)
+(or	(building-type-count-total market >= 1)
+	(game-time >= 1080)))))
+; test	(not(enemy-buildings-in-town))
+	(strategic-number sn-maximum-town-size <= 11)
+	(strategic-number sn-maximum-town-size >= 10)
+=>
+	(set-strategic-number sn-maximum-town-size 12))
+;==========================================
+; Attack earlier if we have siege
+;==========================================
+(defrule
+	(strategic-number sn-current-age == castlea)
+(or	(and	(unit-type-count battering-ram-line >= 9)
+		(strategic-number my-sn-military-superiority >= 2))
+(or	(and	(unit-type-count battering-ram-line >= 6)
+		(strategic-number my-sn-military-superiority >= 3))
+	(and	(unit-type-count battering-ram-line >= 4)
+		(strategic-number my-sn-military-superiority >= 4))))
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+(defrule
+	(goal researchplan yes)
+(or	(unit-type-count battering-ram-line >= 8)
+	(unit-type-count trebuchet-set >= 6))
+	(players-current-age target-player < imperial-age)
+(or	(strategic-number my-sn-military-superiority >= 2)
+	(and	(strategic-number my-sn-military-superiority >= 1)
+		(current-age >= imperial-age)))
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+(defrule
+	(goal researchplan yes)
+(or	(unit-type-count battering-ram-line >= 9)
+(or	(unit-type-count trebuchet-set >= 8)
+	(strategic-number my-sn-military-superiority >= 2)))
+	(strategic-number my-sn-military-superiority >= 1)
+	(unit-type-count battering-ram-line >= 5)
+(or	(unit-type-count unpacked-trebuchet >= 5)
+	(unit-type-count trebuchet >= 5))
+	(strategic-number my-sn-military-superiority >= 2)
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+(defrule
+	(goal researchplan yes)
+(or	(and	(unit-type-count trebuchet-set >= 9)
+		(strategic-number my-sn-military-superiority >= 1))
+(or	(and	(unit-type-count trebuchet-set >= 6)
+		(strategic-number my-sn-military-superiority >= 2))
+	(and	(unit-type-count trebuchet-set >= 4)
+		(strategic-number my-sn-military-superiority >= 3))))
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+(defrule
+	(goal researchplan yes)
+(or	(and	(unit-type-count battering-ram-line >= 10)
+		(strategic-number my-sn-military-superiority >= 1))
+(or	(and	(unit-type-count battering-ram-line >= 7)
+		(strategic-number my-sn-military-superiority >= 2))
+	(and	(unit-type-count battering-ram-line >= 5)
+		(strategic-number my-sn-military-superiority >= 3))))
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+(defrule
+	(strategic-number sn-current-age >= imperial)
+(or	(unit-type-count battering-ram-line >= 13)
+	(unit-type-count trebuchet-set >= 11))
+	(strategic-number my-sn-military-superiority >= 1)
+	(goal attacking no)
+=>
+	(set-goal attacking yes))
+;==============================================================
+; Nomad
+;==============================================================
+(defrule
+	(building-type-count-total town-center >= 1)
+	(strategic-number sn-maximum-town-size >= 255)
+=>
+	(set-strategic-number sn-placement-zone-size 30)
+	(set-strategic-number sn-target-evaluation-ally-proximity 0)
+	(set-strategic-number sn-maximum-town-size 10)
+	(disable-self))
+(defrule
+	(game-time > 15)
+	(building-type-count-total town-center >= 1)
+	(strategic-number sn-camp-max-distance >= 255)
+=>
+	(set-strategic-number sn-camp-max-distance 33)
+	(disable-self))
+;==============================================================
+; Warboats
+;==============================================================
+(defrule
+	(players-unit-type-count every-enemy galley-line <= 0)
+	(players-unit-type-count every-enemy fire-ship-line <= 0)
+	(players-unit-type-count every-enemy longboat-line <= 0)
+	(players-unit-type-count every-enemy turtle-ship-line <= 0)
+	(players-unit-type-count every-enemy cannon-galleon-line <= 0)
+(or	(goal researchplan yes)
+(or	(gold-amount >= 1000)
+	(goal attacking yes)))
+	(warboat-count >= 6)
+	(strategic-number sn-percent-attack-boats < 100)
+=>
+	(set-strategic-number sn-percent-attack-boats 100)
+	(set-strategic-number sn-number-boat-attack-groups 1000))
+(defrule
+	(players-unit-type-count every-enemy galley-line <= 5)
+	(players-unit-type-count every-enemy fire-ship-line <= 5)
+	(players-unit-type-count every-enemy longboat-line <= 5)
+	(players-unit-type-count every-enemy turtle-ship-line <= 5)
+	(players-unit-type-count every-enemy cannon-galleon-line <= 5)
+(or	(goal researchplan yes)
+(or	(gold-amount >= 1000)
+	(goal attacking yes)))
+	(warboat-count >= 17)
+	(strategic-number sn-percent-attack-boats < 100)
+=>
+	(set-strategic-number sn-percent-attack-boats 100)
+	(set-strategic-number sn-number-boat-attack-groups 1000))
+(defrule
+	(players-unit-type-count every-enemy galley-line <= 17)
+	(players-unit-type-count every-enemy fire-ship-line <= 17)
+	(players-unit-type-count every-enemy longboat-line <= 17)
+	(players-unit-type-count every-enemy turtle-ship-line <= 17)
+	(players-unit-type-count every-enemy cannon-galleon-line <= 17)
+(or	(goal researchplan yes)
+(or	(gold-amount >= 1000)
+	(goal attacking yes)))
+	(warboat-count >= 30)
+	(strategic-number sn-percent-attack-boats < 100)
+=>
+	(set-strategic-number sn-percent-attack-boats 100)
+	(set-strategic-number sn-number-boat-attack-groups 1000))
+(defrule
+	(players-unit-type-count every-enemy galley-line <= 17)
+	(players-unit-type-count every-enemy fire-ship-line <= 17)
+	(players-unit-type-count every-enemy longboat-line <= 17)
+	(players-unit-type-count every-enemy turtle-ship-line <= 17)
+	(players-unit-type-count every-enemy cannon-galleon-line <= 17)
+	(town-under-attack)
+	(warboat-count >= 30)
+	(strategic-number sn-percent-attack-boats < 100)
+=>
+	(set-strategic-number sn-percent-attack-boats 100)
+	(set-strategic-number sn-number-boat-attack-groups 1000))
+(defrule
+	(players-unit-type-count every-enemy galley-line <= 25)
+	(players-unit-type-count every-enemy fire-ship-line <= 25)
+	(players-unit-type-count every-enemy longboat-line <= 25)
+	(players-unit-type-count every-enemy turtle-ship-line <= 25)
+	(players-unit-type-count every-enemy cannon-galleon-line <= 25)
+(or	(goal researchplan yes)
+(or	(gold-amount >= 1000)
+	(goal attacking yes)))
+	(warboat-count >= 40)
+	(strategic-number sn-percent-attack-boats < 100)
+=>
+	(set-strategic-number sn-percent-attack-boats 100)
+	(set-strategic-number sn-number-boat-attack-groups 1000))
+(defrule
+	(strategic-number sn-percent-attack-soldiers == 100)
+	(strategic-number sn-percent-attack-boats < 100)
+	(warboat-count >= 15)
+=>
+	(set-strategic-number sn-percent-attack-boats 100)
+	(set-strategic-number sn-number-boat-attack-groups 1000))
+(defrule
+(or	(players-unit-type-count any-enemy galley-line >= 5)
+(or	(players-unit-type-count any-enemy fire-ship-line >= 5)
+(or	(players-unit-type-count any-enemy longboat-line >= 5)
+(or	(players-unit-type-count any-enemy turtle-ship-line >= 5)
+	(players-unit-type-count any-enemy cannon-galleon-line >= 5)))))
+	(warboat-count < 15)
+	(strategic-number sn-percent-attack-boats == 100)
+=>
+	(set-strategic-number sn-percent-attack-boats 0)
+	(set-strategic-number sn-number-boat-attack-groups 0))
+(defrule
+	(current-age <= feudal-age)
+	(unit-type-count-total galley-line < 6)
+	(players-unit-type-count any-enemy galley-line > 4)
+	(strategic-number sn-percent-attack-boats == 100)
+=>
+	(up-retreat-to dock c:< galley-line)
+	(set-strategic-number sn-percent-attack-boats 0))
+(defrule
+	(current-age <= feudal-age)
+	(unit-type-count-total galley-line < 5)
+	(players-unit-type-count any-enemy fire-ship-line > 0)
+	(strategic-number sn-percent-attack-boats == 100)
+=>
+	(up-retreat-to dock c:< galley-line)
+	(set-strategic-number sn-percent-attack-boats 0))
+(defrule
+	(goal researchplan no)
+	(unit-type-count-total galley-line < 10)
+	(players-unit-type-count any-enemy galley-line > 7)
+	(strategic-number sn-percent-attack-boats == 100)
+=>
+	(up-retreat-to dock c:< galley-line)
+	(set-strategic-number sn-percent-attack-boats 0))
+(defrule
+	(goal researchplan no)
+	(unit-type-count-total galley-line < 15)
+	(players-unit-type-count any-enemy galley-line > 15)
+	(strategic-number sn-percent-attack-boats == 100)
+=>
+	(up-retreat-to dock c:< galley-line)
+	(set-strategic-number sn-percent-attack-boats 0))
+(defrule
+	(unit-type-count-total galley-line < 15)
+	(players-unit-type-count any-enemy fire-ship-line > 5)
+	(unit-type-count-total 112 > 0)
+	(strategic-number sn-percent-attack-boats == 100)
+=>
+	(up-retreat-to dock c:< galley-line)
+	(set-strategic-number sn-percent-attack-boats 0))
+(defrule
+	(unit-type-count-total galley-line < 20)
+	(players-unit-type-count any-enemy fire-ship-line > 10)
+	(strategic-number sn-percent-attack-boats == 100)
+=>
+	(up-retreat-to dock c:< galley-line)
+	(set-strategic-number sn-percent-attack-boats 0))
+;==============================================================
+; Spread military units - by Archon
+;==============================================================
+(defrule
+	(military-population >= 12)
+=>
+	(enable-timer spread 2)
+	(disable-self))
+;==============================================================
+(defrule
+	(goal spreadunits no)
+	(timer-triggered spread)
+=>
+	(disable-timer spread)
+	(set-strategic-number sn-task-ungrouped-soldiers 1)
+	(set-goal spreadunits yes)
+	(enable-timer spread 3)); 5
+;==============================================================
+(defrule
+	(goal spreadunits yes)
+	(timer-triggered spread)
+=>
+	(disable-timer spread)
+	(set-strategic-number sn-task-ungrouped-soldiers 0)
+	(set-goal spreadunits no); goal because sn-task-ungrouped-soldiers always 1 as a fact
+	(enable-timer spread 180))
+;==============================================================
+; Under attack
+;==============================================================
+(defrule ; list of dead villies taken by IS_Machine
+(or	(unit-type-count-total 211 >= 2)	; Dead female villager
+(or	(unit-type-count-total 213 >= 2)	; Dead female builder
+(or	(unit-type-count-total 215 >= 2)	; Dead female farmer
+(or	(unit-type-count-total 217 >= 2)	; Dead female hunter
+(or	(unit-type-count-total 219 >= 2)	; Dead female lumberjack
+	(unit-type-count-total 221 >= 2))))))	; Dead female gold miner
+	(goal defend no)
+=>
+	(set-goal defend yes)
+	(chat-local-to-self "Resetting townsize.")
+	(set-strategic-number sn-maximum-town-size 10))
+;==============================================================
+(defrule
+(or	(unit-type-count-total 224 >= 2)	; Dead male villager
+(or	(unit-type-count-total 225 >= 2)	; Dead male builder
+(or	(unit-type-count-total 226 >= 2)	; Dead male farmer
+(or	(unit-type-count-total 227 >= 2)	; Dead male hunter
+(or	(unit-type-count-total 228 >= 2)	; Dead male lumberjack
+	(unit-type-count-total 229 >= 2))))))	; Dead male gold miner
+	(goal defend no)
+=>
+	(set-goal defend yes)
+	(chat-local-to-self "Resetting townsize.")
+	(set-strategic-number sn-maximum-town-size 10))
+;==============================================================
+(defrule
+	(unit-type-count-total 211 <= 1)	; Dead female villager
+	(unit-type-count-total 213 <= 1)	; Dead female builder
+	(unit-type-count-total 215 <= 1)	; Dead female farmer
+	(unit-type-count-total 217 <= 1)	; Dead female hunter
+	(unit-type-count-total 219 <= 1)	; Dead female lumberjack
+	(unit-type-count-total 221 <= 1)	; Dead female gold miner
+	(unit-type-count-total 224 <= 1)	; Dead male villager
+	(unit-type-count-total 225 <= 1)	; Dead male builder
+	(unit-type-count-total 226 <= 1)	; Dead male farmer
+	(unit-type-count-total 227 <= 1)	; Dead male hunter
+	(unit-type-count-total 228 <= 1)	; Dead male lumberjack
+	(unit-type-count-total 229 <= 1)	; Dead male gold miner
+	(goal defend yes)
+=>
+	(set-goal defend no))
+;==============================================================
+(defrule
+	(up-enemy-units-in-town >= 8)
+	(goal attacking no)
+	(town-under-attack)
+	(goal defend yes)
+(or	(goal Multiplayer yes)
+(or	(and	(up-enemy-units-in-town >= 30)
+		(military-population < 30))
+	(strategic-number my-sn-military-superiority <= 0)))
+	(population < del-civ-pop)
+	(goal underattack no)
+=>
+	(set-goal underattack yes)
+;	(chat-local-to-self "Under attack: Resetting units.")
+;	(up-reset-unit c: -1)
+)
+;==============================================================
+(defrule
+(or	(population >= del-civ-pop)
+(or	(up-enemy-units-in-town < 5)
+(or	(goal attacking yes)
+(or	(and	(goal Multiplayer no)
+		(strategic-number my-sn-military-superiority >= 1))
+	(goal defend no)))))
+	(goal underattack yes)
+=>
+;	(chat-local-to-self "The attack should be over now.")
+	(set-goal underattack no))
+;==============================================================
+; Etc.
+;==============================================================
+(defrule
+	(player-in-game any-ally)
+(not	(taunt-detected any-ally 31))
+	(goal attack yes)
+	(goal attacking yes)
+=>
+	(chat-to-player every-ally "31Attacking.")	
+	(set-goal attack no)
+	(enable-timer attack-chat 240))
+
+(defrule
+	(timer-triggered attack-chat)
+=>
+	(disable-timer attack-chat)
+	(set-goal attack yes))
+;==============================================================
+; Scouting for enemy units
+;==============================================================
+(defrule
+	(goal underattack no)
+	(goal islands yes)
+	(warboat-count >= 1)
+(or	(population > del-civ-pop)
+	(goal researchplan yes))
+	(strategic-number sn-percent-attack-boats < 100)
+=>
+	(set-strategic-number sn-number-attack-groups 1)
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 1)
+	(set-strategic-number sn-percent-attack-boats 99)
+	(attack-now)
+;tl	(chat-local-to-self "Scouting the enemy.")
+	(disable-self))
+;==============================================================
+(defrule
+	(goal islands yes)
+=>
+	(set-strategic-number sn-percent-attack-boats 0)
+	(set-strategic-number sn-ignore-attack-group-under-attack 0)
+	(set-strategic-number sn-number-attack-groups 0)
+	(disable-self))

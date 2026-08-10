@@ -1,0 +1,45 @@
+#load-if-not-defined REGICIDE
+#load-if-defined DARK-AGE-START
+(defrule
+	(game-time <= 51)
+	(goal gl-current-age gv-dark)
+	(goal SLING 0)
+	(up-compare-goal gl-strategy != turtle-rush)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+=>
+	(set-goal DOCK 2)
+	(set-goal gl-strategy watermap-fc)
+	(set-strategic-number sn-allow-new-build-order 2)
+	(set-strategic-number sn-dock-placement-mode -1)
+	(set-goal gl-strategy-type FC2)
+)
+#else
+(defrule
+	(game-time <= 51)
+	(goal gl-current-age gv-dark)
+	(goal SLING 0)
+	(up-compare-goal gl-strategy != turtle-rush)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+=>
+	(set-goal DOCK 2)
+	(set-goal gl-strategy watermap-fc)
+	(set-strategic-number sn-allow-new-build-order 2)
+	(set-strategic-number sn-dock-placement-mode -1)
+	(set-goal gl-strategy-type FC2)
+)
+#end-if
+#else
+(defrule
+	(game-time <= 51)
+	(goal gl-current-age gv-dark)
+	(goal SLING 0)
+	(up-compare-goal gl-strategy != turtle-rush)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+=>
+	(set-goal DOCK 2)
+	(set-goal gl-strategy watermap-fc)
+	(set-strategic-number sn-allow-new-build-order 2)
+	(set-strategic-number sn-dock-placement-mode -1)
+	(set-goal gl-strategy-type FC2)
+)
+#end-if

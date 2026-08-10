@@ -1,0 +1,25 @@
+#load-if-not-defined UP-HUMAN-IN-GAME
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy korean-boom)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC)
+	(disable-self)
+)
+#else
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy castle-drop)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC)
+	(disable-self)
+)
+#end-if
+
+
+
+
+
+

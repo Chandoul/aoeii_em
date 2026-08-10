@@ -1,0 +1,2205 @@
+; ^^
+
+; ============== RULES
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(goal gl-current-age gv-feudal-up)
+=>
+	(set-goal gl-strategy-control AGE-UP-CASTLE)
+	(set-strategic-number sn-add-rams-in-attack 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(or	(and	(current-age >= castle-age)
+				(and	(not	(civ-selected byzantine))
+					(current-age-time > 500)))
+			(game-time > 4200)))
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-control 0)
+)
+
+(defrule
+	(up-compare-goal gl-strategy != heavy-ranged-flush)
+=>
+	(up-jump-rule 161)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal MILITARY 0)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 0)
+=>
+	(set-strategic-number sn-add-rams-in-attack 1)
+	(disable-timer 2)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal MILITARY 1)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 1)
+=>
+	(enable-timer 2 90)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(wood-amount < 400)
+	(current-age == dark-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 22)
+	(set-strategic-number sn-wood-gatherer-percentage 78)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-skip-first-mining-camp 1)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(wood-amount > 400)
+	(current-age == dark-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(current-age-time < 360)
+	(current-age == feudal-age)
+	(strategic-number sn-wood-gatherer-percentage != 60)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(current-age == feudal-age)
+	(current-age-time > 360)
+	(wood-amount > 300)
+	(food-amount < 100)
+	(strategic-number sn-wood-gatherer-percentage != 50)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(current-age == feudal-age)
+	(current-age-time > 360)
+	(wood-amount < 100)
+	(food-amount > 200)
+	(strategic-number sn-wood-gatherer-percentage != 60)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(wood-amount < 400)
+	(current-age == dark-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 20)
+		(strategic-number sn-wood-gatherer-percentage != 70))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 70)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(wood-amount > 400)
+	(current-age == dark-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 35)
+		(strategic-number sn-wood-gatherer-percentage != 50))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(current-age == feudal-age)
+	(current-age-time < 260)
+	(or	(strategic-number sn-food-gatherer-percentage != 30)
+		(strategic-number sn-wood-gatherer-percentage != 55))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 55)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(current-age == feudal-age)
+	(current-age-time > 260)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 25)
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(set-strategic-number sn-gold-gatherer-percentage 30)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(current-age == feudal-age)
+	(current-age-time > 360)
+	(wood-amount > 200)
+	(food-amount < 100)
+	(gold-amount < 70)
+	(strategic-number sn-wood-gatherer-percentage != 30)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 40)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(current-age == feudal-age)
+	(current-age-time > 360)
+	(wood-amount < 100)
+	(food-amount > 200)
+	(gold-amount < 70)
+	(or	(strategic-number sn-gold-gatherer-percentage != 30)
+		(strategic-number sn-food-gatherer-percentage != 20))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 30)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(current-age == feudal-age)
+	(current-age-time > 360)
+	(wood-amount > 150)
+	(food-amount > 200)
+	(gold-amount < 70)
+	(or	(strategic-number sn-gold-gatherer-percentage != 40)
+		(strategic-number sn-food-gatherer-percentage != 20))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 40)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(current-age == feudal-age)
+	(current-age-time > 360)
+	(food-amount > 100)
+	(wood-amount > 100)
+	(gold-amount > 70)
+	(or	(strategic-number sn-gold-gatherer-percentage != 50)
+		(strategic-number sn-food-gatherer-percentage != 25))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 25)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control AGE-UP-CASTLE)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(current-age == feudal-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control AGE-UP-CASTLE)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(current-age == feudal-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-stone-gatherer-percentage == 0)
+	(building-type-count-total town-center < 3)
+	(or	(and	(stone-amount < 200)
+			(building-type-count-total town-center == 1))
+		(and	(stone-amount < 100)
+			(building-type-count-total town-center > 1)))
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 7)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-stone-gatherer-percentage == 7)
+	(or	(stone-amount >= 200)
+		(or	(and	(stone-amount >= 100)
+				(building-type-count-total town-center > 1))
+			(building-type-count-total town-center > 2)))
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(not	(goal gl-strategy-control AGE-UP-CASTLE))
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(not	(goal gl-strategy-control AGE-UP-CASTLE))
+	(current-age-time > 60)
+	(food-amount > 400)
+	(wood-amount < 200)
+	(gold-amount < 200)
+	(strategic-number sn-food-gatherer-percentage != 20)
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 40)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(not	(goal gl-strategy-control AGE-UP-CASTLE))
+	(current-age-time > 60)
+	(food-amount < 200)
+	(wood-amount > 400)
+	(gold-amount < 200)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(strategic-number sn-gold-gatherer-percentage != 40))
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 20)
+	(set-strategic-number sn-gold-gatherer-percentage 40)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(not	(goal gl-strategy-control AGE-UP-CASTLE))
+	(current-age-time > 60)
+	(food-amount < 200)
+	(wood-amount > 400)
+	(gold-amount > 400)
+	(or	(strategic-number sn-food-gatherer-percentage != 50)
+		(strategic-number sn-gold-gatherer-percentage != 20))
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(not	(goal gl-strategy-control AGE-UP-CASTLE))
+	(current-age-time > 60)
+	(food-amount > 300)
+	(wood-amount < 200)
+	(gold-amount > 300)
+	(or	(strategic-number sn-food-gatherer-percentage != 30)
+		(strategic-number sn-gold-gatherer-percentage != 10))
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(not	(goal gl-strategy-control AGE-UP-CASTLE))
+	(current-age-time > 60)
+	(food-amount < 300)
+	(wood-amount < 300)
+	(gold-amount < 300)
+	(or	(strategic-number sn-food-gatherer-percentage != 35)
+		(strategic-number sn-gold-gatherer-percentage != 15))
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(not	(goal gl-strategy-control AGE-UP-CASTLE))
+	(current-age-time > 60)
+	(food-amount > 300)
+	(wood-amount > 300)
+	(gold-amount > 300)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(strategic-number sn-gold-gatherer-percentage != 25))
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(goal gl-strategy-control CASTLE-TRASH)
+		(goal gl-strategy-control CASTLE-ARCHERY))
+	(building-type-count-total castle < 1)
+	(strategic-number sn-stone-gatherer-percentage < 15)
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 15)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(building-type-count-total castle > 0)
+	(building-type-count-total castle < 2)
+	(strategic-number sn-stone-gatherer-percentage != 8)
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 8)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(building-type-count-total castle > 1)
+	(strategic-number sn-stone-gatherer-percentage != 5)
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+; =========== THREAT LEVEL - SKIRM FLUSH
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age every-enemy == dark-age)
+	(players-military-population every-enemy > 1)
+=>
+	(set-strategic-number sn-threat-level 1)
+	(set-strategic-number sn-militia-count 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age every-enemy == feudal-age)
+=>
+	(enable-timer 24 12)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age every-enemy == feudal-age)
+	(players-military-population every-enemy > 1)
+	(not	(timer-triggered 24))
+	(game-time < 900)
+=>
+	(set-strategic-number sn-threat-level 1)
+	(set-strategic-number sn-militia-count 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(current-age == feudal-age)
+	(strategic-number sn-threat-level < 1)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(players-current-age every-enemy >= feudal-age)
+	(players-civ every-enemy gothic)
+=>
+	(set-strategic-number sn-threat-level 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age every-enemy == feudal-age)
+	(players-unit-type-count every-enemy archer-line > 4)
+	(players-unit-type-count every-enemy militiaman-line < 3)
+	(players-unit-type-count every-enemy skirmisher-line < 4)
+	(players-unit-type-count every-enemy scout-cavalry-line < 2)
+	(players-building-type-count every-enemy stable == 0)
+=>
+	(set-strategic-number sn-threat-level -2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age every-enemy == feudal-age)
+	(not	(players-civ every-enemy byzantine))
+	(players-unit-type-count every-enemy archer-line > 4)
+	(players-unit-type-count every-enemy skirmisher-line > 3)
+	(players-unit-type-count every-enemy militiaman-line < 2)
+	(players-unit-type-count every-enemy scout-cavalry-line < 2)
+	(players-building-type-count every-enemy stable == 0)
+=>
+	(set-strategic-number sn-threat-level -2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age every-enemy == feudal-age)
+	(players-civ every-enemy byzantine)
+	(players-unit-type-count every-enemy archer-line > 4)
+	(players-unit-type-count every-enemy skirmisher-line > 3)
+	(players-unit-type-count every-enemy militiaman-line < 2)
+	(players-unit-type-count every-enemy scout-cavalry-line < 2)
+	(players-building-type-count every-enemy stable == 0)
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age every-enemy == feudal-age)
+	(players-unit-type-count every-enemy archer-line > 4)
+	(players-unit-type-count every-enemy skirmisher-line > 3)
+	(players-unit-type-count every-enemy militiaman-line > 2)
+	(players-unit-type-count every-enemy scout-cavalry-line < 2)
+	(players-building-type-count every-enemy stable == 0)
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age every-enemy >= castle-age)
+	(players-military-population every-enemy < 2)
+	(players-building-type-count every-enemy archery-range == 0)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age every-enemy >= castle-age)
+	(players-military-population every-enemy > 1)
+	(or	(players-unit-type-count every-enemy archer-line > 0)
+		(players-unit-type-count every-enemy skirmisher-line > 0))
+	(players-unit-type-count every-enemy eagle-warrior-line < 2)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(strategic-number sn-threat-level < 2)
+	(players-current-age every-enemy >= castle-age)
+	(or	(players-building-type-count every-enemy barracks > 1)
+		(players-unit-type-count every-enemy eagle-warrior-line > 2))
+	(players-building-type-count every-enemy archery-range == 0)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(game-time < 1300)
+	(strategic-number sn-threat-level > 0)
+	(players-unit-type-count every-enemy eagle-warrior-line < 2)
+	(players-unit-type-count every-enemy militiaman-line < 3)
+	(players-building-type-count every-enemy archery-range > 0)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age every-enemy == feudal-age)
+	(strategic-number sn-threat-level > -1)
+	(players-unit-type-count every-enemy militiaman-line < 3)
+	(players-building-type-count every-enemy archery-range > 1)
+	(players-building-type-count every-enemy stable == 0)
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(strategic-number sn-threat-level < 1)
+	(players-unit-type-count every-enemy militiaman-line > 2)
+=>
+	(set-strategic-number sn-threat-level 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(or	(and	(strategic-number sn-threat-level == 0)
+			(and	(players-unit-type-count every-enemy archer-line < 3)
+				(and	(players-unit-type-count every-enemy spearman-line < 2)
+					(players-unit-type-count every-enemy militiaman-line > 4))))
+		(or	(players-unit-type-count every-enemy scout-cavalry-line > 1)
+			(players-building-type-count every-enemy stable > 0)))
+=>
+	(set-strategic-number sn-threat-level 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(or	(players-unit-type-count every-enemy knight-line > 0)
+		(or	(players-unit-type-count every-enemy scout-cavalry-line > 3)
+			(and	(players-building-type-count every-enemy stable > 0)
+				(players-current-age every-enemy >= castle-age))))
+=>
+	(set-strategic-number sn-threat-level 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(game-time > 1200)
+	(strategic-number sn-threat-level < 0)
+	(or	(players-military-population every-enemy > 13)
+		(or	(players-unit-type-count every-enemy knight-line > 0)
+			(players-unit-type-count every-enemy eagle-warrior-line > 2)))
+	(players-current-age every-enemy >= castle-age)
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+; =========== THREAT LEVEL - ARCHER/SKIRM FLUSH
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(current-age == feudal-age)
+	(players-current-age every-enemy <= feudal-age)
+	(strategic-number sn-threat-level < 1)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(strategic-number sn-threat-level > 0)
+	(unit-type-count-total archer-line > 4)
+	(or	(strategic-number sn-militia-count == 1)
+		(players-civ every-enemy gothic))
+	(players-unit-type-count every-enemy scout-cavalry-line < 2)
+	(players-unit-type-count every-enemy knight-line == 0)
+	(players-building-type-count every-enemy stable == 0)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+=>
+	(set-strategic-number sn-threat-level 0)
+	(set-strategic-number sn-militia-count 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(unit-type-count-total archer-line > 4)
+	(players-current-age every-enemy == feudal-age)
+	(players-unit-type-count every-enemy archer-line > 4)
+	(players-unit-type-count every-enemy militiaman-line < 3)
+	(players-unit-type-count every-enemy skirmisher-line < 4)
+	(players-unit-type-count every-enemy scout-cavalry-line < 2)
+	(players-building-type-count every-enemy stable == 0)
+=>
+	(set-strategic-number sn-threat-level -2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(unit-type-count-total archer-line > 4)
+	(players-current-age every-enemy == feudal-age)
+	(players-unit-type-count every-enemy archer-line > 4)
+	(players-unit-type-count every-enemy skirmisher-line > 3)
+	(players-unit-type-count every-enemy militiaman-line < 3)
+	(players-unit-type-count every-enemy scout-cavalry-line < 2)
+	(players-building-type-count every-enemy stable == 0)
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(unit-type-count-total archer-line > 4)
+	(players-current-age every-enemy == feudal-age)
+	(players-unit-type-count every-enemy archer-line > 4)
+	(players-unit-type-count every-enemy skirmisher-line > 3)
+	(players-unit-type-count every-enemy militiaman-line > 2)
+	(players-unit-type-count every-enemy scout-cavalry-line < 2)
+	(players-building-type-count every-enemy stable == 0)
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(unit-type-count-total archer-line > 4)
+	(players-current-age every-enemy == feudal-age)
+	(players-unit-type-count every-enemy archer-line > 4)
+	(players-unit-type-count every-enemy militiaman-line > 4)
+	(players-unit-type-count every-enemy scout-cavalry-line < 2)
+	(players-building-type-count every-enemy stable == 0)
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(players-current-age every-enemy >= castle-age)
+	(players-military-population every-enemy < 2)
+	(players-building-type-count every-enemy archery-range == 0)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(players-current-age every-enemy >= castle-age)
+	(players-military-population every-enemy > 1)
+	(or	(players-unit-type-count every-enemy archer-line > 0)
+		(players-unit-type-count every-enemy skirmisher-line > 0))
+	(players-unit-type-count every-enemy eagle-warrior-line < 2)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(unit-type-count-total archer-line > 3)
+	(players-current-age every-enemy >= castle-age)
+	(players-military-population every-enemy > 1)
+	(or	(players-unit-type-count every-enemy archer-line > 0)
+		(players-unit-type-count every-enemy skirmisher-line > 0))
+	(players-unit-type-count every-enemy eagle-warrior-line < 2)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(strategic-number sn-threat-level < 2)
+	(players-current-age every-enemy >= castle-age)
+	(or	(players-building-type-count every-enemy barracks > 1)
+		(players-unit-type-count every-enemy eagle-warrior-line > 2))
+	(players-building-type-count every-enemy archery-range == 0)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(game-time < 1300)
+	(strategic-number sn-threat-level > 0)
+	(players-unit-type-count every-enemy eagle-warrior-line < 2)
+	(players-unit-type-count every-enemy militiaman-line < 3)
+	(players-building-type-count every-enemy archery-range > 0)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(unit-type-count-total archer-line > 4)
+	(players-current-age every-enemy == feudal-age)
+	(players-unit-type-count every-enemy militiaman-line < 3)
+	(players-building-type-count every-enemy archery-range > 1)
+	(players-building-type-count every-enemy stable == 0)
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(players-current-age every-enemy == feudal-age)
+	(or	(players-unit-type-count every-enemy scout-cavalry-line > 1)
+		(players-building-type-count every-enemy stable > 0))
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(unit-type-count-total archer-line > 3)
+	(strategic-number sn-threat-level > 0)
+	(or	(players-unit-type-count every-enemy archer-line > 2)
+		(players-unit-type-count every-enemy spearman-line > 1))
+	(players-unit-type-count every-enemy militiaman-line > 4)
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(unit-type-count-total spearman-line < 5)
+	(players-unit-type-count every-enemy scout-cavalry-line > 4)
+=>
+	(set-strategic-number sn-threat-level 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(strategic-number sn-threat-level == 1)
+	(strategic-number sn-militia-count == 0)
+	(unit-type-count-total spearman-line >= 5)
+	(players-unit-type-count every-enemy scout-cavalry-line > 1)
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(strategic-number sn-threat-level < 2)
+	(or	(unit-type-count-total spearman-line < 5)
+		(and	(players-unit-type-count every-enemy knight-line > 4)
+			(unit-type-count-total spearman-line < 17)))
+	(or	(players-unit-type-count every-enemy knight-line > 0)
+		(and	(players-building-type-count every-enemy stable > 0)
+			(players-current-age every-enemy >= castle-age)))
+=>
+	(set-strategic-number sn-threat-level 2)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(strategic-number sn-threat-level == 2)
+	(unit-type-count-total spearman-line > 4)
+	(or	(players-unit-type-count every-enemy knight-line < 5)
+		(unit-type-count-total spearman-line > 16))
+	(or	(players-unit-type-count every-enemy knight-line > 0)
+		(and	(players-building-type-count every-enemy stable > 0)
+			(players-current-age every-enemy >= castle-age)))
+=>
+	(set-strategic-number sn-threat-level 1)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-ARCHERS)
+	(game-time > 1300)
+	(strategic-number sn-threat-level < 0)
+	(players-military-population every-enemy > 13)
+	(players-current-age every-enemy >= castle-age)
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(strategic-number sn-threat-level < 2)
+	(or	(players-unit-type-count every-enemy monk > 3)
+		(players-building-type-count every-enemy monastery > 1))
+=>
+	(set-strategic-number sn-threat-level 2)
+)
+
+; =========== THREAT LEVEL - CASTLE AGE ONWARDS
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-current-age gv-feudal-up)
+	(current-age == feudal-age)
+	(strategic-number sn-threat-level < 1)
+=>
+	(set-strategic-number sn-threat-level 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(players-current-age every-enemy == imperial-age)
+	(strategic-number sn-threat-level < 1)
+	(nor	(research-available ri-bodkin-arrow)
+		(or	(research-available ri-elite-skirmisher)
+			(research-available ri-crossbow)))
+=>
+	(set-strategic-number sn-threat-level 1)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(players-current-age every-enemy <= castle-age)
+	(strategic-number sn-threat-level > -1)
+	(nor	(research-available ri-bodkin-arrow)
+		(or	(research-available ri-elite-skirmisher)
+			(research-available ri-crossbow)))
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(players-current-age every-enemy < castle-age)
+	(current-age-time > 180)
+	(strategic-number sn-threat-level == -1)
+	(nor	(research-available ri-bodkin-arrow)
+		(or	(research-available ri-elite-skirmisher)
+			(research-available ri-crossbow)))
+=>
+	(set-strategic-number sn-threat-level -2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(players-current-age every-enemy == castle-age)
+	(strategic-number sn-threat-level < 0)
+	(players-unit-type-count every-enemy eagle-warrior-line > 16)
+	(unit-type-count-total cataphract-line < 4)
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(players-current-age every-enemy == castle-age)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(strategic-number sn-threat-level == 0)
+	(players-unit-type-count every-enemy eagle-warrior-line > 5)
+	(unit-type-count-total cataphract-line > 5)
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(players-current-age every-enemy == castle-age)
+	(strategic-number sn-threat-level < 0)
+	(players-unit-type-count every-enemy knight-line > 6)
+	(unit-type-count-total spearman-line < 20)
+=>
+	(set-strategic-number sn-threat-level 0)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(players-current-age every-enemy == castle-age)
+	(strategic-number sn-threat-level < 2)
+	(players-civ every-enemy gothic)
+	(or	(players-unit-type-count every-enemy huskarl-line > 0)
+		(players-building-type-count every-enemy castle > 0))
+	(unit-type-count-total cataphract-line < 4)
+=>
+	(set-strategic-number sn-threat-level 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(players-current-age every-enemy == castle-age)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(players-civ every-enemy gothic)
+	(strategic-number sn-threat-level == 2)
+	(unit-type-count-total cataphract-line > 6)
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(players-current-age every-enemy == castle-age)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(strategic-number sn-threat-level == 0)
+	(nor	(players-civ any-enemy aztec)
+		(players-civ any-enemy mayan))
+	(or	(and	(players-unit-type-count every-enemy knight-line < 3)
+			(unit-type-count-total spearman-line > 5))
+		(and	(players-unit-type-count every-enemy knight-line < 8)
+			(unit-type-count-total spearman-line > 15)))
+=>
+	(set-strategic-number sn-threat-level -1)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(players-current-age every-enemy == castle-age)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(strategic-number sn-threat-level == 0)
+	(nor	(players-civ any-enemy aztec)
+		(players-civ any-enemy mayan))
+	(or	(and	(players-unit-type-count every-enemy knight-line < 13)
+			(unit-type-count-total spearman-line > 23))
+		(and	(players-unit-type-count every-enemy knight-line < 20)
+			(unit-type-count-total spearman-line > 32)))
+=>
+	(set-strategic-number sn-threat-level -1)
+)
+
+; ============= CHAT
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal MILITARY 1)
+	(current-age == castle-age)
+	(current-age-time > 15)
+	(current-age-time < 60)
+	(strategic-number sn-threat-level == -1)
+=>
+	(chat-to-all "Here I come!")
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal MILITARY 1)
+	(strategic-number sn-threat-level <= -2)
+=>
+	(chat-to-all "It's time for snapping some necks")
+	(disable-self)
+)
+
+; ============== SOME STRATEGY CRAP
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(game-time > 300)
+=>
+	(set-goal gl-strategy-control FLUSH-SKIRMS)
+	(set-strategic-number sn-threat-level 0)
+	(set-strategic-number sn-militia-count 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(or	(strategic-number sn-threat-level > 0)
+		(or	(and	(strategic-number sn-threat-level == 0)
+				(players-unit-type-count every-enemy eagle-warrior-line > 2))
+			(or	(players-building-type-count every-enemy monastery > 1)
+				(or	(players-unit-type-count every-enemy monk > 3)
+					(game-time > 1300)))))
+=>
+	(set-goal gl-strategy-control FLUSH-ARCHERS)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(current-age == feudal-age)
+	(commodity-selling-price stone < default-stone-price)
+	(or	(players-civ every-enemy aztec)
+		(players-civ every-enemy mayan))
+	(players-unit-type-count every-enemy archer-line < 1)
+	(players-unit-type-count every-enemy skirmisher-line < 1)
+	(players-building-type-count every-enemy archery-range < 1)
+	(players-unit-type-count every-enemy monk < 3)
+	(players-building-type-count every-enemy monastery < 2)
+=>
+	(set-goal gl-strategy-control FLUSH-ARCHERS)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(goal gl-strategy-control FLUSH-SKIRMS)
+		(goal gl-strategy-control FLUSH-ARCHERS))
+	(current-age == feudal-age)
+	(current-age-time > 360)
+	(or	(and	(soldier-count > 30)
+			(players-military-population every-enemy < 10))
+		(or	(food-amount > 400)
+			(and	(soldier-count > 30)
+				(game-time > 1500))))
+=>
+	(set-goal gl-strategy-control AGE-UP-CASTLE)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control AGE-UP-CASTLE)
+	(current-age == castle-age)
+	(nor	(research-available ri-elite-skirmisher)
+		(or	(research-available ri-crossbow)
+			(research-available ri-bodkin-arrow)))
+=>
+	(set-goal gl-strategy-control CRUSH)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control CRUSH)
+	(or	(current-age-time < 300)
+		(game-time < 4000))
+	(current-age == castle-age)
+	(or	(players-civ any-enemy aztec)
+		(or	(players-civ any-enemy mayan)
+			(players-civ any-enemy gothic)))
+=>
+	(set-goal gl-strategy-control CASTLE-ARCHERY)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control CRUSH)
+	(game-time < 4000)
+	(current-age == castle-age)
+	(current-age-time >= 700)
+=>
+	(set-goal gl-strategy-control CASTLE-ARCHERY)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(and	(goal gl-strategy-control CRUSH)
+			(nor	(players-civ any-enemy aztec)
+				(or	(players-civ any-enemy mayan)
+					(players-civ any-enemy gothic))))
+		(game-time >= 4000))
+	(or	(current-age-time >= 700)
+		(cc-players-unit-type-count 0 gold-mine == 0))
+	(current-age == castle-age)
+=>
+	(set-goal gl-strategy-control CASTLE-TRASH)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control CRUSH)
+	(current-age-time > 400)
+	(current-age-time < 700)
+	(current-age == castle-age)
+	(population > 165)
+	(goal TSA 0)
+	(nor	(town-under-attack)
+		(goal MILITARY 1))
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-control 0)
+	(disable-self)
+)
+
+; ============== ENEMY FC DETECTION
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(not	(goal gl-enemy-strategy FLUSH))
+	(goal gl-strategy-control FLUSH-SKIRMS)
+	(players-current-age any-enemy >= feudal-age)
+	(game-time > 1700)
+=>
+	(set-goal gl-strategy-control FLUSH-ARCHERS)
+	(disable-self)
+)
+
+; ======== BUILDINGS - HIGH PRIORITY
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(building-type-count-total archery-range < 2)
+		(and	(building-type-count-total blacksmith > 0)
+			(building-type-count-total archery-range < 3)))
+	(can-build archery-range)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(and	(players-unit-type-count every-enemy mangonel > 0)
+			(or	(building-type-count-total stable < 1)
+				(up-compare-goal gl-current-age >= gv-feudal-up)))
+		(game-time > 4000))
+	(building-type-count-total stable < 2)
+	(can-build stable)
+=>
+	(build stable)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(building-type-count-total archery-range > 1)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(building-type-count-total watch-tower < 1)
+	(or	(and	(players-military-population every-enemy > 1)
+			(soldier-count < 3))
+		(and	(not	(goal MILITARY 1))
+			(players-military-population every-enemy > 8)))
+	(can-build watch-tower)
+=>
+	(up-set-placement-data my-player-number -1 c: 12)
+	(up-assign-builders c: watch-tower c: 3)
+	(up-build place-control 0 c: watch-tower)
+	(set-strategic-number sn-ignore-tower-elevation 1)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(goal RAM 1)
+		(and	(soldier-count > 60)
+			(building-type-count-total university > 0)))
+	(or	(building-type-count-total siege-workshop < 1)
+		(and	(population > 185)
+			(building-type-count-total siege-workshop < 2)))
+	(can-build siege-workshop)
+=>
+	(build siege-workshop)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age-time > 30)
+	(unit-type-count-total villager > 65)
+	(soldier-count > 50)
+	(building-type-count-total university < 1)
+	(can-build university)
+=>
+	(build university)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(nand	(research-available ri-elite-skirmisher)
+		(wood-amount < 500))
+	(building-type-count-total town-center < 4)
+	(can-build town-center)
+=>
+	(build town-center)
+	(chat-to-player my-player-number "Town center")
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(game-time > 2200)
+		(gold-amount > 900))
+	(wood-amount > 450)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(build market)
+)
+
+; ======== RESEARCHES - HIGH PRIORITY
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(can-research ri-wheel-barrow)
+		(can-research ri-double-bit-axe))
+=>
+	(research ri-wheel-barrow)
+  	(research ri-double-bit-axe)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(building-type-count-total archery-range > 1)
+	(can-research ri-horse-collar)
+=>
+  	(research ri-horse-collar)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(up-compare-goal gl-current-age >= gv-feudal-up)
+		(and	(goal gl-strategy-control FLUSH-ARCHERS)
+			(building-type-count-total blacksmith > 0)))
+	(nand	(goal gl-strategy-control FLUSH-ARCHERS)
+		(building-type-count-total archery-range < 2))
+	(can-research ri-gold-mining)
+=>
+  	(research ri-gold-mining)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(can-research ri-elite-skirmisher)
+		(and	(can-research ri-thumb-ring)
+			(or	(building-type-count-total town-center > 1)
+				(goal MILITARY 1))))
+=>
+	(research ri-elite-skirmisher)
+	(research ri-thumb-ring)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(unit-type-count-total scout-cavalry-line > 4)
+	(or	(can-research ri-scale-barding)
+		(or	(can-research ri-chain-barding)
+			(or	(can-research ri-forging)
+				(can-research ri-iron-casting))))
+=>
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(can-research ri-fletching)
+		(or	(can-research-with-escrow ri-bodkin-arrow)
+			(or	(can-research ri-ballistics)
+				(can-research ri-chemistry))))
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(unit-type-count-total archer-line > 5)
+		(goal gl-strategy-control CRUSH))
+	(or	(can-research-with-escrow ri-crossbow)
+		(can-research-with-escrow ri-arbalest))
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(research ri-crossbow)
+	(research ri-arbalest)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(research-completed ri-fletching)
+	(or	(and	(can-research ri-padded-archer-armor)
+			(current-age-time > 220))
+		(or	(and	(research-completed ri-bodkin-arrow)
+				(can-research ri-leather-archer-armor))
+			(and	(research-completed ri-bracer)
+				(can-research ri-ring-archer-armor))))
+=>
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(unit-type-count-total spearman-line > 3)
+	(players-unit-type-count focus-player eagle-warrior-line > 2)
+	(strategic-number sn-threat-level == 0)
+	(or	(can-research ri-forging)
+		(and	(research-completed ri-forging)
+			(can-research ri-scale-mail)))
+=>
+	(research ri-forging)
+	(research ri-scale-mail)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(unit-type-count-total spearman-line > 4)
+		(and	(unit-type-count-total spearman-line > 0)
+			(players-unit-type-count focus-player knight-line > 0)))
+	(or	(can-research ri-pikeman)
+		(can-research ri-halberdier))
+=>
+	(research ri-pikeman)
+	(research ri-halberdier)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(unit-type-count-total spearman-line > 3)
+	(or	(and	(research-completed ri-pikeman)
+			(or	(can-research ri-scale-mail)
+				(can-research ri-chain-mail)))
+		(and	(research-completed ri-halberdier)
+			(can-research ri-plate-mail)))
+=>
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age-time > 500)
+	(unit-type-count-total spearman-line > 3)
+	(research-completed ri-pikeman)
+	(or	(can-research ri-forging)
+		(or	(can-research ri-iron-casting)
+			(can-research ri-squires)))
+=>
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-squires)
+)
+
+; ======== RESEARCHES - LOW PRIORITY
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(nor	(research-available ri-elite-skirmisher)
+		(research-available ri-bodkin-arrow))
+	(can-research ri-heavy-plow)
+=>
+	(research ri-heavy-plow)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(or	(and	(not	(building-available archery-range))
+			(building-type-count-total barracks < 1))
+		(and	(players-unit-type-count every-enemy knight-line > 2)
+			(or	(building-type-count-total barracks < 2)
+				(players-unit-type-count every-enemy knight-line > 6))))
+	(building-type-count-total barracks < 4)
+	(can-build barracks)
+=>
+	(build barracks)
+)
+
+; ============== BUILDINGS - FEUDAL
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(up-pending-objects c: farm < 1)
+	(building-type-count-total archery-range > 0)
+	(or	(building-type-count-total farm < 10)
+		(and	(building-type-count-total archery-range > 1)
+			(up-research-status c: ri-horse-collar >= research-pending)))
+	(or	(building-type-count-total farm < 12)
+		(building-type-count-total archery-range > 2))
+	(building-type-count-total farm < 13)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(up-pending-objects c: farm < 1)
+	(or	(goal gl-strategy-control FLUSH-SKIRMS)
+		(goal gl-strategy-control FLUSH-ARCHERS))
+	(building-type-count-total archery-range > 3)
+	(or	(building-type-count-total farm < 14)
+		(or	(and	(building-type-count-total farm < 16)
+				(building-type-count-total archery-range > 4))
+			(building-type-count-total archery-range > 5)))
+	(building-type-count-total farm < 18)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(up-pending-objects c: farm < 1)
+	(or	(goal gl-strategy-control FLUSH-SKIRMS)
+		(goal gl-strategy-control FLUSH-ARCHERS))
+	(building-type-count-total archery-range > 6)
+	(or	(building-type-count-total farm < 21)
+		(or	(and	(building-type-count-total farm < 23)
+				(building-type-count-total archery-range > 7))
+			(building-type-count-total archery-range > 8)))
+	(building-type-count-total farm < 26)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(research-completed ri-horse-collar)
+	(up-pending-objects c: farm < 1)
+	(current-age-time > 300)
+	(or	(idle-farm-count < 2)
+		(wood-amount > 300))
+	(idle-farm-count < 7)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(goal gl-strategy-control FLUSH-SKIRMS)
+		(goal gl-strategy-control FLUSH-ARCHERS))
+	(unit-type-count-total villager > 36)
+	(or	(building-type-count-total archery-range < 4)
+		(or	(and	(unit-type-count-total villager > 42)
+				(building-type-count-total archery-range < 5))
+			(unit-type-count-total villager > 48)))
+	(building-type-count-total archery-range < 6)
+	(can-build archery-range)
+=>
+	(set-strategic-number sn-maximum-town-size 16)
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(goal gl-strategy-control FLUSH-SKIRMS)
+		(goal gl-strategy-control FLUSH-ARCHERS))
+	(unit-type-count-total villager > 54)
+	(or	(building-type-count-total archery-range < 7)
+		(or	(and	(unit-type-count-total villager > 60)
+				(building-type-count-total archery-range < 8))
+			(unit-type-count-total villager > 66)))
+	(building-type-count-total archery-range < 9)
+	(can-build archery-range)
+=>
+	(set-strategic-number sn-maximum-town-size 19)
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(goal gl-strategy-control FLUSH-SKIRMS)
+		(goal gl-strategy-control FLUSH-ARCHERS))
+	(unit-type-count-total villager > 72)
+	(or	(building-type-count-total archery-range < 10)
+		(or	(and	(unit-type-count-total villager > 78)
+				(building-type-count-total archery-range < 11))
+			(unit-type-count-total villager > 86)))
+	(building-type-count-total archery-range < 12)
+	(can-build archery-range)
+=>
+	(set-strategic-number sn-maximum-town-size 21)
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(goal gl-strategy-control FLUSH-SKIRMS)
+		(goal gl-strategy-control FLUSH-ARCHERS))
+	(or	(and	(unit-type-count-total villager > 92)
+			(building-type-count-total archery-range < 13))
+		(and	(unit-type-count-total villager > 98)
+			(building-type-count-total archery-range < 15)))
+	(can-build archery-range)
+=>
+	(set-strategic-number sn-maximum-town-size 23)
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age >= castle-age)
+	(current-age-time > 120)
+	(building-type-count-total archery-range < 7)
+	(can-build archery-range)
+=>
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age >= castle-age)
+	(or	(current-age-time > 600)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(building-type-count-total barracks < 5)
+	(can-build barracks)
+=>
+	(build barracks)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-stone-gatherer-percentage > 0)
+	(or	(and	(building-type-count-total mining-camp < 4)
+			(dropsite-min-distance stone > 4))
+		(building-type-count-total mining-camp < 3))
+	(can-build mining-camp)
+=>
+	(build mining-camp)
+)
+
+; ============== BUILDINGS - CASTLE
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(up-pending-objects c: farm < 1)
+	(research-completed ri-heavy-plow)
+	(or	(idle-farm-count < 2)
+		(and	(wood-amount > 450)
+			(building-type-count-total farm < 50)))
+	(idle-farm-count < 4)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+; ======== UNITS - ARMY
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal RAM 1)
+	(or	(and	(unit-type-count-total mangonel-line < 1)
+			(players-unit-type-count any-enemy scorpion-line > 0))
+		(and	(unit-type-count-total mangonel-line < 2)
+			(players-unit-type-count any-enemy scorpion-line > 1)))
+	(can-train mangonel-line)
+=>
+	(train mangonel-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal RAM 1)
+	(nand	(players-unit-type-count any-enemy scorpion-line > 1)
+		(unit-type-count-total mangonel-line < 1))
+	(or	(unit-type-count-total battering-ram-line < 3)
+		(or	(and	(unit-type-count-total battering-ram-line < 5)
+				(soldier-count > 43))
+			(and	(unit-type-count-total battering-ram-line < 7)
+				(soldier-count > 75))))
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal RAM 1)
+	(players-unit-type-count any-enemy scorpion-line > 1)
+	(or	(unit-type-count-total cataphract-line > 0)
+		(unit-type-count-total scout-cavalry-line > 0))
+	(or	(unit-type-count-total battering-ram-line < 3)
+		(or	(and	(unit-type-count-total battering-ram-line < 5)
+				(soldier-count > 43))
+			(soldier-count > 75)))
+	(unit-type-count-total battering-ram-line < 7)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(nand	(goal RAM 1)
+		(and	(unit-type-count-total battering-ram-line < 1)
+			(gold-amount < 100)))
+	(unit-type-count-total my-unique-unit-line < 20)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(current-age-time < 200)
+	(building-type-count-total archery-range > 1)
+	(or	(players-civ every-enemy chinese)
+		(or	(players-civ every-enemy hun)
+			(or	(players-civ every-enemy mongol)
+				(or	(players-civ every-enemy saracen)
+					(players-civ every-enemy spanish)))))
+	(unit-type-count-total spearman-line < 3)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(building-type-count-total archery-range > 1)
+	(current-age-time < 200)
+	(or	(players-civ every-enemy persian)
+		(or	(players-civ every-enemy teutonic)
+			(players-civ every-enemy turkish)))
+	(unit-type-count-total spearman-line < 3)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(or	(and	(players-building-type-count any-enemy watch-tower > 0)
+			(or	(enemy-buildings-in-town)
+				(town-under-attack)))
+		(players-unit-type-count focus-player eagle-warrior-line > 1))
+	(unit-type-count-total spearman-line < 6)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(or	(and	(unit-type-count-total spearman-line < 5)
+			(or	(players-unit-type-count any-enemy scout-cavalry-line > 1)
+				(players-building-type-count any-enemy stable > 0)))
+		(or	(players-unit-type-count any-enemy scout-cavalry-line > 3)
+			(players-unit-type-count any-enemy knight-line > 0)))
+	(unit-type-count-total spearman-line < 11)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(unit-type-count-total spearman-line < 25)
+	(or	(and	(players-unit-type-count any-enemy scout-cavalry-line > 7)
+			(or	(unit-type-count-total spearman-line < 15)
+				(players-unit-type-count any-enemy scout-cavalry-line > 12)))
+		(players-unit-type-count any-enemy knight-line > 5))
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(strategic-number sn-threat-level < 1)
+	(unit-type-count-total spearman-line < 5)
+	(or	(players-unit-type-count focus-player eagle-warrior-line > 1)
+		(and	(nor	(players-civ every-enemy aztec)
+				(players-civ every-enemy mayan))
+			(and	(players-current-age every-enemy == castle-age)
+				(players-unit-type-count every-enemy archer-line < 2))))
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(or	(and	(goal gl-strategy-control FLUSH-ARCHERS)
+			(or	(unit-type-count-total archer-line < 5)
+				(and	(unit-type-count-total archer-line < 25)
+					(unit-type-count-total skirmisher-line > 5))))
+		(gold-amount >= 245))
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+	(or	(or	(not	(goal gl-strategy-control AGE-UP-CASTLE))
+			(or	(gold-amount < 162)
+				(unit-type-count-total skirmisher-line < 15)))
+		(up-compare-goal gl-current-age >= gv-feudal-up))
+	(food-amount >= 69)
+	(unit-type-count-total skirmisher-line < 140)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(unit-type-count-total monk < 2)
+		(and	(or	(players-unit-type-count focus-player knight-line > 0)
+				(players-unit-type-count focus-player huskarl-line > 0))
+			(current-age == castle-age)))
+	(unit-type-count-total monk < 7)
+	(can-train monk)
+=>
+	(train monk)
+	(set-strategic-number sn-monk-trained 1)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age >= castle-age)
+	(food-amount >= 69)
+	(or	(and	(unit-type-count-total spearman-line < 6)
+			(players-unit-type-count focus-player knight-line > 0))
+		(or	(and	(unit-type-count-total spearman-line < 10)
+				(players-unit-type-count focus-player knight-line > 2))
+			(players-unit-type-count focus-player knight-line > 4)))
+	(unit-type-count-total spearman-line < 23)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age >= castle-age)
+	(food-amount >= 69)
+	(or	(and	(unit-type-count-total spearman-line < 27)
+			(players-unit-type-count any-enemy knight-line > 8))
+		(or	(and	(unit-type-count-total spearman-line < 30)
+				(players-unit-type-count focus-player knight-line > 11))
+			(and	(unit-type-count-total spearman-line < 44)
+				(players-unit-type-count focus-player knight-line > 14))))
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age >= castle-age)
+	(food-amount >= 69)
+	(or	(and	(unit-type-count-total spearman-line < 6)
+			(players-unit-type-count focus-player scout-cavalry-line > 0))
+		(or	(and	(unit-type-count-total spearman-line < 10)
+				(players-unit-type-count any-enemy scout-cavalry-line > 3))
+			(and	(unit-type-count-total spearman-line < 23)
+				(players-unit-type-count focus-player scout-cavalry-line > 7))))
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age >= castle-age)
+	(food-amount >= 69)
+	(or	(and	(unit-type-count-total spearman-line < 26)
+			(players-unit-type-count any-enemy scout-cavalry-line > 13))
+		(or	(and	(unit-type-count-total spearman-line < 30)
+				(players-unit-type-count any-enemy scout-cavalry-line > 17))
+			(and	(unit-type-count-total spearman-line < 40)
+				(players-unit-type-count any-enemy scout-cavalry-line > 22))))
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(goal gl-strategy-control CASTLE-TRASH)
+	(nand	(food-amount < 69)
+		(or	(unit-type-count-total villager < 85)
+			(building-type-count-total castle > 0)))
+	(or	(unit-type-count-total spearman-line < 20)
+		(nor	(research-available ri-pikeman)
+			(research-available ri-halberdier)))
+	(unit-type-count-total spearman-line < 40)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(nand	(food-amount < 69)
+		(or	(unit-type-count-total villager < 85)
+			(building-type-count-total castle > 0)))
+	(current-age >= castle-age)
+	(unit-type-count-total spearman-line < 6)
+	(research-completed ri-pikeman)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(and	(players-unit-type-count focus-player mangonel-line > 0)
+			(unit-type-count-total scout-cavalry-line < 6))
+		(and	(players-unit-type-count focus-player mangonel-line > 1)
+			(unit-type-count-total scout-cavalry-line < 10)))
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(or	(or	(goal gl-strategy-control CRUSH)
+			(goal gl-strategy-control CASTLE-ARCHERY))
+		(or	(gold-amount >= 581)
+			(unit-type-count-total archer-line < 12)))
+	(unit-type-count-total archer-line < 40)
+	(building-type-count-total castle == 0)
+	(nand	(goal RAM 1)
+		(unit-type-count-total battering-ram-line < 1))
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(or	(and	(or	(goal gl-strategy-control CRUSH)
+				(goal gl-strategy-control CASTLE-ARCHERY))
+			(unit-type-count-total archer-line < 40))
+		(gold-amount >= 581))
+	(gold-amount > 120)
+	(building-type-count-total castle > 0)
+	(nand	(goal RAM 1)
+		(unit-type-count-total battering-ram-line < 1))
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(or	(and	(or	(goal gl-strategy-control CRUSH)
+				(goal gl-strategy-control CASTLE-ARCHERY))
+			(unit-type-count-total archer-line < 40))
+		(unit-type-count-total archer-line < 7))
+	(gold-amount > 120)
+	(building-type-count-total castle > 0)
+	(nand	(goal RAM 1)
+		(unit-type-count-total battering-ram-line < 1))
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(or	(goal gl-strategy-control CRUSH)
+		(goal gl-strategy-control CASTLE-ARCHERY))
+	(unit-type-count-total archer-line < 40)
+	(goal RAM 1)
+	(gold-amount > 110)
+	(wood-amount > 200)
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(gold-amount > 120)
+	(unit-type-count-total archer-line < 25)
+	(nand	(goal RAM 1)
+		(and	(unit-type-count-total battering-ram-line < 1)
+			(wood-amount < 200)))
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(food-amount >= 69)
+	(not	(research-available ri-elite-skirmisher))
+	(unit-type-count-total skirmisher-line < 60)
+	(nand	(goal RAM 1)
+		(and	(unit-type-count-total battering-ram-line < 1)
+			(wood-amount < 200)))
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == castle-age)
+	(food-amount >= 69)
+	(or	(not	(research-available ri-elite-skirmisher))
+		(unit-type-count-total skirmisher-line < 18))
+	(or	(unit-type-count-total skirmisher-line < 25)
+		(and	(goal MILITARY 0)
+			(unit-type-count-total skirmisher-line < 40)))
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+; ======== ATTACKING
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(game-time < 1200)
+	(soldier-count > 15)
+	(strategic-number sn-threat-level == 0)
+	(nor	(town-under-attack)
+		(goal MILITARY 1))
+=>
+	(set-strategic-number sn-percent-attack-soldiers 1)
+	(attack-now)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(current-age == feudal-age)
+	(players-current-age every-enemy >= castle-age)
+	(soldier-count > 15)
+	(nor	(town-under-attack)
+		(goal MILITARY 1))
+=>
+	(set-strategic-number sn-percent-attack-soldiers 1)
+	(attack-now)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age == feudal-age)
+=>
+	(enable-timer 7 0)
+	(enable-timer 10 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(or	(players-building-type-count focus-player watch-tower > 1)
+		(and	(soldier-count > 23)
+			(and	(players-military-population every-enemy > 16)
+				(strategic-number sn-threat-level > -2))))
+	(goal MILITARY 0)
+	(current-age == feudal-age)
+=>
+	(disable-timer 7)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(soldier-count > 50)
+	(players-military-population every-enemy > 15)
+	(strategic-number sn-threat-level > -2)
+	(goal MILITARY 0)
+	(current-age == feudal-age)
+=>
+	(disable-timer 7)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(players-current-age every-enemy == feudal-age)
+	(goal MILITARY 0)
+	(players-building-type-count every-enemy watch-tower < 2)
+	(or	(and	(soldier-count > 25)
+			(players-military-population every-enemy < 8))
+		(and	(soldier-count > 37)
+			(players-military-population every-enemy < 15)))
+	(current-age == feudal-age)
+=>
+	(enable-timer 7 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age-time > 10)
+	(current-age == castle-age)
+=>
+	(enable-timer 7 0)
+	(set-strategic-number sn-allow-resource-spending 3)
+	(disable-self)
+)
+
+(defrule
+	(soldier-count > 15)
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age >= castle-age)
+	(or	(and	(goal MILITARY 1)
+			(timer-triggered 2))
+		(or	(players-building-type-count any-enemy stone-wall-line > 10)
+			(or	(players-building-type-count any-enemy palisade-wall > 10)
+				(players-unit-type-count any-enemy castle > 0))))
+	(goal RAM 0)
+=>
+	(set-goal RAM 1)
+)
+
+(defrule
+	(goal MILITARY 0)
+	(goal gl-strategy heavy-ranged-flush)
+	(current-age >= castle-age)
+	(or	(players-unit-type-count focus-player scorpion-line < 2)
+		(unit-type-count-total mangonel-line > 0))
+	(or	(and	(players-building-type-count every-enemy stone-wall-line <= 10)
+			(and	(players-building-type-count every-enemy palisade-wall <= 10)
+				(players-unit-type-count every-enemy castle == 0)))
+		(soldier-count <= 15))
+	(goal RAM 1)
+=>
+	(set-goal RAM 0)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(goal gl-strategy heavy-ranged-flush)
+	(soldier-count > 15)
+	(unit-type-count-total mangonel-line < 1)
+	(players-unit-type-count focus-player scorpion-line > 1)
+	(goal RAM 0)
+=>
+	(set-goal RAM 1)
+)
+
+

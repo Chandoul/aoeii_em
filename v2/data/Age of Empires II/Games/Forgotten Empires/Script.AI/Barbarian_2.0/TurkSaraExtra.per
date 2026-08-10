@@ -1,0 +1,459 @@
+#load-if-not-defined ARENA-MAP
+#load-if-defined TINY-MAP
+(defrule
+	(or	(goal gl-strategy monk-scorpion-rush)
+		(goal gl-strategy turkish-fast-imp))
+	(current-age <= castle-age)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(unit-type-count-total monk < 3)
+	(players-military-population any-enemy > 2)
+	(players-current-age every-enemy == feudal-age)
+=>
+	(set-strategic-number sn-enemy-flush-notice 1)
+	(chat-to-player my-player-number "Enemy flushing!")
+	(set-strategic-number sn-siege-workshop-escrow 0)
+	(disable-self)
+)
+
+(defrule
+	(or	(goal gl-strategy monk-scorpion-rush)
+		(goal gl-strategy turkish-fast-imp))
+	(current-age == castle-age)
+	(strategic-number sn-enemy-flush-notice == 1)
+	(building-type-count-total siege-workshop < 1)
+	(wood-amount < 200)
+=>
+	(set-escrow-percentage wood 100)
+	(set-strategic-number sn-siege-workshop-escrow 1)
+)
+
+(defrule
+	(or	(goal gl-strategy monk-scorpion-rush)
+		(goal gl-strategy turkish-fast-imp))
+	(strategic-number sn-siege-workshop-escrow == 1)
+	(or	(building-type-count-total siege-workshop > 0)
+		(wood-amount >= 200))
+=>
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(set-strategic-number sn-siege-workshop-escrow 0)
+)
+
+(defrule
+	(or	(goal gl-strategy monk-scorpion-rush)
+		(goal gl-strategy turkish-fast-imp))
+	(strategic-number sn-enemy-flush-notice == 1)
+	(building-type-count-total siege-workshop < 1)
+	(can-build-with-escrow siege-workshop)
+=>
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(build siege-workshop)
+)
+
+(defrule
+	(goal gl-strategy turkish-fast-imp)
+	(current-age == castle-age)
+	(strategic-number sn-enemy-flush-notice == 1)
+	(or	(unit-type-count-total scorpion-line < 3)
+		(and	(unit-type-count-total scorpion-line < 6)
+			(building-type-count-total monastery > 0)))
+	(can-train scorpion-line)
+=>
+	(train scorpion-line)
+)
+#end-if
+#end-if
+
+(defrule
+	(up-compare-goal gl-strategy != turkish-bombardment)
+=>
+	(up-jump-rule 36)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(current-age >= castle-age)
+	(game-time > 3200)
+	(or	(game-time > 5400)
+		(and	(unit-type-count-total trade-cart < 13)
+			(gold-amount < 150)))
+=>
+	(set-goal gl-strategy default)
+	(chat-to-player my-player-number "1Switch to basic strategy")
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(can-research-with-escrow ri-heavy-plow)
+=>
+	(release-escrow food)
+	(release-escrow wood)
+	(research ri-heavy-plow)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(build market)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total farm g:< gl-max-farm-count)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(building-type-count-total town-center > 2)
+	(building-type-count-total siege-workshop > 0)
+	(building-type-count-total barracks < 1)
+	(not	(building-available archery-range))
+	(can-build barracks)
+=>
+	(build barracks)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(building-type-count-total town-center > 2)
+	(building-type-count-total siege-workshop > 0)
+	(building-type-count-total archery-range < 7)
+	(can-build archery-range)
+=>
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(game-time > 2100)
+	(building-type-count-total town-center > 2)
+	(building-type-count-total siege-workshop > 0)
+	(building-type-count-total stable < 5)
+	(can-build stable)
+=>
+	(build stable)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(game-time > 1260)
+	(or	(and	(goal gl-current-age gv-castle)
+			(building-type-count-total siege-workshop < 1))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(building-type-count-total town-center > 2)
+	(building-type-count-total siege-workshop < 3)
+	(can-build siege-workshop)
+=>
+	(build siege-workshop)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(building-type-count-total town-center < 3)
+	(can-build-with-escrow town-center)
+=>
+	(release-escrow wood)
+	(build town-center)
+	(chat-to-player my-player-number "Town center")
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(or	(unit-type-count-total hand-cannoneer < 20)
+		(unit-type-count-total bombard-cannon > 1))
+	(or	(unit-type-count-total hand-cannoneer < 30)
+		(and	(unit-type-count-total bombard-cannon > 3)
+			(nand	(research-available my-unique-research)
+				(building-type-count castle > 0))))
+	(or	(unit-type-count-total hand-cannoneer < 50)
+		(unit-type-count-total bombard-cannon > 5))
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(or	(players-unit-type-count focus-player knight-line > 15)
+		(players-unit-type-count focus-player war-elephant-line > 5))
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(unit-type-count-total camel-line < 30)
+	(can-train camel-line)
+=>
+	(train camel-line)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(unit-type-count-total scout-cavalry-line < 30)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(nand	(unit-type-count-total bombard-cannon > 5)
+		(and	(research-available my-unique-research)
+			(building-type-count castle > 0)))
+	(unit-type-count-total bombard-cannon < 30)
+	(can-train bombard-cannon)
+=>
+	(train bombard-cannon)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(wood-amount > 450)
+	(game-time > 2100)
+	(or	(building-type-count-total mining-camp < 9)
+		(game-time > 2300))
+	(building-type-count-total mining-camp < 13)
+	(game-time < 3300)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(and	(research-available ri-padded-archer-armor)
+			(food-amount >= 1300)))
+	(or	(can-research ri-padded-archer-armor)
+		(or	(can-research ri-leather-archer-armor)
+			(can-research ri-ring-archer-armor)))
+=>
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(research-completed ri-ring-archer-armor)
+	(players-current-age every-enemy <= castle-age)
+	(strategic-number sn-threat-level > -4)
+=>
+	(set-strategic-number sn-threat-level -4)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(research-completed ri-ring-archer-armor)
+	(strategic-number sn-threat-level > -2)
+=>
+	(set-strategic-number sn-threat-level -2)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(up-research-status c: my-unique-research >= research-pending)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(gold-amount > 700)
+	(building-type-count castle > 0)
+	(research-available my-unique-research)
+	(stone-amount < 500)
+	(can-buy-commodity stone)
+=>
+	(buy-commodity stone)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(gold-amount < 500)
+	(building-type-count castle > 0)
+	(research-available my-unique-research)
+	(stone-amount >= 600)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(food-amount > 800)
+	(research-completed my-unique-research)
+	(can-research ri-bombard-tower)
+=>
+	(research ri-bombard-tower)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(gold-amount < 800)
+	(food-amount > 600)
+	(or	(food-amount > 1200)
+		(gold-amount < 500))
+	(can-research ri-gold-shaft-mining)
+=>
+	(research ri-gold-shaft-mining)
+)
+
+; ================ ECO
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(goal gl-current-age gv-dark-up)
+	(or	(strategic-number sn-food-gatherer-percentage != 48)
+		(strategic-number sn-wood-gatherer-percentage != 38))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 48)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(set-strategic-number sn-gold-gatherer-percentage 14)
+	(set-goal gl-disable-mining-upgrades YES)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(goal gl-current-age gv-feudal-up)
+	(or	(strategic-number sn-food-gatherer-percentage != 41)
+		(strategic-number sn-gold-gatherer-percentage != 56))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 41)
+	(set-strategic-number sn-wood-gatherer-percentage 56)
+	(set-strategic-number sn-gold-gatherer-percentage 3)
+	(set-goal TC 1)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(current-age == castle-age)
+	(building-type-count-total town-center > 2)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 57)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 3)
+	(set-goal TC 0)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(current-age == castle-age)
+	(unit-type-count-total villager > 65)
+	(building-type-count-total siege-workshop == 0)
+	(building-type-count-total town-center > 2)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 47)
+	(set-strategic-number sn-wood-gatherer-percentage 47)
+	(set-strategic-number sn-gold-gatherer-percentage 6)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(current-age == castle-age)
+	(unit-type-count-total villager > 65)
+	(building-type-count-total siege-workshop > 0)
+	(building-type-count-total town-center > 2)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 55)
+	(set-strategic-number sn-wood-gatherer-percentage 34)
+	(set-strategic-number sn-gold-gatherer-percentage 11)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(current-age >= castle-age)
+	(or	(and	(building-type-count-total town-center < 3)
+			(stone-amount < 100))
+		(research-completed my-unique-research))
+	(strategic-number sn-stone-gatherer-percentage != 4)
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(current-age == castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 55)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(current-age == imperial-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 31)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(current-age == imperial-age)
+	(game-time > 2100)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 39)
+	(set-strategic-number sn-wood-gatherer-percentage 29)
+	(set-strategic-number sn-gold-gatherer-percentage 28)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(current-age == imperial-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(enable-timer 1 0)
+	(enable-timer 7 0)
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy turkish-bombardment)
+	(current-age == imperial-age)
+	(game-time > 2100)
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 8)
+	(disable-self)
+)
+
+
+

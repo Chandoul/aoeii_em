@@ -1,0 +1,21 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy eew-strategy)
+	(set-goal gl-eew-strategy-type boom)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 20)
+	(goal gl-current-age gv-dark)
+	(starting-age == dark-age)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+=>
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy fast-eagles)
+	(disable-self)
+)

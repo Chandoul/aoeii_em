@@ -1,0 +1,194 @@
+; SENDING TRIBUTES
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected any-ally 3) ; Taunt: "Food, please"
+	(food-amount > 1000)
+	(gold-amount < 500)
+=>
+	(tribute-to-player this-any-ally food 100)
+	(chat-to-player this-any-ally "1Ok, here you have 100 FOOD.")
+	(acknowledge-taunt this-any-ally 3)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(taunt-detected any-ally 3) ; Taunt: "Food, please"
+	(food-amount > TRASH-FOOD)
+	(or	(food-amount > 2000)
+		(goal G-ARMY-STRONG-PREPARED 1)
+	)
+=>
+	(tribute-to-player this-any-ally food 100)
+	(chat-to-player this-any-ally "1Ok, here you have 100 FOOD.")
+	(acknowledge-taunt this-any-ally 3)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(taunt-detected any-ally 4) ; Taunt: "Wood, please"
+	(wood-amount > TRASH-WOOD)
+	(or	(wood-amount > 2000)
+		(goal G-ARMY-STRONG-PREPARED 1)
+	)
+=>
+	(tribute-to-player this-any-ally wood 100)
+	(chat-to-player this-any-ally "1Ok, here you have 100 WOOD.")
+	(acknowledge-taunt this-any-ally 4)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected any-ally 5) ; Taunt: "Gold, please"
+	(food-amount < 500)
+	(gold-amount > 800)
+=>
+	(tribute-to-player this-any-ally gold 100)
+	(chat-to-player this-any-ally "1Ok, here you have 100 GOLD.")
+	(acknowledge-taunt this-any-ally 5)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(taunt-detected any-ally 5) ; Taunt: "Gold, please"
+	(food-amount > TRASH-GOLD)
+	(or	(gold-amount > 2000)
+		(goal G-ARMY-STRONG-PREPARED 1)
+	)
+=>
+	(tribute-to-player this-any-ally gold 100)
+	(chat-to-player this-any-ally "1Ok, here you have 100 GOLD.")
+	(acknowledge-taunt this-any-ally 5)
+)
+
+(defrule
+	(taunt-detected any-ally 6) ; Taunt: "Stone, please"
+	(stone-amount > 100)
+	(building-type-count castle >= 1)
+	(building-type-count town-center >= 3)
+=>
+	(tribute-to-player this-any-ally stone 100)
+	(chat-to-player this-any-ally "1Ok, here you have 100 STONE.")
+	(acknowledge-taunt this-any-ally 6)
+)
+
+
+(defrule
+	(goal G-TSA -1)
+	(town-under-attack)
+	(timer-triggered T-ATTACK-TEAM)
+=>
+	(disable-timer T-ATTACK-TEAM)
+	(enable-timer T-ATTACK-TEAM TV-ATTACK-TEAM)
+	(chat-to-player my-player-number "Request my allies to defend my town")
+	(chat-to-player every-ally "12I'm being attacked now. Please, defend me or attack our enemy's base.")
+)
+
+(defrule
+	(goal G-TSA 1)
+	(timer-triggered T-ATTACK-TEAM)
+=>
+	(disable-timer T-ATTACK-TEAM)
+	(enable-timer T-ATTACK-TEAM TV-ATTACK-TEAM)
+	(chat-to-player my-player-number "Request my allies to coordinate attacks against our enemies.")
+	(chat-to-player every-ally "31I'm attacking an enemy. My attack will be stronger if you coordinate your army with mine.")
+)
+
+
+
+; REQUESTING TRIBUTES
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(timer-triggered T-TRIBUTE)
+	(population > 30)
+	(food-amount < 600)
+	(gold-amount > 200)
+=>
+	(chat-to-player every-ally "3Could you give me 100 FOOD to accelerate jumpt to Castle Age, please?")
+	(disable-timer T-TRIBUTE)
+	(enable-timer T-TRIBUTE TV-TRIBUTE)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(timer-triggered T-TRIBUTE)
+	(population > 30)
+	(food-amount > 800)
+	(gold-amount < 100)
+=>
+	(chat-to-player every-ally "5Could you give me 100 GOLD to accelerate jumpt to Castle Age, please?")
+	(disable-timer T-TRIBUTE)
+	(enable-timer T-TRIBUTE TV-TRIBUTE)
+)
+
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(timer-triggered T-TRIBUTE)
+	(population > 40)
+	(food-amount < 400)
+	(gold-amount > 800)
+=>
+	(chat-to-player every-ally "3Could you give me 100 FOOD to accelerate jumpt to Imperial Age, please?")
+	(disable-timer T-TRIBUTE)
+	(enable-timer T-TRIBUTE TV-TRIBUTE)
+)
+
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(timer-triggered T-TRIBUTE)
+	(population > 40)
+	(food-amount > 1000)
+	(gold-amount < 200)
+=>
+	(chat-to-player every-ally "5Could you give me 100 GOLD to accelerate jumpt to Imperial Age, please?")
+	(disable-timer T-TRIBUTE)
+	(enable-timer T-TRIBUTE TV-TRIBUTE)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(timer-triggered T-TRIBUTE)
+	(population > 40)
+	(building-type-count-total monastery == 0)
+	(wood-amount < 100)
+=>
+	(chat-to-player every-ally "4Could you give me 100 WOOD, please? I need them for essential buildings.")
+	(disable-timer T-TRIBUTE)
+	(enable-timer T-TRIBUTE TV-TRIBUTE)
+)
+
+(defrule
+	(current-age == castle-age)
+	(timer-triggered T-TRIBUTE)
+	(can-afford-research imperial-age)
+	(building-type-count-total market == 0)
+	(wood-amount < 175)
+=>
+	(chat-to-player every-ally "4Could you give me 100 WOOD, please? I need them for essential buildings.")
+	(disable-timer T-TRIBUTE)
+	(enable-timer T-TRIBUTE TV-TRIBUTE)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(timer-triggered T-TRIBUTE)
+	(population > 50)
+	(building-type-count-total castle == 0)
+	(stone-amount > 580)
+	(not(can-afford-building castle))
+	(unit-type-count-total MALE-STONE-MINER == 0)
+	(unit-type-count-total FEMALE-STONE-MINER == 0)
+	(not(resource-found stone))
+=>
+	(chat-to-player every-ally "6Could you give me 100 STONE, please? I can't finish my castle only for a little.")
+	(disable-timer T-TRIBUTE)
+	(enable-timer T-TRIBUTE TV-TRIBUTE)
+)
+

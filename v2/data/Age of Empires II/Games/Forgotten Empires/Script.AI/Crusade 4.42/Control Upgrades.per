@@ -1,0 +1,467 @@
+; Upgrades Control
+
+; There are decisions which depend about if we have taken every important upgrade for that age and civ.
+
+; Reset
+(defrule
+	(true)
+=>
+	(set-goal G-JOLLYGOAL 0)
+	;(set-goal G-BLACKSMITH 0)
+	;(set-goal G-MILITARY-UPGRADES 0)
+	(set-goal G-ARMY-STRONG-PREPARED 1)
+	(set-goal G-NAVY-STRONG-PREPARED 1)
+)
+
+(defrule
+	(not(goal G-BARRACK-UNIT GV-NONE))
+	(or	(research-available ri-forging)
+		(or	(research-available ri-scale-mail)
+			(or	(research-available ri-iron-casting)
+				(or	(research-available ri-chain-mail)
+					(or	(research-available ri-blast-furnace)
+						(research-available ri-plate-mail)
+					)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+
+(defrule
+	(not(goal G-STABLE-UNIT GV-NONE))
+	(or	(research-available ri-forging)
+		(or	(research-available ri-scale-barding)
+			(or	(research-available ri-iron-casting)
+				(or	(research-available ri-chain-barding)
+					(or	(research-available ri-blast-furnace)
+						(or	(research-available ri-plate-barding)
+							(research-available ri-bloodlines)
+						)
+					)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+
+(defrule
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(or	(research-available ri-fletching)
+		(or	(research-available ri-bodkin-arrow)
+			(or	(research-available ri-bracer)
+				(or	(research-available ri-padded-archer-armor)
+					(or	(research-available ri-leather-archer-armor)
+						(or	(research-available ri-ring-archer-armor)
+							(research-available ri-thumb-ring)
+						)
+					)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+
+(defrule
+	(or	(research-available ri-ballistics)
+		(or	(research-available ri-chemistry)
+			(or	(and	(goal G-ARCHERY-UNIT GV-ARCHER)
+					(or	(research-available ri-crossbow)
+						(research-available ri-arbalest)
+					)
+				)
+				(and	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+					(or	(research-available ri-heavy-cavalry-archer)
+						(research-available ri-parthian-tactics)
+					)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+
+(defrule
+	(or	(and	(goal G-ARCHERY-UNIT GV-SKIRM)
+			(or	(research-available ri-elite-skirmisher)
+				(or	(research-available ri-atlatl)
+					(research-available ri-andean-sling)
+				)
+			)
+		)
+		(and	(goal G-BARRACK-UNIT GV-EAGLE)
+			(or	(research-available ri-elite-eagle-warrior)
+				(or	(research-available ri-eagle-warrior)
+					(research-available ri-couriers)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+
+(defrule
+	(or	(and	(goal G-BARRACK-UNIT GV-SWORD)
+			(or	(research-available ri-man-at-arms)
+				(or	(research-available ri-long-swordsman)
+					(or	(research-available ri-two-handed-swordsman)
+						(research-available ri-champion)
+					)
+				)
+			)
+		)
+		(and	(goal G-BARRACK-UNIT GV-SPEAR)
+			(or	(research-available ri-pikeman)
+				(research-available ri-halberdier)
+			)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+
+(defrule
+	(or	(and	(goal G-STABLE-UNIT GV-SCOUT)
+			(or	(research-available ri-light-cavalry)
+				(research-available ri-hussar)
+			)
+		)
+		(or	(and	(goal G-STABLE-UNIT GV-KNIGHT)
+				(or	(research-available ri-cavalier)
+					(research-available ri-paladin)
+				)
+			)
+			(and	(goal G-STABLE-UNIT GV-CAMEL)
+				(research-available ri-heavy-camel)
+			)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(or	(research-available my-unique-research)
+		(research-available ri-elite-jaguar-man)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if
+
+#load-if-defined BRITON-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(research-available my-unique-research)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(or	(research-available ri-elite-cataphract)
+		(research-available RI-LOGISTICA)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if
+
+#load-if-defined CELTIC-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(research-completed my-unique-research)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if ; Finish Celts
+
+#load-if-defined FRANKISH-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(or	(research-available my-unique-research)
+		(or	(research-available ri-elite-throwing-axeman)
+			(and	(goal G-STABLE-UNIT GV-SCOUT)
+				(research-available ri-chivalry)
+			)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if ; Finish Franks
+
+#load-if-defined INCAN-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+	(research-available ri-elite-kamayuk)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if ; Finish Incas
+
+#load-if-defined INDIAN-CIV
+(defrule
+	(or	(and	(goal G-STABLE-UNIT GV-CAMEL)
+			(research-available ri-imperial-camel)
+		)
+		(and	(building-type-count-total castle > 0)
+			(or	(research-available ri-sultans)
+				(or	(research-available ri-elite-elephant-archer)
+					(and	(goal G-ARCHERY-UNIT GV-HAND-CANNON)
+						(research-available ri-shatagni)
+					)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if
+
+#load-if-defined ITALIAN-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(or	(research-available ri-pavise)
+		(research-available ri-elite-genoese-crossbow)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if ; Italians
+
+#load-if-defined JAPANESE-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(or	(research-available my-unique-research)
+		(research-available ri-elite-samurai)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if ; Finish Japanese
+
+#load-if-defined KOREAN-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(research-available ri-elite-war-wagon)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if ; Finish Koreans
+
+#load-if-defined MAGYAR-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(or	(research-available ri-mercenaries)
+		(or	(research-available ri-elite-magyar-huszar)
+			(and	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+				(research-available ri-recurve-bow)
+			)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if
+
+#load-if-defined MAYAN-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(goal G-BARRACK-UNIT GV-EAGLE)
+	(research-available my-unique-research)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if ; Finish Mayans
+
+#load-if-defined MONGOL-CIV
+(defrule
+	(research-available ri-heavy-cavalry-archer)
+	(building-type-count-total castle > 0)
+	(or	(research-available my-unique-research)
+		(research-available ri-elite-mangudai)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if ; Mongol
+
+
+#load-if-defined PERSIAN-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(or	(research-available my-unique-research)
+		(research-available ri-elite-war-elephant)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if ; Finish Persians
+
+#load-if-defined SLAVIC-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(or	(research-available ri-elite-boyar)
+		(and	(not(goal G-BARRACK-UNIT GV-NONE))
+			(research-available ri-druzhina)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if
+
+#load-if-defined TEUTONIC-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(or	(research-available ri-elite-teutonic-knight)
+		(research-available ri-ironclad)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if ; Finish Teutons
+
+#load-if-defined TURKISH-CIV
+(defrule
+	(building-type-count-total castle > 0)
+	(or	(research-available my-unique-research)
+		(and	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+			(research-available ri-sipahi)
+		)
+	)
+=>
+	(set-goal G-ARMY-STRONG-PREPARED 0)
+)
+#end-if
+
+
+
+
+; Control Navy upgrades
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(or	(and	(goal G-BOAT GV-GALLEY)
+			(and	(unit-type-count-total galley-line >= MAX-GALLEYS-TO-ELITE)
+				(or	(research-available ri-war-galley)
+					(research-available ri-galleon)
+				)
+			)
+		)
+		(and	(goal G-BOAT GV-FIRE-SHIP)
+			(and	(unit-type-count-total fire-ship-line >= MAX-FIRING-SHIPS-TO-ELITE)
+				(or	(research-available ri-fast-fire-ship)
+					(research-available ri-greak-fire)
+				)
+			)
+		)
+	)
+
+=>
+	(set-goal G-NAVY-STRONG-PREPARED 0)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(or	(and	(goal G-BOAT GV-CANNON-GALLEON)
+			(or	(research-available ri-deck-guns)
+				(and	(unit-type-count-total cannon-galleon-line >= MAX-CANNON-GALLEONS-TO-ELITE)
+					(research-available ri-cannon-galleon)
+				)
+			)
+		)
+		(and	(goal G-BOAT GV-DEMOLITION-SHIP)
+			(and	(unit-type-count-total demolition-ship-line >= MAX-DEMOLITION-SHIPS-TO-ELITE)
+				(research-available ri-heavy-demolition-ship)
+			)
+		)
+	)
+=>
+	(set-goal G-NAVY-STRONG-PREPARED 0)
+)
+
+(defrule
+	(or	(and	(goal G-BOAT GV-DRAGON-BOAT)
+			(and	(unit-type-count-total longboat-line >= MAX-DRAGON-BOATS-TO-ELITE)
+				(research-available ri-elite-longboat)
+			)
+		)
+		(and	(goal G-BOAT GV-TURTLE-SHIP)
+			(and	(unit-type-count-total turtle-ship-line >= MAX-TURTLE-SHIPS-TO-ELITE)
+				(or	(research-available ri-elite-turtle-ship)
+					(research-available ri-panokseon)
+				)
+			)
+		)
+	)
+=>
+	(set-goal G-NAVY-STRONG-PREPARED 0)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(or	(warboat-count >= 5)
+		(housing-headroom <= 0)
+	)
+	(or	(research-available ri-dry-dock)
+		(research-available ri-careening)
+	)
+=>
+	(set-goal G-NAVY-STRONG-PREPARED 0)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(goal G-BOAT GV-GALLEY)
+	(or	(and	(building-type-count blacksmith >= 1)
+			(or	(research-available ri-fletching)
+				(or	(research-available ri-bodkin-arrow)
+					(research-available ri-bracer)
+				)					
+			)
+		)
+		(and	(building-type-count university >= 1)
+			(or	(research-available ri-ballistics)
+				(research-available ri-chemistry)
+			)
+		)
+	)
+=>
+	(set-goal G-NAVY-STRONG-PREPARED 0)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	(goal G-BOAT GV-DRAGON-BOAT)
+	(or	(and	(building-type-count blacksmith >= 1)
+			(or	(research-available ri-fletching)
+				(or	(research-available ri-bodkin-arrow)
+					(research-available ri-bracer)
+				)					
+			)
+		)
+		(and	(building-type-count university >= 1)
+			(or	(research-available ri-ballistics)
+				(research-available ri-chemistry)
+			)
+		)
+	)
+=>
+	(set-goal G-NAVY-STRONG-PREPARED 0)
+)

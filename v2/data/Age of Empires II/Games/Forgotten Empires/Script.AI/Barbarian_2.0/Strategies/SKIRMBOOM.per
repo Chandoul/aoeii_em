@@ -1,0 +1,28 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy skirm-boom)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC2)
+	(disable-self)
+)
+
+(defrule
+	(players-unit-type-count focus-player archer-line < 1)
+	(goal gl-strategy skirm-boom)
+	(game-time > 10)
+	(or	(and	(players-civ focus-player gothic)
+			(up-compare-goal gl-current-age c:<= gv-feudal-up))
+		(or	(players-unit-type-count focus-player militiaman-line > 4)
+			(or	(players-unit-type-count focus-player eagle-warrior-line > 2)
+				(players-unit-type-count focus-player knight-line > 2))))
+=>
+	(set-goal gl-strategy xbow-boom)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC2)
+	(disable-self)
+)
+
+
+
+

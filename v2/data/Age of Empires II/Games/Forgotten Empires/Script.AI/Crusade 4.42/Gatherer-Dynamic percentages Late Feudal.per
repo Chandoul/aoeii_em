@@ -1,0 +1,70 @@
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-JOLLYGOAL GV-LATE-FEUDAL-0)
+	(food-amount < 700)
+	(gold-amount > 90)
+	(or	(food-amount < 200)
+		(gold-amount > 200)
+	)
+=>
+	(set-goal G-JOLLYGOAL GV-LATE-FEUDAL-1) ; I need more food
+)
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-JOLLYGOAL GV-LATE-FEUDAL-0)
+	(food-amount > 200)
+	(gold-amount < 150)
+	(or	(gold-amount < 45)
+		(food-amount > 800)
+	)
+=>
+	(set-goal G-JOLLYGOAL GV-LATE-FEUDAL-2)  ; I need more gold
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-JOLLYGOAL GV-LATE-FEUDAL-0)
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+=>
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 3)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 3)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-JOLLYGOAL GV-LATE-FEUDAL-1) ; I need more food
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(or	(strategic-number SN-FOOD-MODIFIER-PERCENTAGE != 6)
+		(strategic-number SN-GOLD-MODIFIER-PERCENTAGE != 0)
+	)
+=>
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 6)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+	(chat-to-player my-player-number "I need more food")
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-JOLLYGOAL GV-LATE-FEUDAL-2) ; I need more gold
+	(timer-triggered T-VILLAGER-FOOD-GOLD)
+	(or	(strategic-number SN-FOOD-MODIFIER-PERCENTAGE != 0)
+		(strategic-number SN-GOLD-MODIFIER-PERCENTAGE != 6)
+	)
+=>
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 6)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+	(enable-timer T-VILLAGER-FOOD-GOLD 90)
+	(chat-to-player my-player-number "I need more gold")
+)

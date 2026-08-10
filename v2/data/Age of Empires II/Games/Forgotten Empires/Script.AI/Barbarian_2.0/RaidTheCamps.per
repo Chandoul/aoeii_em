@@ -1,0 +1,64 @@
+#load-if-not-defined OASIS-MAP
+#load-if-not-defined UP-MICHI-STYLE
+#load-if-not-defined BLACK-FOREST-MAP
+#load-if-not-defined UP-SCENARIO-GAME
+(defrule
+	(or	(game-time g:< gl-camp-raid-time)
+		(or	(not	(player-valid any-enemy))
+			(or	(and	(up-compare-const raid-unit != scout-cavalry-line)
+					(and	(game-time > 3600)
+						(and	(unit-type-count trade-cart < 20)
+							(gold-amount < 500))))
+				(goal FFA YES))))
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(unit-type-count raid-unit > 7)
+	(up-compare-goal gl-gathering-inside < MOST)
+	(building-type-count-total wonder == 0)
+	(players-building-type-count every-ally wonder == 0)
+	(population > 170)
+	(players-building-type-count target-player lumber-camp > 3); Something to target
+	(players-population target-player > 90); Worth raiding
+	(up-timer-status 29 != timer-running)
+	(or	(up-enemy-units-in-town < 20)
+		(goal MILITARY 1))
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+=>
+	(enable-timer 40 270)
+	(enable-timer 29 camp-raid-time-variance)
+	(set-goal gl-camp-raid YES)
+	(up-get-fact unit-type-count raid-unit temporary-goal2)
+)
+
+(defrule
+	(goal gl-camp-raid YES)
+	(up-compare-goal temporary-goal2 > 30)
+=>
+	(set-goal temporary-goal2 30)
+)
+
+(defrule
+	(goal gl-camp-raid YES)
+=>
+	(up-reset-unit c: raid-unit)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number s:= sn-target-player-number)
+	(up-find-remote c: lumber-camp c: 10)
+	(up-find-remote c: mining-camp c: 5)
+	(up-filter-exclude -1 -1 orderid-explore -1)
+	(up-find-local c: raid-unit g: temporary-goal2)
+	(up-target-objects -1 action-move -1 defensive)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(set-goal gl-camp-raid NO)
+	(chat-to-player my-player-number "Sending raid")
+	(chat-to-player chat-recipient "Sending raid")
+)
+#end-if
+#end-if
+#end-if
+#end-if

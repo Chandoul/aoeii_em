@@ -1,0 +1,617 @@
+(defrule
+	(strategic-number sn-number-explore-groups != 1)
+=>
+	(set-strategic-number sn-number-explore-groups 1)
+)
+
+(defrule
+	(goal wall-build YES)
+	(wall-invisible-percentage 2 > 0)
+=>
+	(set-strategic-number sn-blot-exploration-map 1)
+)
+
+(defrule
+	(unit-type-count-total scout-cavalry-line == 0)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(unit-type-count-total eagle-warrior-line == 0)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line)
+)
+
+;*************************
+;set goal 3
+(defrule
+	(not (goal military-parity YES) )
+=>
+	(set-goal military-parity YES)
+)
+
+(defrule
+	(or
+		(or
+			(and
+				(players-military-population any-enemy > 50)
+				(military-population < 45)
+			)
+			(and
+				(players-military-population any-enemy > 40)
+				(military-population < 35)
+			)
+		)
+		(and
+			(players-military-population any-enemy > 30)
+			(military-population < 25)
+		)
+	)
+=>
+	(set-goal military-parity NO)
+)
+
+(defrule
+	(or
+		(or
+			(and
+				(players-military-population any-enemy > 20)
+				(military-population < 15)
+			)
+			(and
+				(players-military-population any-enemy > 10)
+				(military-population < 5)
+			)
+		)
+		(and
+			(players-military-population any-enemy > 0)
+			(military-population == 0)
+		)
+	)
+=>
+	(set-goal military-parity NO)
+)
+
+(defrule
+	(or
+		(or
+			(and
+				(players-military-population every-enemy < 30)
+				(military-population > 60)
+			)
+			(and
+				(players-military-population every-enemy < 25)
+				(military-population > 50)
+			)
+		)
+		(and
+			(players-military-population every-enemy < 20)
+			(military-population > 40)
+		)
+	)
+=>
+	(set-goal military-parity SUPERIOR)
+)
+
+(defrule
+	(or
+		(or
+			(and
+				(players-military-population every-enemy < 15)
+				(military-population > 30)
+			)
+			(and
+				(players-military-population every-enemy < 10)
+				(military-population > 20)
+			)
+		)
+		(and
+			(players-military-population every-enemy == 0)
+			(military-population > 4)
+		)
+	)
+=>
+	(set-goal military-parity SUPERIOR)
+)
+;enemy army size
+(defrule
+	(players-military-population any-enemy == 0)
+	(players-building-type-count any-enemy watch-tower-line == 0)
+	(players-building-type-count any-enemy castle == 0)
+	(players-building-type-count any-enemy town-center <= 1)
+	(not (goal enemy-soldiers 0) )
+=>
+	(set-goal enemy-soldiers 0)
+)
+
+(defrule
+	(or
+		(players-military-population any-enemy > 0)
+		(players-building-type-count any-enemy watch-tower-line > 0)
+	)
+	(not (goal enemy-soldiers 10) )
+=>
+	(set-goal enemy-soldiers 10)
+)
+
+(defrule
+	(or
+		(or
+			(players-military-population any-enemy > 10)
+			(players-building-type-count any-enemy watch-tower-line > 2)
+		)
+		(or
+			(players-building-type-count any-enemy castle > 0)
+			(players-building-type-count any-enemy town-center > 1)
+		)
+	)
+	(not (goal enemy-soldiers 20) )
+=>
+	(set-goal enemy-soldiers 20)
+)
+
+(defrule
+	(or
+		(or
+			(players-military-population any-enemy > 20)
+			(players-building-type-count any-enemy watch-tower-line > 4)
+		)
+		(or
+			(players-building-type-count any-enemy castle > 1)
+			(players-building-type-count any-enemy town-center > 2)
+		)
+	)
+	(not (goal enemy-soldiers 30) )
+=>
+	(set-goal enemy-soldiers 30)
+)
+
+;enemy navy size
+(defrule
+	(difficulty < easy)
+	(goal 2 YES)
+	(not (goal 35 0) )
+=>
+	(set-goal 35 0)
+)
+
+(defrule
+	(difficulty < easy)
+	(or
+		(or
+			(cc-players-unit-type-count every-enemy galley-line >= 2)
+			(cc-players-unit-type-count every-enemy cannon-galleon-line >= 2)
+		)
+		(or
+			(cc-players-unit-type-count every-enemy fire-ship-line >= 2)
+			(cc-players-unit-type-count every-enemy longboat-line >= 2)
+		)
+	)
+	(not (goal 35 6) )
+=>
+	(set-goal 35 6)
+)
+
+(defrule
+	(difficulty < easy)
+	(or
+		(or
+			(cc-players-unit-type-count every-enemy galley-line >= 6)
+			(cc-players-unit-type-count every-enemy cannon-galleon-line >= 6)
+		)
+		(or
+			(cc-players-unit-type-count every-enemy fire-ship-line >= 6)
+			(cc-players-unit-type-count every-enemy longboat-line >= 6)
+		)
+	)
+	(not (goal 35 12) )
+=>
+	(set-goal 35 12)
+)
+
+(defrule
+	(difficulty < easy)
+	(or
+		(or
+			(cc-players-unit-type-count every-enemy galley-line >= 12)
+			(cc-players-unit-type-count every-enemy cannon-galleon-line >= 12)
+		)
+		(or
+			(cc-players-unit-type-count every-enemy fire-ship-line >= 12)
+			(cc-players-unit-type-count every-enemy longboat-line >= 12)
+		)
+	)
+	(not (goal 35 18) )
+=>
+	(set-goal 35 18)
+)
+;***************************
+;see if we ought to attack!
+(defrule
+	(timer-triggered t-attackgroup)
+=>
+	(set-goal attack-control YES)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-percent-attack-boats 0)
+)
+
+(defrule
+	(timer-triggered t-attackgroup)
+	(nor
+		(stance-toward any-computer enemy)
+		(stance-toward any-human enemy)
+	)
+=>
+	(set-goal attack-control NO)
+)
+
+(defrule
+	(timer-triggered t-attackgroup)
+	(building-type-count-total wonder > 0)
+=>
+	(set-goal attack-control NO)
+)
+
+(defrule
+	(timer-triggered t-attackgroup)
+	(goal siege-available NO)
+=>
+	(set-goal attack-control NO)
+)
+
+#load-if-defined KING-OF-THE-HILL
+
+(defrule
+	(not (hold-koh-ruin) )
+	(military-population > thirty-percent-pop)
+=>
+	(set-goal attack-control YES)
+)
+
+#end-if
+
+(defrule
+	(timer-triggered t-attackgroup)
+	(town-under-attack)
+=>
+	(chat-to-player-using-id every-ally 22406)	;201
+	(chat-to-player-using-id any-human-ally 22115)
+		;"39 Help! The enemy is in my town!"
+)
+
+#load-if-defined DIFFICULTY-EASIEST
+	(defrule
+		(timer-triggered t-attackgroup)
+	=>
+		(set-strategic-number sn-percent-attack-soldiers 1)
+		(set-strategic-number sn-percent-attack-boats 1)
+		(attack-now)
+		(chat-local-to-self "attack now!")
+		(set-goal attack-control NO)
+	)
+
+	#else
+	;*************************
+	(defrule
+		(timer-triggered t-attackgroup)
+		(taunt-detected any-ally 201)
+		(defend-soldier-count >= ten-percent-pop)
+	=>
+		(acknowledge-taunt this-any-ally 201)
+		(attack-now)
+		(chat-local-to-self "attack now!")
+		(set-goal attack-control NO)
+	)
+
+	(defrule
+		(timer-triggered t-attackgroup)
+		(population >= pop-cap)
+	=>
+		(set-strategic-number sn-percent-attack-soldiers 75)
+		(set-strategic-number sn-percent-attack-boats 75)
+		(attack-now)
+		(chat-local-to-self "attack now!")
+		(set-goal attack-control NO)
+	)
+
+	(defrule
+		(goal attack-control YES)
+		(timer-triggered t-attackgroup)
+		(defend-soldier-count >= fifteen-percent-pop)
+		(or
+			(players-building-type-count any-enemy wonder > 0)
+			(or
+				(enemy-captured-relics)
+				(goal military-parity SUPERIOR)
+			)
+		)
+	=>
+		(set-strategic-number sn-percent-attack-soldiers 100)
+		(set-strategic-number sn-percent-attack-boats 0)
+		(attack-now)
+		(chat-local-to-self "attack now!")
+		(chat-to-player-using-id every-ally 22406)	;201
+		(chat-to-player-using-id any-human-ally 22117)
+			;"39 Attack now!"
+		(set-goal attack-control NO)
+	)
+
+	(defrule
+		(goal attack-control YES)
+		(goal rush-control RUSHING)
+		(timer-triggered t-attackgroup)
+		(defend-soldier-count >= 5)
+		(or
+			(goal enemy-soldiers 0)
+			(goal enemy-soldiers 10)
+		)
+	=>
+		(attack-now)
+		(chat-local-to-self "attack now!")
+		(chat-to-player-using-id every-ally 22406)	;201
+		(chat-to-player-using-id any-human-ally 22116)
+			;"39 Everyone attack now!"
+		(set-goal attack-control NO)
+	)
+
+	(defrule
+		(goal attack-control YES)
+		(goal rush-control RUSHING)
+		(timer-triggered t-attackgroup)
+		(or
+			(and
+				(goal enemy-soldiers 20)
+				(defend-soldier-count >= 10)
+			)
+			(and
+				(goal enemy-soldiers 30)
+				(defend-soldier-count >= 15)
+			)
+		)
+	=>
+		(attack-now)
+		(chat-local-to-self "attack now!")
+		(chat-to-player-using-id every-ally 22406)	;201
+		(chat-to-player-using-id any-human-ally 22116)
+			;"39 Everyone attack now!"
+		(set-goal attack-control NO)
+	)
+
+	(defrule
+		(goal attack-control YES)
+		(timer-triggered t-attackgroup)
+		(defend-soldier-count >= 10)
+		(or
+			(goal enemy-soldiers 0)
+			(goal enemy-soldiers 10)
+		)
+	=>
+		(attack-now)
+		(chat-local-to-self "attack now!")
+		(chat-to-player-using-id every-ally 22406)	;201
+		(chat-to-player-using-id any-human-ally 22116)
+			;"39 Everyone attack now!"
+		(set-goal attack-control NO)
+	)
+
+	(defrule
+		(goal attack-control YES)
+		(timer-triggered t-attackgroup)
+		(or
+			(and
+				(goal enemy-soldiers 20)
+				(defend-soldier-count >= 20)
+			)
+			(and
+				(goal enemy-soldiers 30)
+				(defend-soldier-count >= 30)
+			)
+		)
+	=>
+		(attack-now)
+		(chat-local-to-self "attack now!")
+		(chat-to-player-using-id every-ally 22406)	;201
+		(chat-to-player-using-id any-human-ally 22116)
+			;"39 Everyone attack now!"
+		(set-goal attack-control NO)
+	)
+
+	(defrule
+		(difficulty < easy)
+		(timer-triggered t-attackgroup)
+		(or
+			(and
+				(goal 35 0)
+				(defend-warboat-count > 1)
+			)
+			(and
+				(goal 35 6)
+				(defend-warboat-count >= 4)
+			)
+		)			
+	=>
+		(set-strategic-number sn-percent-attack-soldiers 0)
+		(set-strategic-number sn-percent-attack-boats 100)
+		(attack-now)
+		(chat-local-to-self "boats attack now!")
+	)
+
+	(defrule
+		(difficulty < easy)
+		(timer-triggered t-attackgroup)
+		(or
+			(and
+				(goal 35 12)
+				(defend-warboat-count >= 8)
+			)
+			(and
+				(goal 35 18)
+				(defend-warboat-count >= 12)
+			)
+		)			
+	=>
+		(set-strategic-number sn-percent-attack-soldiers 0)
+		(set-strategic-number sn-percent-attack-boats 100)
+		(attack-now)
+		(chat-local-to-self "boats attack now!")
+	)
+
+	;desperation
+	(defrule
+		(timer-triggered t-attackgroup)
+		(game-time > 600)
+		(building-type-count wonder < 1)
+		(unit-type-count-total villager == 0)
+	=>
+		(set-strategic-number sn-percent-attack-soldiers 100)
+		(set-strategic-number sn-percent-attack-boats 100)
+		(attack-now)
+		(chat-local-to-self "everyone attack now!")
+	)
+#end-if
+;********************************
+#load-if-defined DIFFICULTY-EASIEST
+;attack timer - after 1/2 hour, launch attacks every 15 minutes
+	(defrule
+		(goal attack-enabled YES)
+		(players-current-age every-human >= castle-age)
+		(game-time > 1800)
+	=>
+		(enable-timer t-attackgroup 1)
+		(disable-self)
+	)
+
+	(defrule
+		(timer-triggered t-attackgroup)
+	=>
+		(disable-timer t-attackgroup)
+		(enable-timer t-attackgroup 900)
+	)
+#end-if
+
+;********************************
+#load-if-defined DIFFICULTY-EASY
+;attack timer - after 20 minutes, launch attacks every 10 minutes
+	(defrule
+		(goal attack-enabled YES)
+		(players-current-age every-human >= castle-age)
+		(game-time > 1200)
+	=>
+		(enable-timer t-attackgroup 1)
+		(disable-self)
+	)
+
+	(defrule
+		(timer-triggered t-attackgroup)
+	=>
+		(disable-timer t-attackgroup)
+		(enable-timer t-attackgroup 120)
+	)
+#end-if
+
+;********************************
+#load-if-defined DIFFICULTY-MODERATE
+;attack timer - once in feudal, or if rushing, launch attacks every 5 minutes
+	(defrule
+		(goal attack-enabled YES)
+		(or
+			(current-age >= castle-age)
+			(goal rush-control RUSHING)
+		)
+	=>
+		(enable-timer t-attackgroup 1)
+		(disable-self)
+	)
+
+	(defrule
+		(timer-triggered t-attackgroup)
+	=>
+		(disable-timer t-attackgroup)
+		(enable-timer t-attackgroup 120)
+	)
+
+#end-if
+
+;********************************
+#load-if-defined DIFFICULTY-HARD
+	(defrule
+		(goal attack-enabled YES)
+		(or
+			(current-age >= feudal-age)
+			(goal rush-control RUSHING)
+		)
+	=>
+		(enable-timer t-attackgroup 1)
+		(disable-self)
+	)
+
+	(defrule
+		(timer-triggered t-attackgroup)
+	=>
+		(disable-timer t-attackgroup)
+		(enable-timer t-attackgroup 300)
+	)
+
+#end-if
+
+;********************************
+#load-if-defined DIFFICULTY-HARDEST
+	(defrule
+		(goal attack-enabled YES)
+		(or
+			(current-age >= feudal-age)
+			(goal rush-control RUSHING)
+		)
+	=>
+		(enable-timer t-attackgroup 1)
+		(disable-self)
+	)
+
+	(defrule
+		(timer-triggered t-attackgroup)
+	=>
+		(disable-timer t-attackgroup)
+		(enable-timer t-attackgroup 300)
+	)
+
+#end-if
+
+;**************************************
+#load-if-not-defined VICTORY-CONQUEST
+;kill the wonder!
+
+(defrule
+	(or
+		(cc-players-building-type-count any-enemy wonder > 0)
+		(cc-players-building-type-count any-neutral wonder > 0)
+	)
+=>
+	(set-strategic-number sn-special-attack-type3 1)
+)
+
+(defrule
+	(enemy-captured-relics)
+=>
+	(set-strategic-number sn-special-attack-type1 1)
+)
+
+(defrule
+	(cc-players-building-type-count any-enemy wonder == 0)
+	(cc-players-building-type-count any-neutral wonder == 0)
+	(not (enemy-captured-relics) )
+=>
+	(set-strategic-number sn-special-attack-type1 0)
+)
+
+#load-if-not-defined TEAMS-LOCKED
+(defrule
+	(cc-players-building-type-count any-neutral wonder > 0)
+=>
+	(set-stance this-any-neutral enemy)
+)
+#end-if
+#end-if
+

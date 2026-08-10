@@ -1,0 +1,102 @@
+(defconst super-traitor-chat-id 22069); I have waited far too long for the promised tribute!
+(defconst traitor-chat-id 22099); I and my troops can easily vanquish seven times your number!
+(defconst betrayed-chat-id 22119); A curse upon thee and thy entire civilization!
+(defconst wonder-game-time 7444)
+(defconst camp-raid-time-variance 3299)
+(defconst nomad-tc-up-chat "TC")
+(defconst gg-chat "GG")
+(defconst boar-stealing-nature 1)
+(defconst villager-laming-nature 1)
+
+#load-if-not-defined UP-SCENARIO-GAME
+
+#load-if-not-defined WONDER-RACE
+#load-if-not-defined KING-OF-THE-HILL
+#load-if-not-defined TURBO-RANDOM-MAP
+#load-if-defined DARK-AGE-START
+#load-if-defined DIFFICULTY-HARD
+(defrule
+	(or	(goal gl-strategy fi-monk-rush)
+		(goal gl-strategy eagle-rush))
+	(or	(and	(not	(civ-selected turkish))
+			(building-type-count-total stable > 0))
+		(and	(building-type-count-total house > 45)
+			(population-cap <= 200)))
+=>
+	(chat-to-player target-player "Your town has a brand new paint, huh?")
+	(chat-to-player my-player-number "Your town has a brand new paint, huh?")
+	(disable-self)
+)
+
+(defrule
+	(goal MILITARY 1)
+	(game-time > 3600)
+	(game-time < 3700)
+=>
+	(chat-to-all "28 28")
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(up-compare-goal victory-time > 0)
+	(up-compare-goal victory-time < 10)
+	(not	(hold-relics))
+	(players-building-type-count every-ally wonder == 0)
+	(players-building-type-count my-player-number wonder == 0)
+	(or	(players-building-type-count any-enemy wonder > 0)
+		(enemy-captured-relics))
+=>
+	(chat-to-all "gg I guess")
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(goal MILITARY 1)
+	(unit-type-count monk > 20)
+	(unit-type-count spearman-line < 10)
+	(players-unit-type-count focus-player scout-cavalry-line > 15)
+=>
+	(chat-to-all "I wish I had more pikemen.")
+	(disable-self)
+)
+
+(defrule
+	(civ-selected gothic)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(population > almost-full-pop)
+	(players-civ focus-player mayan)
+	(research-completed ri-elite-huskarl)
+=>
+	(chat-to-all "I doubt mayans are the best choice against the goths.")
+	(disable-self)
+)
+
+(defrule
+	(goal MILITARY 1)
+	(unit-type-count monk > 14)
+	(up-compare-goal TSA >= 1)
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(research-completed ri-theocracy)
+	(not	(goal gl-strategy fi-monk-rush))
+	(players-building-count target-player > 0)
+=>
+	(chat-to-all "Enough monks?")
+	(disable-self)
+)
+
+(defrule
+	(game-time > 8374)
+	(population >= almost-full-pop)
+	(players-population any-enemy >= almost-full-pop)
+=>
+	(chat-to-all "Not the fastest game I've played :D")
+	(disable-self)
+)
+#end-if

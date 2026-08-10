@@ -1,0 +1,75 @@
+(defconst super-traitor-chat-id 22104); Your cities we shall burn to ashes.
+(defconst traitor-chat-id 2310); Your petty offerings will not sway my determination to crush your empire!
+(defconst betrayed-chat-id 2305); You dare defy me?! Prepare to die!
+(defconst wonder-game-time 2500)
+(defconst camp-raid-time-variance 1722)
+(defconst nomad-tc-up-chat "I'll settle here")
+(defconst gg-chat "gg wp")
+#load-if-not-defined ISLANDS-MAP
+(defconst boar-stealing-nature 0)
+#else
+(defconst boar-stealing-nature 1)
+#end-if
+(defconst villager-laming-nature 0)
+
+#load-if-not-defined UP-SCENARIO-GAME
+(defrule
+	(game-time < 1800)
+	(game-time > 600)
+	(current-age-time < 10)
+	(current-age == imperial-age)
+	(players-current-age any-enemy <= castle-age)
+=>
+	(chat-to-all "What's up?")
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-monk-rush)
+	(goal MILITARY 1)
+	(game-time < 2100)
+	(game-time > 1800)
+	(current-age == imperial-age)
+	(players-current-age any-enemy <= castle-age)
+=>
+	(chat-to-all-using-id 22100)
+	(disable-self)
+)
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(strategic-number sn-allow-resource-spending > 5)
+	(population > almost-full-pop)
+	(building-type-count wonder > 0)
+=>
+	(chat-to-all "Let's see how well you can lay siege.")
+	(chat-to-all "Give me your best shot!")
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(goal gl-rush-suitability-on-map GOOD)
+	(goal MILITARY 1)
+	(nor	(map-type arena)
+		(map-type fortress))
+	(not	(map-type black-forest))
+	(player-human target-player)
+	(players-building-type-count target-player stone-wall-line > 80)
+=>
+	(chat-to-all "I'd appreciate it if you used less walls.")
+	(disable-self)
+)
+
+(defrule
+	(not	(death-match-game))
+	(population > 150)
+	(stance-toward focus-player enemy)
+	(unit-type-count monastery-class > 10)
+	(players-unit-type-count focus-player war-elephant-line > 10)
+=>
+	(chat-to-all "Maybe those elephants want to join me instead.")
+	(disable-self)
+)
+
+#end-if

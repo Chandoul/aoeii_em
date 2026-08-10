@@ -1,0 +1,1511 @@
+; ============= PRE-BARRACKS ECO
+
+(defrule
+	(goal gl-DRUSH YES)
+	(building-type-count-total barracks == 0)
+	(strategic-number sn-allow-new-build-order <= 1)
+=>
+	(set-strategic-number sn-allow-new-build-order 4)
+)
+
+(defrule
+	(not	(goal gl-strategy eternal-drush))
+	(or	(and	(goal gl-DRUSH YES)
+			(building-type-count-total barracks > 0))
+		(goal gl-DRUSH NO))
+	(strategic-number sn-allow-new-build-order == 4)
+=>
+	(set-strategic-number sn-allow-new-build-order 1)
+)
+
+(defrule
+	(not	(goal gl-strategy eternal-drush))
+	(strategic-number sn-allow-new-build-order == 5)
+=>
+	(set-strategic-number sn-allow-new-build-order 1)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(goal gl-DRUSH YES)
+	(building-type-count-total barracks > 0)
+	(strategic-number sn-allow-new-build-order != 5)
+=>
+	(set-strategic-number sn-allow-new-build-order 5)
+)
+
+(defrule
+	(goal gl-DRUSH NO)
+	(strategic-number sn-allow-new-build-order != 4)
+	(strategic-number sn-allow-new-build-order != 5)
+=>
+	(up-jump-rule 24)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 11)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 73)
+	(set-strategic-number sn-wood-gatherer-percentage 27)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 12)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 67)
+	(set-strategic-number sn-wood-gatherer-percentage 33)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 13)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 69)
+	(set-strategic-number sn-wood-gatherer-percentage 31)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 14)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 64)
+	(set-strategic-number sn-wood-gatherer-percentage 36)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 15)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 60)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 16)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 62)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 17)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 59)
+	(set-strategic-number sn-wood-gatherer-percentage 41)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 18)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 56)
+	(set-strategic-number sn-wood-gatherer-percentage 44)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 19)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 53)
+	(set-strategic-number sn-wood-gatherer-percentage 47)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 20)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 55)
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 21)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 52)
+	(set-strategic-number sn-wood-gatherer-percentage 48)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 22)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 55)
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 23)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 56)
+	(set-strategic-number sn-wood-gatherer-percentage 44)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 24)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 54)
+	(set-strategic-number sn-wood-gatherer-percentage 46)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 25)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 52)
+	(set-strategic-number sn-wood-gatherer-percentage 48)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 26)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 27)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 48)
+	(set-strategic-number sn-wood-gatherer-percentage 52)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 28)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 4)
+	(current-age == dark-age)
+	(unit-type-count villager == 29)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 52)
+	(set-strategic-number sn-wood-gatherer-percentage 48)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-allow-new-build-order == 5)
+	(building-type-count-total barracks == 1)
+	(or	(strategic-number sn-gold-gatherer-percentage != 7)
+		(strategic-number sn-wood-gatherer-percentage != 37))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 56)
+	(set-strategic-number sn-wood-gatherer-percentage 37)
+	(set-strategic-number sn-gold-gatherer-percentage 7)
+	(set-strategic-number sn-maximum-gold-drop-distance 24)
+)
+
+(defrule
+	(building-type-count-total barracks == 2)
+	(strategic-number sn-allow-new-build-order == 5)
+	(or	(strategic-number sn-gold-gatherer-percentage != 12)
+		(strategic-number sn-wood-gatherer-percentage != 30))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 58)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 12)
+	(set-strategic-number sn-maximum-gold-drop-distance 6)
+)
+
+(defrule
+	(building-type-count-total barracks == 3)
+	(strategic-number sn-allow-new-build-order == 5)
+	(or	(strategic-number sn-gold-gatherer-percentage != 12)
+		(strategic-number sn-wood-gatherer-percentage != 26))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 62)
+	(set-strategic-number sn-wood-gatherer-percentage 26)
+	(set-strategic-number sn-gold-gatherer-percentage 12)
+)
+
+(defrule
+	(building-type-count-total barracks > 3)
+	(strategic-number sn-allow-new-build-order == 5)
+	(or	(strategic-number sn-gold-gatherer-percentage != 15)
+		(strategic-number sn-wood-gatherer-percentage != 27))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 61)
+	(set-strategic-number sn-wood-gatherer-percentage 24)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+)
+
+(defrule
+	(or	(building-type-count-total barracks > 5)
+		(unit-type-count-total villager > 55))
+	(strategic-number sn-allow-new-build-order == 5)
+	(or	(strategic-number sn-gold-gatherer-percentage != 14)
+		(strategic-number sn-wood-gatherer-percentage != 30))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 56)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 14)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(gold-amount > 150)
+	(strategic-number sn-gold-gatherer-percentage > 3)
+=>
+	(set-strategic-number sn-gold-gatherer-percentage 3)
+)
+
+#load-if-not-defined DARK-AGE-END
+(defrule
+	(goal gl-DRUSH YES)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+		(or	(building-type-count-total stone-wall-line > 0)
+			(or	(building-type-count-total bombard-tower > 0)
+				(or	(building-type-count-total watch-tower > 0)
+					(or	(building-type-count-total castle > 0)
+						(building-type-count-total palisade-wall > 0))))))
+=>
+	(set-goal gl-DRUSH NO)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(or	(players-building-type-count target-player stone-wall-line > 0)
+		(or	(players-building-type-count target-player bombard-tower > 0)
+			(or	(players-building-type-count target-player watch-tower > 0)
+				(or	(players-building-type-count target-player castle > 0)
+					(players-building-type-count target-player palisade-wall > 4)))))
+=>
+	(set-goal gl-DRUSH NO)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(or	(players-building-type-count target-player stone-wall-line > 0)
+		(or	(players-building-type-count target-player bombard-tower > 0)
+			(or	(players-building-type-count target-player watch-tower > 0)
+				(or	(players-building-type-count target-player castle > 0)
+					(players-building-type-count target-player palisade-wall > 4)))))
+=>
+	(set-goal gl-strategy regicide-strategy)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(goal POSITION POCKET)
+=>
+	(set-goal gl-DRUSH NO)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(game-time > 40)
+	(or	(cc-players-unit-type-count 0 wolf > max-wolves-and-jaguars)
+		(or	(cc-players-unit-type-count 0 jaguar > max-wolves-and-jaguars)
+			(or	(and	(cc-players-unit-type-count 0 wolf > max-combined-wj)
+					(cc-players-unit-type-count 0 jaguar > max-combined-wj))
+				(or	(map-type black-forest)
+					(map-type gold-rush)))))
+=>
+	(set-goal gl-DRUSH NO)
+	(chat-to-player my-player-number "24The map has a lot of evil animals")
+)
+#end-if
+
+(defrule
+	(goal gl-DRUSH NO)
+=>
+	(up-jump-rule 4)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(gold-amount <= 100)
+	(not	(civ-selected aztec))
+	(building-type-count-total barracks > 0)
+	(or	(unit-type-count-total villager > 17)
+		(unit-type-count-total villager >= imperial-villager-cap))
+	(strategic-number sn-gold-gatherer-percentage == 0)
+=>
+	(set-strategic-number sn-maximum-gold-drop-distance 24)
+	(set-strategic-number sn-gold-gatherer-percentage 6)
+	(set-goal gl-DRUSH-CONTROL GOLD-NEEDED-FOR-MILITIAS)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(goal gl-DRUSH-CONTROL GOLD-NEEDED-FOR-MILITIAS)
+	(or	(gold-amount == 0)
+		(or	(gold-amount == 20)
+			(or	(gold-amount == 40)
+				(or	(gold-amount == 60)
+					(unit-type-count-total militiaman-line > 2)))))
+	(building-type-count-total mining-camp == 0)
+	(strategic-number sn-gold-gatherer-percentage == 6)
+=>
+	(set-strategic-number sn-maximum-gold-drop-distance 6)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(timer-triggered 11)
+	(unit-type-count militiaman-line >= drush-militias)
+=>
+	(set-goal gl-DRUSH-CONTROL MILITIAS-DONE)
+	(set-goal target-system rush)
+	(set-goal target-system-rewriting YES)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-strategy != eternal-drush)
+	(goal gl-DRUSH YES)
+	(goal gl-DRUSH-CONTROL MILITIAS-DONE)
+	(or	(unit-type-count-total militiaman-line == 0)
+		(current-age >= feudal-age))
+	(nand	(up-compare-goal gl-strategy-type >= FC)
+		(up-compare-goal gl-current-age < gv-feudal-up))
+=>
+	(set-goal gl-DRUSH-CONTROL DRUSH-OVER)
+	(set-goal gl-DRUSH NO)
+	(set-goal target-system normal)
+	(set-goal target-system-rewriting YES)
+	(up-set-attack-stance militiaman-line c: aggressive)
+	(set-strategic-number sn-number-attack-groups 0)
+	(disable-timer 12)
+)
+
+#load-if-not-defined DARK-AGE-END
+#load-if-defined AZTEC-CIV
+(defrule
+	(or	(goal gl-strategy eternal-drush)
+		(and	(goal gl-strategy flush)
+			(and	(current-age == feudal-age)
+				(goal gl-strategy-control UNUSUAL-SWITCH))))
+	(or	(up-compare-goal gl-current-age >= gv-dark-up)
+		(goal gl-disable-eternal-drush YES))
+=>
+	(set-goal gl-strategy eagle-monk-rush)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-eternal-drush YES)
+)
+#end-if
+#load-if-defined GOTHIC-CIV
+(defrule
+	(or	(goal gl-strategy eternal-drush)
+		(and	(goal gl-strategy flush)
+			(and	(current-age == feudal-age)
+				(goal gl-strategy-control UNUSUAL-SWITCH))))
+	(or	(up-compare-goal gl-current-age >= gv-dark-up)
+		(goal gl-disable-eternal-drush YES))
+=>
+	(set-goal gl-strategy gothic-boom)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-eternal-drush YES)
+)
+#end-if
+#load-if-defined INCAN-CIV
+(defrule
+	(or	(goal gl-strategy eternal-drush)
+		(and	(goal gl-strategy flush)
+			(and	(current-age == feudal-age)
+				(goal gl-strategy-control UNUSUAL-SWITCH))))
+	(or	(up-compare-goal gl-current-age >= gv-dark-up)
+		(goal gl-disable-eternal-drush YES))
+=>
+	(set-goal gl-strategy eagle-rush)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-eternal-drush YES)
+)
+#end-if
+#load-if-defined MAYAN-CIV
+(defrule
+	(or	(goal gl-strategy eternal-drush)
+		(and	(goal gl-strategy flush)
+			(and	(current-age == feudal-age)
+				(goal gl-strategy-control UNUSUAL-SWITCH))))
+	(or	(up-compare-goal gl-current-age >= gv-dark-up)
+		(goal gl-disable-eternal-drush YES))
+=>
+	(set-goal gl-strategy eagle-rush)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-eternal-drush YES)
+)
+#end-if
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined SARACEN-CIV
+(defrule
+	(or	(goal gl-strategy eternal-drush)
+		(and	(goal gl-strategy flush)
+			(and	(current-age == feudal-age)
+				(goal gl-strategy-control UNUSUAL-SWITCH))))
+	(or	(up-compare-goal gl-current-age >= gv-dark-up)
+		(goal gl-disable-eternal-drush YES))
+=>
+	(set-goal gl-strategy heavy-krush)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-eternal-drush YES)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(goal gl-DRUSH NO)
+	(up-compare-goal gl-eternal-drush != YES)
+	(up-compare-goal gl-strategy != eternal-drush)
+=>
+	(up-jump-rule 14)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(unit-type-count-total villager > 12)
+	(building-type-count-total lumber-camp > 0)
+	(building-type-count-total mill > 0)
+	(building-type-count-total barracks < 1)
+	(can-build barracks)
+=>
+	(build barracks)
+	(set-strategic-number sn-maximum-food-drop-distance 15)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(dropsite-min-distance gold < 4)
+	(unit-type-count-total villager > 29)
+	(or	(building-type-count-total barracks < 2)
+		(unit-type-count-total villager > 37))
+	(or	(building-type-count-total barracks < 3)
+		(unit-type-count-total villager > 45))
+	(or	(building-type-count-total barracks < 4)
+		(unit-type-count-total villager > 55))
+	(building-type-count-total barracks < 5)
+	(can-build barracks)
+=>
+	(build barracks)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(dropsite-min-distance gold < 4)
+	(unit-type-count-total villager > 65)
+	(or	(building-type-count-total barracks < 6)
+		(unit-type-count-total villager > 75))
+	(or	(building-type-count-total barracks < 7)
+		(unit-type-count-total villager > 85))
+	(or	(building-type-count-total barracks < 8)
+		(unit-type-count-total villager > 95))
+	(building-type-count-total barracks < 9)
+	(can-build barracks)
+=>
+	(build barracks)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(building-type-count-total barracks > 0)
+	(building-type-count-total farm > 5)
+	(nand	(building-type-count-total mining-camp < 1)
+		(goal gl-strategy eternal-drush))
+	(nand	(building-type-count-total farm > 11)
+		(and	(building-type-count-total barracks < 2)
+			(goal gl-strategy eternal-drush)))
+	(building-type-count-total lumber-camp > 0)
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-eternal-drush YES)
+	(or	(goal gl-strategy heavy-krush)
+		(goal gl-strategy eagle-rush))
+	(game-time > 1200)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(wood-amount > 250)
+	(current-age == dark-age)
+	(building-type-count-total lumber-camp > 0)
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-eternal-drush YES)
+	(goal gl-strategy heavy-krush)
+	(game-time > 1500)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(current-age == feudal-age)
+	(building-type-count-total stable < 4)
+	(can-build stable)
+=>
+	(build stable)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(game-time > 780)
+	(unit-type-count-total villager-hunter > 0)
+	(building-type-count-total barracks > 1)
+	(building-type-count-total mill < 2)
+=>
+	(set-strategic-number sn-preferred-mill-placement 1)
+	(build mill)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(building-type-count-total barracks > 0)
+	(building-type-count-total mining-camp > 0)
+	(or	(and	(population-headroom > 7)
+			(and	(housing-headroom < 8)
+				(up-pending-objects c: house < 1)))
+		(building-type-count-total barracks > 1))
+	(population-headroom > 14)
+	(housing-headroom < 15)
+	(up-pending-objects c: house < 2)
+	(can-build house)
+=>
+	(build house)
+)
+
+(defrule
+	(goal gl-eternal-drush YES)
+	(unit-type-count-total militiaman-line > 14)
+	(strategic-number sn-allow-resource-spending > 5)
+	(can-research ri-two-handed-swordsman)
+=>
+	(research ri-two-handed-swordsman)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(current-age == dark-age)
+	(food-amount >= 110)
+	(nor	(goal gl-DRUSH-CONTROL MILITIAS-DONE)
+		(goal gl-DRUSH-CONTROL DRUSH-OVER))
+	(game-time < 720)
+	(unit-type-count-total militiaman-line < 3)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+	(enable-timer 11 22)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(current-age == dark-age)
+	(food-amount >= 110)
+	(civ-selected aztec)
+	(game-time < 720)
+	(unit-type-count-total militiaman-line < 5)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+	(enable-timer 11 22)
+)
+
+#load-if-not-defined DARK-AGE-END
+(defrule
+	(goal gl-strategy eternal-drush)
+	(goal gl-current-age gv-dark)
+	(food-amount >= 110)
+	(game-time < 1700)
+	(nand	(players-current-age focus-player >= castle-age)
+		(or	(players-unit-type-count focus-player archer-line > 0)
+			(or	(players-unit-type-count focus-player knight-line > 0)
+				(or	(players-building-type-count focus-player castle > 0)
+					(players-building-type-count focus-player watch-tower > 2)))))
+	(players-military-population focus-player < 15)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+)
+#else
+(defrule
+	(goal gl-strategy eternal-drush)
+	(food-amount >= 110)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+)
+#end-if
+
+(defrule
+	(goal gl-eternal-drush YES)
+	(or	(goal gl-current-age gv-feudal-up)
+		(or	(and	(building-type-count-total blacksmith > 0)
+				(building-type-count-total market > 0))
+			(players-unit-type-count focus-player knight-line > 6)))
+	(current-age == feudal-age)
+	(players-unit-type-count focus-player knight-line > 2)
+	(unit-type-count-total spearman-line < 15)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(research-completed ri-loom)
+	(or	(food-amount < 500)
+		(up-compare-const gv-dark-age-end == 1))
+	(unit-type-count-total villager < imperial-villager-cap)
+	(unit-type-count-total villager < 100)
+	(can-train villager)
+=>
+	(train villager)
+	(enable-timer 2 22)
+)
+
+(defrule
+	(goal gl-strategy-type FC)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(gold-amount < 50)
+	(dropsite-min-distance gold > 3)
+	(or	(up-pending-objects c: mining-camp < 1)
+		(strategic-number sn-defer-dropsite-update == 0))
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+	(set-strategic-number sn-maximum-gold-drop-distance 6)
+)
+
+(defrule
+	(goal gl-strategy-type FC)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(strategic-number sn-gold-gatherer-percentage < 17)
+	(dropsite-min-distance gold < 4)
+	(or	(goal gl-DRUSH-CONTROL MILITIAS-DONE)
+		(goal gl-DRUSH-CONTROL DRUSH-OVER))
+=>
+	(set-strategic-number sn-gold-gatherer-percentage 17)
+)
+
+(defrule
+	(goal gl-DRUSH NO)
+	(up-compare-goal gl-eternal-drush != YES)
+	(up-compare-goal gl-strategy != eternal-drush)
+=>
+	(up-jump-rule 5)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(gold-amount <= 100)
+	(not	(civ-selected aztec))
+	(building-type-count-total barracks > 0)
+	(unit-type-count-total villager > 17)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+=>
+	(set-strategic-number sn-maximum-gold-drop-distance 24)
+	(set-strategic-number sn-gold-gatherer-percentage 6)
+	(set-goal gl-DRUSH-CONTROL GOLD-NEEDED-FOR-MILITIAS)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(building-type-count-total barracks > 0)
+	(dropsite-min-distance gold > 3)
+	(or	(up-pending-objects c: mining-camp < 1)
+		(strategic-number sn-defer-dropsite-update == 0))
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+	(set-strategic-number sn-maximum-gold-drop-distance 6)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(game-time > 1000)
+	(building-type-count-total barracks > 1)
+	(resource-found wood)
+	(can-build lumber-camp)
+	(building-type-count-total lumber-camp < 3)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 1)
+	(build lumber-camp)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(or	(and	(building-type-count-total mill == 1)
+			(building-type-count-total farm > 15))
+		(and	(building-type-count-total mill == 2)
+			(building-type-count-total farm > 23)))
+	(can-build mill)
+=>
+	(build mill)
+)
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(or	(and	(building-type-count-total mill == 3)
+			(building-type-count-total farm > 30))
+		(and	(building-type-count-total mill == 4)
+			(building-type-count-total farm > 36)))
+	(can-build mill)
+=>
+	(build mill)
+)
+
+(defrule
+	(or	(goal gl-strategy scrush)
+		(goal gl-DRUSH YES))
+	(game-time > 300)
+=>
+	(set-strategic-number sn-blot-size 20)
+	(set-strategic-number sn-blot-exploration-map 0)
+	(disable-self)
+)
+
+#load-if-not-defined UP-3-PLAYER-GAME
+#load-if-not-defined UP-4-PLAYER-GAME
+#load-if-not-defined UP-5-PLAYER-GAME
+#load-if-defined UP-ALLY-IN-GAME
+#load-if-not-defined UP-MULTIPLE-ENEMIES; Let's have some fun since it's a handicap anyway
+#load-if-not-defined TINY-MAP
+(load-random 25 "Barbarian_2.0\Strategies\EternalDrush")
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+; ================ MICRO ETC.
+
+(defrule
+	(goal gl-DRUSH NO)
+	(goal gl-DRUSH-CONTROL DRUSH-OVER)
+=>
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 10)
+	(set-strategic-number sn-minimum-boat-attack-group-size 1)
+	(set-strategic-number sn-maximum-boat-attack-group-size 1)
+	(set-strategic-number sn-number-attack-groups 0)
+	(set-strategic-number sn-number-boat-attack-groups 0)
+	(set-strategic-number sn-group-form-distance 0)
+	(up-set-attack-stance militiaman-line c: aggressive)
+	(set-goal reset-unit-targeting YES)
+	(disable-self)
+)
+
+(defrule
+	(or	(not	(goal gl-DRUSH YES))
+		(and	(or	(up-timer-status 7 == timer-running)
+				(up-timer-status 7 == timer-triggered))
+			(up-compare-const gv-dark-age-end == 1)))
+=>
+	(up-jump-rule 47)
+)
+
+(defrule
+	(players-building-type-count target-player mill > 0)
+=>
+	(set-goal gl-drush-target-object mill)
+)
+
+(defrule
+	(players-building-type-count target-player mining-camp > 0)
+=>
+	(set-goal gl-drush-target-object mining-camp)
+)
+
+(defrule
+	(players-building-type-count target-player lumber-camp > 0)
+=>
+	(set-goal gl-drush-target-object lumber-camp)
+)
+
+(defrule
+	(or	(not	(goal gl-DRUSH YES))
+		(or	(goal gl-strategy eternal-drush)
+			(not	(goal gl-DRUSH-CONTROL MILITIAS-DONE))))
+=>
+	(up-jump-rule 3)
+	(set-goal gl-drush-waypoint-required 0)
+)
+
+(defrule
+	(game-time > 5)
+	(up-compare-goal gl-drush-waypoint-required <= 0)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number s:= sn-target-player-number)
+	(up-get-point position-self gl-home-point-x)
+	(up-set-target-point gl-home-point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-remote c: town-center c: 1)
+	(up-set-target-object search-remote c: 0)
+	(up-get-point position-object gl-point-x)
+)
+
+(defrule
+	(game-time > 5)
+	(up-compare-goal gl-drush-waypoint-required <= 0)
+=>
+	(up-get-point position-self gl-home-point-x)
+	(up-set-target-point gl-home-point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-remote g: gl-drush-target-object c: 1)
+	(up-set-target-object search-remote c: 0)
+	(up-get-point position-object gl-saved-point-x)
+	(up-get-point-distance gl-home-point-x gl-saved-point-x gl-point-distance)
+	(up-get-point-distance gl-home-point-x gl-point-x gl-point-distance2)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+)
+
+(defrule
+	(game-time > 5)
+	(up-compare-goal gl-drush-waypoint-required <= 0)
+	(up-compare-goal gl-point-distance g:> gl-point-distance2)
+=>
+	(set-goal gl-drush-waypoint-required 1)
+)
+
+(defrule
+	(goal gl-drush-waypoint-required 1)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number s:= sn-target-player-number)
+	(up-get-point position-self gl-home-point-x)
+	(up-set-target-point gl-home-point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-remote c: town-center c: 1)
+	(up-set-target-object search-remote c: 0)
+	(up-get-point position-object gl-point-x)
+	(enable-timer 27 5)
+)
+
+(defrule
+	(goal gl-drush-waypoint-required 1)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-remote g: gl-drush-target-object c: 1)
+	(up-set-target-object search-remote c: 0)
+	(up-get-point position-object gl-candidate1-point-x)
+	(up-get-point position-object gl-candidate2-point-x)
+	(up-cross-tiles gl-candidate1-point-x gl-point-x c: 15)
+	(up-cross-tiles gl-candidate2-point-x gl-point-x c: -15)
+	(up-get-point-distance gl-home-point-x gl-candidate1-point-x gl-point-distance)
+	(up-get-point-distance gl-home-point-x gl-candidate2-point-x gl-point-distance2)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+)
+
+(defrule
+	(goal gl-drush-waypoint-required 1)
+	(up-compare-goal gl-point-distance g:<= gl-point-distance2)
+=>
+	(up-get-point position-self gl-home-point-x)
+	(up-set-target-point gl-home-point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-point gl-candidate1-point-x action-move -1 -1)
+	(set-goal gl-drush-waypoint 1)
+	(set-goal gl-drush-waypoint-required 2)
+)
+
+(defrule
+	(goal gl-drush-waypoint-required 1)
+	(up-compare-goal gl-point-distance g:> gl-point-distance2)
+=>
+	(up-get-point position-self gl-home-point-x)
+	(up-set-target-point gl-home-point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-point gl-candidate2-point-x action-move -1 -1)
+	(set-goal gl-drush-waypoint 2)
+	(set-goal gl-drush-waypoint-required 2)
+)
+
+(defrule
+	(timer-triggered 27)
+	(goal gl-drush-waypoint 1)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: militiaman-line c: 40)
+	(up-set-target-object search-local c: 0)
+	(up-get-object-data object-data-action gl-max-scout-hp)
+	(up-get-point position-object gl-point-x)
+	(up-get-point-distance gl-point-x gl-candidate1-point-x temporary-goal2)
+	(up-get-object-data object-data-action gl-max-scout-hp)
+)
+
+(defrule
+	(timer-triggered 27)
+	(goal gl-drush-waypoint 2)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: militiaman-line c: 40)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-point-x)
+	(up-get-point-distance gl-point-x gl-candidate2-point-x temporary-goal2)
+	(up-get-object-data object-data-action gl-max-scout-hp)
+)
+
+(defrule
+	(timer-triggered 27)
+	(up-compare-goal gl-drush-waypoint >= 1)
+	(up-compare-goal gl-drush-waypoint <= 2)
+;	(or
+	(up-compare-goal temporary-goal2 < 5)
+;		(up-object-data object-data-action != actionid-move))
+=>
+	(up-modify-goal gl-drush-waypoint c:+ 2)
+	(chat-to-player my-player-number "Militias have arrived!")
+	(enable-timer 12 0)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(up-compare-goal gl-eternal-drush != YES)
+	(up-compare-goal gl-drush-waypoint >= 1)
+	(up-compare-goal gl-drush-waypoint <= 2)
+=>
+	(up-jump-rule 32)
+)
+
+(defrule
+	(goal gl-DRUSH NO)
+	(current-age > dark-age)
+	(up-compare-goal gl-eternal-drush != YES)
+	(up-compare-goal gl-strategy != eternal-drush)
+=>
+	(up-jump-rule 31)
+)
+
+(defrule
+	(players-building-type-count target-player lumber-camp == 0)
+	(players-building-type-count target-player mining-camp == 0)
+	(players-building-type-count target-player mill == 0)
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(goal gl-DRUSH-CONTROL MILITIAS-DONE)
+	(up-compare-goal gl-eternal-drush != YES)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number s:= sn-target-player-number)
+	(up-set-attack-stance militiaman-line c: defensive)
+	(up-reset-search 1 1 1 1)
+	(up-filter-range -1 -1 -1 -1)
+	(up-find-remote g: gl-drush-target-object c: 1)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-objects -1 action-move -1 -1)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(enable-timer 10 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(goal gl-DRUSH-CONTROL MILITIAS-DONE)
+	(players-building-count target-player > 0)
+	(players-building-type-count target-player lumber-camp == 0)
+	(players-building-type-count target-player mining-camp == 0)
+	(players-building-type-count target-player mill == 0)
+=>
+	(up-set-offense-priority c: villager c: -1)
+	(up-set-offense-priority c: lumber-camp c: 11)
+	(up-set-offense-priority c: mining-camp c: 11)
+	(up-set-attack-stance militiaman-line g: gl-drush-stance); Defensive by default, stand ground vs humans rated good or average
+	(set-strategic-number sn-group-form-distance 25)
+	(set-strategic-number sn-number-attack-groups 195)
+	(set-strategic-number sn-minimum-attack-group-size 5)
+	(set-strategic-number sn-maximum-attack-group-size 5)
+	(enable-timer 10 0)
+	(disable-self)
+)
+
+(defrule
+	(unit-type-count-total militiaman-line < 6)
+	(goal gl-DRUSH YES)
+	(goal gl-DRUSH-CONTROL MILITIAS-DONE)
+	(strategic-number sn-retreating == 0)
+	(up-projectile-detected projectile-any < 2000)
+=>
+	(up-reset-search 1 1 1 1)
+	(set-strategic-number sn-retreating 1)
+	(up-get-point position-self gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-point gl-point-x action-move -1 no-attack)
+	(enable-timer 12 12)
+	(set-strategic-number sn-number-attack-groups 0)
+	(enable-timer 11 5)
+	(set-goal RETREAT YES)
+	(set-goal gl-drush-retreat-point-required 1)
+)
+
+(defrule
+	(players-military-population focus-player < 2)
+	(unit-type-count-total militiaman-line < 30)
+	(goal gl-strategy eternal-drush)
+	(strategic-number sn-retreating == 0)
+	(up-projectile-detected projectile-town-center < 2000)
+=>
+	(up-reset-search 1 1 1 1)
+	(set-strategic-number sn-retreating 1)
+	(up-get-point position-self gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-point gl-point-x action-move -1 no-attack)
+	(enable-timer 12 3)
+	(set-strategic-number sn-number-attack-groups 0)
+	(enable-timer 11 2)
+	(set-goal RETREAT YES)
+	(set-goal gl-drush-retreat-point-required 1)
+)
+
+(defrule
+	(or	(not	(goal gl-DRUSH YES))
+		(not	(goal gl-DRUSH-CONTROL MILITIAS-DONE)))
+=>
+	(up-jump-rule 24)
+)
+
+(defrule
+	(players-military-population focus-player > 1)
+	(unit-type-count-total militiaman-line > 5)
+	(strategic-number sn-retreating == 0)
+	(up-projectile-detected projectile-any < 2000)
+=>
+	(up-reset-search 1 1 1 1)
+	(set-strategic-number sn-retreating 1)
+	(up-get-point position-self gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-point gl-point-x action-move -1 no-attack)
+	(enable-timer 12 12)
+	(set-strategic-number sn-number-attack-groups 0)
+	(enable-timer 11 5)
+	(set-goal RETREAT YES)
+	(set-goal gl-drush-retreat-point-required 1)
+)
+
+(defrule
+	(goal threat-source villager-class)
+	(goal threat-target infantry-class)
+	(timer-triggered 9)
+	(up-compare-goal threat-time < 3000)
+	(unit-type-count-total militiaman-line < 6)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-get-point position-self gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-point gl-point-x action-move -1 no-attack)
+	(enable-timer 12 12)
+	(set-strategic-number sn-number-attack-groups 0)
+	(enable-timer 11 8)
+	(set-goal RETREAT YES)
+	(disable-timer 9)
+	(set-goal gl-drush-retreat-point-required 1)
+)
+
+(defrule
+	(true)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number s:= sn-target-player-number)
+)
+
+(defrule
+	(true)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-remote c: town-center c: 1)
+	(up-set-target-object search-remote c: 0)
+	(up-get-point position-object gl-temporary-point-x)
+	(up-find-local c: militiaman-line c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-saved-point-x)
+	(up-get-point position-object gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-filter-range -1 -1 -1 4)
+	(set-goal gl-drush-reaction 0)
+)
+
+(defrule
+	(up-find-remote c: villager-class c: 1)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: militiaman-line c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-filter-range -1 -1 -1 4)
+	(up-find-remote c: villager-class c: 1)
+	(up-set-target-object search-remote c: 0)
+	(up-get-object-data object-data-action gl-max-scout-hp)
+	(set-goal gl-drush-reaction 1)
+)
+
+(defrule
+	(goal gl-drush-reaction 0)
+	(not	(up-find-remote c: villager-class c: 1))
+=>
+	(set-goal gl-drush-reaction 2)
+)
+
+(defrule
+	(goal gl-drush-reaction 1)
+	(up-compare-goal RETREAT != YES)
+	(unit-type-count-total militiaman-line < 6)
+	(up-object-data object-data-action == actionid-attack)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-get-point position-self gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-point gl-point-x action-move -1 no-attack)
+	(enable-timer 12 12)
+	(set-strategic-number sn-number-attack-groups 0)
+	(enable-timer 11 8)
+	(set-goal RETREAT YES)
+	(disable-timer 9)
+	(set-goal gl-drush-retreat-point-required 1)
+)
+
+(defrule
+	(or	(and	(up-point-distance gl-saved-point-x gl-temporary-point-x < 12)
+			(and	(up-compare-goal gl-saved-point-x >= 0)
+				(and	(up-compare-goal gl-temporary-point-x >= 0)
+					(players-building-type-count target-player town-center > 0))))
+		(or	(goal RETREAT YES)
+			(not	(goal gl-drush-reaction 1))))
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(unit-type-count-total militiaman-line < 6)
+	(up-object-data object-data-action != actionid-attack)
+	(up-timer-status 12 != timer-running)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: militiaman-line c: 40)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-filter-range -1 -1 -1 4)
+	(up-find-remote c: villager-class c: 1)
+	(up-target-objects -1 action-default -1 aggressive)
+	(up-filter-range -1 -1 -1 -1)
+	(enable-timer 12 4)
+	(set-goal temporary-goal2 -1)
+)
+
+(defrule
+	(goal RETREAT YES)
+	(unit-type-count-total militiaman-line < 6)
+	(or	(and	(up-object-data object-data-action != actionid-attack)
+			(goal gl-drush-reaction 1))
+		(goal gl-drush-reaction 2))
+	(nor	(up-projectile-detected projectile-any < 3000)
+		(up-compare-goal threat-time < 3000))
+=>
+	(enable-timer 11 0)
+	(enable-timer 12 0)
+	(up-set-attack-stance militiaman-line c: aggressive)
+	(set-goal RETREAT NO)
+	(set-goal gl-drush-retreat-point-required 1)
+	(set-goal temporary-goal2 -1)
+)
+
+(defrule
+	(true)
+=>
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+)
+
+(defrule
+	(goal temporary-goal2 700)
+=>
+	(up-jump-rule 4)
+)
+
+(defrule
+	(goal gl-drush-retreat-point-required 1)
+	(goal RETREAT YES)
+	(not	(timer-triggered 11))
+	(goal gl-drush-waypoint 3)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: militiaman-line c: 40)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-point-x)
+	(up-get-point-distance gl-point-x gl-candidate1-point-x temporary-goal2)
+)
+
+(defrule
+	(goal gl-drush-retreat-point-required 1)
+	(goal RETREAT YES)
+	(not	(timer-triggered 11))
+	(goal gl-drush-waypoint 4)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: militiaman-line c: 40)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object gl-point-x)
+	(up-get-point-distance gl-point-x gl-candidate2-point-x temporary-goal2)
+)
+
+(defrule
+	(goal gl-drush-retreat-point-required 1)
+	(goal RETREAT YES)
+	(up-compare-goal temporary-goal2 > 3)
+	(not	(timer-triggered 11))
+	(goal gl-drush-waypoint 3)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-point gl-candidate1-point-x action-move -1 -1)
+	(up-jump-rule 2)
+)
+
+(defrule
+	(goal gl-drush-retreat-point-required 1)
+	(goal RETREAT YES)
+	(up-compare-goal temporary-goal2 > 3)
+	(not	(timer-triggered 11))
+	(goal gl-drush-waypoint 4)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-point gl-candidate2-point-x action-move -1 -1)
+	(up-jump-rule 1)
+)
+
+(defrule
+	(goal RETREAT YES)
+	(not	(timer-triggered 11))
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-get-point position-self gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-point gl-point-x action-move -1 -1)
+	(set-goal gl-drush-retreat-point-required 0)
+	(set-goal temporary-goal2 700)
+)
+
+(defrule
+	(goal RETREAT YES)
+	(timer-triggered 11)
+=>
+	(up-set-attack-stance militiaman-line c: aggressive)
+	(set-goal RETREAT NO)
+	(set-goal gl-drush-retreat-point-required 1)
+)
+
+(defrule
+	(goal threat-source villager-class)
+	(goal threat-target infantry-class)
+	(players-military-population every-enemy < 2)
+	(timer-triggered 10)
+	(up-compare-goal threat-time < 3000)
+	(unit-type-count-total militiaman-line < 6)
+=>
+	(enable-timer 9 1)
+	(enable-timer 10 2)
+)
+
+(defrule
+	(players-building-type-count target-player lumber-camp == 0)
+	(players-building-type-count target-player mining-camp == 0)
+	(players-building-type-count target-player mill == 0)
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(unit-type-count-total militiaman-line < 6)
+	(timer-triggered 12)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number s:= sn-target-player-number)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-remote g: gl-drush-target-object c: 1)
+	(up-set-target-point gl-point-x)
+	(up-find-local c: militiaman-line c: 40)
+	(up-target-objects -1 action-move -1 defensive)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(disable-timer 12)
+)
+
+(defrule
+	(unit-type-count-total militiaman-line < 6)
+	(timer-triggered 12)
+=>
+	(set-strategic-number sn-disable-attack-groups 0)
+	(up-set-offense-priority c: villager c: -1)
+	(up-set-offense-priority c: lumber-camp c: 11)
+	(up-set-offense-priority c: mining-camp c: 11)
+	(up-set-attack-stance militiaman-line g: gl-drush-stance)
+	(up-reset-unit c: militiaman-line)
+	(set-strategic-number sn-group-form-distance 25)
+	(set-strategic-number sn-number-attack-groups 196)
+	(set-strategic-number sn-minimum-attack-group-size 5)
+	(set-strategic-number sn-maximum-attack-group-size 5)
+	(disable-timer 12)
+)
+
+(defrule
+	(unit-type-count-total militiaman-line > 5)
+	(goal gl-DRUSH YES)
+	(timer-triggered 12)
+	(players-military-population focus-player < 17)
+=>
+	(set-strategic-number sn-disable-attack-groups 0)
+	(up-set-offense-priority c: villager c: -1)
+	(up-set-offense-priority c: lumber-camp c: 11)
+	(up-set-offense-priority c: mining-camp c: 11)
+	(up-set-attack-stance militiaman-line c: aggressive)
+	(up-reset-unit c: militiaman-line)
+	(set-strategic-number sn-group-form-distance 0)
+	(set-strategic-number sn-number-attack-groups 196)
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 40)
+;	(set-strategic-number sn-maximum-town-size 255)
+	(disable-timer 12)
+)
+
+
+(defrule
+	(unit-type-count-total militiaman-line > 5)
+	(goal gl-DRUSH YES)
+	(timer-triggered 12)
+	(players-military-population focus-player > 16)
+=>
+	(up-set-attack-stance militiaman-line c: aggressive)
+	(up-reset-unit c: militiaman-line)
+	(set-strategic-number sn-group-form-distance 0)
+	(set-strategic-number sn-minimum-attack-group-size 1)
+	(set-strategic-number sn-maximum-attack-group-size 20)
+	(disable-timer 12)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(up-compare-goal threat-source != villager-class)
+	(up-compare-goal threat-source != tower-class)
+	(up-compare-goal threat-source != building-class)
+	(up-compare-goal threat-source != warship-class)
+	(up-compare-goal threat-player > 0)
+	(up-timer-status 12 != timer-running)
+	(up-compare-goal threat-time < 5000)
+	(not	(up-projectile-detected projectile-any < 5000))
+=>
+	(enable-timer 11 6)
+	(enable-timer 12 7)
+	(up-reset-unit c: militiaman-line)
+	(up-set-attack-stance militiaman-line c: aggressive)
+	(set-goal gl-drush-retreat-point-required 1)
+	(set-goal temporary-goal2 -1)
+)
+
+(defrule
+	(goal gl-DRUSH NO)
+	(goal gl-DRUSH-CONTROL DRUSH-OVER); We have hit feudal
+	(unit-type-count-total militiaman-line > 0)
+	(or	(up-projectile-detected projectile-castle < 2000)
+		(or	(up-projectile-detected projectile-bombard-tower < 2000)
+			(or	(up-projectile-detected projectile-watch-tower < 2000)
+				(or	(up-projectile-detected projectile-town-center < 2000)
+					(current-age >= feudal-age)))))
+=>
+	(set-strategic-number sn-retreating 1)
+	(up-set-attack-stance militiaman-line c: aggressive)
+	(disable-self)
+)
+
+

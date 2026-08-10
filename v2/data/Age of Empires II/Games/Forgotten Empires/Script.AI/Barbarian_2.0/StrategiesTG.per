@@ -1,0 +1,4856 @@
+; ======== MAP NOT ARENA
+
+#load-if-not-defined DEATH-MATCH
+
+#load-if-not-defined ARENA-MAP
+#load-if-defined AZTEC-CIV
+(load "Barbarian_2.0\TheGrowlOfTheJaguar")
+(load "Barbarian_2.0\OnlyMeso")
+(load "Barbarian_2.0\AztecSuperRush")
+
+(load-random
+5 "Barbarian_2.0\Strategies\FC2FI"
+20 "Barbarian_2.0\Strategies\FC2BOOM"
+20 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\ARCHER1"
+5 "Barbarian_2.0\Strategies\FC7"
+10 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\FC16"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+5 "Barbarian_2.0\Strategies\CASTLESLING"
+20 "Barbarian_2.0\Strategies\JAGUARS"
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal FFA != YES)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(up-compare-goal FFA != YES)
+	(or	(and	(goal gl-strategy default)
+			(game-time < 2400))
+		(and	(goal gl-eew-strategy-type boom)
+			(players-civ every-enemy aztec)))
+	(goal gl-advanced-infantry 0)
+	(goal gl-eagles 0)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-eagles extra-eagles)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal FFA YES)
+	(or	(and	(goal gl-strategy default)
+			(game-time < 2400))
+		(and	(goal gl-eew-strategy-type boom)
+			(players-civ every-enemy aztec)))
+	(goal gl-advanced-infantry 0)
+	(goal gl-eagles 0)
+=>
+	(set-goal gl-eagles 0)
+	(set-goal gl-advanced-infantry 0)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal gl-strategy default)
+	(game-time > 2400)
+	(goal gl-advanced-infantry 0)
+	(or	(goal gl-eagles 0)
+		(or	(game-time > 3000)
+			(research-completed ri-champion)))
+=>
+	(set-goal gl-eagles extra-eagles)
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal gl-strategy eew-strategy)
+	(game-time > 3600)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+	(disable-self)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal gl-strategy default)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-infantry 0)
+	(set-goal gl-eagles 0)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-advanced-infantry heavy-swordsmen)
+	(or	(building-type-count castle > 0)
+		(game-time < 3600))
+	(or	(up-compare-const gv-aofe-game == 1)
+		(or	(and	(up-research-status c: ri-champion < research-pending)
+				(up-research-status c: my-unique-unit-upgrade >= research-pending))
+			(goal FFA YES)))
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-eagles 0)
+	(set-goal gl-advanced-infantry 0)
+)
+
+(defrule
+	(or	(strategic-number sn-allow-resource-spending > 5)
+		(up-research-status c: ri-arbalest < research-pending))
+	(game-time > 3000)
+	(or	(goal gl-advanced-infantry heavy-swordsmen)
+		(goal CASTLE 2))
+	(goal gl-advanced-archery heavy-archers)
+=>
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(research-completed ri-plate-mail)
+	(goal gl-eagles heavy-eagles)
+	(strategic-number sn-allow-resource-spending < 4)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+)
+
+(defrule
+	(research-completed ri-plate-mail)
+	(or	(research-completed ri-champion)
+		(research-completed my-unique-unit-upgrade))
+	(research-completed my-unique-research)
+	(research-completed ri-blast-furnace)
+	(strategic-number sn-allow-resource-spending < 6)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined BRITON-CIV
+
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+10 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER1"
+10 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\FC7"
+30 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\KRUSH"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+10 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(goal gl-strategy default)
+	(building-type-count-total castle == 0)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-const gv-michi-style != 1)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(current-age-time > 600)
+			(goal gl-strategy-class basic-class)))
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 2)
+	(or	(players-civ focus-player gothic)
+		(and	(or	(players-civ focus-player aztec)
+				(or	(players-civ focus-player incan)
+					(players-civ focus-player mayan)))
+			(goal gl-x-vs-one-challenge YES)))
+	(or	(current-age-time > 700)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal CASTLE 4)
+)
+
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 0)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 2)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-advanced-archery != 0)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-advanced-archery 0)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined BYZANTINE-CIV
+
+(load-random
+15 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER2"
+15 "Barbarian_2.0\Strategies\TRASH1"
+10 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\KRUSH"
+10 "Barbarian_2.0\Strategies\FC12"
+20 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\CASTLESLING"
+15 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(goal gl-strategy castle-drop)
+			(and	(current-age-time > 1300)
+				(strategic-number sn-allow-resource-spending > 1)))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(current-age >= castle-age)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-trash YES)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(current-age-time > 100)
+	(or	(current-age-time > 500)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(players-civ focus-player gothic)))
+=>
+	(set-goal CASTLE 5)
+	(set-goal gl-advanced-trash 0)
+	(disable-self)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-trash 0)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(research-completed my-unique-unit-upgrade)
+	(research-completed my-unique-research)
+	(unit-type-count-total trade-cart > 20)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-trash 0)
+	(disable-self)
+)
+
+(defrule
+	(nand	(goal CASTLE 5)
+		(up-research-status c: ri-chemistry != research-complete))
+	(nand	(goal CASTLE 9)
+		(up-research-status c: ri-halberdier != research-complete))
+	(research-completed my-unique-unit-upgrade)
+	(research-completed my-unique-research)
+	(or	(research-completed ri-bracer)
+		(goal CASTLE 2))
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined CELTIC-CIV
+
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER1"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER2"
+20 "Barbarian_2.0\Strategies\SCORPS"
+5 "Barbarian_2.0\Strategies\FC7"
+10 "Barbarian_2.0\Strategies\FC11"
+15 "Barbarian_2.0\Strategies\FC12"
+15 "Barbarian_2.0\Strategies\FC17"
+10 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\CASTLESLING"
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age < gv-castle-up)
+	(goal gl-advanced-archery 0)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(and	(building-type-count siege-workshop > 0)
+			(goal gl-advanced-archery heavy-archers))
+		(goal gl-advanced-archery 0))
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery scorpions)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy-class basic-class)
+		(goal gl-strategy xbow-rush))
+	(or	(and	(game-time > 2300)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(or	(goal CASTLE 0)
+		(up-compare-goal gl-advanced-archery != scorpions))
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-advanced-archery scorpions)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(research-completed ri-heavy-scorpion)
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined CHINESE-CIV
+
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+10 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER1"
+5 "Barbarian_2.0\Strategies\FC7"
+15 "Barbarian_2.0\Strategies\KRUSH"
+30 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\CASTLESLING"
+10 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(goal gl-strategy default)
+	(building-type-count-total castle == 0)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-const gv-michi-style != 1)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(current-age-time > 600)
+			(goal gl-strategy-class basic-class)))
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 2)
+	(or	(players-civ focus-player gothic)
+		(and	(or	(players-civ focus-player aztec)
+				(or	(players-civ focus-player incan)
+					(players-civ focus-player mayan)))
+			(goal gl-x-vs-one-challenge YES)))
+	(or	(current-age-time > 700)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal CASTLE 4)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 0)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 2)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-advanced-archery != 0)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-advanced-archery 0)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(strategic-number sn-allow-resource-spending > 1)
+	(goal gl-strategy default)
+	(or	(players-unit-type-count focus-player mangonel-line > 2)
+		(or	(players-unit-type-count focus-player bombard-cannon > 2)
+			(players-unit-type-count focus-player scorpion-line > 5)))
+	(up-compare-goal gl-advanced-cavalry != LC)
+=>
+	(set-goal gl-advanced-cavalry LC)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(strategic-number sn-allow-resource-spending > 1)
+	(goal gl-strategy default)
+	(players-unit-type-count focus-player mangonel-line < 1)
+	(players-unit-type-count focus-player bombard-cannon < 1)
+	(players-unit-type-count focus-player scorpion-line < 2)
+	(players-unit-type-count target-player mangonel-line < 1)
+	(players-unit-type-count target-player bombard-cannon < 1)
+	(players-unit-type-count target-player scorpion-line < 2)
+	(up-compare-goal gl-advanced-cavalry != 0)
+=>
+	(set-goal gl-advanced-cavalry 0)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined FRANKISH-CIV
+
+#load-if-not-defined UP-POCKET-POSITION
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+5 "Barbarian_2.0\Strategies\ARCHER2"
+10 "Barbarian_2.0\Strategies\MAA1ARCHER1"
+10 "Barbarian_2.0\Strategies\KRUSH"
+10 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\FC12"
+50 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+#else
+(load-random
+30 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+10 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\FC12"
+50 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy castle-drop)
+	(current-age >= castle-age)
+	(or	(and	(game-time > 2400)
+			(strategic-number sn-allow-resource-spending > 1))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-strategy != castle-drop)
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+	(or	(game-time > 2300)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-paladin)
+	(current-age-time > 900)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-trash 0)
+	(disable-self)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(goal gl-strategy xbow-rush)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-paladin)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined GOTHIC-CIV
+
+(load-random
+45 "Barbarian_2.0\Strategies\WALLS"
+20 "Barbarian_2.0\Strategies\MAA1ARCHER1"
+15 "Barbarian_2.0\Strategies\MAA1ARCHER2"
+5 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\KRUSH"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+)
+
+(load "Barbarian_2.0\WallAndBoom")
+
+(defrule
+	(goal gl-strategy gothic-boom)
+	(or	(and	(research-completed my-unique-unit-upgrade)
+			(or	(goal gl-strategy-control FULL-HUSKS)
+				(research-completed ri-champion)))
+		(and	(research-completed ri-champion)
+			(goal gl-strategy-control CHAMPS)))
+	(or	(players-unit-type-count focus-player samurai-line > 2)
+		(players-unit-type-count focus-player jaguar-man-line > 2))
+=>
+	(set-goal gl-advanced-archery light-cannoneers)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy gothic-boom)
+	(or	(and	(research-completed my-unique-unit-upgrade)
+			(or	(goal gl-strategy-control FULL-HUSKS)
+				(research-completed ri-champion)))
+		(and	(research-completed ri-champion)
+			(goal gl-strategy-control CHAMPS)))
+	(or	(players-unit-type-count focus-player teutonic-knight-line > 2)
+		(players-unit-type-count focus-player throwing-axeman-line > 2))
+=>
+	(set-goal gl-advanced-archery light-cannoneers)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-strategy != gothic-boom)
+	(or	(research-completed my-unique-unit-upgrade)
+		(research-completed ri-champion))
+	(or	(players-unit-type-count focus-player samurai-line > 2)
+		(or	(players-unit-type-count focus-player jaguar-man-line > 2)
+			(or	(players-unit-type-count focus-player teutonic-knight-line > 2)
+				(or	(players-unit-type-count focus-player throwing-axeman-line > 2)
+					(players-civ focus-player incan)))))
+=>
+	(set-goal gl-advanced-archery light-cannoneers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(and	(goal gl-strategy castle-drop)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(nor	(goal gl-strategy gothic-boom)
+		(goal gl-strategy default))
+	(current-age >= castle-age)
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 0)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 0)
+	(current-age >= castle-age)
+	(or	(current-age-time > 500)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(nor	(players-civ every-enemy aztec)
+		(players-civ every-enemy gothic))
+	(nor	(players-civ every-enemy frankish)
+		(players-civ every-enemy mayan))
+=>
+	(set-goal CASTLE 1)
+	(set-goal gl-advanced-infantry 0)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 0)
+	(current-age >= castle-age)
+	(or	(current-age-time > 60)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(players-civ every-enemy mayan)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-infantry 0)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 2)
+	(building-type-count-total town-center > 2)
+	(players-civ every-enemy mayan)
+	(or	(players-unit-type-count focus-player militiaman-line > 8)
+		(players-unit-type-count focus-player elite-eagle-warrior > 5))
+=>
+	(set-goal CASTLE 4)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(current-age >= castle-age)
+	(or	(current-age-time > 60)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(or	(players-civ every-enemy aztec)
+		(or	(players-civ every-enemy gothic)
+			(players-civ every-enemy japanese)))
+=>
+	(set-goal CASTLE 0)
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+	(set-goal gl-advanced-trash 0)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(or	(current-age-time > 60)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(goal CASTLE 1)
+	(or	(players-civ every-enemy viking)
+		(players-civ every-enemy briton))
+=>
+	(set-goal CASTLE 4)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(or	(current-age-time > 60)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(not	(goal CASTLE 8))
+	(or	(players-unit-type-count focus-player teutonic-knight-line > 2)
+		(players-unit-type-count focus-player throwing-axeman-line > 2))
+=>
+	(set-goal CASTLE 8)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(goal gl-advanced-infantry 0)
+	(building-type-count-total town-center > 1)
+	(or	(not	(goal CASTLE 4))
+		(players-unit-type-count focus-player archer-line < 6))
+	(or	(players-unit-type-count focus-player samurai-line > 2)
+		(players-unit-type-count focus-player jaguar-man-line > 2))
+=>
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(current-age >= castle-age)
+	(goal gl-strategy default)
+	(goal CASTLE 0)
+	(goal gl-advanced-infantry heavy-swordsmen)
+	(players-unit-type-count focus-player archer-line > 6)
+	(or	(current-age-time > 60)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal CASTLE 4)
+	(set-goal gl-advanced-infantry 0)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal gl-advanced-archery heavy-archers)
+=>
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age == imperial-age)
+	(players-current-age any-enemy == imperial-age)
+	(or	(players-unit-type-count focus-player cataphract-line > 9)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 7)
+			(players-unit-type-count focus-player jaguar-man-line > 7)))
+=>
+	(set-goal gl-advanced-archery scorpions)
+	(chat-to-player my-player-number "24Try to get heavy scorpions")
+	(disable-self)
+)
+
+(defrule
+	(or	(and	(nor	(goal CASTLE 0)
+				(goal CASTLE 11))
+			(research-completed my-unique-unit-upgrade))
+		(research-completed ri-champion))
+	(or	(goal CASTLE 0)
+		(research-completed my-unique-unit-upgrade))
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-advanced-archery scorpions)
+	(research-available ri-heavy-scorpion)
+	(strategic-number sn-allow-resource-spending > 4); Overwrites the rule above
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+)
+
+#end-if
+#load-if-defined HUN-CIV
+
+(load "Barbarian_2.0\CA")
+
+#load-if-not-defined UP-POCKET-POSITION
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+10 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+20 "Barbarian_2.0\Strategies\FC4"
+10 "Barbarian_2.0\Strategies\KNIGHTARCHER"
+15 "Barbarian_2.0\Strategies\FC15"
+5 "Barbarian_2.0\Strategies\KRUSH"
+25 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+#else
+(load-random
+20 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+25 "Barbarian_2.0\Strategies\FC4"
+10 "Barbarian_2.0\Strategies\KRUSH"
+25 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+20 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-strategy != michi-boom)
+	(or	(goal gl-strategy default)
+		(and	(current-age >= castle-age)
+			(current-age-time > 600)))
+	(up-compare-goal POSITION != POCKET)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry knight-CA)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(up-compare-const gv-michi-style != 1)
+	(current-age == castle-age)
+	(current-age-time > 1000)
+	(goal POSITION POCKET)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total town-center < 3)
+=>
+	(set-goal gl-advanced-cavalry knight-CA)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(current-age == imperial-age)
+	(up-compare-const gv-michi-style != 1)
+	(nor	(players-civ any-enemy aztec)
+		(players-civ any-enemy mayan))
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-strategy != knight-boom)
+	(or	(gold-amount > 1000)
+		(or	(research-completed ri-paladin)
+			(up-compare-const gv-michi-style == 1)))
+	(or	(not	(goal gl-advanced-cavalry knight-CA))
+		(not	(goal gl-strategy default)))
+	(current-age == imperial-age)
+=>
+	(set-goal gl-advanced-cavalry knight-CA)
+	(set-goal gl-strategy default)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(research-completed ri-paladin)
+	(current-age == imperial-age)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+(defrule
+	(research-completed ri-bracer)
+	(research-completed ri-heavy-cavalry-archer)
+	(strategic-number sn-allow-resource-spending < 5)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 5)
+)
+
+#end-if
+#load-if-defined INCAN-CIV
+(load "Barbarian_2.0\OnlyMeso")
+(load "Barbarian_2.0\MayanEagleRush")
+
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+10 "Barbarian_2.0\Strategies\ARCHER2"
+10 "Barbarian_2.0\Strategies\MAA1ARCHER1"
+20 "Barbarian_2.0\Strategies\FC2BOOM"
+15 "Barbarian_2.0\Strategies\FC7"
+15 "Barbarian_2.0\Strategies\FC11"
+20 "Barbarian_2.0\Strategies\FC12"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(goal gl-eew-strategy-type boom)
+			(and	(up-compare-goal gl-current-age >= gv-castle-up)
+				(players-civ every-enemy aztec))))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal CASTLE 0)
+=>
+	(set-goal gl-eagles extra-eagles)
+	(set-goal gl-advanced-archery heavy-archers)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(current-age-time > 300)
+	(or	(and	(up-compare-goal gl-current-age <= gv-castle)
+			(strategic-number sn-allow-resource-spending > 1))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-advanced-archery slingers)
+=>
+	(up-jump-rule 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal gl-advanced-archery heavy-archers)
+	(or	(players-unit-type-count focus-player militiaman-line > 7)
+		(or	(players-unit-type-count focus-player eagle-warrior-line > 5)
+			(or	(players-unit-type-count focus-player woad-raider-line > 6)
+				(or	(players-unit-type-count focus-player samurai-line > 5)
+					(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+						(players-unit-type-count focus-player jaguar-man-line > 4))))))
+	(building-type-count castle > 0)
+=>
+	(set-goal gl-advanced-archery slingers)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal gl-advanced-archery heavy-archers)
+	(or	(players-unit-type-count focus-player berserk-line > 6)
+		(or	(players-unit-type-count focus-player huskarl-line > 6)
+			(up-compare-goal gl-current-age >= gv-castle-up)))
+	(building-type-count castle > 0)
+=>
+	(set-goal gl-advanced-archery slingers)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal CASTLE 2)
+		(goal gl-strategy-class basic-class))
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 6)
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(game-time > 3600)
+=>
+	(set-goal CASTLE 1)
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-plate-mail)
+	(goal gl-eagles heavy-eagles)
+	(strategic-number sn-allow-resource-spending < 4)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(nand	(goal CASTLE 6)
+		(research-available ri-elite-eagle-warrior))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined INDIAN-CIV
+(load-random
+15 "Barbarian_2.0\Strategies\ARCHER1"
+15 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\KNIGHTARCHER"
+10 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\FC7"
+10 "Barbarian_2.0\Strategies\FC11"
+15 "Barbarian_2.0\Strategies\FC12"
+25 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(or	(goal gl-strategy default)
+		(and	(current-age >= castle-age)
+			(current-age-time > 600)))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry indian-camels)
+	(set-goal gl-advanced-archery heavy-cannoneers)
+	(disable-self)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-advanced-cavalry indian-camels)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(not	(goal gl-advanced-cavalry indian-camels))
+=>
+	(set-goal gl-advanced-cavalry indian-camels)
+	(set-goal gl-strategy default)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-const gv-imperial-age-end == 1)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(players-unit-type-count focus-player spearman-line > 12)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+			(or	(players-unit-type-count focus-player mameluke-line > 4)
+				(players-unit-type-count focus-player camel-line > 4))))
+	(not	(goal gl-advanced-archery heavy-cannoneers))
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+)
+
+(defrule
+	(goal CASTLE 2)
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(current-age-time > 600))
+	(or	(players-unit-type-count any-enemy cavalry-archer-line > 4)
+		(or	(players-unit-type-count any-enemy archer-line > 6)
+			(players-unit-type-count any-enemy plumed-archer-line > 4)))
+	(up-compare-goal gl-current-age >= gv-castle)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(or	(players-unit-type-count any-enemy chu-ko-nu-line > 6)
+		(or	(players-unit-type-count any-enemy longbowman-line > 5)
+			(or	(players-unit-type-count any-enemy janissary-line > 4)
+				(players-unit-type-count any-enemy mameluke-line > 4))))
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(current-age-time > 600))
+	(up-compare-goal gl-current-age >= gv-castle)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(or	(players-unit-type-count any-enemy mangudai-line > 5)
+		(or	(players-unit-type-count any-enemy conquistador-line > 2)
+			(up-compare-const gv-imperial-age-end == 1)))
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(current-age-time > 600))
+	(up-compare-goal gl-current-age >= gv-castle)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy xbow-rush)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-imperial-camel)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+#end-if
+#load-if-defined ITALIAN-CIV
+
+(load-random
+5 "Barbarian_2.0\Strategies\ARCHER1"
+10 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER1"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER2"
+10 "Barbarian_2.0\Strategies\KRUSH"
+30 "Barbarian_2.0\Strategies\FC11"
+30 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\FC7"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+#load-if-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(building-type-count-total castle > 0)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-archery heavy-cannoneers)
+	(disable-self)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(current-age-time > 1200)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(or	(up-compare-goal gl-strategy != default)
+		(and	(up-compare-goal gl-advanced-archery != 0)
+			(up-compare-goal gl-advanced-archery != heavy-cannoneers)))
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-advanced-archery 0)
+	(set-goal gl-strategy default)
+)
+#end-if
+
+(defrule
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-advanced-archery != heavy-cannoneers)
+	(or	(research-completed ri-chemistry)
+		(and	(up-compare-goal gl-current-age >= gv-castle-up)
+			(goal gl-advanced-archery 0)))
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+)
+
+(defrule
+	(or	(and	(goal gl-advanced-archery heavy-archers)
+			(and	(research-completed ri-arbalest)
+				(research-completed ri-bracer)))
+		(goal gl-advanced-archery heavy-cannoneers))
+	(nand	(goal CASTLE 2)
+		(research-available my-unique-unit-upgrade))
+	(research-completed ri-chemistry)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined JAPANESE-CIV
+
+(load-random
+5 "Barbarian_2.0\Strategies\ARCHER1"
+5 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER1"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER2"
+5 "Barbarian_2.0\Strategies\TRASH1"
+10 "Barbarian_2.0\Strategies\MUSH"
+10 "Barbarian_2.0\Strategies\FC7"
+15 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+10 "Barbarian_2.0\Strategies\KRUSH"
+15 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(goal gl-strategy castle-drop)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(current-age >= castle-age)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age >= castle-age)
+	(or	(and	(current-age-time > 500)
+			(game-time > 2300))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+	(or	(up-compare-goal CASTLE != 2)
+		(up-compare-goal gl-advanced-archery != 0))
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined KOREAN-CIV
+
+(load-random
+5 "Barbarian_2.0\Strategies\ARCHER1"
+10 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\FC7"
+30 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\KBOOM"
+10 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+10 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(current-age >= castle-age)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(goal CASTLE 0)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy korean-boom)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(goal gl-strategy-class basic-class)
+			(current-age-time > 600)))
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal gl-advanced-archery heavy-archers)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 3)
+=>
+	(set-strategic-number sn-allow-resource-spending 3)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(research-completed ri-onager)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined MAGYAR-CIV
+
+#load-if-not-defined UP-POCKET-POSITION
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+10 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+15 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\FC7"
+10 "Barbarian_2.0\Strategies\FC12"
+45 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+#else
+(load-random
+30 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+15 "Barbarian_2.0\Strategies\KRUSH"
+10 "Barbarian_2.0\Strategies\FC12"
+45 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+#end-if
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(goal gl-strategy default)
+		(and	(current-age >= castle-age)
+			(and	(current-age-time > 600)
+				(strategic-number sn-allow-resource-spending > 0))))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal gl-advanced-archery CAs)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(game-time > 3000)
+			(gold-amount < 500))
+		(and	(goal gl-advanced-cavalry 0)
+			(and	(game-time > 1800)
+				(unit-type-count-total knight-line < 7))))
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-paladin)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined MAYAN-CIV
+(load "Barbarian_2.0\OnlyMeso")
+(load "Barbarian_2.0\MayanEagleRush")
+
+(load-random
+15 "Barbarian_2.0\Strategies\ARCHER1"
+5 "Barbarian_2.0\Strategies\FC2FI"
+20 "Barbarian_2.0\Strategies\FC2BOOM"
+10 "Barbarian_2.0\Strategies\FC7"
+30 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\CASTLESLING"
+5 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(goal gl-eew-strategy-type boom)
+			(and	(up-compare-goal gl-current-age >= gv-castle-up)
+				(players-civ every-enemy aztec))))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal CASTLE 0)
+=>
+	(set-goal gl-eagles extra-eagles)
+	(set-goal gl-advanced-archery heavy-archers)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(current-age-time > 600)
+			(goal gl-strategy-class basic-class)))
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal gl-advanced-archery heavy-archers)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal CASTLE 2)
+		(goal gl-strategy-class basic-class))
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 6)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal gl-strategy eew-strategy)
+	(game-time > 3600)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(game-time > 3600)
+=>
+	(set-goal CASTLE 1)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-plate-mail)
+	(goal gl-eagles heavy-eagles)
+	(strategic-number sn-allow-resource-spending < 4)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(nand	(goal CASTLE 6)
+		(research-available ri-elite-eagle-warrior))
+	(research-completed my-unique-unit-upgrade)
+	(research-completed ri-bracer)
+	(research-completed ri-chemistry)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined MONGOL-CIV
+
+#load-if-not-defined UP-POCKET-POSITION
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+10 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+15 "Barbarian_2.0\Strategies\KRUSH"
+10 "Barbarian_2.0\Strategies\FC7"
+10 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+30 "Barbarian_2.0\Strategies\MONGOLBOOM"
+)
+#else
+(load-random
+35 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+5 "Barbarian_2.0\Strategies\KRUSH"
+15 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\FC12"
+40 "Barbarian_2.0\Strategies\MONGOLBOOM"
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-strategy != castle-drop)
+	(nand	(goal gl-strategy xbow-boom)
+		(current-age-time < 1050))
+	(current-age >= castle-age)
+	(current-age-time > 600)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(current-age >= castle-age)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(goal gl-strategy castle-drop)
+	(current-age == imperial-age)
+	(current-age-time > 120)
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(current-age == castle-age)
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age-time > 1500)
+	(goal gl-advanced-infantry 0)
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age == imperial-age)
+	(strategic-number sn-allow-resource-spending > 1)
+	(nand	(and	(goal gl-strategy castle-drop)
+			(not	(town-under-attack)))
+		(and	(research-available my-unique-unit-upgrade)
+			(strategic-number sn-allow-resource-spending < 3)))
+	(goal gl-advanced-infantry 0)
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-strategy != castle-drop)
+	(up-compare-goal gl-strategy != castle-push)
+	(up-compare-goal gl-strategy != mongol-boom)
+	(or	(and	(up-compare-goal gl-current-age <= gv-castle)
+			(building-type-count-total castle > 1))
+		(and	(goal gl-strategy xbow-rush)
+			(up-compare-goal gl-current-age >= gv-castle-up)))
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(goal CASTLE 0)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(building-type-count-total castle > 1)
+	(not	(goal gl-advanced-archery 0))
+=>
+	(set-goal gl-advanced-archery 0)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(current-age-time > 600)
+			(goal gl-strategy-class basic-class)))
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined PERSIAN-CIV
+
+#load-if-not-defined UP-POCKET-POSITION
+(load-random
+15 "Barbarian_2.0\Strategies\ARCHER1"
+10 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+10 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\FC7"
+10 "Barbarian_2.0\Strategies\FC12"
+45 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+#else
+(load-random
+35 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+10 "Barbarian_2.0\Strategies\KRUSH"
+10 "Barbarian_2.0\Strategies\FC12"
+45 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+#end-if
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-advanced-cavalry != LC)
+	(up-compare-goal gl-strategy != castle-drop)
+	(or	(goal gl-strategy default)
+		(and	(current-age >= castle-age)
+			(current-age-time > 600)))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(up-compare-goal gl-advanced-cavalry != 0)
+		(up-compare-goal CASTLE != 2))
+=>
+	(set-goal gl-advanced-cavalry 0)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(players-unit-type-count focus-player spearman-line > 12)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+			(or	(players-unit-type-count focus-player mameluke-line > 4)
+				(players-unit-type-count focus-player camel-line > 4))))
+	(up-compare-goal gl-advanced-archery != scorpions)
+=>
+	(set-goal gl-advanced-archery scorpions)
+)
+#end-if
+
+#load-if-defined BLACK-FOREST-MAP
+(load-random 60 "Barbarian_2.0\Strategies\WarElephants")
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(player-human any-enemy)
+		(not	(players-civ any-enemy aztec)))
+	(or	(up-compare-goal gl-advanced-cavalry != 0)
+		(up-compare-goal CASTLE != 2))
+=>
+	(set-goal gl-advanced-cavalry 0)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(players-unit-type-count focus-player spearman-line > 12)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+			(or	(players-unit-type-count focus-player mameluke-line > 4)
+				(players-unit-type-count focus-player camel-line > 4))))
+	(up-compare-goal gl-advanced-archery != scorpions)
+=>
+	(set-goal gl-advanced-archery scorpions)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(up-compare-const gv-michi-style != 1)
+	(nor	(goal gl-advanced-cavalry knight-LC)
+		(goal CASTLE 2))
+	(up-compare-goal FFA != YES)
+=>
+	(set-goal gl-advanced-cavalry knight-LC)
+	(set-goal gl-strategy default)
+)
+
+#load-if-not-defined UP-TEAM-DISADVANTAGE; Real FFA
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(up-compare-goal gl-advanced-cavalry != 0)
+		(up-compare-goal CASTLE != 2))
+	(goal FFA YES)
+=>
+	(set-goal gl-advanced-cavalry 0)
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-archery scorpions)
+	(set-goal gl-strategy default)
+)
+#else; Handicap
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(up-compare-goal gl-advanced-cavalry != 0)
+		(up-compare-goal CASTLE != 2))
+	(goal FFA YES)
+=>
+	(set-goal gl-advanced-cavalry 0)
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-archery 0)
+	(set-goal gl-strategy default)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-const gv-imperial-age-end == 1)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(players-unit-type-count focus-player spearman-line > 12)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+			(or	(players-unit-type-count focus-player mameluke-line > 4)
+				(players-unit-type-count focus-player camel-line > 4))))
+	(up-compare-goal gl-advanced-archery != heavy-cannoneers)
+	(up-compare-goal gl-advanced-archery != scorpions)
+	(up-compare-goal FFA != YES)
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+)
+
+(defrule
+	(goal gl-strategy xbow-rush)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+	(disable-self)
+)
+
+(defrule
+	(or	(research-completed ri-paladin)
+		(research-completed my-unique-unit-upgrade))
+	(nand	(goal gl-advanced-archery scorpions)
+		(not	(research-completed ri-heavy-scorpion)))
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined SARACEN-CIV
+(load "Barbarian_2.0\TurkSaraExtra")
+
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+5 "Barbarian_2.0\Strategies\ARCHER2"
+10 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+10 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\FC7"
+15 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+15 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-strategy != castle-drop)
+	(current-age >= castle-age)
+	(or	(current-age-time > 800)
+		(and	(up-compare-goal gl-current-age >= gv-castle-up)
+			(not	(regicide-game))))
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age == imperial-age)
+	(current-age-time > 120)
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-advanced-cavalry LC)
+	(research-completed my-unique-unit-upgrade)
+	(research-completed ri-hussar)
+	(goal gl-advanced-archery heavy-archers)
+	(players-unit-type-count focus-player spearman-line < 6)
+=>
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+	(or	(current-age-time > 900)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(or	(game-time > 2000)
+		(research-completed my-unique-unit-upgrade))
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined SLAVIC-CIV
+
+(load-random
+5 "Barbarian_2.0\Strategies\ARCHER1"
+5 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER1"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER2"
+20 "Barbarian_2.0\Strategies\SCORPS"
+15 "Barbarian_2.0\Strategies\MUSH"
+15 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\FC17"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+10 "Barbarian_2.0\Strategies\KRUSH"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(current-age == feudal-age)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(and	(building-type-count siege-workshop > 0)
+			(goal gl-advanced-archery heavy-archers))
+		(goal gl-advanced-archery 0))
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery scorpions)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(current-age-time > 600)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-archery scorpions)
+	(disable-self)
+)
+
+(defrule
+	(research-completed my-unique-unit-upgrade)
+	(research-completed ri-heavy-scorpion)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined SPANISH-CIV
+
+(load-random
+10 "Barbarian_2.0\Strategies\TRASH1"
+25 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\MISSIONARY"
+5 "Barbarian_2.0\Strategies\KRUSH"
+10 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+25 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(or	(goal CASTLE 0)
+		(and	(current-age >= castle-age)
+			(current-age-time > 500)))
+	(game-time < 1300)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(current-age-time > 800)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(or	(goal CASTLE 0)
+		(and	(current-age >= castle-age)
+			(current-age-time > 500)))
+	(game-time >= 1300)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal CASTLE 5)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal CASTLE 0)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(research-completed my-unique-unit-upgrade)
+	(current-age == imperial-age)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-const gv-imperial-age-end == 1)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(players-unit-type-count focus-player spearman-line > 12)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+			(or	(players-unit-type-count focus-player mameluke-line > 4)
+				(players-unit-type-count focus-player camel-line > 4))))
+	(up-compare-goal gl-advanced-archery != heavy-cannoneers)
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(research-completed ri-paladin)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined TEUTONIC-CIV
+
+#load-if-not-defined UP-POCKET-POSITION
+(load-random
+10 "Barbarian_2.0\Strategies\MAA1ARCHER1"
+5 "Barbarian_2.0\Strategies\ARCHER2"
+10 "Barbarian_2.0\Strategies\MUSH"
+10 "Barbarian_2.0\Strategies\FC7"
+5 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+40 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+#else
+(load-random
+30 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+10 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+40 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(current-age == feudal-age)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(game-time > 2700)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-const gv-imperial-age-end == 1)
+	(up-compare-goal gl-advanced-archery != heavy-cannoneers)
+	(up-compare-goal gl-advanced-archery != scorpions)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+)
+#else
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(game-time > 2700)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal gl-advanced-archery scorpions)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(building-type-count siege-workshop > 0)
+	(or	(research-completed ri-ironclad)
+		(up-compare-const gv-michi-style == 1))
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(not	(goal gl-advanced-archery scorpions))
+=>
+	(set-goal gl-advanced-archery scorpions)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(game-time > 2700)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(nand	(not	(research-completed my-unique-unit-upgrade))
+		(not	(goal CASTLE 0)))
+	(nand	(not	(research-completed ri-paladin))
+		(goal gl-advanced-cavalry heavy-knights))
+	(or	(research-completed my-unique-unit-upgrade)
+		(research-completed ri-paladin))
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined TURKISH-CIV
+(load "Barbarian_2.0\TurkSaraExtra")
+
+#load-if-not-defined UP-POCKET-POSITION
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+30 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+10 "Barbarian_2.0\Strategies\FC9FI"
+10 "Barbarian_2.0\Strategies\FC7"
+25 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+5 "Barbarian_2.0\Strategies\BOMBARDMENT"
+)
+#else
+(load-random
+20 "Barbarian_2.0\Strategies\FC11"
+20 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+20 "Barbarian_2.0\Strategies\KRUSH"
+5 "Barbarian_2.0\Strategies\CASTLESLING"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+30 "Barbarian_2.0\Strategies\BOMBARDMENT"
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age >= feudal-age)
+	(goal gl-advanced-cavalry 0)
+	(goal CASTLE 0)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(up-compare-goal gl-current-age <= gv-castle)
+			(and	(current-age == castle-age)
+				(current-age-time > 1300)))
+		(research-completed my-unique-unit-upgrade))
+	(strategic-number sn-allow-resource-spending > 1)
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(and	(up-compare-goal gl-current-age <= gv-castle-up)
+			(building-type-count-total castle > 1))
+		(and	(goal gl-strategy xbow-rush)
+			(up-compare-goal gl-current-age >= gv-castle-up)))
+=>
+	(set-goal gl-advanced-archery 0)
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(goal CASTLE 0)
+	(up-compare-const gv-imperial-age-end == 1)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age == imperial-age)
+	(strategic-number sn-allow-resource-spending > 1)
+	(nand	(and	(goal gl-strategy castle-drop)
+			(not	(town-under-attack)))
+		(and	(research-available my-unique-unit-upgrade)
+			(strategic-number sn-allow-resource-spending < 3)))
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal CASTLE 0)
+		(up-compare-goal gl-advanced-archery != 0))
+	(goal gl-strategy-class basic-class)
+	(or	(building-type-count-total castle > 1)
+		(and	(game-time < 3600)
+			(building-type-count castle > 0)))
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(or	(and	(nor	(goal CASTLE 0)
+				(goal CASTLE 11))
+			(research-completed my-unique-unit-upgrade))
+		(research-completed ri-heavy-scorpion))
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+(defrule
+	(goal gl-advanced-archery heavy-cannoneers)
+	(research-completed ri-ring-archer-armor)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined VIKING-CIV
+
+#load-if-not-defined UP-POCKET-POSITION
+(load-random
+10 "Barbarian_2.0\Strategies\ARCHER1"
+10 "Barbarian_2.0\Strategies\ARCHER2"
+5 "Barbarian_2.0\Strategies\MAA1ARCHER2"
+10 "Barbarian_2.0\Strategies\FC7"
+10 "Barbarian_2.0\Strategies\FC11"
+20 "Barbarian_2.0\Strategies\FC12"
+20 "Barbarian_2.0\Strategies\KRUSH"
+15 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+#else
+(load-random
+20 "Barbarian_2.0\Strategies\SCOUT1ARCHER1"
+10 "Barbarian_2.0\Strategies\FC11"
+20 "Barbarian_2.0\Strategies\FC12"
+10 "Barbarian_2.0\Strategies\KRUSH"
+20 "Barbarian_2.0\Strategies\CASTLESLING"
+20 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(not	(goal FFA YES))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+#load-if-not-defined UP-TEAM-DISADVANTAGE; Real FFA
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal FFA YES)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age >= castle-age)
+	(current-age-time > 500)
+	(or	(game-time > 2700)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-chemistry)
+	(research-completed ri-bracer)
+	(research-completed ri-arbalest)
+	(strategic-number sn-allow-resource-spending < 4)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#end-if
+
+; =================== ARENA
+
+#load-if-defined ARENA-MAP
+#load-if-defined AZTEC-CIV
+(load "Barbarian_2.0\TheGrowlOfTheJaguar")
+(load "Barbarian_2.0\OnlyMeso")
+(load "Barbarian_2.0\AztecSuperRush")
+
+(load-random
+30 "Barbarian_2.0\Strategies\FC2BOOM"
+15 "Barbarian_2.0\Strategies\MUSH"
+10 "Barbarian_2.0\Strategies\MONKBOOM"
+20 "Barbarian_2.0\Strategies\CASTLESLING"
+25 "Barbarian_2.0\Strategies\JAGUARS"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(up-compare-goal FFA != YES)
+	(or	(and	(goal gl-strategy default)
+			(game-time < 2400))
+		(and	(goal gl-eew-strategy-type boom)
+			(players-civ every-enemy aztec)))
+	(goal gl-advanced-infantry 0)
+	(goal gl-eagles 0)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-eagles extra-eagles)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal FFA YES)
+	(or	(and	(goal gl-strategy default)
+			(game-time < 2400))
+		(and	(goal gl-eew-strategy-type boom)
+			(players-civ every-enemy aztec)))
+	(goal gl-advanced-infantry 0)
+	(goal gl-eagles 0)
+=>
+	(set-goal gl-eagles 0)
+	(set-goal gl-advanced-infantry 0)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal gl-strategy default)
+	(game-time > 2400)
+	(goal gl-advanced-infantry 0)
+	(or	(goal gl-eagles 0)
+		(or	(game-time > 3000)
+			(research-completed ri-champion)))
+=>
+	(set-goal gl-eagles extra-eagles)
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal gl-strategy eew-strategy)
+	(game-time > 3600)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-advanced-infantry heavy-swordsmen)
+	(or	(building-type-count castle > 0)
+		(game-time < 3600))
+	(or	(up-compare-const gv-aofe-game == 1)
+		(or	(and	(up-research-status c: ri-champion < research-pending)
+				(up-research-status c: my-unique-unit-upgrade >= research-pending))
+			(goal FFA YES)))
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-eagles 0)
+	(set-goal gl-advanced-infantry 0)
+)
+
+(defrule
+	(or	(strategic-number sn-allow-resource-spending > 5)
+		(up-research-status c: ri-arbalest < research-pending))
+	(game-time > 3000)
+	(or	(goal gl-advanced-infantry heavy-swordsmen)
+		(goal CASTLE 2))
+	(goal gl-advanced-archery heavy-archers)
+=>
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(research-completed ri-plate-mail)
+	(goal gl-eagles heavy-eagles)
+	(strategic-number sn-allow-resource-spending < 4)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+)
+
+(defrule
+	(research-completed ri-plate-mail)
+	(or	(research-completed ri-champion)
+		(research-completed my-unique-unit-upgrade))
+	(research-completed my-unique-research)
+	(research-completed ri-blast-furnace)
+	(strategic-number sn-allow-resource-spending < 6)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined BRITON-CIV
+
+(load-random
+25 "Barbarian_2.0\Strategies\CASTLEPUSH"
+35 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+20 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(goal gl-strategy default)
+	(building-type-count-total castle == 0)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(current-age-time > 600)
+			(goal gl-strategy-class basic-class)))
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 2)
+	(or	(players-civ focus-player gothic)
+		(and	(or	(players-civ focus-player aztec)
+				(or	(players-civ focus-player incan)
+					(players-civ focus-player mayan)))
+			(goal gl-x-vs-one-challenge YES)))
+	(or	(current-age-time > 700)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal CASTLE 4)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-advanced-archery != 0)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-advanced-archery 0)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined BYZANTINE-CIV
+
+(load-random
+30 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\FC12"
+30 "Barbarian_2.0\Strategies\MUSH"
+10 "Barbarian_2.0\Strategies\MONKBOOM"
+15 "Barbarian_2.0\Strategies\SKIRMBOOM"
+10 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(goal gl-strategy castle-drop)
+			(and	(current-age-time > 1300)
+				(strategic-number sn-allow-resource-spending > 1)))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(current-age >= castle-age)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-trash YES)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(current-age-time > 100)
+	(or	(current-age-time > 500)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(players-civ any-enemy gothic)))
+=>
+	(set-goal CASTLE 5)
+	(set-goal gl-advanced-trash 0)
+	(disable-self)
+)
+
+(defrule
+	(or	(and	(goal CASTLE 5)
+			(research-completed ri-chemistry))
+		(and	(goal CASTLE 9)
+			(research-completed ri-halberdier)))
+	(research-completed my-unique-unit-upgrade)
+	(research-completed my-unique-research)
+	(research-completed ri-bracer)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined CELTIC-CIV
+
+(load-random
+35 "Barbarian_2.0\Strategies\FC17"
+30 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\MUSH"
+20 "Barbarian_2.0\Strategies\KRUSH"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age < gv-castle-up)
+	(goal gl-advanced-archery 0)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(and	(building-type-count siege-workshop > 0)
+			(goal gl-advanced-archery heavy-archers))
+		(goal gl-advanced-archery 0))
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery scorpions)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy-class basic-class)
+		(goal gl-strategy xbow-rush))
+	(or	(and	(game-time > 2300)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(or	(goal CASTLE 0)
+		(up-compare-goal gl-advanced-archery != scorpions))
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-advanced-archery scorpions)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(research-completed ri-heavy-scorpion)
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined CHINESE-CIV
+
+(load-random
+30 "Barbarian_2.0\Strategies\CASTLEPUSH"
+30 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+10 "Barbarian_2.0\Strategies\KRUSH"
+20 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(goal gl-strategy default)
+	(building-type-count-total castle == 0)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(current-age-time > 600)
+			(goal gl-strategy-class basic-class)))
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 2)
+	(or	(players-civ focus-player gothic)
+		(and	(or	(players-civ focus-player aztec)
+				(or	(players-civ focus-player incan)
+					(players-civ focus-player mayan)))
+			(goal gl-x-vs-one-challenge YES)))
+	(or	(current-age-time > 700)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal CASTLE 4)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-advanced-archery != 0)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-advanced-archery 0)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(strategic-number sn-allow-resource-spending > 1)
+	(goal gl-strategy default)
+	(or	(players-unit-type-count focus-player mangonel-line > 2)
+		(or	(players-unit-type-count focus-player bombard-cannon > 2)
+			(players-unit-type-count focus-player scorpion-line > 5)))
+	(up-compare-goal gl-advanced-cavalry != LC)
+=>
+	(set-goal gl-advanced-cavalry LC)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(strategic-number sn-allow-resource-spending > 1)
+	(goal gl-strategy default)
+	(players-unit-type-count focus-player mangonel-line < 1)
+	(players-unit-type-count focus-player bombard-cannon < 1)
+	(players-unit-type-count focus-player scorpion-line < 2)
+	(players-unit-type-count target-player mangonel-line < 1)
+	(players-unit-type-count target-player bombard-cannon < 1)
+	(players-unit-type-count target-player scorpion-line < 2)
+	(up-compare-goal gl-advanced-cavalry != 0)
+=>
+	(set-goal gl-advanced-cavalry 0)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined FRANKISH-CIV
+
+(load-random
+20 "Barbarian_2.0\Strategies\CASTLEPUSH"
+10 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+5 "Barbarian_2.0\Strategies\KRUSH"
+50 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy castle-drop)
+	(current-age >= castle-age)
+	(or	(and	(game-time > 2400)
+			(strategic-number sn-allow-resource-spending > 1))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-strategy != castle-drop)
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+	(or	(game-time > 2300)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy xbow-rush)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-paladin)
+	(current-age-time > 900)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-trash 0)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-paladin)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined GOTHIC-CIV
+
+(load-random
+60 "Barbarian_2.0\Strategies\WALLS"
+10 "Barbarian_2.0\Strategies\FC12"
+20 "Barbarian_2.0\Strategies\CASTLESLING"
+10 "Barbarian_2.0\Strategies\KRUSH"
+)
+
+(load "Barbarian_2.0\WallAndBoom")
+
+(defrule
+	(goal gl-strategy gothic-boom)
+	(or	(and	(research-completed my-unique-unit-upgrade)
+			(or	(goal gl-strategy-control FULL-HUSKS)
+				(research-completed ri-champion)))
+		(and	(research-completed ri-champion)
+			(goal gl-strategy-control CHAMPS)))
+	(or	(players-unit-type-count focus-player samurai-line > 2)
+		(players-unit-type-count focus-player jaguar-man-line > 2))
+=>
+	(set-goal gl-advanced-archery light-cannoneers)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy gothic-boom)
+	(or	(and	(research-completed my-unique-unit-upgrade)
+			(or	(goal gl-strategy-control FULL-HUSKS)
+				(research-completed ri-champion)))
+		(and	(research-completed ri-champion)
+			(goal gl-strategy-control CHAMPS)))
+	(or	(players-unit-type-count focus-player teutonic-knight-line > 2)
+		(players-unit-type-count focus-player throwing-axeman-line > 2))
+=>
+	(set-goal gl-advanced-archery light-cannoneers)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-strategy != gothic-boom)
+	(or	(research-completed my-unique-unit-upgrade)
+		(research-completed ri-champion))
+	(or	(players-unit-type-count focus-player samurai-line > 2)
+		(or	(players-unit-type-count focus-player jaguar-man-line > 2)
+			(or	(players-unit-type-count focus-player teutonic-knight-line > 2)
+				(or	(players-unit-type-count focus-player throwing-axeman-line > 2)
+					(players-civ focus-player incan)))))
+=>
+	(set-goal gl-advanced-archery light-cannoneers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(and	(goal gl-strategy castle-drop)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(nor	(goal gl-strategy gothic-boom)
+		(goal gl-strategy default))
+	(current-age >= castle-age)
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 0)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 0)
+	(current-age >= castle-age)
+	(or	(current-age-time > 500)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(nor	(players-civ every-enemy aztec)
+		(players-civ every-enemy gothic))
+	(nor	(players-civ every-enemy frankish)
+		(players-civ every-enemy mayan))
+=>
+	(set-goal CASTLE 1)
+	(set-goal gl-advanced-infantry 0)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 0)
+	(current-age >= castle-age)
+	(or	(current-age-time > 60)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(players-civ every-enemy mayan)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-infantry 0)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 2)
+	(building-type-count-total town-center > 2)
+	(players-civ every-enemy mayan)
+	(or	(players-unit-type-count focus-player militiaman-line > 8)
+		(players-unit-type-count focus-player elite-eagle-warrior > 5))
+=>
+	(set-goal CASTLE 4)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(current-age >= castle-age)
+	(or	(current-age-time > 60)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(or	(players-civ every-enemy aztec)
+		(or	(players-civ every-enemy gothic)
+			(players-civ every-enemy japanese)))
+=>
+	(set-goal CASTLE 0)
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+	(set-goal gl-advanced-trash 0)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(or	(current-age-time > 60)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(goal CASTLE 1)
+	(or	(players-civ every-enemy viking)
+		(players-civ every-enemy briton))
+=>
+	(set-goal CASTLE 4)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(or	(current-age-time > 60)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(not	(goal CASTLE 8))
+	(or	(players-unit-type-count focus-player teutonic-knight-line > 2)
+		(players-unit-type-count focus-player throwing-axeman-line > 2))
+=>
+	(set-goal CASTLE 8)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(goal gl-advanced-infantry 0)
+	(building-type-count-total town-center > 1)
+	(or	(not	(goal CASTLE 4))
+		(players-unit-type-count every-enemy archer-line < 6))
+	(or	(players-unit-type-count focus-player samurai-line > 2)
+		(players-unit-type-count focus-player jaguar-man-line > 2))
+=>
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(current-age >= castle-age)
+	(goal gl-strategy default)
+	(goal CASTLE 0)
+	(goal gl-advanced-infantry heavy-swordsmen)
+	(players-unit-type-count focus-player archer-line > 6)
+	(or	(current-age-time > 60)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal CASTLE 4)
+	(set-goal gl-advanced-infantry 0)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal gl-advanced-archery heavy-archers)
+=>
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age == imperial-age)
+	(players-current-age any-enemy == imperial-age)
+	(or	(players-unit-type-count focus-player cataphract-line > 9)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 7)
+			(players-unit-type-count focus-player jaguar-man-line > 7)))
+=>
+	(set-goal gl-advanced-archery scorpions)
+	(chat-to-player my-player-number "24Try to get heavy scorpions")
+	(disable-self)
+)
+
+(defrule
+	(or	(and	(nor	(goal CASTLE 0)
+				(goal CASTLE 11))
+			(research-completed my-unique-unit-upgrade))
+		(research-completed ri-champion))
+	(or	(goal CASTLE 0)
+		(research-completed my-unique-unit-upgrade))
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-advanced-archery scorpions)
+	(research-available ri-heavy-scorpion)
+	(strategic-number sn-allow-resource-spending > 4); Overwrites the rule above
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+)
+
+#end-if
+#load-if-defined HUN-CIV
+
+(load "Barbarian_2.0\CA")
+
+(load-random
+15 "Barbarian_2.0\Strategies\FC4"
+5 "Barbarian_2.0\Strategies\FC15"
+35 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+20 "Barbarian_2.0\Strategies\KRUSH"
+25 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(or	(goal gl-strategy default)
+		(and	(current-age >= castle-age)
+			(current-age-time > 600)))
+	(up-compare-goal POSITION != POCKET)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry knight-CA)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(current-age == castle-age)
+	(current-age-time > 1000)
+	(goal POSITION POCKET)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total town-center < 3)
+=>
+	(set-goal gl-advanced-cavalry knight-CA)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(current-age == imperial-age)
+	(nor	(players-civ any-enemy aztec)
+		(players-civ any-enemy mayan))
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-strategy != knight-boom)
+	(or	(gold-amount > 1000)
+		(research-completed ri-paladin))
+	(or	(not	(goal gl-advanced-cavalry knight-CA))
+		(not	(goal gl-strategy default)))
+	(current-age == imperial-age)
+=>
+	(set-goal gl-advanced-cavalry knight-CA)
+	(set-goal gl-strategy default)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(research-completed ri-paladin)
+	(current-age == imperial-age)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+(defrule
+	(research-completed ri-bracer)
+	(research-completed ri-heavy-cavalry-archer)
+	(strategic-number sn-allow-resource-spending < 5)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 5)
+)
+
+#end-if
+#load-if-defined INCAN-CIV
+(load "Barbarian_2.0\OnlyMeso")
+(load "Barbarian_2.0\MayanEagleRush")
+
+(load-random
+30 "Barbarian_2.0\Strategies\CASTLEPUSH"
+25 "Barbarian_2.0\Strategies\FC2BOOM"
+30 "Barbarian_2.0\Strategies\FC11"
+15 "Barbarian_2.0\Strategies\FC12"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(goal gl-eew-strategy-type boom)
+			(and	(up-compare-goal gl-current-age >= gv-castle-up)
+				(players-civ every-enemy aztec))))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal CASTLE 0)
+=>
+	(set-goal gl-eagles extra-eagles)
+	(set-goal gl-advanced-archery heavy-archers)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(current-age-time > 300)
+	(or	(and	(up-compare-goal gl-current-age <= gv-castle)
+			(strategic-number sn-allow-resource-spending > 1))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-advanced-archery slingers)
+=>
+	(up-jump-rule 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal gl-advanced-archery heavy-archers)
+	(or	(players-unit-type-count focus-player militiaman-line > 7)
+		(or	(players-unit-type-count focus-player eagle-warrior-line > 5)
+			(or	(players-unit-type-count focus-player woad-raider-line > 6)
+				(or	(players-unit-type-count focus-player samurai-line > 5)
+					(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+						(players-unit-type-count focus-player jaguar-man-line > 4))))))
+	(building-type-count castle > 0)
+=>
+	(set-goal gl-advanced-archery slingers)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal gl-advanced-archery heavy-archers)
+	(or	(players-unit-type-count focus-player berserk-line > 6)
+		(or	(players-unit-type-count focus-player huskarl-line > 6)
+			(up-compare-goal gl-current-age >= gv-castle-up)))
+	(building-type-count castle > 0)
+=>
+	(set-goal gl-advanced-archery slingers)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal CASTLE 2)
+		(goal gl-strategy-class basic-class))
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 6)
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(game-time > 3600)
+=>
+	(set-goal CASTLE 1)
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-plate-mail)
+	(goal gl-eagles heavy-eagles)
+	(strategic-number sn-allow-resource-spending < 4)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(nand	(goal CASTLE 6)
+		(research-available ri-elite-eagle-warrior))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined INDIAN-CIV
+(load-random
+20 "Barbarian_2.0\Strategies\CASTLEPUSH"
+10 "Barbarian_2.0\Strategies\KRUSH"
+10 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+50 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(or	(goal gl-strategy default)
+		(and	(current-age >= castle-age)
+			(current-age-time > 600)))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry indian-camels)
+	(set-goal gl-advanced-archery heavy-cannoneers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(not	(goal gl-advanced-cavalry indian-camels))
+=>
+	(set-goal gl-advanced-cavalry indian-camels)
+	(set-goal gl-strategy default)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(players-unit-type-count focus-player spearman-line > 12)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+			(or	(players-unit-type-count focus-player mameluke-line > 4)
+				(players-unit-type-count focus-player camel-line > 4))))
+	(not	(goal gl-advanced-archery heavy-cannoneers))
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+)
+
+(defrule
+	(goal CASTLE 2)
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(current-age-time > 600))
+	(or	(players-unit-type-count any-enemy cavalry-archer-line > 4)
+		(or	(players-unit-type-count any-enemy archer-line > 6)
+			(players-unit-type-count any-enemy plumed-archer-line > 4)))
+	(up-compare-goal gl-current-age >= gv-castle)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(or	(players-unit-type-count any-enemy chu-ko-nu-line > 6)
+		(or	(players-unit-type-count any-enemy longbowman-line > 5)
+			(or	(players-unit-type-count any-enemy janissary-line > 4)
+				(players-unit-type-count any-enemy mameluke-line > 4))))
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(current-age-time > 600))
+	(up-compare-goal gl-current-age >= gv-castle)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(or	(players-unit-type-count any-enemy mangudai-line > 5)
+		(or	(players-unit-type-count any-enemy conquistador-line > 2)
+			(up-compare-const gv-imperial-age-end == 0)))
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(current-age-time > 600))
+	(up-compare-goal gl-current-age >= gv-castle)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy xbow-rush)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-imperial-camel)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+#end-if
+#load-if-defined ITALIAN-CIV
+
+(load-random
+20 "Barbarian_2.0\Strategies\CASTLEPUSH"
+10 "Barbarian_2.0\Strategies\KRUSH"
+30 "Barbarian_2.0\Strategies\FC11"
+25 "Barbarian_2.0\Strategies\FC12"
+15 "Barbarian_2.0\Strategies\MUSH"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(current-age-time > 1200)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(or	(up-compare-goal gl-strategy != default)
+		(and	(up-compare-goal gl-advanced-archery != 0)
+			(up-compare-goal gl-advanced-archery != heavy-cannoneers)))
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-advanced-archery 0)
+	(set-goal gl-strategy default)
+)
+
+(defrule
+	(goal gl-strategy-class basic-class)
+	(up-compare-const gv-imperial-age-end == 1)
+	(up-compare-goal gl-advanced-archery != heavy-cannoneers)
+	(or	(research-completed ri-chemistry)
+		(and	(up-compare-goal gl-current-age >= gv-castle-up)
+			(goal gl-advanced-archery 0)))
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+)
+
+(defrule
+	(or	(and	(goal gl-advanced-archery heavy-archers)
+			(and	(research-completed ri-arbalest)
+				(research-completed ri-bracer)))
+		(goal gl-advanced-archery heavy-cannoneers))
+	(nand	(goal CASTLE 2)
+		(research-available my-unique-unit-upgrade))
+	(research-completed ri-chemistry)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined JAPANESE-CIV
+
+(load-random
+30 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\FC12"
+20 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+30 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(goal gl-strategy castle-drop)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(current-age >= castle-age)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age >= castle-age)
+	(or	(and	(current-age-time > 500)
+			(game-time > 2300))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+	(or	(up-compare-goal CASTLE != 2)
+		(up-compare-goal gl-advanced-archery != 0))
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined KOREAN-CIV
+
+(load-random
+25 "Barbarian_2.0\Strategies\CASTLEPUSH"
+30 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\FC12"
+10 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+15 "Barbarian_2.0\Strategies\CASTLESLING"
+10 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(current-age >= castle-age)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(goal CASTLE 0)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy korean-boom)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(current-age-time > 600)
+			(goal gl-strategy-class basic-class)))
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal gl-advanced-archery heavy-archers)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 3)
+=>
+	(set-strategic-number sn-allow-resource-spending 3)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(research-completed ri-onager)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined MAGYAR-CIV
+
+(load-random
+30 "Barbarian_2.0\Strategies\KRUSH"
+10 "Barbarian_2.0\Strategies\FC12"
+60 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(goal gl-strategy default)
+		(and	(current-age >= castle-age)
+			(and	(current-age-time > 600)
+				(strategic-number sn-allow-resource-spending > 0))))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(game-time > 3000)
+			(gold-amount < 500))
+		(and	(goal gl-advanced-cavalry 0)
+			(and	(game-time > 1800)
+				(unit-type-count-total knight-line < 7))))
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-paladin)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined MAYAN-CIV
+(load "Barbarian_2.0\OnlyMeso")
+(load "Barbarian_2.0\MayanEagleRush")
+
+(load-random
+20 "Barbarian_2.0\Strategies\CASTLEPUSH"
+30 "Barbarian_2.0\Strategies\FC2BOOM"
+30 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\MUSH"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+5 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(goal gl-eew-strategy-type boom)
+			(and	(up-compare-goal gl-current-age >= gv-castle-up)
+				(players-civ every-enemy aztec))))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal CASTLE 0)
+=>
+	(set-goal gl-eagles extra-eagles)
+	(set-goal gl-advanced-archery heavy-archers)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(current-age-time > 600)
+			(goal gl-strategy-class basic-class)))
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal gl-advanced-archery heavy-archers)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(building-type-count-total castle > 1)
+=>
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal CASTLE 2)
+		(goal gl-strategy-class basic-class))
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 6)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(goal gl-strategy eew-strategy)
+	(game-time > 3600)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(game-time > 3600)
+=>
+	(set-goal CASTLE 1)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-plate-mail)
+	(goal gl-eagles heavy-eagles)
+	(strategic-number sn-allow-resource-spending < 4)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(nand	(goal CASTLE 6)
+		(research-available ri-elite-eagle-warrior))
+	(research-completed my-unique-unit-upgrade)
+	(research-completed ri-bracer)
+	(research-completed ri-chemistry)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined MONGOL-CIV
+
+(load-random
+20 "Barbarian_2.0\Strategies\CASTLEPUSH"
+20 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+5 "Barbarian_2.0\Strategies\KRUSH"
+45 "Barbarian_2.0\Strategies\MONGOLBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-strategy != castle-drop)
+	(nand	(goal gl-strategy xbow-boom)
+		(current-age-time < 1050))
+	(current-age >= castle-age)
+	(current-age-time > 600)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(goal gl-strategy castle-drop)
+	(current-age == imperial-age)
+	(current-age-time > 120)
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(current-age == castle-age)
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age-time > 1500)
+	(goal gl-advanced-infantry 0)
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age == imperial-age)
+	(strategic-number sn-allow-resource-spending > 1)
+	(nand	(and	(goal gl-strategy castle-drop)
+			(not	(town-under-attack)))
+		(and	(research-available my-unique-unit-upgrade)
+			(strategic-number sn-allow-resource-spending < 3)))
+	(goal gl-advanced-infantry 0)
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(up-compare-goal gl-strategy != default)
+	(up-compare-goal gl-strategy != castle-drop)
+	(up-compare-goal gl-strategy != castle-push)
+	(up-compare-goal gl-strategy != mongol-boom)
+	(or	(and	(up-compare-goal gl-current-age <= gv-castle)
+			(building-type-count-total castle > 1))
+		(and	(goal gl-strategy xbow-rush)
+			(up-compare-goal gl-current-age >= gv-castle-up)))
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(goal CASTLE 0)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(building-type-count-total castle > 1)
+	(not	(goal gl-advanced-archery 0))
+=>
+	(set-goal gl-advanced-archery 0)
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal gl-strategy default)
+		(and	(current-age-time > 600)
+			(goal gl-strategy-class basic-class)))
+	(current-age >= castle-age)
+	(or	(current-age-time > 300)
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(building-type-count-total castle > 0)))
+	(goal CASTLE 0)
+=>
+	(set-goal CASTLE 2)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined PERSIAN-CIV
+
+(load-random
+10 "Barbarian_2.0\Strategies\FC12"
+10 "Barbarian_2.0\Strategies\MONKBOOM"
+20 "Barbarian_2.0\Strategies\KRUSH"
+60 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(strategic-number sn-allow-resource-spending > 0)
+	(goal gl-strategy-class basic-class)
+	(not	(goal gl-advanced-cavalry LC))
+	(or	(goal gl-strategy default)
+		(and	(current-age >= castle-age)
+			(current-age-time > 600)))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(enable-timer 3 0)
+	(disable-self)
+)
+
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(not	(goal gl-advanced-cavalry knight-LC))
+=>
+	(set-goal gl-advanced-cavalry knight-LC)
+	(set-goal gl-strategy default)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-const gv-imperial-age-end == 1)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(players-unit-type-count focus-player spearman-line > 12)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+			(or	(players-unit-type-count focus-player mameluke-line > 4)
+				(players-unit-type-count focus-player camel-line > 4))))
+	(not	(goal gl-advanced-archery heavy-cannoneers))
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+)
+
+(defrule
+	(goal gl-strategy xbow-rush)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-paladin)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined SARACEN-CIV
+(load "Barbarian_2.0\TurkSaraExtra")
+
+(load-random
+15 "Barbarian_2.0\Strategies\CASTLEPUSH"
+35 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\FC12"
+25 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+15 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age >= castle-age)
+	(current-age-time > 800)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age == imperial-age)
+	(current-age-time > 120)
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal gl-advanced-infantry 0)
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+	(or	(current-age-time > 900)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(game-time > 2000)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined SLAVIC-CIV
+
+(load-random
+20 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+25 "Barbarian_2.0\Strategies\FC17"
+25 "Barbarian_2.0\Strategies\MUSH"
+15 "Barbarian_2.0\Strategies\MONKBOOM"
+5 "Barbarian_2.0\Strategies\KRUSH"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(current-age == feudal-age)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(and	(building-type-count siege-workshop > 0)
+			(goal gl-advanced-archery heavy-archers))
+		(goal gl-advanced-archery 0))
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery scorpions)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(current-age-time > 600)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-archery scorpions)
+	(disable-self)
+)
+
+(defrule
+	(research-completed my-unique-unit-upgrade)
+	(research-completed ri-heavy-scorpion)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined SPANISH-CIV
+
+(load-random
+20 "Barbarian_2.0\Strategies\CASTLEPUSH"
+25 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+10 "Barbarian_2.0\Strategies\CASTLESLING"
+25 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+5 "Barbarian_2.0\Strategies\KRUSH"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal CASTLE 0)
+	(game-time < 1300)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(current-age >= castle-age)
+	(current-age-time > 800)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(or	(goal CASTLE 0)
+		(and	(current-age >= castle-age)
+			(current-age-time > 500)))
+	(game-time >= 1300)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal CASTLE 5)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(set-goal CASTLE 0)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(game-time > 2700)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-const gv-imperial-age-end == 1)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(or	(players-unit-type-count focus-player spearman-line > 12)
+		(or	(players-unit-type-count focus-player teutonic-knight-line > 4)
+			(or	(players-unit-type-count focus-player mameluke-line > 4)
+				(players-unit-type-count focus-player camel-line > 4))))
+	(up-compare-goal gl-advanced-archery != heavy-cannoneers)
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal CASTLE 0)
+	(research-completed my-unique-unit-upgrade)
+	(current-age == imperial-age)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-paladin)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined TEUTONIC-CIV
+
+(load-random
+15 "Barbarian_2.0\Strategies\FC11"
+15 "Barbarian_2.0\Strategies\MUSH"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+50 "Barbarian_2.0\Strategies\KNIGHTBOOM"
+15 "Barbarian_2.0\Strategies\KRUSH"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(current-age == feudal-age)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(game-time > 2700)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+=>
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-const gv-imperial-age-end == 1)
+	(up-compare-goal gl-advanced-archery != heavy-cannoneers)
+	(up-compare-goal gl-advanced-archery != scorpions)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(building-type-count siege-workshop > 0)
+	(or	(research-completed ri-ironclad)
+		(up-compare-const gv-michi-style == 1))
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(not	(goal gl-advanced-archery scorpions))
+=>
+	(set-goal gl-advanced-archery scorpions)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(game-time > 2700)
+			(current-age-time > 600))
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+	(current-age >= castle-age)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(nand	(not	(research-completed my-unique-unit-upgrade))
+		(not	(goal CASTLE 0)))
+	(nand	(not	(research-completed ri-paladin))
+		(goal gl-advanced-cavalry heavy-knights))
+	(or	(research-completed my-unique-unit-upgrade)
+		(research-completed ri-paladin))
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined TURKISH-CIV
+(load "Barbarian_2.0\TurkSaraExtra")
+
+(load-random
+25 "Barbarian_2.0\Strategies\CASTLEPUSH"
+35 "Barbarian_2.0\Strategies\FC11"
+5 "Barbarian_2.0\Strategies\CASTLESLING"
+5 "Barbarian_2.0\Strategies\KRUSH"
+30 "Barbarian_2.0\Strategies\BOMBARDMENT"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age >= feudal-age)
+	(goal gl-advanced-cavalry 0)
+	(goal CASTLE 0)
+	(goal gl-strategy default)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(or	(and	(up-compare-goal gl-current-age <= gv-castle)
+			(and	(current-age == castle-age)
+				(current-age-time > 1300)))
+		(research-completed my-unique-unit-upgrade))
+	(strategic-number sn-allow-resource-spending > 1)
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(and	(up-compare-goal gl-current-age <= gv-castle-up)
+			(building-type-count-total castle > 1))
+		(and	(goal gl-strategy xbow-rush)
+			(up-compare-goal gl-current-age >= gv-castle-up)))
+=>
+	(set-goal gl-advanced-archery 0)
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-class basic-class)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(up-compare-const gv-imperial-age-end == 1)
+	(goal CASTLE 0)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal gl-advanced-archery heavy-cannoneers)
+	(set-goal gl-advanced-cavalry LC)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age == imperial-age)
+	(strategic-number sn-allow-resource-spending > 1)
+	(nand	(and	(goal gl-strategy castle-drop)
+			(not	(town-under-attack)))
+		(and	(research-available my-unique-unit-upgrade)
+			(strategic-number sn-allow-resource-spending < 3)))
+=>
+	(set-goal gl-advanced-cavalry LC)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(or	(goal CASTLE 0)
+		(up-compare-goal gl-advanced-archery != 0))
+	(goal gl-strategy-class basic-class)
+	(or	(building-type-count-total castle > 1)
+		(and	(game-time < 3600)
+			(building-type-count castle > 0)))
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(or	(and	(nor	(goal CASTLE 0)
+				(goal CASTLE 11))
+			(research-completed my-unique-unit-upgrade))
+		(research-completed ri-heavy-scorpion))
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+(defrule
+	(goal gl-advanced-archery heavy-cannoneers)
+	(research-completed ri-ring-archer-armor)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#load-if-defined VIKING-CIV
+
+(load-random
+15 "Barbarian_2.0\Strategies\FC11"
+10 "Barbarian_2.0\Strategies\FC12"
+5 "Barbarian_2.0\Strategies\MONKBOOM"
+20 "Barbarian_2.0\Strategies\CASTLESLING"
+5 "Barbarian_2.0\Strategies\KRUSH"
+45 "Barbarian_2.0\Strategies\RANGEDBOOM"
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(not	(goal FFA YES))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+
+#load-if-not-defined UP-TEAM-DISADVANTAGE; Real FFA
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy default)
+	(goal FFA YES)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-advanced-archery heavy-archers)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+	(goal gl-strategy-class basic-class)
+	(current-age >= castle-age)
+	(current-age-time > 500)
+	(or	(game-time > 2700)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(strategic-number sn-allow-resource-spending > 1)
+=>
+	(set-goal CASTLE 2)
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(research-completed ri-chemistry)
+	(research-completed ri-bracer)
+	(research-completed ri-arbalest)
+	(strategic-number sn-allow-resource-spending < 4)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+)
+
+(defrule
+	(nor	(goal CASTLE 0)
+		(goal CASTLE 11))
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-allow-resource-spending >= 0)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+#end-if
+#end-if
+
+#else
+; ======== DM
+
+#load-if-defined AZTEC-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-eagles")
+
+#load-if-not-defined UP-GAME-AGE2-X2
+(defrule
+	(game-time > 300)
+	(building-type-count castle > 3)
+	(or	(players-unit-type-count focus-player militiaman-line > 8)
+		(or	(players-unit-type-count focus-player eagle-warrior-line > 8)
+			(or	(players-unit-type-count focus-player jaguar-man-line > 6)
+				(or	(players-unit-type-count focus-player huskarl-line > 6)
+					(or	(players-unit-type-count focus-player berserk-line > 6)
+						(players-unit-type-count focus-player woad-raider-line > 6))))))
+=>
+	(set-goal gl-strategy dm-UU)
+	(disable-self)
+)
+#else
+(defrule
+	(game-time > 120)
+=>
+	(set-goal gl-dm-allow-UU-training 1)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 120)
+	(building-type-count castle > 1)
+=>
+	(set-goal gl-strategy dm-UU)
+	(disable-self)
+)
+#end-if
+
+#end-if
+
+#load-if-defined BRITON-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-UU-champ")
+#end-if
+
+#load-if-defined BYZANTINE-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-camel-cannoneer")
+#end-if
+
+#load-if-defined CELTIC-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-halb-scorpion")
+#end-if
+
+#load-if-defined CHINESE-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-UU")
+#end-if
+
+#load-if-defined GOTHIC-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-halb-husk")
+#end-if
+
+#load-if-defined FRANKISH-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-palas")
+#end-if
+
+#load-if-defined HUN-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-palas")
+#end-if
+
+#load-if-defined INCAN-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-UU")
+#end-if
+
+#load-if-defined INDIAN-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-camel-cannoneer")
+#end-if
+
+#load-if-defined ITALIAN-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-cannoneers")
+#end-if
+
+#load-if-defined JAPANESE-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-champs")
+#end-if
+
+#load-if-defined KOREAN-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-UU-champ")
+#end-if
+
+#load-if-defined MAGYAR-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-palas")
+#end-if
+
+#load-if-defined MAYAN-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-eagles")
+#end-if
+
+#load-if-defined MONGOL-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-champ-turtle")
+
+(defrule
+	(building-type-count-total castle > 3)
+=>
+	(set-goal gl-dm-allow-counter-halbs 1)
+	(disable-self)
+)
+#end-if
+
+#load-if-defined PERSIAN-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-pala-turtle")
+#end-if
+
+#load-if-defined SARACEN-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-camel-cannoneer")
+#end-if
+
+#load-if-defined SLAVIC-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-halb-scorpion")
+#end-if
+
+#load-if-defined SPANISH-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-palas")
+#end-if
+
+#load-if-defined TURKISH-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-cannoneers")
+#end-if
+
+#load-if-defined TEUTONIC-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-pala-turtle")
+#end-if
+
+#load-if-defined VIKING-CIV
+(load "Barbarian_2.0\Strategies\DM\dm-champ-turtle")
+
+(defrule
+	(building-type-count castle > 2)
+=>
+	(set-goal gl-strategy dm-arbalests)
+	(set-goal gl-dm-range-number 8)
+	(set-goal gl-dm-main-unit my-unique-unit)
+	(set-goal gl-dm-allow-UU-training 1)
+	(disable-self)
+)
+#end-if
+
+#end-if

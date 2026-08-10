@@ -1,0 +1,158 @@
+;error trapping
+(defrule
+	(current-age == imperial-age)
+	(not (goal rush-control NO) )
+=>
+	(set-goal rush-control NO)
+)
+
+;should we launch a rush?
+(defrule
+	(goal rush-control NOTICE)
+=>
+	(generate-random-number 12)
+	(disable-self)
+)
+
+(defrule
+	(goal rush-control NOTICE)
+	(difficulty > hard)
+	(random-number == 1)
+	(or
+		(not (goal 1 10) )
+		(map-type archipelago)
+	)
+=>
+	(set-goal rush-control RUSHING)
+	(disable-self)
+)
+
+(defrule
+	(goal rush-control NOTICE)
+	(difficulty > hard)
+	(random-number == 2)
+	(or
+		(not (goal 1 10) )
+		(map-type archipelago)
+	)
+=>
+	(set-goal rush-control FEUDAL)
+	(disable-self)
+)
+
+(defrule
+	(goal rush-control NOTICE)
+	(difficulty > hard)
+	(random-number >= 3)
+	(random-number <= 8)
+=>
+	(set-goal rush-control CASTLE)
+	(disable-self)
+)
+
+(defrule
+	(goal rush-control NOTICE)
+	(difficulty <= hard)
+	(random-number <= 9)
+=>
+	(set-goal rush-control CASTLE)
+	(disable-self)
+)
+
+(defrule
+	(goal rush-control NOTICE)
+=>
+	(set-goal rush-control IMPERIAL)
+	(disable-self)
+)
+
+(defrule
+	(goal rush-control FEUDAL)
+	(or
+		(map-type black-forest)
+		(map-type fortress)
+	)
+=>
+	(set-goal rush-control IMPERIAL)
+	(disable-self)
+)
+
+(defrule
+	(goal rush-control RUSHING)
+	(current-age == dark-age)
+	(or
+		(map-type black-forest)
+		(map-type fortress)
+	)
+=>
+	(set-goal rush-control IMPERIAL)
+	(disable-self)
+)
+
+;**************************************
+;do the dark-age / feudal rush
+(defrule
+	(goal rush-control RUSHING)
+	(current-age == dark-age)
+	(soldier-count < five-percent-pop)
+	(or
+		(civilian-population >= civ-dark-rush)
+		(civilian-population >= 15)
+	)
+	(can-train militiaman)
+=>
+	(train militiaman)
+	(chat-local-to-self "train militia")
+)
+
+;*******************************************************
+;FEUDAL RUSH RULES
+(defrule
+	(goal rush-control FEUDAL)
+	(current-age >= feudal-age)
+=>
+	(set-goal rush-control RUSHING)
+	(disable-self)
+)
+
+;go after boomers
+(defrule
+	(current-age >= feudal-age) 
+	(difficulty <= easy)
+	(players-current-age every-enemy <= feudal-age)
+	(players-civilian-population every-enemy > civ-castle)
+=>
+	(set-goal rush-control RUSHING)
+	(disable-self)
+)
+
+;end the feudal rush
+(defrule
+	(goal rush-control RUSHING)
+	(current-age == feudal-age)
+	(players-current-age any-enemy > feudal-age)
+=>
+	(set-goal rush-control IMPERIAL)
+	(disable-self)
+)
+
+;*******************************************************
+;should we launch a castle rush?
+(defrule
+	(goal rush-control CASTLE)
+	(current-age >= castle-age)
+=>
+	(set-goal rush-control RUSHING)
+	(disable-self)
+)
+
+;end the rush
+(defrule
+	(goal rush-control RUSHING)
+	(current-age == castle-age)
+	(players-current-age any-enemy == imperial-age)
+=>
+	(set-goal rush-control IMPERIAL)
+	(disable-self)
+)
+

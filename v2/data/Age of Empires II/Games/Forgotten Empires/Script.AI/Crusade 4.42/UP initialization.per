@@ -1,0 +1,309 @@
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-enable-new-building-system 1)
+	(up-assign-builders c: castle c: 3)
+	(up-assign-builders c: town-center c: 3)
+	(up-assign-builders c: watch-tower c: 2)
+	(up-assign-builders c: bombard-tower c: 2)
+	(set-strategic-number sn-dock-avoidance-factor -1)
+	(set-strategic-number sn-dock-proximity-factor -1)
+	(disable-self)
+)
+
+(defrule
+	(building-type-count-total dock >= 3)
+=>
+	(set-strategic-number sn-dock-avoidance-factor 1)
+	(set-strategic-number sn-dock-proximity-factor 0)
+	(disable-self)
+)
+
+#load-if-defined MAYAN-CIV
+(defrule
+	(building-type-count house == 0)
+=>
+	(up-assign-builders c: house c: 2)
+	(disable-self)
+)
+
+(defrule
+	(building-type-count house > 0)
+=>
+	(up-assign-builders c: house c: 0)
+	(disable-self)
+)
+#end-if
+
+
+; sn-enable-training-queue
+
+(defrule
+	(nand	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+		(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	)
+	(nand	(research-available ri-loom)
+		(unit-type-count-total villager >= LOOM-VILLAGERS-BOAR-HUNTING)
+	)
+	(building-type-count dock == 0)
+	(food-amount < 400)
+	(unit-type-count-total villager < DARK-VILLAGERS-1)
+=>
+	(set-strategic-number sn-enable-training-queue 1)
+)
+
+(defrule
+	(or	(and	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+			(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+		)
+		(or	(and	(research-available ri-loom)
+				(unit-type-count-total villager >= LOOM-VILLAGERS-BOAR-HUNTING)
+			)
+			(or	(building-type-count dock > 0)
+				(or	(food-amount >= 400)
+					(unit-type-count-total villager >= DARK-VILLAGERS-1)
+				)
+			)
+		)
+	)
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+)
+
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-FEUDAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+)
+
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(food-amount >= 250)
+	(or	(food-amount < 650)
+		(gold-amount < 150)
+	)
+=>
+	(set-strategic-number sn-enable-training-queue 1)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-CASTLE)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(or	(food-amount < 250)
+		(nor	(food-amount < 650)
+			(gold-amount < 150)
+		)
+	)
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-CASTLE)
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+)
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(food-amount >= 300)
+	(or	(food-amount < 600)
+		(gold-amount < 500)
+	)
+=>
+	(set-strategic-number sn-enable-training-queue 1)
+)
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(or	(food-amount < 300)
+		(nor	(food-amount < 600)
+			(gold-amount < 500)
+		)
+	)
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+)
+#else
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(food-amount >= 300)
+	(or	(food-amount < 700)
+		(gold-amount < 600)
+	)
+=>
+	(set-strategic-number sn-enable-training-queue 1)
+)
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS <= GV-ADVANCING-TO-IMPERIAL)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(or	(food-amount < 300)
+		(nor	(food-amount < 700)
+			(gold-amount < 600)
+		)
+	)
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+)
+#end-if
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-IMPERIAL)
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(food-amount >= TRASH-FOOD+200)
+=>
+	(set-strategic-number sn-enable-training-queue 1)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(food-amount < TRASH-FOOD+200)
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+)
+
+
+
+; The force drop code is inspired by The Horde, by Archon/Zergs, which is inspired by Chameleon, by Scripter64
+(defrule
+	(unit-type-count villager < 17); don't ruin late eco, with constant forced drops on every villager
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(food-amount < 50)
+	(unit-type-count food-gatherer > 0); make sure we can devide by the number of food gatherers
+	(up-pending-objects c: villager < 2)
+	;(timer-triggered T-FORCE-DROP)
+	;(goal G-FORCE-DROP 1)
+=>
+	(set-goal G-MATH-1 50)
+	(up-get-player-fact my-player-number food-amount 0 G-MATH-2)
+	(up-modify-goal G-MATH-1 g:- G-MATH-2)
+	(up-get-fact unit-type-count food-gatherer G-MATH-2)
+	(up-modify-goal G-MATH-1 g:/ G-MATH-2)
+	(up-modify-goal G-MATH-1 c:+ 1); add +1 because the result is integer
+	(up-drop-resources food g: G-MATH-1)
+	(up-chat-data-to-self "force drop food >= %d to prevent idle TC time" g: G-MATH-1)
+)
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(food-amount < 50)
+	(up-pending-objects c: villager < 2)
+	(unit-type-count villager-hunter > 0)
+=>
+	(up-drop-resources food c: 12); late dark age drop only hunter food
+	(chat-local-to-self "late dark age forced food drop to prevent idle TC time")
+)
+
+
+
+
+
+; Garrison war boats
+
+(defrule
+	(true)
+=>
+	(up-get-fact-sum any-enemy unit-type-count galley-line G-ENEMY-WARBOATS)
+	(up-get-fact-sum any-enemy unit-type-count fire-ship-line G-MATH-1)
+	(up-get-fact-sum any-enemy unit-type-count demolition-ship-line G-MATH-2)
+	(up-modify-goal G-ENEMY-WARBOATS g:+ G-MATH-1)
+	(up-modify-goal G-ENEMY-WARBOATS g:+ G-MATH-2)
+	(up-get-fact-sum any-enemy unit-type-count turtle-ship-line G-MATH-1)
+	(up-get-fact-sum any-enemy unit-type-count longboat-line G-MATH-2)
+	(up-modify-goal G-ENEMY-WARBOATS g:+ G-MATH-1)
+	(up-modify-goal G-ENEMY-WARBOATS g:+ G-MATH-2)
+	(up-get-fact-sum any-enemy unit-type-count cannon-galleon-line G-MATH-1)
+	(up-modify-goal G-ENEMY-WARBOATS g:+ G-MATH-1)
+)
+
+(defrule
+	(true)
+=>
+	(up-get-fact-sum any-ally unit-type-count galley-line G-ALLY-WARBOATS)
+	(up-get-fact-sum any-ally  unit-type-count fire-ship-line G-MATH-1)
+	(up-get-fact-sum any-ally  unit-type-count demolition-ship-line G-MATH-2)
+	(up-modify-goal G-ALLY-WARBOATS g:+ G-MATH-1)
+	(up-modify-goal G-ALLY-WARBOATS g:+ G-MATH-2)
+	(up-get-fact-sum any-ally  unit-type-count turtle-ship-line G-MATH-1)
+	(up-get-fact-sum any-ally  unit-type-count longboat-line G-MATH-2)
+	(up-modify-goal G-ALLY-WARBOATS g:+ G-MATH-1)
+	(up-modify-goal G-ALLY-WARBOATS g:+ G-MATH-2)
+	(up-get-fact-sum any-ally  unit-type-count cannon-galleon-line G-MATH-1)
+	(up-modify-goal G-ALLY-WARBOATS g:+ G-MATH-1)
+)
+
+(defrule
+	(unit-type-count-total BATTLE-SHIP-GROUP < 10)
+	(up-compare-goal G-ALLY-WARBOATS g:< G-ENEMY-WARBOATS)
+=>
+	(up-gather-inside c: dock c: 1)
+	(disable-self)
+)
+(defrule
+	(nand	(unit-type-count-total BATTLE-SHIP-GROUP < 10)
+		(up-compare-goal G-ALLY-WARBOATS g:< G-ENEMY-WARBOATS)
+	)
+=>
+	(up-gather-inside c: dock c: 0)
+)
+
+; Land units garrisoning
+(defrule
+	(true)
+=>
+
+	(up-get-fact soldier-count 0 G-MATH-1)
+	(up-get-fact enemy-units-in-town 0 G-MATH-2)
+	(up-modify-goal G-MATH-1 c:* 7)
+	(up-modify-goal G-MATH-2 c:* 5)
+	;(up-modify-goal G-MATH-2 c:- 5)
+	(set-goal G-MATH-3 0)
+)
+
+(defrule
+	(up-compare-goal G-MATH-1 g:< G-MATH-2)
+	(military-population < 10)
+=>
+	(set-goal G-MATH-3 1)
+)
+
+(defrule
+	(goal G-MATH-3 1)	
+=>
+	(up-gather-inside c: barracks c: 1)
+	(up-gather-inside c: archery-range c: 1)
+	(up-gather-inside c: stable c: 1)
+	(up-gather-inside c: siege-workshop c: 1)
+	(up-gather-inside c: town-center c: -1)
+	(up-gather-inside c: castle c: 1)
+)
+
+(defrule
+	(goal G-MATH-3 0)	
+=>
+	(up-gather-inside c: barracks c: 0)
+	(up-gather-inside c: archery-range c: 0)
+	(up-gather-inside c: stable c: 0)
+	(up-gather-inside c: siege-workshop c: 0)
+	(up-gather-inside c: town-center c: 0)
+	(up-gather-inside c: castle c: 0)
+)

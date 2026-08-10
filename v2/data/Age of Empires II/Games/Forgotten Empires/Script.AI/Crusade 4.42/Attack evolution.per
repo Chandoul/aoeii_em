@@ -1,0 +1,170 @@
+;  ATTACK-PHASE-0=> 0-man groups TSA
+;  ATTACK-PHASE-1 => 20-men groups
+;  ATTACK-PHASE-2=> 0-man groups
+;  ATTACK-PHASE-3 => 1-men groups
+
+
+(defrule
+	(goal G-TSA 1)
+	(goal G-ATTACK-PHASE GV-ATTACK-PHASE-3)
+	(timer-triggered T-TSA-PHASE)
+=>
+	(set-goal G-ATTACK-PHASE GV-ATTACK-PHASE-2)
+	(chat-to-player my-player-number "ATTACK-PHASE-2")
+)
+
+(defrule
+	(goal G-TSA 1)
+	(goal G-ATTACK-PHASE GV-ATTACK-PHASE-2)
+	(or	(timer-triggered T-TSA-PHASE)
+		(or	(players-unit-type-count any-enemy ENEMY-MISSILE >= 1)
+			(or	(town-under-attack)
+				(enemy-buildings-in-town)
+			)
+		)
+	)
+=>
+	(set-goal G-ATTACK-PHASE GV-ATTACK-PHASE-3)
+	(chat-to-player my-player-number "ATTACK-PHASE-3")
+)
+
+(defrule
+	(goal G-TSA 1)
+	(goal G-ATTACK-PHASE GV-ATTACK-PHASE-1)
+	(or	(timer-triggered T-TSA-PHASE)
+		(or	(players-unit-type-count any-enemy ENEMY-MISSILE >= 1)
+			(or	(town-under-attack)
+				(enemy-buildings-in-town)
+			)
+		)
+	)
+=>
+	(set-goal G-ATTACK-PHASE GV-ATTACK-PHASE-2)
+	(chat-to-player my-player-number "ATTACK-PHASE-2")
+)
+
+
+
+
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(goal G-TSA 1)
+	(goal G-ATTACK-PHASE GV-ATTACK-PHASE-0)
+	(or	(or	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+			(or	(enemy-captured-relics)
+				(players-building-type-count any-enemy wonder >= 1)
+			)
+		)
+		(and	(population >= SUB-TOP-POPULATION)
+			(players-military-population every-enemy < 4)
+		)
+	)
+=>
+	(set-goal G-ATTACK-PHASE GV-ATTACK-PHASE-1)
+	(chat-to-player my-player-number "ATTACK-PHASE-1")
+)
+#else
+(defrule
+	(goal G-TSA 1)
+	(goal G-ATTACK-PHASE GV-ATTACK-PHASE-0)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+		(and	(population >= SUB-TOP-POPULATION)
+			(players-military-population every-enemy < 4)
+		)
+	)
+=>
+	(set-goal G-ATTACK-PHASE GV-ATTACK-PHASE-1)
+	(chat-to-player my-player-number "ATTACK-PHASE-1")
+)
+#end-if
+
+(defrule
+	(goal G-TSA 1)
+	(goal G-ATTACK-PHASE GV-ATTACK-PHASE-0)
+	(not(town-under-attack))
+	(or	(building-type-count-total palisade-wall > 0)
+		(or	(building-type-count-total stone-wall-line > 0)
+			(or	(players-building-type-count any-enemy palisade-wall > 0)
+				(players-building-type-count any-enemy stone-wall-line > 0)
+			)
+		)
+	)
+=>
+	(set-goal G-ATTACK-PHASE GV-ATTACK-PHASE-1)
+	(chat-to-player my-player-number "ATTACK-PHASE-11111111111111111111111111111")
+)
+
+
+(defrule
+	(goal G-TSA 1)
+	(goal G-ATTACK-PHASE GV-ATTACK-PHASE-0)
+	(not(town-under-attack))
+	(players-unit-type-count any-enemy ENEMY-MISSILE == 0)
+	(or	(strategic-number sn-maximum-town-size >= 100)
+		(or	(not(goal G-STABLE-UNIT GV-NONE))
+			(goal G-BARRACK-UNIT GV-EAGLE)
+		)
+	)
+=>
+	(set-goal G-ATTACK-PHASE GV-ATTACK-PHASE-1)
+	(chat-to-player my-player-number "ATTACK-PHASE-11111111111111111111111111111")
+)
+
+
+
+
+(defrule
+	(goal G-TSA 1)
+	(or	(goal G-ATTACK-PHASE GV-ATTACK-PHASE-1)
+		(and	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+			(goal G-ATTACK-PHASE GV-ATTACK-PHASE-3)
+		)
+	)
+	(or	(strategic-number sn-number-attack-groups != 200)
+		(or	(strategic-number sn-minimum-attack-group-size != 20)
+			(strategic-number sn-maximum-attack-group-size != 30)
+		)
+	)
+=>
+	(set-strategic-number sn-number-attack-groups 200)
+	(set-strategic-number sn-minimum-attack-group-size 20)
+   	(set-strategic-number sn-maximum-attack-group-size 30)
+	(enable-timer T-TSA-PHASE 12)
+	(chat-to-player my-player-number "Twenty-men groups")
+)
+
+(defrule
+	(goal G-TSA 1)
+	(or	(goal G-ATTACK-PHASE GV-ATTACK-PHASE-0)
+		(goal G-ATTACK-PHASE GV-ATTACK-PHASE-2)
+	)
+	(or	(strategic-number sn-number-attack-groups != 0)
+		(or	(strategic-number sn-minimum-attack-group-size != 0)
+			(strategic-number sn-maximum-attack-group-size != 0)
+		)
+	)
+=>
+	(set-strategic-number sn-number-attack-groups 0)
+	(set-strategic-number sn-minimum-attack-group-size 0)
+   	(set-strategic-number sn-maximum-attack-group-size 0)
+	(enable-timer T-TSA-PHASE 2)
+	(chat-to-player my-player-number "Zero-men groups")
+)
+
+(defrule
+	(goal G-TSA 1)
+	(goal G-ATTACK-PHASE GV-ATTACK-PHASE-3)
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	(or	(strategic-number sn-number-attack-groups != 200)
+		(or	(strategic-number sn-minimum-attack-group-size != 1)
+			(strategic-number sn-maximum-attack-group-size != 1)
+		)
+	)
+=>
+	(set-strategic-number sn-number-attack-groups 200)
+	(set-strategic-number sn-minimum-attack-group-size 1)
+   	(set-strategic-number sn-maximum-attack-group-size 1)
+	(enable-timer T-TSA-PHASE 60)
+	(chat-to-player my-player-number "One-man groups")
+)

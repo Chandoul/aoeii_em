@@ -1,0 +1,728 @@
+#load-if-defined GAME-SPEED-LOCKED
+(defrule
+	(true)
+=>
+	(set-goal rush-control 0)
+	(disable-self)
+)
+#else
+(defrule
+	(true)
+=>
+	(set-goal rush-control 0)
+	(disable-self)
+)
+#end-if
+;*************************************************************
+(defrule
+	(not (map-type highland) )
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 3000)
+	(disable-self)
+)
+;*************************************************************
+;#load-if-defined SCENARIO-MAP
+;(load "STD AI DM FIX\elite petersen fishboat")
+;(load "STD AI DM FIX\elite petersen warboat")
+
+;(defrule
+;	(true)
+;=>
+;	(set-goal 1 1)
+;	(set-goal 2 0)
+;	(chat-to-all-using-id 22145)
+;	(chat-to-all-using-id 22146)
+		;"If this is an all-land or an island map, then please"
+		;"rework thy AI script accordingly."
+;	(disable-self)
+;)
+
+;#end-if
+;*******************************
+#load-if-defined ARCHIPELAGO-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+(load "STD AI DM FIX\elite petersen warboat island")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting ocean map!")
+	(set-goal 1 10)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#end-if
+;*******************************
+#load-if-defined ISLANDS-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+(load "STD AI DM FIX\elite petersen warboat island")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting ocean map!")
+	(set-goal 1 10)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#end-if
+;*******************************
+#load-if-defined MIGRATION-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+(load "STD AI DM FIX\elite petersen warboat island")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting ocean map!")
+	(set-goal 1 10)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#end-if
+;*******************************
+#load-if-defined TEAM-ISLANDS-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+(load "STD AI DM FIX\elite petersen warboat island")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting ocean map!")
+	(set-goal 1 10)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#end-if
+;*******************************
+#load-if-defined REAL-WORLD-SPAIN-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+(load "STD AI DM FIX\elite petersen warboat island")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting ocean map!")
+	(set-goal 1 10)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(goal wonder-attempt DEFEND)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined REAL-WORLD-ENGLAND-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+(load "STD AI DM FIX\elite petersen warboat island")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting ocean map!")
+	(set-goal 1 10)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(goal wonder-attempt DEFEND)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined REAL-WORLD-ITALY-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+(load "STD AI DM FIX\elite petersen warboat island")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting ocean map!")
+	(set-goal 1 10)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(goal wonder-attempt DEFEND)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined REAL-WORLD-JUTLAND-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+(load "STD AI DM FIX\elite petersen warboat island")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting ocean map!")
+	(set-goal 1 10)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(goal wonder-attempt DEFEND)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined REAL-WORLD-NIPPON-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+(load "STD AI DM FIX\elite petersen warboat island")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting ocean map!")
+	(set-goal 1 10)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(goal wonder-attempt DEFEND)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined REAL-WORLD-BYZANTIUM-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+(load "STD AI DM FIX\elite petersen warboat island")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting ocean map!")
+	(set-goal 1 10)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(goal wonder-attempt DEFEND)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined BALTIC-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined COASTAL-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined CONTINENTAL-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined CRATER-LAKE-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined MEDITERRANEAN-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined REAL-WORLD-MIDEAST-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(goal wonder-attempt DEFEND)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined REAL-WORLD-TEXAS-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(goal wonder-attempt DEFEND)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined REAL-WORLD-CARIBBEAN-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(goal wonder-attempt DEFEND)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined REAL-WORLD-FRANCE-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(goal wonder-attempt DEFEND)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined CUSTOM-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined NOMAD-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+
+(defrule
+	(game-time < 90)
+=>
+	(set-strategic-number sn-minimum-civilian-explorers 6)
+
+	(set-strategic-number sn-cap-civilian-explorers 6)
+	(set-strategic-number sn-cap-civilian-builders 0)
+	(set-strategic-number sn-cap-civilian-gatherers 0)
+
+	(set-strategic-number sn-percent-civilian-explorers 100)
+	(set-strategic-number sn-percent-civilian-builders 0)
+	(set-strategic-number sn-percent-civilian-gatherers 0)
+
+	(disable-self)
+)
+
+(defrule
+	(game-time > 180)
+	(unit-type-count villager < 15)
+	(starting-resources < high-resources)
+	(or
+		(unit-type-count scout-cavalry == 0)
+		(unit-type-count eagle-warrior == 0)
+	)
+=>
+	(set-strategic-number sn-minimum-civilian-explorers 1)
+	(set-strategic-number sn-cap-civilian-explorers 1)
+	(set-strategic-number sn-percent-civilian-explorers 5)
+	(set-strategic-number sn-percent-civilian-builders 15)
+	(set-strategic-number sn-percent-civilian-gatherers 80)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 180)
+	(unit-type-count villager < 15)
+	(starting-resources == high-resources)
+	(or
+		(unit-type-count scout-cavalry == 0)
+		(unit-type-count eagle-warrior == 0)
+	)
+=>
+	(set-strategic-number sn-minimum-civilian-explorers 1)
+	(set-strategic-number sn-cap-civilian-explorers 1)
+	(set-strategic-number sn-percent-civilian-explorers 5)
+	(set-strategic-number sn-percent-civilian-builders 80)
+	(set-strategic-number sn-percent-civilian-gatherers 15)
+	(disable-self)
+)
+
+(defrule
+   (game-time > 30)
+	(building-type-count town-center < 1)
+	(can-build town-center)
+=>
+	(build town-center)
+)
+
+
+#load-if-defined HUN-CIV
+(defrule
+	(building-type-count-total town-center > 0)
+	(building-type-count-total mill == 0)
+	(can-build mill)
+=>
+	(build mill)
+)
+#end-if
+#end-if
+;*******************************
+#load-if-defined RIVERS-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined SALT-MARSH-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+(load "STD AI DM FIX\elite petersen warboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined SCANDANAVIA-MAP
+(load "STD AI DM FIX\elite petersen fishboat")
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting water map!")
+	(set-goal 1 1)
+	(set-goal 2 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined ARABIA-MAP
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting land map!")
+	(set-goal 1 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined ARENA-MAP
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting land map!")
+	(set-goal 1 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined BLACK-FOREST-MAP
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting land map!")
+	(set-goal 1 0)
+	(disable-self)
+)
+
+(defrule
+	(difficulty <= hard)
+	(unit-type-count-total bombard-cannon < five-percent-pop)
+	(can-train-with-escrow bombard-cannon)
+	(not (goal upgrade-conflict NOTICE) )
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train bombard-cannon)
+	(chat-local-to-self "bombard")
+)
+
+#end-if
+;*******************************
+#load-if-defined FORTRESS-MAP
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting land map!")
+	(set-goal 1 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined GHOST-LAKE-MAP
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting land map!")
+	(set-goal 1 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined GOLD-RUSH-MAP
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting land map!")
+	(set-goal 1 0)
+	(disable-self)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(not (strategic-number sn-maximum-town-size == imperial-town-size) )
+=>
+	(set-strategic-number sn-maximum-town-size imperial-town-size)
+)
+#end-if
+;*******************************
+#load-if-defined HIGHLAND-MAP
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting land map!")
+	(set-goal 1 0)
+	(disable-self)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(building-type-count-total dock == 0)
+	(wood-amount > 400)
+	(or
+		(cc-players-building-type-count any-enemy fortified-wall > 0)
+		(cc-players-building-type-count any-enemy stone-wall > 0)
+	)
+	(can-build dock)
+=>
+	(build dock)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(unit-type-count-total transport-ship == 0)
+	(or
+		(cc-players-building-type-count any-enemy fortified-wall > 0)
+		(cc-players-building-type-count any-enemy stone-wall > 0)
+	)
+	(can-train transport-ship)
+=>
+	(train transport-ship)
+)
+#end-if
+;*******************************
+#load-if-defined MONGOLIA-MAP
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting land map!")
+	(set-goal 1 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined OASIS-MAP
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting land map!")
+	(set-goal 1 0)
+	(disable-self)
+)
+#end-if
+;*******************************
+#load-if-defined YUCATAN-MAP
+
+(defrule
+	(true)
+=>
+	(chat-local-to-self "detecting land map!")
+	(set-goal 1 0)
+	(disable-self)
+)
+#end-if
+;*************************************************************
+
+#load-if-defined REGICIDE
+(defrule
+	(building-type-count-total castle == 0)
+	(not (goal castle-attempt YES) )
+=>
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(current-age < imperial-age)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(set-goal rush-control IMPERIAL)
+)
+
+(defrule	;200 in regicide
+	(goal military-parity SUPERIOR)
+	(can-spy)
+=>
+	(spy)
+	(disable-self)
+)
+
+#end-if

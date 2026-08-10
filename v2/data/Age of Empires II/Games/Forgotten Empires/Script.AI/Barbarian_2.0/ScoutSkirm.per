@@ -1,0 +1,646 @@
+; ================= ECO
+
+(defrule
+	(up-compare-goal gl-strategy != scout-skirm-flush)
+=>
+	(up-jump-rule 48)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == dark-age)
+	(strategic-number sn-wood-gatherer-percentage != 71)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 29)
+	(set-strategic-number sn-wood-gatherer-percentage 71)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-add-rams-in-attack 0)
+	(set-strategic-number sn-skip-first-mining-camp 1)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(building-type-count-total stable > 0)
+	(building-type-count-total archery-range > 0)
+	(or	(strategic-number sn-food-gatherer-percentage != 45)
+		(strategic-number sn-wood-gatherer-percentage != 45))
+	(strategic-number sn-stone-gatherer-percentage == 0)
+	(strategic-number sn-gold-gatherer-percentage != 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 45)
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(gold-amount >= 200)
+	(strategic-number sn-gold-gatherer-percentage != 15)
+	(strategic-number sn-gold-gatherer-percentage != 0)
+=>
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(gold-amount < 200)
+	(building-type-count-total stable > 0)
+	(building-type-count-total archery-range > 0)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+=>
+	(set-strategic-number sn-gold-gatherer-percentage 5)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(not	(civ-selected spanish))
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(game-time > 1060)
+	(wood-amount > 200)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 25)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(disable-self)
+)
+
+; Some civs may also load this strategy as a flush, but they don't need parts that apply only after feudal
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(game-time > 1060)
+	(wood-amount > 200)
+	(stone-amount < castle-stone)
+	(dropsite-min-distance stone < 4)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 25)
+	(set-strategic-number sn-stone-gatherer-percentage 8)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(stone-amount >= castle-stone)
+	(strategic-number sn-stone-gatherer-percentage > 0)
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(current-age == feudal-age)
+	(stone-amount < castle-stone)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 25)
+	(set-strategic-number sn-wood-gatherer-percentage 37)
+	(set-strategic-number sn-gold-gatherer-percentage 8)
+	(set-strategic-number sn-stone-gatherer-percentage 30)
+	(set-goal TC 1)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(building-type-count-total castle > 0)
+		(stone-amount >= castle-stone))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 33)
+	(set-strategic-number sn-wood-gatherer-percentage 37)
+	(set-strategic-number sn-gold-gatherer-percentage 18)
+	(set-strategic-number sn-stone-gatherer-percentage 12)
+	(set-goal TC 1)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total castle > 0)
+	(building-type-count-total town-center > 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 18)
+	(enable-timer 7 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total castle > 0)
+	(building-type-count-total town-center > 2)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 26)
+	(set-strategic-number sn-gold-gatherer-percentage 27)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(game-time > 2100)
+	(building-type-count-total town-center > 2)
+=>
+	(set-goal gl-advanced-trash YES)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(or	(game-time > 2700)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+=>
+	(set-goal gl-strategy default)
+	(set-goal CASTLE 2)
+	(set-goal gl-advanced-cavalry heavy-knights)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(current-age == feudal-age)
+	(or	(and	(town-under-attack)
+			(timer-triggered 9))
+		(or	(up-compare-goal gl-current-age >= gv-feudal-up)
+			(goal MILITARY 1)))
+	(strategic-number sn-allow-resource-spending == 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 1)
+)
+
+; ================= AGE UP
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(current-age == feudal-age)
+	(or	(unit-type-count-total villager < 39)
+		(or	(game-time < 1130)
+			(or	(food-amount < 620)
+				(gold-amount < 162))))
+	(nor	(can-research-with-escrow ri-wheel-barrow)
+		(or	(can-research-with-escrow ri-loom)
+			(can-research-with-escrow castle-age)))
+	(can-train villager)
+=>
+	(train villager)
+)
+
+; ============ RESEARCHES
+
+(defrule
+	(current-age == dark-age)
+	(goal gl-strategy scout-skirm-flush)
+	(food-amount > 420)
+	(not	(can-research feudal-age))
+	(unit-type-count-total villager > 27)
+	(can-research ri-loom)
+=>
+	(research ri-loom)
+	(enable-timer 2 22)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(or	(and	(building-type-count-total town-center > 2)
+			(can-research ri-husbandry))
+		(and	(can-research ri-bloodlines)
+			(up-compare-goal gl-current-age >= gv-feudal-up)))
+=>
+	(research ri-bloodlines)
+	(research ri-husbandry)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(building-type-count-total stable > 0)
+	(or	(can-research-with-escrow ri-horse-collar)
+		(or	(can-research-with-escrow ri-heavy-plow)
+			(can-research-with-escrow ri-double-bit-axe)))
+=>
+	(release-escrow food)
+	(release-escrow wood)
+	(research ri-horse-collar)
+	(research ri-heavy-plow)
+	(research ri-double-bit-axe)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(or	(unit-type-count-total monk > 2)
+		(unit-type-count-total missionary > 1))
+	(can-research ri-sanctity)
+=>
+	(research ri-sanctity)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(unit-type-count-total missionary > 4)
+	(or	(players-unit-type-count any-enemy mangonel-line > 0)
+		(or	(players-unit-type-count any-enemy bombard-cannon > 0)
+			(or	(players-building-type-count any-enemy bombard-tower > 0)
+				(players-building-type-count any-enemy watch-tower > 0))))
+	(research-available ri-redemption)
+=>
+	(set-escrow-percentage gold 80)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(unit-type-count-total missionary > 4)
+	(or	(players-unit-type-count any-enemy battering-ram-line > 0)
+		(or	(players-unit-type-count any-enemy scorpion-line > 0)
+			(and	(goal MILITARY 0)
+				(enemy-buildings-in-town))))
+	(research-available ri-redemption)
+=>
+	(set-escrow-percentage gold 80)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(unit-type-count-total missionary > 4)
+	(or	(players-unit-type-count any-enemy battering-ram-line > 0)
+		(or	(players-unit-type-count any-enemy scorpion-line > 0)
+			(or	(players-military-population every-enemy < 13)
+				(and	(goal MILITARY 0)
+					(enemy-buildings-in-town)))))
+	(can-research-with-escrow ri-redemption)
+=>
+	(set-escrow-percentage gold 0)
+	(release-escrow gold)
+	(research ri-redemption)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(unit-type-count-total missionary > 4)
+	(or	(players-unit-type-count any-enemy mangonel-line > 0)
+		(or	(players-unit-type-count any-enemy bombard-cannon > 0)
+			(or	(players-building-type-count any-enemy bombard-tower > 0)
+				(players-building-type-count any-enemy watch-tower > 0))))
+	(can-research-with-escrow ri-redemption)
+=>
+	(set-escrow-percentage gold 0)
+	(release-escrow gold)
+	(research ri-redemption)
+)
+
+(defrule
+	(current-age-time > 200)
+	(civ-selected spanish)
+	(unit-type-count-total missionary > 4)
+;	(or	(can-research ri-fervor)
+		(or	(can-research ri-theocracy)
+			(or	(can-research ri-block-printing)
+				(can-research ri-illumination)))
+;)
+=>
+;	(research ri-fervor)
+	(research ri-theocracy)
+	(research ri-block-printing)
+	(research ri-illumination)
+)
+
+; ============ BUILDINGS
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(not	(building-available stable))
+	(building-type-count-total barracks < 1)
+	(can-build barracks)
+=>
+	(build barracks)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(building-type-count-total stable < 1)
+	(or	(building-type-count-total stable < 2)
+		(building-type-count-total town-center > 2))
+	(can-build stable)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build stable)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(game-time > 1200)
+	(wood-amount > 310)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build market)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(building-type-count-total stable > 0)
+	(or	(building-type-count-total archery-range < 1)
+		(or	(building-type-count-total town-center > 2)
+			(and	(current-age == feudal-age)
+				(or	(players-military-population every-enemy > 18)
+					(goal MILITARY 1)))))
+	(building-type-count-total archery-range < 2)
+	(can-build archery-range)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build archery-range)
+)
+
+(defrule
+	(building-type-count-total farm g:< gl-max-farm-count)
+	(current-age == feudal-age)
+	(or	(and	(building-type-count-total archery-range > 0)
+			(building-type-count-total stable > 0))
+		(wood-amount > 235))
+	(or	(building-type-count-total mining-camp > 0)
+		(building-type-count-total farm < 15))
+	(or	(building-type-count-total archery-range > 1)
+		(players-military-population every-enemy <= 18))
+	(idle-farm-count <= 5)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(game-time > 1600)
+	(or	(building-type-count-total mining-camp < 5)
+		(building-type-count-total town-center > 2))
+	(building-type-count-total mining-camp < 7)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(or	(up-compare-goal gl-current-age >= gv-feudal-up)
+		(game-time > 1100))
+	(building-type-count-total mining-camp < 3)
+	(dropsite-min-distance stone > 3)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(current-age == castle-age)
+	(idle-farm-count <= 5)
+	(building-type-count-total town-center > 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(building-type-count-total castle > 0)
+	(building-type-count-total town-center > 1)
+	(or	(building-type-count-total monastery < 2)
+		(building-type-count-total town-center > 2))
+	(building-type-count-total monastery < 3)
+	(can-build monastery)
+=>
+	(build monastery)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(goal MILITARY 0)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 0)
+=>
+	(set-strategic-number sn-add-rams-in-attack 1)
+	(disable-timer 2)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(goal MILITARY 1)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 1)
+=>
+	(enable-timer 2 70)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(goal MILITARY 1)
+	(timer-triggered 2)
+	(building-type-count-total farm > 7)
+	(strategic-number sn-add-rams-in-attack == 0)
+	(building-type-count-total siege-workshop < 1)
+	(wood-amount < 200)
+=>
+	(set-escrow-percentage wood 100)
+	(set-strategic-number sn-add-rams-in-attack 2)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(strategic-number sn-add-rams-in-attack == 2)
+	(or	(building-type-count-total siege-workshop > 0)
+		(or	(wood-amount >= 200)
+			(or	(goal MILITARY 0)
+				(building-type-count-total farm <= 7))))
+=>
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(goal MILITARY 1)
+	(timer-triggered 2)
+	(building-type-count-total siege-workshop < 1)
+	(can-build-with-escrow siege-workshop)
+=>
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(build siege-workshop)
+)
+
+; ============ UNITS
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(current-age == feudal-age)
+	(or	(food-amount < 600)
+		(or	(gold-amount < 162)
+			(town-under-attack)))
+	(food-amount > 100)
+	(unit-type-count-total scout-cavalry-line < 6)
+	(players-unit-type-count every-enemy knight-line == 0)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(current-age == feudal-age)
+	(players-unit-type-count every-enemy archer-line == 0)
+	(unit-type-count-total spearman-line < 6)
+	(or	(players-unit-type-count any-enemy knight-line > 0)
+		(or	(and	(game-time > 960)
+				(players-military-population every-enemy < 3))
+			(and	(building-type-count-total archery-range > 0)
+				(current-age-time < 50))))
+	(food-amount >= 70)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(current-age == feudal-age)
+	(unit-type-count-total skirmisher-line < 28)
+	(players-military-population every-enemy > 18)
+	(food-amount >= 75)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(current-age >= feudal-age)
+	(or	(food-amount < 650)
+		(or	(gold-amount < 162)
+			(or	(town-under-attack)
+				(up-compare-goal gl-current-age >= gv-feudal-up))))
+	(or	(unit-type-count-total skirmisher-line < 14)
+		(building-type-count-total town-center > 1))
+	(food-amount >= 75)
+	(unit-type-count-total skirmisher-line < 28)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(current-age == feudal-age)
+	(not	(civ-selected spanish))
+	(dropsite-min-distance gold < 4)
+	(or	(and	(food-amount < 500)
+			(research-completed ri-fletching))
+		(gold-amount >= 245))
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(current-age >= castle-age)
+	(food-amount > 250)
+	(gold-amount < 50)
+	(unit-type-count-total scout-cavalry-line < 18)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(current-age >= castle-age)
+	(or	(research-completed ri-light-cavalry)
+		(unit-type-count-total scout-cavalry-line < 6))
+	(or	(and	(food-amount > 110)
+			(research-completed ri-bloodlines))
+		(town-under-attack))
+	(unit-type-count-total knight-line < 12)
+	(can-train knight-line)
+=>
+	(train knight-line)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(goal MILITARY 1)
+	(unit-type-count-total battering-ram-line < 4)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(current-age == castle-age)
+	(current-age-time < 300)
+	(unit-type-count-total monk < 3); Poor missionaries can't pick up relics
+	(can-train monk)
+=>
+	(train monk)
+)
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(civ-selected spanish)
+	(current-age >= castle-age)
+	(unit-type-count-total missionary < 25)
+	(or	(food-amount < high-castle-food)
+		(or	(town-under-attack)
+			(up-compare-goal gl-current-age >= gv-castle-up)))
+	(can-train missionary)
+=>
+	(train missionary)
+)
+
+

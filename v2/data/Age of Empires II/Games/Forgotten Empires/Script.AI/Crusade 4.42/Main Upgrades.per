@@ -1,0 +1,1160 @@
+
+; Naval upgrades
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(can-research ri-shipwright)
+=>
+	(research ri-shipwright)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(or	(goal G-BOAT GV-GALLEY)
+		(or	(unit-type-count-total galley-line > MAX-GALLEYS-TO-ELITE)
+			(housing-headroom <= 0)
+		)
+	)
+=>
+	(research ri-war-galley)
+	(research ri-galleon)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(or	(goal G-BOAT GV-FISHING-SHIP)
+		(or	(unit-type-count-total fire-ship-line > MAX-FIRING-SHIPS-TO-ELITE)
+			(housing-headroom <= 0)
+		)
+	)
+	;(can-research ri-fast-fire-ship)
+=>
+	(research ri-fast-fire-ship)
+	(research ri-greak-fire)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(or	(goal G-BOAT GV-DEMOLITION-SHIP)
+		(or	(unit-type-count-total demolition-ship-line > MAX-DEMOLITION-SHIPS-TO-ELITE)
+			(housing-headroom <= 0)
+		)
+	)
+	(can-research ri-heavy-demolition-ship)
+=>
+	(research ri-heavy-demolition-ship)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-NAVAL-SUPERIORITY 1)
+	(warboat-count >= 5)
+	(or	(warboat-count >= TWENTY-PERCENT-POP)
+		(population >= TOP-POPULATION)
+	)
+	;(or	(players-building-type-count any-enemy castle >= 1)
+	;	(or	(players-building-type-count any-enemy watch-tower >= 1)
+	;		(players-building-type-count any-enemy bombard-tower >= 1)
+	;	)
+	;)
+=>
+	(research ri-cannon-galleon)
+	(research ri-deck-guns)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(goal G-BOAT GV-CANNON-GALLEON)
+	(or	(unit-type-count-total cannon-galleon-line > MAX-CANNON-GALLEONS-TO-ELITE)
+		(housing-headroom <= 0)
+	)
+	(can-research ri-deck-guns)
+=>
+	(research ri-deck-guns)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(or	(goal G-BOAT GV-DRAGON-BOAT)
+		(or	(unit-type-count-total galley-line > MAX-DRAGON-BOATS-TO-ELITE)
+			(housing-headroom <= 0)
+		)
+	)
+=>
+	(research ri-elite-longboat)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(or	(goal G-BOAT GV-TURTLE-SHIP)
+		(or	(unit-type-count-total fire-ship-line > MAX-TURTLE-SHIPS-TO-ELITE)
+			(housing-headroom <= 0)
+		)
+	)
+=>
+	(research ri-elite-turtle-ship)
+	(research ri-panokseon)
+)
+
+; Auxiliar Naval upgrades
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(not(goal G-BOAT GV-NONE))
+	(or	(warboat-count >= 5)
+		(housing-headroom <= 0)
+	)
+=>
+	(research ri-careening)
+	(research ri-dry-dock)
+)
+
+; Murder holes
+
+(defrule
+	(or	(building-type-count-total castle >= 1)
+		(building-type-count-total watch-tower-line >= 3)
+	)
+	(can-research ri-murder-holes)
+=>
+	(research ri-murder-holes)
+)
+
+; Line upgrades
+
+(defrule
+	(or	(goal G-BARRACK-UNIT GV-SPEAR)
+		(unit-type-count-total spearman-line > MAX-SPEARS-TO-ELITE)
+	)
+	(or	(unit-type-count-total spearman-line > MIN-SPEARS-TO-ELITE)
+		(or	(population >= SUB-TOP-POPULATION)
+			(housing-headroom <= 0)
+		)
+	)
+=>
+	(research ri-pikeman)
+	(research ri-halberdier)
+)
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(or	(goal G-ARCHERY-UNIT GV-SKIRM)
+		(or	(unit-type-count-total skirmisher-line > MAX-SKIRMS-TO-ELITE)
+			(or	(population >= SUB-TOP-POPULATION)
+				(housing-headroom <= 0)
+			)
+		)
+	)
+=>
+	(research ri-elite-skirmisher)
+	(research ri-atlatl)
+)
+#end-if
+
+#load-if-defined INCAN-CIV
+(defrule
+	(or	(goal G-ARCHERY-UNIT GV-SKIRM)
+		(or	(unit-type-count-total skirmisher-line > MAX-SKIRMS-TO-ELITE)
+			(or	(population >= SUB-TOP-POPULATION)
+				(housing-headroom <= 0)
+			)
+		)
+	)
+=>
+	(research ri-elite-skirmisher)
+	(research ri-andean-sling)
+)
+#end-if
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined INCAN-CIV
+(defrule
+	(or	(goal G-ARCHERY-UNIT GV-SKIRM)
+		(or	(unit-type-count-total skirmisher-line > MAX-SKIRMS-TO-ELITE)
+			(or	(population >= SUB-TOP-POPULATION)
+				(housing-headroom <= 0)
+			)
+		)
+	)
+=>
+	(research ri-elite-skirmisher)
+)
+#end-if
+#end-if
+
+(defrule
+	(or	(goal G-STABLE-UNIT GV-SCOUT)
+		(unit-type-count-total scout-cavalry-line > MAX-SCOUTS-TO-ELITE)
+	)
+	(or	(unit-type-count-total scout-cavalry-line > MIN-SCOUTS-TO-ELITE)
+		(or	(population >= SUB-TOP-POPULATION)
+			(housing-headroom <= 0)
+		)
+	)
+=>
+	(research ri-light-cavalry)
+	(research ri-hussar)
+)
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(true)
+=>
+	(research ri-elite-jaguar-man)
+	(research my-unique-research)
+)
+#end-if
+
+#load-if-defined BRITON-CIV
+(defrule
+	(goal G-ARMY-STRONG-PREPARED 1)
+=>
+	(research ri-elite-longbowman)
+)
+
+(defrule
+	(true)
+=>
+	(research my-unique-research)
+)
+#end-if
+
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(true)
+=>
+	(research ri-elite-cataphract)
+	(research my-unique-research)
+)
+#end-if
+
+#load-if-defined CELTIC-CIV
+(defrule
+	(or	(goal G-ARMY-STRONG-PREPARED 1)
+		(nand	(goal G-BARRACK-UNIT GV-SWORD)
+			(not(research-available ri-two-handed-swordsman))
+		)
+	)
+=>
+	(research ri-elite-woad-raider)
+)
+
+(defrule
+	(true)
+=>
+	(research my-unique-research)
+	(research ri-heavy-scorpion)
+)
+#end-if
+
+#load-if-defined CHINESE-CIV
+(defrule
+	(true)
+=>
+	(research my-unique-research)
+	(research ri-heavy-scorpion)
+)
+
+(defrule
+	(goal G-ARMY-STRONG-PREPARED 1)
+=>
+	(research ri-elite-chu-ko-nu)
+)
+#end-if
+
+#load-if-defined FRANKISH-CIV
+(defrule
+	(true)
+=>
+	(research ri-elite-throwing-axeman)
+	(research my-unique-research)
+)
+
+(defrule
+	(goal G-STABLE-UNIT GV-SCOUT)
+=>
+	(research ri-chivalry)
+)
+#end-if
+
+#load-if-defined GOTHIC-CIV
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+=>
+	(research ri-elite-huskarl)
+)
+(defrule
+	(goal G-ARMY-STRONG-PREPARED 1)
+=>
+	(research RI-PERFUSION)
+)
+(defrule
+	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+	(or	(strategic-number G-THREAT-ARCHERY-GROUP >= 3)
+		(and	(strategic-number G-AGE-STATUS >= GV-IMPERIAL-AGE)
+			(goal G-ARMY-STRONG-PREPARED 1)
+		)
+	)
+=>
+	(research RI-ANARCHY)
+)
+#end-if
+
+#load-if-defined HUN-CIV
+(defrule
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(or	(goal G-TSA 1)
+		(enemy-buildings-in-town)
+	)
+=>
+	(research ri-elite-tarkan)
+)
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(or	(enemy-captured-relics)
+		(players-building-type-count any-enemy wonder >= 1)
+	)
+=>
+	(research my-unique-research)
+)
+#end-if
+#end-if ; Finish Huns
+
+#load-if-defined INCA-CIV
+(defrule
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+	(can-research elite-kamayuk)
+=>
+	(research elite-kamayuk)
+)
+#end-if
+
+#load-if-defined INDIAN-CIV
+(defrule
+	(true)
+=>
+	(research ri-sultans)
+	(research ri-elite-elephant-archer)
+)
+
+(defrule
+	(goal G-STABLE-UNIT GV-CAMEL)
+	(can-research ri-imperial-camel)
+=>
+	(research ri-imperial-camel)
+)
+
+(defrule
+	(goal G-ARCHERY-UNIT GV-HAND-CANNON)
+	(can-research ri-shatagni)
+=>
+	(research ri-shatagni)
+)
+#end-if
+
+#load-if-defined ITALIAN-CIV
+(defrule
+	(true)
+=>
+	(research ri-elite-genoese-crossbow)
+	(research ri-pavise)
+)
+#end-if
+
+#load-if-defined JAPANESE-CIV
+(defrule
+	(true)
+=>
+	(research ri-elite-samurai)
+	(research my-unique-research)
+)
+#end-if
+
+#load-if-defined KOREAN-CIV
+(defrule
+	(true)
+=>
+	(research ri-elite-war-wagon)
+)
+
+(defrule
+	(or	(unit-type-count-total mangonel-line >= 3)
+		(goal G-WORKSHOP GV-ONAGER)
+	)
+=>
+	(research ri-onager)
+	(research ri-siege-onager)
+	(research my-unique-research)
+)
+#end-if
+
+#load-if-defined MAGYAR-CIV
+(defrule
+	(true)
+=>
+	(research ri-mercenaries)
+	(research ri-elite-magyar-huszar)
+)
+
+(defrule
+	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+	(can-research ri-recurve-bow)
+=>
+	(research ri-recurve-bow)
+)
+#end-if
+
+#load-if-defined MAYAN-CIV
+(defrule
+	(or	(goal G-BARRACK-UNIT GV-EAGLE)
+		(unit-type-count-total eagle-warrior-line > MAX-EAGLES-TO-ELITE)
+	)
+	(or	(unit-type-count-total eagle-warrior-line > MIN-EAGLES-TO-ELITE)
+		(housing-headroom <= 0)
+	)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(true)
+=>
+	(research ri-elite-plumed-archer)
+)
+#end-if
+
+#load-if-defined MONGOL-CIV
+(defrule
+	(true)
+=>
+	(research ri-elite-mangudai)
+	(research my-unique-research)
+	(research ri-heavy-scorpion)
+)
+#end-if
+
+#load-if-defined PERSIAN-CIV
+(defrule
+	(or	(strategic-number G-MILITARY-SUPERIORITY < 0)
+		(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	)
+=>
+	(research ri-elite-war-elephant)
+)
+
+(defrule
+	(nor	(research-available ri-elite-war-elephant)
+		(and	(building-type-count stable >= 1)
+			(research-available ri-husbandry)
+		)
+	)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(unit-type-count-total trade-cart > 3)
+=>
+	(research ri-persepolis)
+)
+#end-if
+
+#load-if-defined SARACEN-CIV
+(defrule
+	(or	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+		(goal G-THREAT-ARCHERY-CAVALRY-GROUP 1)
+	)
+=>
+	(research ri-elite-mameluke)
+)
+
+(defrule
+	(or	(strategic-number G-THREAT-CAVALRY-GROUP >= 1)
+		(goal G-STABLE-UNIT GV-CAMEL)
+	)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(true)
+=>
+	(research ri-madrasah)
+)
+#end-if
+
+#load-if-defined SLAVIC-CIV
+(defrule
+	(true)
+=>
+	(research ri-elite-boyar)
+)
+
+(defrule
+	(not(goal G-BARRACK-UNIT GV-NONE))
+=>
+	(research ri-druzhina)
+)
+#end-if
+
+
+
+
+#load-if-defined SPANISH-CIV
+(defrule
+	(goal G-ARMY-STRONG-PREPARED 1)
+=>
+	(research ri-elite-conquistador)
+)
+
+(defrule
+	(true)
+=>
+	(research my-unique-research)
+	(research ri-inquisition)
+)
+#end-if
+
+#load-if-defined TEUTONIC-CIV
+(defrule
+	(true)
+=>
+	(research ri-elite-teutonic-knight)
+	(research ri-ironclad)
+)
+
+(defrule
+	(or	(building-type-count-total castle >= 4)
+		(or	(goal G-ARMY-STRONG-PREPARED 1)	
+			(stone-amount > 1500)
+		)
+	)
+=>
+	(research my-unique-research)
+)
+#end-if
+
+#load-if-defined TURKISH-CIV
+(defrule
+	(goal G-ARMY-STRONG-PREPARED 1)
+=>
+	(research ri-elite-janissary)
+)
+
+(defrule
+	(true)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+=>
+	(research ri-sipahi)
+)
+#end-if
+
+#load-if-defined VIKING-CIV
+(defrule
+	(or	(goal G-ARMY-STRONG-PREPARED 1)
+		(or	(not(research-available ri-chieftains))
+			(nand	(goal G-BARRACK-UNIT GV-SWORD)
+				(not(research-available ri-two-handed-swordsman))
+			)
+		)
+	)
+=>
+	(research ri-elite-berserk)
+	(research my-unique-research)
+)
+
+(defrule
+	(strategic-number G-THREAT-CAVALRY-GROUP >= 2)
+=>
+	(research ri-chieftains)
+)
+#end-if
+
+
+(defrule
+	(or	(goal G-BARRACK-UNIT GV-SWORD)
+		(unit-type-count-total militiaman-line > 12)
+	)
+=>
+	(research ri-man-at-arms)
+	(research ri-long-swordsman)
+	(research ri-two-handed-swordsman)
+	(research ri-champion)
+)
+
+#load-if-defined INCAN-CIV
+(defrule
+	(or	(goal G-BARRACK-UNIT GV-EAGLE)
+		(unit-type-count-total eagle-warrior-line > 12)
+	)
+	(or	(unit-type-count-total eagle-warrior-line > 4)
+		(housing-headroom <= 0)
+	)
+=>
+	(research ri-eagle-warrior)
+	(research ri-elite-eagle-warrior)
+	(research ri-couriers)
+)
+#else
+(defrule
+	(or	(goal G-BARRACK-UNIT GV-EAGLE)
+		(unit-type-count-total eagle-warrior-line > 12)
+	)
+	(or	(unit-type-count-total eagle-warrior-line > 4)
+		(housing-headroom <= 0)
+	)
+=>
+	(research ri-eagle-warrior)
+	(research ri-elite-eagle-warrior)
+)
+#end-if
+
+(defrule
+	(or	(goal G-STABLE-UNIT GV-KNIGHT)
+		(unit-type-count-total knight-line > MAX-KNIGHTS-TO-ELITE)
+	)
+	(or	(unit-type-count-total knight-line > MIN-KNIGHTS-TO-ELITE)
+		(housing-headroom <= 0)
+	)
+=>
+	(research ri-cavalier)
+	(research ri-paladin)
+)
+
+(defrule
+	(or	(goal G-ARCHERY-UNIT GV-CAV-ARCHER)
+		(unit-type-count-total cavalry-archer-line > MAX-CAV-ARCHERS-TO-ELITE)
+	)
+	(or	(unit-type-count-total cavalry-archer-line > MIN-CAV-ARCHERS-TO-ELITE)
+		(housing-headroom <= 0)
+	)
+	(nand	(and	(civ-selected turkish)
+			(goal G-ARMY-STRONG-PREPARED 0)
+		)
+		(and	(food-amount < 2000)
+			(gold-amount < 2000)
+		)
+	)		
+=>
+	(research ri-heavy-cavalry-archer)
+)
+
+(defrule
+	(or	(goal G-ARCHERY-UNIT GV-ARCHER)
+		(unit-type-count-total archer-line > MAX-ARCHERS-TO-ELITE)
+	)
+	(or	(unit-type-count-total archer-line > MIN-ARCHERS-TO-ELITE)
+		(housing-headroom <= 0)
+	)
+=>
+	(research ri-crossbow)
+	(research ri-arbalest)
+)
+
+(defrule
+	(or	(goal G-STABLE-UNIT GV-CAMEL)
+		(unit-type-count-total camel-line > MAX-CAMELS-TO-ELITE)
+	)
+	(or	(unit-type-count-total camel-line > MIN-CAMELS-TO-ELITE)
+		(housing-headroom <= 0)
+	)
+=>
+	(research ri-heavy-camel)
+)
+
+
+; Other important upgrades
+
+(defrule
+	(nand	(or	(building-type-count archery-range == 0)
+			(or	(goal G-ARCHERY-UNIT GV-NONE)
+				(goal G-ARCHERY-UNIT GV-HAND-CANNON)
+			)
+		)
+		(nand	(and	(building-type-count castle > 0)
+				(current-age >= castle-age)
+			)
+			(and	(goal G-UNIQUE-UNIT-TYPE GV-ARCHERY)
+				(goal G-UNIQUE-UNIT-TYPE 1)
+			)
+		)
+	)
+=>
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+)
+
+(defrule
+	(or	(unit-type-count-total galley-line >= 1)
+		(unit-type-count-total longboat-line >= 1)
+	)
+=>
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+)
+
+(defrule
+	(nand	(goal G-ARCHERY-UNIT GV-NONE)
+		(nand	(current-age >= castle)
+			(building-type-count-total castle >= 1)
+		)
+	)
+	(nand	(goal G-BARRACK-UNIT GV-SWORD)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+=>
+	(research ri-chemistry)
+	(research ri-ballistics)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(nand	(goal G-BARRACK-UNIT GV-NONE)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+	(or	(food-amount < 700)
+		(nand	(food-amount < 950)
+			(gold-amount > 200)		
+		)
+	)
+=>
+	(research ri-forging)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(or	(unit-type-count-total INFANTRY-GROUP >= 6)
+			(unit-type-count-total CAVALRY-GROUP >= 6)
+		)
+		(or	(housing-headroom <= 0)
+			(and	(unit-type-count-total INFANTRY-GROUP >= 4)
+				(unit-type-count-total CAVALRY-GROUP >= 4)
+			)
+		)
+	)
+	(nand	(goal G-BARRACK-UNIT GV-SWORD)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+=>
+	(research ri-forging)
+)
+
+(defrule
+	(or	(or	(unit-type-count-total INFANTRY-GROUP >= 6)
+			(unit-type-count-total CAVALRY-GROUP >= 6)
+		)
+		(or	(housing-headroom <= 0)
+			(and	(unit-type-count-total INFANTRY-GROUP >= 4)
+				(unit-type-count-total CAVALRY-GROUP >= 4)
+			)
+		)
+	)
+	(nand	(goal G-BARRACK-UNIT GV-SWORD)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+=>
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(or	(food-amount < 700)
+		(nand	(food-amount < 900)
+			(gold-amount > 200)		
+		)
+	)
+	(or	(unit-type-count-total INFANTRY-GROUP >= 8)
+		(housing-headroom <= 0)
+	)
+=>
+	(research ri-scale-mail)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(or	(food-amount < 700)
+		(nand	(food-amount < 900)
+			(gold-amount > 200)		
+		)
+	)
+	(or	(or	(unit-type-count-total CAVALRY-GROUP >= 8)
+			(unit-type-count-total scout-cavalry-line >= 8)
+		)
+		(or	(housing-headroom <= 0)
+			(and	(unit-type-count-total CAVALRY-GROUP >= 4)
+				(unit-type-count-total scout-cavalry-line >= 4)
+			)
+		)
+	)
+=>
+	(research ri-scale-barding)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(or	(unit-type-count-total CAVALRY-GROUP >= 8)
+			(and	(unit-type-count-total CAVALRY-GROUP >= 4)
+				(unit-type-count-total scout-cavalry-line >= 4)
+			)
+		)
+		(housing-headroom <= 0)
+	)
+	(nand	(goal G-BARRACK-UNIT GV-SWORD)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+=>
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(or	(food-amount < 700)
+		(nand	(food-amount < 900)
+			(gold-amount > 200)		
+		)
+	)
+	(or	(or	(unit-type-count-total ARCHERY-GROUP >= 8)
+			(unit-type-count-total CAVALRY-ARCHER-GROUP >= 8)
+		)
+		(or	(housing-headroom <= 0)
+			(unit-type-count-total HAND-CANNONEER-GROUP >= 8)
+		)
+	)
+	(not(research-available ri-fletching))
+=>
+	(research ri-padded-archer-armor)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(or	(unit-type-count-total ARCHERY-GROUP >= 8)
+			(unit-type-count-total CAVALRY-ARCHER-GROUP >= 8)
+		)
+		(or	(housing-headroom <= 0)
+			(unit-type-count-total HAND-CANNONEER-GROUP >= 8)
+		)
+	)
+	(nand	(goal G-BARRACK-UNIT GV-SWORD)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+	(not(research-available ri-fletching))
+=>
+	(research ri-padded-archer-armor)
+)
+
+(defrule
+	(or	(or	(unit-type-count-total ARCHERY-GROUP >= 8)
+			(unit-type-count-total CAVALRY-ARCHER-GROUP >= 8)
+		)
+		(or	(housing-headroom <= 0)
+			(unit-type-count-total HAND-CANNONEER-GROUP >= 8)
+		)
+	)
+	(not(research-available ri-bodkin-arrow))
+	(nand	(goal G-BARRACK-UNIT GV-SWORD)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+=>
+	(research ri-leather-archer-armor)
+)
+
+(defrule
+	(or	(or	(unit-type-count-total ARCHERY-GROUP >= 8)
+			(unit-type-count-total CAVALRY-ARCHER-GROUP >= 8)
+		)
+		(or	(housing-headroom <= 0)
+			(unit-type-count-total HAND-CANNONEER-GROUP >= 8)
+		)
+	)
+	(not(research-available ri-bracer))
+	(nand	(goal G-BARRACK-UNIT GV-SWORD)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+=>
+	(research ri-ring-archer-armor)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(unit-type-count-total INFANTRY-GROUP >= 8)
+		(housing-headroom <= 0)
+	)
+	(nand	(and	(goal G-BARRACK-UNIT GV-SWORD)
+			(building-type-count barracks >= 1)
+		)
+		(or	(research-available ri-man-at-arms)
+			(research-available ri-long-swordsman)
+		)
+	)
+=>
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(unit-type-count-total INFANTRY-GROUP >= 8)
+		(housing-headroom <= 0)
+	)
+	(nand	(and	(goal G-BARRACK-UNIT GV-SWORD)
+			(building-type-count barracks >= 1)
+		)
+		(or	(research-available ri-two-handed-swordsman)
+			(research-available ri-champion)
+		)
+	)
+=>
+
+	(research ri-plate-mail)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(unit-type-count-total INFANTRY-GROUP >= 8)
+		(housing-headroom <= 0)
+	)
+	(building-type-count castle >= 1)
+	(goal G-UNIQUE-UNIT-TYPE GV-INFANTRY)
+	(goal G-UNIQUE-UNIT-ALLOWED 1)
+=>
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+)
+
+
+; Monastery
+
+#load-if-defined SLAVIC-CIV
+(defrule
+	(or	(unit-type-count-total MONK-GROUP >= 3)
+		(housing-headroom <= 0)
+	)
+	(can-research-with-escrow ri-orthodoxy)
+=>
+	(research ri-orthodoxy)
+)
+#end-if
+
+(defrule
+	(or	(unit-type-count-total MONK-GROUP >= 3)
+		(housing-headroom <= 0)
+	)
+	(can-research-with-escrow ri-fervor)
+=>
+	(research ri-fervor)
+)
+
+(defrule
+	(or	(unit-type-count-total MONK-GROUP >= 3)
+		(housing-headroom <= 0)
+	)
+	(not(research-available ri-fervor))
+	(can-research-with-escrow ri-sanctity)
+=>
+	(research ri-sanctity)
+)
+
+(defrule
+	(or	(strategic-number G-THREAT-MONK >= 2)
+		(civ-selected aztec)
+	)
+=>
+	(research ri-faith)
+	(research ri-heresy)
+)
+
+(defrule
+	(or	(unit-type-count-total MONK-GROUP >= 5)
+		(housing-headroom <= 0)
+	)
+	(or	(goal G-TSA 1)
+		(civ-selected aztec)
+	)
+	(can-research ri-redemption)
+=>
+	(research ri-redemption)
+)
+
+(defrule
+	(or	(unit-type-count-total MONK-GROUP >= 4)
+		(housing-headroom <= 0)
+	)
+	(or	(strategic-number G-THREAT-MONK >= 2)
+		(civ-selected aztec)
+	)
+	(can-research ri-atonement)
+=>
+	(research ri-atonement)
+)
+
+
+
+(defrule
+	(or	(unit-type-count-total MONK-GROUP >= 5)
+		(housing-headroom <= 0)
+	)
+	(can-research ri-theocracy)
+=>
+	(research ri-theocracy)
+)
+
+(defrule
+	(or	(unit-type-count-total MONK-GROUP >= 4)
+		(housing-headroom <= 0)
+	)
+=>
+	(research ri-illumination)
+	(research ri-block-printing)
+)
+
+
+; Herbal medizine. It has a lower priority, see in Extra Upgrades.per
+
+
+
+
+; Auxiliar military building upgrades
+
+(defrule
+	(or	(or	(unit-type-count-total CAVALRY-GROUP >= 3)
+			(or	(unit-type-count-total scout-cavalry-line >= 3)
+				(unit-type-count-total CAVALRY-ARCHER-GROUP >= 3)
+			)
+		)
+		(housing-headroom <= 0)
+	)
+=>
+	(research ri-bloodlines)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(food-amount > 350)
+	(or	(unit-type-count-total INFANTRY-GROUP >= 15)
+		(housing-headroom <= 0)
+	)
+	(nand	(and	(goal G-BARRACK-UNIT GV-SWORD)
+			(gold-amount > 65)
+		)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+=>
+	(research ri-squires)
+)
+
+(defrule
+	(or	(unit-type-count-total CAVALRY-GROUP >= 15)
+		(unit-type-count-total CAVALRY-ARCHER-GROUP >= 15)
+	)
+	(nand	(and	(goal G-BARRACK-UNIT GV-SWORD)
+			(gold-amount > 65)
+		)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+=>
+	(research ri-husbandry)
+)
+
+(defrule
+	(or	(housing-headroom <= 0)
+		(and	(unit-type-count-total CAVALRY-GROUP >= 8)
+			(unit-type-count-total CAVALRY-ARCHER-GROUP >= 8)
+		)
+	)
+	(nand	(and	(goal G-BARRACK-UNIT GV-SWORD)
+			(gold-amount > 65)
+		)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+=>
+	(research ri-husbandry)
+)
+
+(defrule
+	(or	(or	(unit-type-count-total ARCHERY-GROUP >= 8)
+			(unit-type-count-total CAVALRY-ARCHER-GROUP >= 8)
+		)
+		(or	(housing-headroom <= 0)
+			(unit-type-count-total HAND-CANNONEER-GROUP >= 8)
+		)
+	)
+	(nand	(and	(goal G-BARRACK-UNIT GV-SWORD)
+			(gold-amount > 65)
+		)
+		(and	(research-available ri-long-swordsman)
+			(building-type-count barracks >= 1)
+		)
+	)
+=>
+	(research ri-thumb-ring)
+)
+
+(defrule
+	(or	(unit-type-count-total CAVALRY-ARCHER-GROUP >= 10)
+		(housing-headroom <= 0)
+	)
+=>
+	(research ri-parthian-tactics)
+)
+
+(defrule
+	(or	(goal G-SIEGE-UNIT GV-RAM)
+		(and	(goal G-ARMY-STRONG-PREPARED 1)
+			(housing-headroom <= 0)
+		)
+	)
+=>
+	(research ri-capped-ram)
+	(research ri-siege-ram)
+)
+
+(defrule
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(or	(players-building-type-count any-enemy watch-tower >= 2)
+		(current-age == imperial-age)
+	)
+	(food-amount > 400)
+	(nor	(research-available ri-town-watch)
+		(research-available ri-squires)
+	)
+	(or	(unit-type-count-total INFANTRY-GROUP >= 20)
+		(population >= TOP-POPULATION)
+	)
+	(nand	(goal G-BARRACK-UNIT GV-SWORD)
+		(research-available ri-long-swordsman)
+	)
+=>
+	(research ri-tracking)
+)

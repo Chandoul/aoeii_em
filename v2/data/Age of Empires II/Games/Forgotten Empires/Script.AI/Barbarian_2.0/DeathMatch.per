@@ -1,0 +1,4760 @@
+
+; ============== HOUSING ETC.
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-maximum-gold-drop-distance 30)
+	(set-strategic-number sn-maximum-wood-drop-distance 30)
+	(set-strategic-number sn-maximum-food-drop-distance 0)
+	(set-strategic-number sn-maximum-hunt-drop-distance 0)
+	(set-strategic-number sn-maximum-stone-drop-distance 30)
+	(set-strategic-number sn-food-gatherer-percentage 2)
+	(set-strategic-number sn-wood-gatherer-percentage 94)
+	(set-strategic-number sn-gold-gatherer-percentage 2)
+	(set-strategic-number sn-stone-gatherer-percentage 2)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 150)
+=>
+	(set-strategic-number sn-maximum-gold-drop-distance 15)
+	(set-strategic-number sn-maximum-wood-drop-distance 15)
+	(set-strategic-number sn-maximum-food-drop-distance 20)
+	(set-strategic-number sn-maximum-hunt-drop-distance 27)
+	(set-strategic-number sn-maximum-stone-drop-distance 15)
+	(disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(up-get-fact unit-type-count villager-builder gl-my-builder-count)
+	(up-get-fact building-type-count house gl-my-house-count)
+	(set-goal temporary-goal 1); Loops
+	(set-goal gl-required-food 1000)
+)
+
+(defrule
+	(game-time > 900)
+	(unit-type-count-total villager > 60)
+=>
+	(set-goal gl-required-food 400)
+)
+
+(defrule
+	(or 	(cc-players-unit-type-count 0 deep-fish > 20)
+		(or	(cc-players-unit-type-count 0 shore-fish > 25)
+			(and	(cc-players-unit-type-count 0 deep-fish > 9)
+				(cc-players-unit-type-count 0 shore-fish > 9))))
+	(nor	(map-type fortress)
+		(map-type oasis))
+	(building-type-count town-center > 0)
+=>
+	(enable-wall-placement 2)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1000)
+	(chat-to-player my-player-number "Water map - enable docking")
+	(disable-self)
+)
+
+#load-if-defined TEAM-TOGETHER
+(defrule
+	(or	(map-type islands)
+		(map-type team-islands))
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 2001)
+	(set-strategic-number sn-minimum-boat-attack-group-size 1)
+	(set-strategic-number sn-maximum-boat-attack-group-size 1)
+	(set-goal DOCK 2)
+	(set-goal gl-islands-style YES)
+	(set-goal gl-dm-wood-to-sell 0)
+	(set-goal gl-dm-food-to-sell 2500)
+	(set-goal gl-dm-stone-to-sell 1000)
+	(disable-self)
+)
+#else
+(defrule
+	(map-type islands)
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 2001)
+	(set-strategic-number sn-minimum-boat-attack-group-size 1)
+	(set-strategic-number sn-maximum-boat-attack-group-size 1)
+	(set-goal DOCK 2)
+	(set-goal gl-islands-style YES)
+	(set-goal gl-dm-wood-to-sell 0)
+	(set-goal gl-dm-food-to-sell 2500)
+	(set-goal gl-dm-stone-to-sell 1000)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(game-time <= 22)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(wall-completed-percentage 2 == 100)
+	(building-type-count-total stone-wall-line < 1)
+	(building-type-count-total palisade-wall < 1)
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 2001)
+	(set-strategic-number sn-minimum-boat-attack-group-size 1)
+	(set-strategic-number sn-maximum-boat-attack-group-size 1)
+	(set-goal DOCK 2)
+	(chat-to-player my-player-number "Islands, huh?")
+	(set-goal gl-islands-style YES)
+	(set-goal gl-dm-wood-to-sell 0)
+	(set-goal gl-dm-food-to-sell 2500)
+	(set-goal gl-dm-stone-to-sell 1000)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 1)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(or 	(cc-players-unit-type-count 0 deep-fish > high-fish-amount)
+		(or	(cc-players-unit-type-count 0 shore-fish > high-fish-amount)
+			(and	(cc-players-unit-type-count 0 deep-fish > average-fish-amount)
+				(cc-players-unit-type-count 0 shore-fish > average-fish-amount))))
+=>
+	(set-goal gl-dm-wood-to-sell 0)
+	(set-goal gl-dm-food-to-sell 2000)
+	(set-goal DOCK 1)
+	(set-goal gl-heavy-water-map YES)
+	(chat-to-player my-player-number "The map seems to have a lot of water")
+;	(set-strategic-number sn-dock-avoidance-factor -10000)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 1)
+	(game-time < 10)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(nor 	(cc-players-unit-type-count 0 deep-fish > high-fish-amount)
+		(or	(cc-players-unit-type-count 0 shore-fish > high-fish-amount)
+			(and	(cc-players-unit-type-count 0 deep-fish > average-fish-amount)
+				(cc-players-unit-type-count 0 shore-fish > average-fish-amount))))
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 998)
+	(chat-to-player my-player-number "The map doesn't seem to have much water")
+	(disable-self)
+)
+
+(defrule
+	(game-time > 10)
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(or	(players-building-type-count any-enemy dock > 1)
+		(players-building-type-count any-ally dock > 1))
+	(up-compare-goal gl-heavy-water-map != YES)
+=>
+	(set-goal DOCK 1)
+	(set-goal gl-heavy-water-map YES)
+	(chat-to-player my-player-number "Someone is going water - do so too")
+;	(set-strategic-number sn-dock-avoidance-factor -10000)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1000)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+=>
+	(set-strategic-number sn-dock-avoidance-factor -10000)
+	(set-strategic-number sn-dock-proximity-factor -7000)
+	(set-strategic-number sn-dock-placement-mode 1)
+	(disable-self)
+)
+
+(defrule
+	(or	(goal gl-heavy-water-map YES)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(game-time > 300)
+=>
+	(set-strategic-number sn-percent-building-cancellation 20)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+=>
+	(set-goal gl-dm-water-strategy dm-water-plan)
+	(set-strategic-number sn-percent-building-cancellation 85)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-heavy-water-map YES)
+=>
+	(set-goal gl-dm-water-strategy dm-water-plan)
+	(up-modify-goal gl-dm-water-strategy c:+ 3); Galleons -> light galleons etc.
+	(set-strategic-number sn-percent-building-cancellation 85)
+	(disable-self)
+)
+
+(defrule
+	(or	(goal gl-heavy-water-map YES)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(game-time < 300)
+	(strategic-number sn-percent-building-cancellation < 85)
+=>
+	(set-strategic-number sn-percent-building-cancellation 85)
+)
+
+(defrule
+	(starting-age < post-imperial-age)
+	(up-compare-goal gl-dm-food-to-sell > 0)
+=>
+	(set-goal gl-dm-food-to-sell 0)
+)
+
+(defrule
+	(up-pending-objects c: town-center == 0)
+	(strategic-number sn-town-center-placement != 0)
+=>
+	(set-strategic-number sn-town-center-placement 0)
+)
+
+#load-if-not-defined ALL-TECHS-ENABLED
+(defrule
+	(civ-selected hun)
+=>
+	(set-goal gl-my-house-count 9000)
+)
+#end-if
+
+(defrule
+	(game-time > 180)
+=>
+	(set-goal gl-fixed-eco-balancing NO)
+	(set-goal gl-current-age gv-imperial)
+	(enable-timer 8 60)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(set-strategic-number sn-allow-resource-spending 6)
+	(disable-self)
+)
+
+(defrule
+	(true)
+=>
+	(enable-timer 1 0)
+	(enable-timer 7 0)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-home-exploration-time 0)
+	(set-strategic-number sn-mill-max-distance 24)
+	(set-strategic-number sn-enable-training-queue 2)
+	(disable-self)
+)
+
+(defrule
+	(starting-age != post-imperial-age)
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered 37)
+=>
+	(up-retreat-now)
+	(disable-self)
+)
+
+(defrule
+	(soldier-count > 1)
+	(players-building-count target-player > 0)
+	(strategic-number sn-total-number-explorers == 10)
+	(nand	(game-time < 150)
+		(player-valid 3))
+=>
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(chat-to-player my-player-number "Explorers 1")
+	(enable-timer 37 10)
+	(up-reset-scouts)
+	(up-retreat-now)
+	(disable-self)
+)
+
+(defrule
+	(or	(not	(player-in-game any-ally))
+		(game-time > 500))
+	(or	(players-building-type-count target-player town-center > 0)
+		(game-time > 900))
+	(players-building-count any-enemy > 0)
+	(nand	(game-time < 150)
+		(player-valid 3))
+=>
+	(set-strategic-number sn-number-explore-groups 0)
+	(set-strategic-number sn-total-number-explorers 0)
+	(chat-to-player my-player-number "Explorers 0")
+	(up-reset-scouts)
+	(disable-self)
+)
+
+(defrule
+	(or	(and	(game-time > 500)
+			(and	(players-building-count every-enemy == 0)
+				(strategic-number sn-number-explore-groups == 0)))
+		(and	(strategic-number sn-number-explore-groups == dm-high-scouts)
+			(and	(town-under-attack)
+				(soldier-count <= dm-high-scouts))))
+=>
+	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-total-number-explorers 1)
+	(up-reset-scouts)
+)
+
+(defrule
+	(up-compare-goal threat-time > 10000)
+	(game-time < 120)
+	(game-time > 10)
+	(soldier-count > 1)
+	(players-building-type-count target-player town-center == 0)
+=>
+	(set-strategic-number sn-number-explore-groups dm-high-scouts)
+	(set-strategic-number sn-total-number-explorers dm-high-scouts)
+	(up-chat-data-to-player my-player-number "Explorers %d" s: sn-number-explore-groups)
+	(disable-self)
+)
+
+(defrule
+	(soldier-count > 0)
+=>
+	(up-send-scout group-type-land-explore scout-opposite)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 600)
+	(or	(game-time > 900)
+		(starting-age == post-imperial-age))
+=>
+	(up-assign-builders c: castle c: 4)
+	(set-goal gl-dm-food-to-sell 0)
+	(set-goal gl-dm-wood-to-sell 0)
+	(set-goal gl-dm-stone-to-sell 0)
+	(disable-self)
+)
+
+#load-if-not-defined DARK-AGE-START
+#load-if-not-defined FEUDAL-AGE-START
+(defrule
+	(game-time < 180)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(population-headroom > 3)
+	(housing-headroom < 70)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(or	(up-pending-objects c: house < 2)
+		(unit-type-count villager >= dm-housing-villagers1))
+	(or	(up-pending-objects c: house < 4)
+		(unit-type-count villager >= dm-housing-villagers2))
+	(up-pending-objects c: house < 7)
+	(up-can-build 0 c: house)
+=>
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build place-control 0 c: house)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(game-time >= 180)
+		(strategic-number sn-minimum-water-body-size-for-dock != 998))
+	(population-headroom > 3)
+	(housing-headroom < 70)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(or	(up-pending-objects c: house < 2)
+		(unit-type-count villager >= dm-housing-villagers1))
+	(or	(up-pending-objects c: house < 4)
+		(unit-type-count villager >= dm-housing-villagers2))
+	(up-pending-objects c: house < 10)
+	(up-can-build 0 c: house)
+=>
+	(up-build place-normal 0 c: house)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+#end-if
+#end-if
+
+(defrule
+	(starting-age == dark-age)
+	(game-time < 240)
+	(population-headroom > 3)
+	(housing-headroom < 70)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(or	(up-pending-objects c: house < 1)
+		(up-compare-goal gl-current-age == gv-dark-up))
+	(up-pending-objects c: house < 4)
+	(up-can-build 0 c: house)
+=>
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build place-control 0 c: house)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(starting-age == feudal-age)
+	(game-time < 240)
+	(population-headroom > 3)
+	(housing-headroom < 70)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(or	(up-pending-objects c: house < 1)
+		(up-compare-goal gl-current-age == gv-feudal-up))
+	(up-pending-objects c: house < 4)
+	(up-can-build 0 c: house)
+=>
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build place-control 0 c: house)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 998)
+	(starting-age < castle-age)
+	(building-type-count-total market < 1)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: market)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: market)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock != 998)
+	(starting-age < castle-age)
+	(building-type-count-total blacksmith < 1)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: blacksmith)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: blacksmith)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(starting-age < imperial-age)
+	(building-type-count-total siege-workshop < 1)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: siege-workshop)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: siege-workshop)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(starting-age < imperial-age)
+	(building-type-count-total monastery < 1)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: monastery)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: monastery)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(unit-type-count villager g:> gl-my-builder-count)
+	(starting-age != post-imperial-age)
+	(strategic-number sn-minimum-water-body-size-for-dock != 998)
+	(building-type-count-total dock > 3)
+	(building-type-count-total blacksmith < 1)
+=>
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: blacksmith)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(unit-type-count villager g:> gl-my-builder-count)
+	(starting-age < imperial-age)
+	(strategic-number sn-minimum-water-body-size-for-dock != 998)
+	(building-type-count-total dock > 3)
+	(building-type-count-total university < 1)
+=>
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: university)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(starting-age < castle-age)
+	(game-time >= 240)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(population-headroom > 3)
+	(housing-headroom < 70)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(or	(up-pending-objects c: house < 2)
+		(unit-type-count villager > 7))
+	(or	(up-pending-objects c: house < 4)
+		(unit-type-count villager > 10))
+	(up-pending-objects c: house < 10)
+	(up-can-build 0 c: house)
+=>
+	(up-build place-normal 0 c: house)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(goal MILITARY 1)
+		(game-time > 360))
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1999)
+	(unit-type-count villager > 7)
+	(or	(unit-type-count villager > 17)
+		(or	(players-building-type-count target-player castle > 0)
+			(players-building-type-count target-player bombard-tower > 0)))
+	(building-type-count-total siege-workshop < 3)
+=>
+	(up-set-placement-data my-player-number -1 c: 15)
+	(up-build place-control 0 c: siege-workshop)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(starting-age == feudal-age)
+	(game-time <= 600)
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(or	(unit-type-count villager > 20)
+		(or	(game-time > 240)
+			(and	(civ-selected chinese)
+				(building-type-count-total town-center < 2))))
+	(game-time <= 600)
+	(building-type-count-total town-center < 6)
+=>
+	(up-assign-builders c: town-center c: 1)
+	(up-assign-builders c: unbuilt-town-center c: 1)
+	(up-modify-sn sn-camp-max-distance c:= 30)
+	(set-strategic-number sn-town-center-placement lumber-camp)
+	(up-build place-normal 0 c: town-center)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(unit-type-count villager > 20)
+		(game-time > 300))
+	(game-time <= 600)
+	(building-type-count-total town-center < 6)
+=>
+	(set-strategic-number sn-placement-zone-size 20)
+	(up-assign-builders c: town-center c: 1)
+	(up-assign-builders c: unbuilt-town-center c: 1)
+	(up-modify-sn sn-camp-max-distance c:= 30)
+	(set-strategic-number sn-town-center-placement mining-camp)
+	(up-build place-normal 0 c: town-center)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(unit-type-count villager > 50)
+		(game-time > 600))
+	(building-type-count-total town-center < 6)
+=>
+	(set-strategic-number sn-placement-zone-size 20)
+	(up-assign-builders c: town-center c: 4)
+	(up-assign-builders c: unbuilt-town-center c: 4)
+	(set-strategic-number sn-town-center-placement 0)
+	(up-build place-normal 0 c: town-center)
+)
+
+(defrule
+	(unit-type-count villager > 7)
+	(game-time > 240)
+	(or	(unit-type-count villager > 12)
+		(or	(civ-selected hun)
+			(civ-selected saracen)))
+	(building-type-count-total market < 1)
+=>
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: market)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(and	(goal gl-heavy-water-map YES)
+			(building-type-count-total dock < 9))
+		(strategic-number sn-minimum-water-body-size-for-dock >= 1999))
+	(unit-type-count villager g:> gl-my-builder-count)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(building-type-count-total dock < 20)
+	(can-build dock)
+=>
+	(build dock)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(stone-amount > 1500)
+	(building-type-count-total dock > 13)
+	(or	(not	(building-available bombard-tower))
+		(gold-amount < 1000))
+	(building-type-count-total watch-tower < 10)
+	(can-build watch-tower)
+=>
+	(up-set-placement-data my-player-number dock c: 1)
+	(up-build place-control 0 c: watch-tower)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(stone-amount > 1500)
+	(gold-amount > 1000)
+	(building-type-count-total dock > 13)
+	(building-type-count-total bombard-tower < 10)
+	(can-build bombard-tower)
+=>
+	(up-set-placement-data my-player-number dock c: 1)
+	(up-build place-control 0 c: bombard-tower)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+#load-if-not-defined UP-4-PLAYER-GAME
+(defrule
+	(game-time > 240)
+	(or	(game-time > 300)
+		(or	(civ-selected hun)
+			(or	(civ-selected aztec)
+				(civ-selected chinese))))
+	(or	(not	(player-valid any-ally))
+		(goal POSITION POCKET))
+	(building-type-count-total monastery < 1)
+=>
+	(up-set-placement-data my-player-number -1 c: -15)
+	(up-build dm-placement-style 0 c: monastery)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+#else
+(defrule
+	(game-time > 240)
+	(or	(game-time > 300)
+		(or	(civ-selected hun)
+			(or	(civ-selected aztec)
+				(civ-selected chinese))))
+	(building-type-count-total monastery < 1)
+=>
+	(up-set-placement-data my-player-number -1 c: -15)
+	(up-build dm-placement-style 0 c: monastery)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+#end-if
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(building-type-count-total barracks > 1)
+	(goal gl-strategy dm-champ-turtle)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(nor	(players-civ any-enemy aztec)
+		(players-civ any-enemy viking))
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1999)
+	(building-type-count-total monastery < 4)
+=>
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: monastery)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+#end-if
+
+(defrule
+	(gold-amount >= 1000)
+	(or	(food-amount < 300)
+		(and	(gold-amount >= 2000)
+			(commodity-buying-price food <= 90)))
+	(food-amount < 1000)
+	(can-buy-commodity food)
+	(commodity-buying-price food <= 130)
+=>
+	(buy-commodity food)
+	(chat-to-player my-player-number "Buy food")
+	(set-goal gl-dm-food-to-sell 0)
+)
+
+(defrule
+	(gold-amount >= 1000)
+	(or	(wood-amount < 300)
+		(and	(gold-amount >= 2000)
+			(commodity-buying-price wood <= 90)))
+	(wood-amount < 1000)
+	(can-buy-commodity wood)
+	(commodity-buying-price wood <= 130)
+=>
+	(buy-commodity wood)
+	(chat-to-player my-player-number "Buy wood")
+	(set-goal gl-dm-wood-to-sell 0)
+)
+
+(defrule
+	(up-compare-goal CASTLE != 0)
+	(gold-amount > 2000)
+	(or	(building-type-count-total castle < 1)
+		(and	(gold-amount > 3000)
+			(goal gl-dm-allow-UU-training 1)))
+	(building-type-count-total castle < 4)
+	(commodity-buying-price stone < 250)
+	(stone-amount < castle-stone)
+	(can-buy-commodity stone)
+=>
+	(buy-commodity stone)
+	(chat-to-player my-player-number "Buy stone for castle")
+	(set-goal gl-dm-stone-to-sell 0)
+)
+
+(defrule
+	(up-compare-goal gl-dm-food-to-sell >= 1000)
+	(commodity-selling-price food > 45)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(up-modify-goal gl-dm-food-to-sell c:- 1000)
+)
+
+(defrule
+	(or	(and	(up-compare-goal gl-dm-food-to-sell < 1000)
+			(up-compare-goal gl-dm-food-to-sell >= 500))
+		(and	(food-amount > 1000)
+			(gold-amount < 300)))
+	(commodity-selling-price food > 45)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(up-modify-goal gl-dm-food-to-sell c:- 500)
+)
+
+(defrule
+	(food-amount > 3500)
+	(or	(gold-amount < 500)
+		(food-amount > 5200))
+	(gold-amount < 1200)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(sell-commodity food)
+	(up-modify-goal gl-dm-food-to-sell c:- 900)
+)
+
+(defrule
+	(game-time < 900)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(up-compare-goal gl-dm-wood-to-sell >= 1000)
+	(commodity-selling-price wood > 45)
+	(can-sell-commodity wood)
+=>
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(up-modify-goal gl-dm-wood-to-sell c:- 1000)
+)
+
+(defrule
+	(up-compare-goal gl-dm-wood-to-sell >= 500)
+	(up-compare-goal gl-dm-wood-to-sell < 1000)
+	(commodity-selling-price wood > 45)
+	(can-sell-commodity wood)
+=>
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(up-modify-goal gl-dm-wood-to-sell c:- 500)
+)
+
+(defrule
+	(dropsite-min-distance wood < 5) 
+	(wood-amount > 4500)
+	(gold-amount < 500)
+	(can-sell-commodity wood)
+=>
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(sell-commodity wood)
+	(up-modify-goal gl-dm-wood-to-sell c:- 1000)
+)
+
+(defrule
+	(up-compare-goal gl-dm-stone-to-sell >= 1000)
+	(commodity-selling-price stone > 60)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(up-modify-goal gl-dm-stone-to-sell c:- 1000)
+)
+
+(defrule
+	(up-compare-goal gl-dm-stone-to-sell < 1000)
+	(up-compare-goal gl-dm-stone-to-sell >= 500)
+	(commodity-selling-price stone > 60)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(up-modify-goal gl-dm-stone-to-sell c:- 500)
+)
+
+#load-if-not-defined POST-IMPERIAL-AGE-START
+(defrule
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(starting-age < castle-age)
+	(building-type-count-total archery-range < 1)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: archery-range)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: archery-range)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(starting-age < castle-age)
+	(building-type-count-total market < 1)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: market)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: market)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(unit-type-count villager g:> gl-my-builder-count)
+	(or	(game-time > 100)
+		(starting-age == feudal-age))
+	(or	(building-type-count-total blacksmith < 1)
+		(game-time < 600))
+	(building-type-count-total blacksmith < 2)
+=>
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: blacksmith)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(game-time > 200)
+		(starting-age == castle-age))
+	(unit-type-count villager g:> gl-my-builder-count)
+	(building-type-count-total university < 1)
+=>
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: university)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(can-research ri-conscription)
+=>
+	(research ri-conscription)
+)
+
+(defrule
+	(or	(players-unit-type-count any-enemy monk > 4)
+		(players-unit-type-count any-enemy missionary > 4))
+	(or	(can-research ri-heresy)
+		(can-research ri-faith))
+=>
+	(research ri-heresy)
+	(research ri-faith)
+)
+
+(defrule
+	(unit-type-count-total galley-line > 0)
+=>
+	(research ri-war-galley)
+	(research ri-galleon)
+	(research ri-careening)
+	(research ri-dry-dock)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(unit-type-count-total fire-ship-line > 0)
+=>
+	(research ri-fast-fire-ship)
+	(research ri-careening)
+	(research ri-dry-dock)
+)
+
+(defrule
+	(unit-type-count-total transport-ship > 0)
+=>
+	(research ri-careening)
+	(research ri-dry-dock)
+)
+
+(defrule
+	(goal MILITARY 1)
+	(or	(warboat-count > 12)
+		(players-building-type-count any-enemy dock == 0))
+	(strategic-number sn-minimum-water-body-size-for-dock != 998)
+	(or	(can-research ri-cannon-galleon)
+		(or	(can-research ri-deck-guns)
+			(can-research ri-chemistry)))
+=>
+	(research ri-chemistry)
+	(research ri-cannon-galleon)
+	(research ri-deck-guns)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+=>
+	(up-jump-rule 40)
+)
+
+(defrule
+	(unit-type-count-total militiaman-line > 0)
+=>
+	(research ri-man-at-arms)
+	(research ri-long-swordsman)
+	(research ri-two-handed-swordsman)
+	(research ri-champion)
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(unit-type-count-total scout-cavalry-line > 1)
+=>
+	(research ri-light-cavalry)
+	(research ri-hussar)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(unit-type-count-total knight-line > 0)
+=>
+	(research ri-cavalier)
+	(research ri-paladin)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(unit-type-count-total camel-line > 0)
+=>
+	(research ri-heavy-camel)
+	(research ri-imperial-camel)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected byzantine)
+	(unit-type-count-total cataphract-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research my-unique-research)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected slavic)
+	(unit-type-count-total boyar > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected persian)
+	(unit-type-count-total war-elephant-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research my-unique-research)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected saracen)
+	(unit-type-count-total mameluke-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research my-unique-research)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected magyar)
+	(unit-type-count-total my-UU > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research my-unique-research)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(unit-type-count-total cavalry-archer-line > 0)
+=>
+	(research ri-heavy-cavalry-archer)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-parthian-tactics)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(civ-selected mongol)
+	(unit-type-count-total mangudai-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-parthian-tactics)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(civ-selected indian)
+	(unit-type-count-total elephant-archer > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-parthian-tactics)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(civ-selected korean)
+	(unit-type-count-total war-wagon-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(civ-selected briton)
+	(unit-type-count-total longbowman-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(civ-selected chinese)
+	(unit-type-count-total chu-ko-nu-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(civ-selected mayan)
+	(unit-type-count-total plumed-archer-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(civ-selected italian)
+	(unit-type-count-total genoese-crossbowman > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(unit-type-count-total archer-line > 0)
+=>
+	(research ri-crossbow)
+	(research ri-arbalest)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(unit-type-count-total skirmisher-line > 0)
+=>
+	(research ri-elite-skirmisher)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-fletching)
+	(research ri-bodkin-arrow)
+	(research ri-bracer)
+	(research ri-thumb-ring)
+	(research ri-ballistics)
+	(research ri-chemistry)
+)
+
+(defrule
+	(unit-type-count-total hand-cannoneer > 0)
+=>
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+)
+
+(defrule
+	(civ-selected turkish)
+	(unit-type-count-total janissary-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+)
+
+(defrule
+	(civ-selected spanish)
+	(unit-type-count-total conquistador-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-padded-archer-armor)
+	(research ri-leather-archer-armor)
+	(research ri-ring-archer-armor)
+	(research ri-bloodlines)
+	(research ri-husbandry)
+)
+
+(defrule
+	(unit-type-count-total condottiero > 0)
+	(or	(civ-selected italian)
+		(players-civ any-ally italian))
+=>
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(unit-type-count-total eagle-warrior-line > 1)
+=>
+	(research ri-eagle-warrior)
+	(research ri-elite-eagle-warrior)
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(unit-type-count-total spearman-line > 0)
+=>
+	(research ri-pikeman)
+	(research ri-halberdier)
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected gothic)
+	(unit-type-count-total huskarl-set > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected aztec)
+	(unit-type-count-total jaguar-man-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected japanese)
+	(unit-type-count-total samurai-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected viking)
+	(unit-type-count-total berserk-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected celtic)
+	(unit-type-count-total woad-raider-line > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected incan)
+	(unit-type-count-total kamayuk > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(civ-selected teutonic)
+	(unit-type-count-total kamayuk > 0)
+=>
+	(research my-unique-unit-upgrade)
+	(research ri-squires)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+	(research ri-plate-mail)
+	(research ri-forging)
+	(research ri-iron-casting)
+	(research ri-blast-furnace)
+)
+
+(defrule
+	(unit-type-count-total battering-ram-line > 0)
+=>
+	(research ri-capped-ram)
+	(research ri-siege-ram)
+	(research ri-siege-engineers)
+)
+
+(defrule
+	(or	(research-available ri-heavy-scorpion)
+		(unit-type-count-total scorpion-line > 0))
+=>
+	(research ri-heavy-scorpion)
+	(research ri-chemistry)
+	(research ri-siege-engineers)
+)
+
+(defrule
+	(or	(unit-type-count-total trebuchet-set > 2)
+		(unit-type-count-total bombard-cannon > 2))
+=>
+	(research ri-siege-engineers)
+)
+
+(defrule
+	(unit-type-count-total monk > 4)
+	(or	(players-unit-type-count any-enemy monk > 3)
+		(players-unit-type-count any-enemy missionary > 3))
+	(can-research ri-atonement)
+=>
+	(research ri-atonement)
+)
+
+(defrule
+	(or	(players-unit-type-count focus-player scorpion-line > 3)
+		(or	(players-unit-type-count focus-player mangonel-line > 1)
+			(players-unit-type-count focus-player bombard-cannon > 0)))
+	(unit-type-count-total monk > 4)
+	(can-research ri-redemption)
+=>
+	(research ri-redemption)
+)
+
+(defrule
+	(unit-type-count-total monk > 4)
+=>
+	(research ri-sanctity)
+	(research ri-fervor)
+	(research ri-theocracy)
+	(research ri-illumination)
+	(research ri-block-printing)
+)
+
+(defrule
+	(true)
+=>
+	(research ri-man-at-arms)
+	(research ri-long-swordsman)
+	(research ri-two-handed-swordsman)
+	(research ri-champion)
+	(research ri-pikeman)
+	(research ri-halberdier)
+	(research ri-elite-skirmisher)
+	(research ri-light-cavalry)
+	(research ri-hussar)
+	(research ri-chemistry)
+	(research ri-anarchy)
+	(research ri-perfusion)
+)
+
+(defrule
+	(up-compare-const dm-pala-in-tech-tree == 1); Civ with a paladin worth researching
+=>
+	(research ri-cavalier)
+	(research ri-paladin)
+)
+
+(defrule
+	(current-age < imperial-age)
+=>
+	(research feudal-age)
+	(research castle-age)
+	(research imperial-age)
+)
+
+(defrule
+	(true)
+=>
+	(research ri-shipwright)
+	(research ri-double-bit-axe)
+	(research ri-bow-saw)
+	(research ri-two-man-saw)
+	(research ri-horse-collar)
+	(research ri-heavy-plow)
+	(research ri-crop-rotation)
+	(research ri-gold-mining)
+	(research ri-gold-shaft-mining)
+	(research ri-stone-mining)
+	(research ri-stone-shaft-mining)
+	(research ri-guilds)
+)
+
+(defrule
+	(current-age == imperial-age)
+=>
+	(research ri-wheel-barrow)
+	(research ri-hand-cart)
+	(research ri-town-watch)
+)
+
+(defrule
+	(players-building-type-count any-ally market > 0)
+=>
+	(research ri-cartography)
+	(research ri-caravan)
+)
+
+(defrule
+	(player-in-game any-ally)
+	(game-time > 600)
+	(or	(can-research ri-banking)
+		(can-research ri-coinage))
+=>
+	(research ri-coinage)
+	(research ri-banking)
+	(enable-timer 4 34)
+)
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(strategic-number sn-allow-resource-spending > 1)
+	(research-completed ri-bodkin-arrow)
+	(nand	(current-age == imperial-age)
+		(research-available ri-bracer))
+	(unit-type-count-total skirmisher-line > 10)
+	(can-research ri-atlatl)
+=>
+	(research ri-atlatl)
+)
+
+(defrule
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+#end-if
+#load-if-defined BRITON-CIV
+(defrule
+	(civ-selected briton)
+	(research-completed ri-bracer)
+	(research-completed ri-chemistry)
+	(strategic-number sn-allow-resource-spending > 5)
+	(or	(unit-type-count-total arbalest > 5)
+		(or	(unit-type-count-total elite-longbowman > 5)
+			(unit-type-count-total elite-skirmisher > 5)))
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(strategic-number sn-allow-resource-spending > 5)
+	(soldier-count > 50)
+	(unit-type-count-total trebuchet-set > 2)
+	(can-research ri-war-wolf)
+=>
+	(research ri-war-wolf)
+)
+#end-if
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(civ-selected byzantine)
+	(strategic-number sn-allow-resource-spending > 2)
+	(research-completed my-unique-unit-upgrade)
+	(or	(can-research my-unique-research)
+		(or	(can-research ri-scale-barding)
+			(or	(can-research ri-chain-barding)
+				(can-research ri-plate-barding))))
+=>
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+	(research ri-plate-barding)
+	(research my-unique-research)
+)
+
+(defrule
+	(strategic-number sn-allow-resource-spending > 1)
+	(nand	(current-age == imperial-age)
+		(research-available ri-fast-fire-ship))
+	(unit-type-count-total fire-ship-line > 7)
+	(can-research ri-greek-fire)
+=>
+	(research ri-greek-fire)
+)
+#end-if
+#load-if-defined CELTIC-CIV
+(defrule
+	(civ-selected celtic)
+	(strategic-number sn-allow-resource-spending > 4)
+	(or	(unit-type-count-total battering-ram-line > 3)
+		(or	(unit-type-count-total mangonel-line > 4)
+			(and	(unit-type-count-total scorpion-line > 5)
+				(not	(research-available ri-heavy-scorpion)))))
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(strategic-number sn-allow-resource-spending > 1)
+	(building-type-count castle > 1)
+	(can-research ri-stronghold)
+=>
+	(research ri-stronghold)
+)
+#end-if
+#load-if-defined CHINESE-CIV
+(defrule
+	(civ-selected chinese)
+	(strategic-number sn-allow-resource-spending > 0)
+	(or	(unit-type-count-total chu-ko-nu-line > 4)
+		(or	(and	(population > 190)
+				(not	(goal CASTLE 0)))
+			(unit-type-count-total scorpion > 4)))
+	(can-research-with-escrow my-unique-research)
+=>
+	(set-escrow-percentage wood 0)
+	(set-escrow-percentage gold 0)
+	(release-escrow wood)
+	(release-escrow gold)
+	(research my-unique-research)
+)
+#end-if
+#load-if-defined FRANKISH-CIV
+(defrule
+	(strategic-number sn-allow-resource-spending > 2)
+	(unit-type-count-total throwing-axeman-line > 4)
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(strategic-number sn-allow-resource-spending > 5)
+	(research-completed ri-paladin)
+	(can-research ri-chivalry)
+=>
+	(research ri-chivalry)
+)
+#end-if
+#load-if-defined HUN-CIV
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(or	(enemy-captured-relics)
+		(players-building-type-count any-enemy wonder > 0))
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+#end-if
+#end-if
+#load-if-defined INCAN-CIV
+(defrule
+	(or	(unit-type-count-total elite-eagle-warrior > 14)
+		(or	(unit-type-count-total my-elite-UU > 10)
+			(unit-type-count-total slinger > 17)))
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(strategic-number sn-allow-resource-spending > 1)
+	(research-completed ri-bodkin-arrow)
+	(nand	(current-age == imperial-age)
+		(research-available ri-bracer))
+	(unit-type-count-total skirmisher-line > 10)
+	(can-research ri-andean-sling)
+=>
+	(research ri-andean-sling)
+)
+#end-if
+#load-if-defined INDIAN-CIV
+(defrule
+	(strategic-number sn-allow-resource-spending > 2)
+	(or	(unit-type-count-total hand-cannoneer > 12)
+		(strategic-number sn-allow-resource-spending > 5))
+	(or	(unit-type-count-total hand-cannoneer > 6)
+		(and	(gold-amount > 1000)
+			(goal gl-advanced-archery heavy-cannoneers)))
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(strategic-number sn-allow-resource-spending > 1)
+	(unit-type-count-total villager > 70)
+	(can-research ri-sultans)
+=>
+	(research ri-sultans)
+)
+#end-if
+#load-if-defined ITALIAN-CIV
+(defrule
+	(soldier-count > 40)
+	(strategic-number sn-allow-resource-spending > 2)
+	(players-building-type-count any-ally market > 0)
+	(can-research-with-escrow my-unique-research)
+=>
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(release-escrow food)
+	(release-escrow gold)
+	(research my-unique-research)
+)
+
+(defrule
+	(strategic-number sn-allow-resource-spending > 1)
+	(research-completed ri-leather-archer-armor)
+	(or	(unit-type-count-total my-UU > 15)
+		(unit-type-count-total my-elite-UU > 7))
+	(not	(research-available my-unique-unit-upgrade))
+	(can-research ri-pavise)
+=>
+	(research ri-pavise)
+)
+#end-if
+#load-if-defined JAPANESE-CIV
+(defrule
+	(civ-selected japanese)
+	(research-completed my-unique-unit-upgrade)
+	(gold-amount > 900)
+	(wood-amount > 1500)
+	(strategic-number sn-allow-resource-spending > 5)
+	(unit-type-count-total trebuchet-set > 0)
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+#end-if
+#load-if-defined KOREAN-CIV
+(defrule
+	(civ-selected korean)
+	(strategic-number sn-allow-resource-spending > 5)
+	(unit-type-count-total mangonel-line > 3)
+	(soldier-count > 40)
+	(research-completed ri-siege-onager)
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(strategic-number sn-allow-resource-spending > 1)
+	(or	(unit-type-count-total turtle-ship-line > 9)
+		(research-completed ri-elite-turtle-ship))
+	(unit-type-count-total turtle-ship-line > 2)
+	(can-research ri-panokseon)
+=>
+	(research ri-panokseon)
+)
+#end-if
+#load-if-defined MAGYAR-CIV
+(defrule
+	(unit-type-count-total cavalry-archer-line > 0)
+	(research-completed ri-heavy-cavalry-archer)
+	(strategic-number sn-allow-resource-spending > 5)
+	(can-research-with-escrow my-unique-research)
+=>
+	(set-escrow-percentage wood 0)
+	(set-escrow-percentage gold 0)
+	(release-escrow wood)
+	(release-escrow gold)
+	(research my-unique-research)
+)
+
+(defrule
+	(or	(strategic-number sn-allow-resource-spending > 1)
+		(unit-type-count-total villager > 70))
+	(strategic-number sn-allow-resource-spending > 0)
+	(not	(goal CASTLE 0))
+	(can-research-with-escrow ri-mercenaries)
+=>
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-mercenaries)
+)
+#end-if
+#load-if-defined MAYAN-CIV
+(defrule
+	(unit-type-count-total eagle-warrior-line > 1)
+	(up-research-status c: ri-elite-eagle-warrior >= research-pending)
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+#end-if
+#load-if-defined MONGOL-CIV
+(defrule
+	(civ-selected mongol)
+	(or	(goal MILITARY 1)
+		(strategic-number sn-allow-resource-spending > 5))
+	(or	(unit-type-count-total battering-ram-line > 3)
+		(or	(unit-type-count-total mangonel-line > 4)
+			(and	(unit-type-count-total scorpion-line > 5)
+				(not	(research-available ri-heavy-scorpion)))))
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(civ-selected mongol)
+	(can-research ri-nomads)
+=>
+	(research ri-nomads)
+)
+#end-if
+#load-if-defined PERSIAN-CIV
+(defrule
+	(or	(not	(goal MILITARY 1))
+		(strategic-number sn-allow-resource-spending > 5))
+	(strategic-number sn-allow-resource-spending > 3)
+	(game-time > 1500)
+	(building-type-count-total castle > 3)
+	(can-research ri-boiling-oil)
+=>
+	(research ri-boiling-oil)
+)
+#end-if
+#load-if-defined SARACEN-CIV
+(defrule
+	(or	(and	(unit-type-count-total camel-line > 4)
+			(research-completed ri-heavy-camel))
+		(and	(unit-type-count-total mameluke-line > 4)
+			(research-completed my-unique-unit-upgrade)))
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(or	(unit-type-count-total monk-set > 4)
+		(or	(goal gl-strategy fi-monk-rush)
+			(and	(strategic-number sn-allow-resource-spending > 5)
+				(unit-type-count-total trade-cart > 20))))
+	(can-research ri-madrasah)
+=>
+	(research ri-madrasah)
+)
+#end-if
+#load-if-defined SLAVIC-CIV
+(defrule
+	(can-research-with-escrow my-unique-research)
+=>
+	(set-escrow-percentage wood 0)
+	(set-escrow-percentage gold 0)
+	(release-escrow wood)
+	(release-escrow gold)
+	(research my-unique-research)
+)
+
+(defrule
+	(or	(unit-type-count-total monk-set > 4)
+		(or	(goal gl-strategy fi-monk-rush)
+			(and	(strategic-number sn-allow-resource-spending > 5)
+				(unit-type-count-total trade-cart > 20))))
+	(can-research-with-escrow ri-orthodoxy)
+=>
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-orthodoxy)
+)
+#end-if
+#load-if-defined SPANISH-CIV
+(defrule
+	(civ-selected spanish)
+	(current-age-time > 60)
+	(strategic-number sn-allow-resource-spending > 0)
+	(or	(soldier-count > 50)
+		(town-under-attack))
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(or	(unit-type-count-total monk-set > 4)
+		(or	(goal gl-strategy fi-monk-rush)
+			(unit-type-count-total missionary > 4)))
+	(research-completed ri-redemption)
+	(can-research-with-escrow ri-inquisition)
+=>
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-inquisition)
+)
+#end-if
+#load-if-defined TEUTONIC-CIV
+(defrule
+	(food-amount > 1000)
+	(or	(research-completed ri-paladin)
+		(and	(goal gl-advanced-cavalry 0)
+			(unit-type-count-total knight-line < 5)))
+	(building-type-count-total castle > 3)
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+
+(defrule
+	(or	(research-completed ri-paladin)
+		(and	(goal gl-advanced-cavalry 0)
+			(unit-type-count-total knight-line < 5)))
+	(can-research ri-ironclad)
+=>
+	(research ri-ironclad)
+)
+#end-if
+#load-if-defined TURKISH-CIV
+(defrule
+	(or	(building-type-count-total bombard-tower > 3)
+		(or	(unit-type-count-total bombard-cannon > 3)
+			(or	(unit-type-count-total cannon-galleon-line > 3)
+				(gold-amount > 3000))))
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+#end-if
+#load-if-defined VIKING-CIV
+(defrule
+	(unit-type-count-total berserk-line > 4)
+	(or	(players-unit-type-count any-enemy knight-line > 6)
+		(or	(players-unit-type-count any-enemy scout-cavalry-line > 9)
+			(or	(players-unit-type-count any-enemy tarkan-line > 6)
+				(or	(players-unit-type-count any-enemy cavalry-archer-line > 6)
+					(food-amount > 1400)))))
+	(research-completed my-unique-unit-upgrade)
+	(can-research ri-chieftains)
+=>
+	(research ri-chieftains)
+)
+
+(defrule
+	(strategic-number sn-allow-resource-spending > 5)
+	(unit-type-count-total berserk-line > 4)
+	(research-completed my-unique-unit-upgrade)
+	(can-research my-unique-research)
+=>
+	(research my-unique-research)
+)
+#end-if
+
+(defrule
+	(or	(stone-amount >= 900)
+		(building-type-count-total town-center > 5))
+	(building-type-count-total town-center > 2)
+	(unit-type-count villager > 60)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: castle)
+=>
+	(up-set-placement-data my-player-number -1 c: 10)
+	(set-strategic-number sn-placement-zone-size 5)
+	(up-build place-control 0 c: castle)
+	(chat-to-player my-player-number "Castle!")
+	(set-goal gl-castle-placed YES)
+	(set-goal gl-castle-control YES)
+	(set-goal gl-defensive-castle-placed YES)
+	(set-goal castle-dropped-timer 20)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+#load-if-not-defined IMPERIAL-AGE-START
+#load-if-not-defined CASTLE-AGE-START
+(defrule
+	(building-type-count-total mill < 1)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: mill)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: mill)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(building-type-count-total archery-range < 5)
+	(starting-age < castle-age)
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: archery-range)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: archery-range)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(building-type-count-total stable < 5)
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: stable)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: stable)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(building-type-count-total archery-range < 5)
+	(starting-age == castle-age)
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: archery-range)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: archery-range)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(building-type-count-total barracks < 12)
+		(current-age == dark-age))
+	(or	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+			(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+		(building-type-count-total barracks < 1))
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: barracks)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: barracks)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(unit-type-count-total battering-ram-line < 6)
+	(players-building-type-count target-player castle > 0)
+	(gold-amount > 1000)
+	(game-time < 600)
+	(can-train battering-ram-line)
+=>
+	(up-train 0 c: battering-ram-line)
+)
+
+(defrule
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(food-amount > 1500)
+	(game-time < 600)
+	(gold-amount > 1200)
+	(can-train knight-line)
+=>
+	(up-train 0 c: knight-line)
+)
+
+(defrule
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(food-amount > 2000)
+	(game-time < 600)
+	(gold-amount > 1500)
+	(can-train militiaman-line)
+=>
+	(up-train 0 c: militiaman-line)
+)
+
+(defrule
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(gold-amount > 1000)
+	(or	(nor	(civ-selected spanish)
+			(civ-selected hun))
+		(current-age < castle-age))
+	(game-time < 600)
+	(gold-amount > 1200)
+	(can-train archer-line)
+=>
+	(up-train 0 c: archer-line)
+)
+
+(defrule
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(gold-amount > 1000)
+	(or	(civ-selected spanish)
+		(civ-selected hun))
+	(game-time < 600)
+	(gold-amount > 1200)
+	(can-train cavalry-archer-line)
+=>
+	(up-train 0 c: cavalry-archer-line)
+)
+
+(defrule
+	(goal gl-current-age gv-dark)
+	(can-train fishing-ship)
+=>
+	(up-train 0 c: fishing-ship)
+)
+#end-if
+(defrule
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(nand	(players-building-type-count target-player castle > 0)
+		(unit-type-count-total battering-ram-line < 3))
+	(gold-amount > 1000)
+	(current-age < imperial-age)
+	(game-time < 600)
+	(gold-amount > 1200)
+	(can-train scorpion-line)
+=>
+	(up-train 0 c: scorpion-line)
+)
+
+(defrule
+	(building-type-count-total archery-range < 1)
+	(game-time > 600)
+	(not	(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: archery-range)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: archery-range)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(building-type-count-total barracks < 1)
+	(game-time > 600)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: barracks)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: barracks)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+#end-if
+#end-if
+
+(defrule
+	(nor	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(or	(stone-amount >= 900)
+		(building-type-count-total town-center > 5))
+	(building-type-count-total town-center > 2)
+	(unit-type-count villager > 60)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: castle)
+=>
+	(up-set-placement-data my-player-number -1 c: 10)
+	(set-strategic-number sn-placement-zone-size 5)
+	(up-build place-control 0 c: castle)
+	(chat-to-player my-player-number "Castle!")
+	(set-goal gl-castle-placed YES)
+	(set-goal gl-castle-control YES)
+	(set-goal gl-defensive-castle-placed YES)
+	(set-goal castle-dropped-timer 20)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(game-time < 600)
+		(or	(population < 160)
+			(or	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+				(warboat-count < 50))))
+	(or	(and	(game-time < 2)
+			(strategic-number sn-minimum-water-body-size-for-dock == 1000))
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+=>
+	(up-jump-rule 19)
+)
+
+(defrule
+	(goal MILITARY 1)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(building-type-count-total town-center > 5)
+	(unit-type-count villager > 65)
+	(game-time > 1200)
+	(building-type-count-total castle > 1)
+	(players-building-count any-enemy > 0)
+	(can-build castle)
+=>
+	(up-build place-forward 0 c: castle)
+	(chat-to-player my-player-number "Forward castle!")
+	(set-strategic-number sn-stone-gatherer-percentage 6)
+	(set-goal gl-castle-placed placed-forward)
+	(set-goal gl-castle-control placed-forward)
+	(set-goal castle-dropped-timer 60)
+)
+
+(defrule
+	(or	(stone-amount >= 900)
+		(building-type-count-total town-center > 5))
+	(building-type-count-total town-center > 2)
+	(unit-type-count villager > 65)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: castle)
+=>
+	(up-set-placement-data my-player-number -1 c: 10)
+	(set-strategic-number sn-placement-zone-size 5)
+	(up-build place-control 0 c: castle)
+	(chat-to-player my-player-number "Castle!")
+	(set-goal gl-castle-placed YES)
+	(set-goal gl-castle-control YES)
+	(set-goal gl-defensive-castle-placed YES)
+	(set-goal castle-dropped-timer 20)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(game-time > 60)
+	(stone-amount >= 1300)
+	(or	(game-time > 360)
+		(goal gl-dm-allow-UU-training 1))
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: castle)
+=>
+	(up-set-placement-data my-player-number -1 c: 10)
+	(set-strategic-number sn-placement-zone-size 5)
+	(set-goal gl-defensive-castle-placed YES)
+	(up-build place-normal 0 c: castle)
+	(chat-to-player my-player-number "Castle!")
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(goal gl-strategy dm-turtling)
+		(goal gl-strategy dm-UU))
+	(building-type-count-total castle < 1)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(up-can-build 0 c: castle)
+=>
+	(up-set-placement-data my-player-number -1 c: 7)
+	(set-strategic-number sn-placement-zone-size 5)
+	(set-goal gl-defensive-castle-placed YES)
+	(up-build place-normal 0 c: castle)
+	(chat-to-player my-player-number "Castle!")
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+; ============== EARLY BUILDINGS ETC.
+
+(defrule
+	(game-time > 1)
+	(strategic-number sn-minimum-water-body-size-for-dock != 998)
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(building-type-count-total stable < 2)
+	(building-type-count-total stable g:< gl-dm-stable-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+;	(building-type-count-total stable g:<= gl-my-house-count)
+	(up-can-build 0 c: stable)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: stable)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(building-type-count-total archery-range < 2)
+	(building-type-count-total archery-range g:< gl-dm-range-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+;	(building-type-count-total archery-range g:<= gl-my-house-count)
+	(up-can-build 0 c: archery-range)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: archery-range)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(building-type-count-total barracks < 2)
+	(building-type-count-total barracks g:< gl-dm-barracks-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+;	(building-type-count-total barracks g:<= gl-my-house-count)
+	(up-can-build 0 c: barracks)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: barracks)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(building-type-count-total siege-workshop < 1)
+	(building-type-count-total siege-workshop g:< gl-dm-workshop-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+;	(building-type-count-total siege-workshop g:<= gl-my-house-count)
+	(up-can-build 0 c: siege-workshop)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: siege-workshop)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(game-time >= 90)
+		(strategic-number sn-minimum-water-body-size-for-dock != 998))
+	(not	(goal MILITARY 1))
+	(building-type-count-total stable g:< gl-dm-stable-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(building-type-count-total stable g:<= gl-my-house-count)
+	(up-can-build 0 c: stable)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-build place-normal 0 c: stable)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(game-time >= 90)
+		(strategic-number sn-minimum-water-body-size-for-dock != 998))
+	(not	(goal MILITARY 1))
+	(building-type-count-total barracks g:< gl-dm-barracks-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(building-type-count-total barracks g:<= gl-my-house-count)
+	(up-can-build 0 c: barracks)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-build place-normal 0 c: barracks)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(game-time >= 90)
+		(strategic-number sn-minimum-water-body-size-for-dock != 998))
+	(not	(goal MILITARY 1))
+	(building-type-count-total archery-range g:< gl-dm-range-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(building-type-count-total archery-range g:<= gl-my-house-count)
+	(up-can-build 0 c: archery-range)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-build place-normal 0 c: archery-range)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(game-time < 90)
+		(goal MILITARY 1))
+	(building-type-count-total stable g:< gl-dm-stable-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+;	(building-type-count-total stable g:<= gl-my-house-count)
+	(up-can-build 0 c: stable)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: stable)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(game-time < 90)
+		(goal MILITARY 1))
+	(building-type-count-total barracks g:< gl-dm-barracks-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+;	(building-type-count-total barracks g:<= gl-my-house-count)
+	(up-can-build 0 c: barracks)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: barracks)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(or	(game-time < 90)
+		(goal MILITARY 1))
+	(building-type-count-total archery-range g:< gl-dm-range-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+;	(building-type-count-total archery-range g:<= gl-my-house-count)
+	(up-can-build 0 c: archery-range)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: archery-range)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(building-type-count-total siege-workshop g:< gl-dm-workshop-number)
+	(unit-type-count villager g:> gl-my-builder-count)
+;	(building-type-count-total siege-workshop g:<= gl-my-house-count)
+	(up-can-build 0 c: siege-workshop)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-build place-normal 0 c: siege-workshop)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(civ-selected aztec)
+	(gold-amount > 1500)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(or	(players-civ focus-player gothic)
+		(or	(players-civ focus-player korean)
+			(players-civ focus-player persian)))
+	(building-type-count-total monastery < 4)
+	(up-can-build 0 c: monastery)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: monastery)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(civ-selected aztec)
+	(gold-amount > 1500)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(or	(players-civ focus-player japanese)
+		(or	(players-civ focus-player indian)
+			(players-civ focus-player chinese)))
+	(building-type-count-total monastery < 4)
+	(up-can-build 0 c: monastery)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: monastery)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+(defrule
+	(civ-selected aztec)
+	(gold-amount > 1500)
+	(unit-type-count villager g:> gl-my-builder-count)
+	(players-civ focus-player slavic)
+	(building-type-count-total monastery < 4)
+	(up-can-build 0 c: monastery)
+=>
+	(set-strategic-number sn-placement-fail-delta 0)
+	(set-strategic-number sn-placement-zone-size dm-starting-zone-size)
+	(up-set-placement-data my-player-number villager-class c: 2)
+	(up-build dm-placement-style 0 c: monastery)
+	(up-modify-goal gl-my-builder-count c:+ 1)
+)
+
+; ============== UNIT SELECTION
+
+(defrule
+	(or	(game-time < 600)
+		(or	(population < 160)
+			(or	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+				(warboat-count < 50))))
+	(or	(and	(game-time < 2)
+			(strategic-number sn-minimum-water-body-size-for-dock == 1000))
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+=>
+	(up-jump-rule 24)
+)
+
+(defrule
+	(or	(civ-selected chinese)
+		(and	(civ-selected viking)
+			(game-time > 10)))
+	(goal gl-dm-workshop-number 0)
+=>
+	(set-goal gl-dm-workshop-number 1)
+	(disable-self)
+)
+
+(defrule
+	(civ-selected turkish)
+	(game-time > 360)
+	(goal gl-dm-workshop-number 0)
+=>
+	(set-goal gl-dm-workshop-number 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-halbs 1)
+	(population > 16)
+	(or	(up-compare-const dm-cavalry-threat-likelihood == 1)
+		(or	(players-civ focus-player frankish)
+			(or	(players-civ focus-player hun)
+				(or	(players-civ focus-player persian)
+					(or	(players-civ focus-player saracen)
+						(players-civ focus-player indian))))))
+=>
+	(set-goal gl-dm-barracks-number 11)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-skirms 1)
+	(population > 16)
+	(or	(and	(up-compare-const dm-archer-threat-likelihood == 1)
+			(and	(up-compare-const dm-anti-archer-threat-likelihood == 0)
+				(gold-amount < 500)))
+		(player-valid 3))
+	(up-compare-goal gl-dm-range-number < 8)
+=>
+	(set-goal gl-dm-range-number 8)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-skirms 1)
+	(population > 80)
+	(gold-amount < 500)
+	(or	(players-unit-type-count focus-player genoese-crossbowman > 10)
+		(or	(players-unit-type-count focus-player archer-line > 10)
+			(or	(players-unit-type-count focus-player hand-cannoneer > 10)
+				(or	(players-unit-type-count focus-player mameluke-line > 7)
+					(players-unit-type-count focus-player elephant-archer > 7)))))
+	(up-compare-goal gl-dm-range-number < 6)
+=>
+	(set-goal gl-dm-range-number 6)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-skirms 1)
+	(population > 80)
+	(gold-amount < 500)
+	(or	(players-unit-type-count focus-player mangudai-line > 10)
+		(or	(players-unit-type-count focus-player janissary-line > 10)
+			(or	(players-unit-type-count focus-player plumed-archer-line > 10)
+				(or	(players-unit-type-count focus-player chu-ko-nu-line > 10)
+					(or	(players-building-type-count focus-player conquistador-line > 10)
+						(players-building-type-count focus-player longbowman-line > 10))))))
+	(up-compare-goal gl-dm-range-number < 6)
+=>
+	(set-goal gl-dm-range-number 6)
+)
+
+(defrule
+	(or	(players-civ focus-player incan)
+		(players-civ focus-player gothic))
+	(research-completed ri-bloodlines)
+	(research-completed ri-paladin)
+	(game-time > 150)
+	(unit-available hand-cannoneer)
+	(up-compare-goal gl-dm-range-number < 4)
+	(players-building-count every-enemy > 0)
+=>
+	(set-goal gl-dm-range-number 4)
+)
+
+(defrule
+	(players-unit-type-count focus-player hand-cannoneer > 2)
+	(or	(unit-type-count-total eagle-warrior-line > 10)
+		(or	(unit-type-count-total huskarl-set > 10)
+			(unit-type-count-total militiaman-line > 10)))
+	(population > 70)
+	(research-completed ri-elite-skirmisher)
+	(or	(research-completed ri-bracer)
+		(gold-amount < 3000))
+	(up-compare-goal gl-dm-range-number < 6)
+=>
+	(set-goal gl-dm-range-number 6)
+	(set-goal gl-dm-allow-counter-skirms 1)
+)
+
+(defrule
+	(up-compare-goal gl-dm-main-unit != huskarl)
+	(or	(players-unit-type-count focus-player cavalry-archer-line > 4)
+		(players-unit-type-count focus-player archer-line > 4))
+	(or	(unit-type-count-total militiaman-line > 10)
+		(unit-type-count-total spearman-line > 10))
+	(research-completed ri-elite-skirmisher)
+	(or	(research-completed ri-bracer)
+		(gold-amount < 3000))
+	(population > 70)
+	(up-compare-goal gl-dm-range-number < 6)
+=>
+	(set-goal gl-dm-range-number 6)
+	(set-goal gl-dm-allow-counter-skirms 1)
+)
+
+(defrule
+	(players-unit-type-count focus-player spearman-line > 8)
+	(gold-amount < 3000)
+	(research-completed ri-elite-skirmisher)
+	(research-completed ri-bracer)
+	(population > 70)
+	(up-compare-goal gl-dm-range-number < 6)
+=>
+	(set-goal gl-dm-range-number 6)
+	(set-goal gl-dm-allow-counter-skirms 1)
+)
+
+(defrule
+	(goal gl-dm-main-unit paladin)
+	(game-time > 140)
+	(up-compare-goal gl-dm-allow-UU-training != 1)
+	(research-completed ri-heavy-cavalry-archer)
+	(research-completed ri-bracer)
+	(research-completed ri-parthian-tactics)
+	(not	(unit-available hand-cannoneer))
+	(players-civ focus-player gothic)
+	(up-compare-goal gl-dm-range-number < 5)
+=>
+	(set-goal gl-dm-range-number 5)
+)
+
+(defrule
+	(game-time > 180)
+	(up-compare-const dm-UU-type == anti-infantry-type)
+	(or	(players-unit-type-count focus-player militiaman-line > 8)
+		(or	(players-unit-type-count focus-player eagle-warrior-line > 8)
+			(or	(players-unit-type-count focus-player jaguar-man-line > 6)
+				(or	(players-unit-type-count focus-player huskarl-line > 6)
+					(or	(players-unit-type-count focus-player berserk-line > 6)
+						(players-unit-type-count focus-player woad-raider-line > 6))))))
+=>
+	(set-goal gl-dm-allow-UU-training 1)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 150)
+	(up-compare-const dm-UU-type == archer-type)
+	(or	(players-unit-type-count focus-player militiaman-line > 8)
+		(or	(players-unit-type-count focus-player jaguar-man-line > 6)
+			(or	(players-unit-type-count focus-player berserk-line > 6)
+				(or	(players-unit-type-count focus-player woad-raider-line > 6)
+					(or	(players-unit-type-count focus-player cavalry-archer-line > 6)
+						(players-unit-type-count focus-player hand-cannoneer > 4))))))
+=>
+	(set-goal gl-dm-allow-UU-training 1)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 150)
+	(unit-available hand-cannoneer)
+	(goal gl-dm-main-unit champion)
+	(or	(players-unit-type-count focus-player militiaman-line > 6)
+		(or	(players-unit-type-count focus-player jaguar-man-line > 4)
+			(or	(players-unit-type-count focus-player berserk-line > 4)
+				(or	(players-unit-type-count focus-player woad-raider-line > 4)
+					(or	(players-unit-type-count focus-player throwing-axeman-line > 4)
+						(players-unit-type-count focus-player teutonic-knight-line > 2))))))
+	(up-compare-goal gl-dm-range-number < 5)
+=>
+	(set-goal gl-dm-range-number 5)
+)
+
+(defrule
+	(game-time > 150)
+	(unit-available hand-cannoneer)
+	(goal gl-dm-main-unit huskarl)
+	(or	(players-unit-type-count focus-player militiaman-line > 6)
+		(or	(players-unit-type-count focus-player jaguar-man-line > 4)
+			(or	(players-unit-type-count focus-player berserk-line > 4)
+				(or	(players-unit-type-count focus-player woad-raider-line > 4)
+					(or	(players-unit-type-count focus-player throwing-axeman-line > 4)
+						(players-unit-type-count focus-player teutonic-knight-line > 2))))))
+	(up-compare-goal gl-dm-range-number < 5)
+=>
+	(set-goal gl-dm-range-number 5)
+)
+
+(defrule
+	(goal gl-dm-main-unit champion)
+	(or	(players-unit-type-count focus-player archery-range > 1)
+		(or	(players-unit-type-count focus-player hand-cannoneer > 1)
+			(or	(players-unit-type-count focus-player archer-line > 1)
+				(players-building-type-count focus-player castle > 1))))
+	(civ-selected gothic)
+=>
+	(set-goal gl-strategy dm-husk-champ)
+	(set-goal gl-dm-main-unit huskarl)
+)
+
+(defrule
+	(or	(and	(goal gl-dm-main-unit champion)
+			(and	(goal gl-strategy dm-champ-turtle)
+				(civ-selected aztec)))
+		(civ-selected turkish))
+	(building-type-count castle > 1)
+=>
+	(set-goal gl-strategy dm-UU)
+	(set-goal gl-dm-main-unit my-unique-unit)
+	(disable-self)
+)
+
+(defrule
+	(or	(and	(or	(civ-selected celtic)
+				(civ-selected slavic))
+			(building-type-count castle > 1))
+		(and	(civ-selected mayan)
+			(game-time > 400)))
+=>
+	(set-goal gl-strategy dm-UU-halb)
+	(set-goal gl-dm-main-unit my-unique-unit)
+	(disable-self)
+)
+
+(defrule
+	(or	(and	(goal gl-dm-main-unit paladin)
+			(goal gl-strategy dm-pala-turtle))
+		(or	(and	(goal gl-dm-main-unit champion)
+				(goal gl-strategy dm-champ-turtle))
+			(or	(civ-selected turkish)
+				(or	(goal gl-strategy dm-halb-scorpion)
+					(civ-selected byzantine)))))
+	(game-time > 120)
+=>
+	(set-goal gl-dm-allow-UU-training 1)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 10)
+	(goal gl-strategy dm-palas)
+	(or	(up-compare-const dm-infantry-threat-likelihood == 1)
+		(or	(players-civ focus-player gothic)
+			(or	(players-civ focus-player japanese)
+				(players-civ focus-player incan))))
+	(civ-selected teutonic)
+=>
+	(set-goal gl-strategy dm-pala-cannoneer)
+	(set-goal gl-dm-range-number 6)
+	(set-goal gl-dm-stable-number 7)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-dm-main-unit camel)
+	(building-type-count castle > 1)
+	(civ-selected byzantine)
+=>
+	(set-goal gl-strategy dm-UU-halb)
+	(set-goal gl-dm-main-unit my-unique-unit)
+	(set-goal gl-dm-range-number 6)
+	(disable-self)
+)
+
+(defrule
+	(building-type-count castle > 1)
+	(or	(civ-selected briton)
+		(civ-selected chinese))
+	(nor	(players-civ focus-player incan)
+		(or	(players-civ focus-player mayan)
+			(or	(players-civ focus-player aztec)
+				(players-civ focus-player gothic))))
+	(up-compare-goal gl-dm-main-unit != my-unique-unit)
+=>
+	(set-goal gl-strategy dm-UU-halb)
+	(set-goal gl-dm-main-unit my-unique-unit)
+)
+
+(defrule
+	(building-type-count castle > 1)
+	(or	(civ-selected briton)
+		(or	(civ-selected chinese)
+			(civ-selected mongol)))
+	(or	(players-civ focus-player incan)
+		(or	(players-civ focus-player mayan)
+			(or	(players-civ focus-player aztec)
+				(players-civ focus-player gothic))))
+	(up-compare-goal gl-dm-main-unit != champion)
+=>
+	(set-goal gl-strategy dm-UU)
+	(set-goal gl-dm-main-unit champion)
+)
+
+(defrule
+	(building-type-count castle > 1)
+	(civ-selected mongol)
+	(nor	(players-civ focus-player incan)
+		(or	(players-civ focus-player mayan)
+			(or	(players-civ focus-player aztec)
+				(players-civ focus-player gothic))))
+	(up-compare-goal gl-dm-main-unit != my-unique-unit)
+=>
+	(set-goal gl-strategy dm-UU)
+	(set-goal gl-dm-main-unit my-unique-unit)
+)
+
+; ============== UNITS
+
+(defrule
+	(unit-type-count-total villager >= imperial-villager-cap)
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(or	(unit-type-count-total villager < 70)
+		(or	(and	(not	(player-in-game any-ally))
+				(and	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+					(game-time < 600)))
+			(population-cap > 240)))
+	(or	(unit-type-count-total villager < 100)
+		(unit-type-count-total trade-cart < 30))
+	(unit-type-count-total villager < 120)
+	(can-train villager)
+=>
+	(up-train 0 c: villager)
+)
+
+(defrule
+	(players-building-type-count any-ally market > 0)
+	(or	(and	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+			(not	(up-allied-sn every-ally gl-islands-style == YES)))
+		(or	(and	(map-type team-islands)
+				(unit-type-count-total trade-cart < max-ti-carts))
+			(strategic-number sn-minimum-water-body-size-for-dock == 998)))
+	(unit-type-count-total trade-cart < max-carts)
+	(can-train trade-cart)
+=>
+	(up-train 0 c: trade-cart)
+)
+
+(defrule
+	(or	(and	(unit-type-count-total trebuchet-set > 1)
+			(unit-type-count-total battering-ram-line > 4))
+		(goal MILITARY 0))
+	(soldier-count > 45)
+	(warboat-count < 35)
+	(wood-amount > 1000)
+	(gold-amount > 500)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+=>
+	(up-jump-rule 74)
+)
+
+(defrule
+	(or	(game-time < 600)
+		(or	(population < 160)
+			(or	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+				(warboat-count < 50))))
+	(or	(and	(game-time < 2)
+			(strategic-number sn-minimum-water-body-size-for-dock == 1000))
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+=>
+	(up-jump-rule 73)
+)
+
+(defrule
+	(or	(up-projectile-detected projectile-castle < 5000)
+		(or	(up-projectile-detected projectile-bombard-tower < 5000)
+			(and	(goal MILITARY 1)
+				(players-building-type-count target-player castle > 0))))
+	(or	(unit-type-count-total trebuchet-set < 2)
+		(game-time > 1200))
+	(unit-type-count-total trebuchet-set < 4)
+	(soldier-count > 55)
+	(can-train-with-escrow trebuchet)
+=>
+	(release-escrow gold)
+	(release-escrow wood)
+	(train trebuchet)
+)
+
+(defrule
+	(game-time > 1200)
+	(gold-amount > 2500)
+	(unit-type-count-total trebuchet-set < 15)
+	(soldier-count > 70)
+	(can-train-with-escrow trebuchet)
+=>
+	(release-escrow gold)
+	(release-escrow wood)
+	(train trebuchet)
+)
+
+(defrule
+	(or	(not	(civ-selected turkish))
+		(unit-type-count-total bombard-cannon >= max-cannons))
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(or	(gold-amount > 1000)
+		(unit-type-count-total trade-cart > 25))
+	(or	(players-unit-type-count focus-player archer-line > 10)
+		(or	(players-unit-type-count focus-player cavalry-archer-line > 10)
+			(or	(players-unit-type-count focus-player hand-cannoneer > 10)
+				(or	(players-unit-type-count focus-player mameluke-line > 7)
+					(unit-type-count-total trade-cart > 35)))))
+	(can-train bombard-cannon)
+=>
+	(up-train 0 c: bombard-cannon)
+)
+
+(defrule
+	(or	(gold-amount > 1000)
+		(unit-type-count-total trade-cart > 25))
+	(or	(players-unit-type-count focus-player mangudai-line > 10)
+		(or	(players-unit-type-count focus-player janissary-line > 10)
+			(or	(players-unit-type-count focus-player plumed-archer-line > 10)
+				(or	(players-unit-type-count focus-player chu-ko-nu-line > 10)
+					(or	(players-building-type-count focus-player conquistador-line > 10)
+						(players-building-type-count focus-player longbowman-line > 10))))))
+	(can-train bombard-cannon)
+=>
+	(up-train 0 c: bombard-cannon)
+)
+
+(defrule
+	(or	(gold-amount > 1000)
+		(unit-type-count-total trade-cart > 25))
+	(or	(and	(players-unit-type-count focus-player mangonel-line > 1)
+			(unit-type-count-total bombard-cannon < 4))
+		(or	(players-unit-type-count focus-player scorpion-line > 4)
+			(or	(players-unit-type-count focus-player genoese-crossbowman > 4)
+				(players-unit-type-count focus-player mangonel-line > 2))))
+	(can-train bombard-cannon)
+=>
+	(up-train 0 c: bombard-cannon)
+)
+
+(defrule
+	(or	(goal MILITARY 1)
+		(and	(or	(up-compare-goal threat-time > 25000)
+				(soldier-count > 60))
+			(or	(players-building-type-count target-player castle > 0)
+				(players-building-type-count target-player bombard-tower > 0))))
+	(or	(unit-type-count villager > 17)
+		(soldier-count > 35))
+	(unit-type-count-total battering-ram-line < 13)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line)
+)
+
+(defrule
+	(gold-amount > 500)
+	(players-unit-type-count focus-player war-elephant-line > 2)
+	(unit-type-count-total monk < 10)
+	(can-train monk)
+=>
+	(up-train 0 c: monk)
+)
+
+(defrule
+	(unit-type-count-total knight-line < 5)
+	(unit-type-count-total scout-cavalry-line < 5)
+	(unit-type-count-total mangudai-line < 5)
+	(unit-type-count-total war-wagon-line < 5)
+	(or	(players-unit-type-count focus-player hand-cannoneer > 4)
+		(or	(players-unit-type-count focus-player conquistador-line > 4)
+			(players-unit-type-count focus-player janissary-line > 4)))
+	(unit-type-count-total condottiero < 10)
+	(can-train condottiero)
+=>
+	(train condottiero-unit)
+)
+
+(defrule
+	(unit-type-count-total knight-line < 5)
+	(unit-type-count-total scout-cavalry-line < 5)
+	(unit-type-count-total mangudai-line < 5)
+	(unit-type-count-total war-wagon-line < 5)
+	(or	(players-unit-type-count focus-player hand-cannoneer > 9)
+		(or	(players-unit-type-count focus-player conquistador-line > 9)
+			(players-unit-type-count focus-player janissary-line > 9)))
+	(unit-type-count-total condottiero < 30)
+	(can-train condottiero)
+=>
+	(train condottiero-unit)
+)
+
+(defrule
+	(or	(goal gl-dm-allow-UU-training 1)
+		(goal gl-strategy dm-UU))
+	(or	(food-amount g:> gl-required-food)
+		(up-compare-const dm-food-costing-UU == 0))
+	(or	(can-train my-unique-unit-line)
+		(or	(can-train my-UU)
+			(can-train my-elite-UU)))
+=>
+	(train my-unique-unit-line)
+	(train my-unique-unit)
+)
+
+(defrule
+	(civ-selected incan)
+	(or	(players-unit-type-count focus-player militiaman-line > 4)
+		(or	(players-unit-type-count focus-player eagle-warrior-line > 4)
+			(or	(players-unit-type-count focus-player jaguar-man-line > 4)
+				(or	(players-unit-type-count focus-player huskarl-line > 4)
+					(or	(players-unit-type-count focus-player berserk-line > 4)
+						(or	(players-unit-type-count focus-player woad-raider-line > 4)
+							(players-unit-type-count focus-player throwing-axeman-line > 4)))))))
+	(can-train slinger)
+=>
+	(up-train 0 c: slinger)
+)
+
+(defrule
+	(civ-selected incan)
+	(or	(players-civ focus-player gothic)
+		(players-civ focus-player slavic))
+	(can-train slinger)
+=>
+	(up-train 0 c: slinger)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-halbs 1)
+	(food-amount > 500)
+	(or	(players-unit-type-count focus-player knight-line > 2)
+		(or	(players-unit-type-count focus-player camel-line > 2)
+			(or	(players-unit-type-count focus-player cataphract-line > 2)
+				(or	(players-unit-type-count focus-player scout-cavalry-line > 2)
+					(or	(players-building-type-count target-player stable > 1)
+						(players-unit-type-count focus-player mameluke-line > 3))))))
+	(unit-type-count-total spearman-line < 30)
+	(can-train spearman-line)
+=>
+	(up-train 0 c: spearman-line)
+)
+
+(defrule
+	(goal gl-strategy dm-halb-scorpion)
+	(or	(players-unit-type-count focus-player eagle-warrior-line > 5)
+		(or	(up-compare-const dm-eagle-threat-likelihood == 1)
+			(or	(players-unit-type-count focus-player huskarl-line > 5)
+				(players-civ focus-player gothic))))
+	(unit-type-count-total militiaman-line < 40)
+	(food-amount g:> gl-required-food)
+	(research-completed ri-champion)
+	(can-train militiaman-line)
+=>
+	(up-train 0 c: militiaman-line)
+)
+
+(defrule
+	(goal gl-dm-allow-UU-training 1)
+	(or	(wood-amount < 400)
+		(and	(goal gl-strategy dm-UU)
+			(and	(game-time > 240)
+				(game-time < 900))))
+	(food-amount g:> gl-required-food)
+	(research-completed ri-champion)
+	(up-compare-const dm-cavalry-threat-likelihood == 0)
+	(up-compare-const dm-UU-type == archer-type)
+	(can-train militiaman-line)
+=>
+	(up-train 0 c: militiaman-line)
+)
+
+(defrule
+	(goal gl-dm-allow-UU-training 1)
+	(or	(players-unit-type-count focus-player huskarl-line > 5)
+		(players-unit-type-count focus-player skirmisher-line > 25))
+	(unit-type-count-total militiaman-line < 40)
+	(food-amount g:> gl-required-food)
+	(research-completed ri-champion)
+	(up-compare-const dm-UU-type == archer-type)
+	(can-train militiaman-line)
+=>
+	(up-train 0 c: militiaman-line)
+)
+
+(defrule
+	(goal gl-strategy dm-eagles)
+	(food-amount g:> gl-required-food)
+	(research-completed ri-champion)
+	(or	(and	(players-unit-type-count focus-player eagle-warrior-line > 7)
+			(or	(players-unit-type-count focus-player archer-line < 10)
+				(unit-type-count eagle-warrior-line > 10)))
+		(or	(gold-amount <= 4000)
+			(and	(up-compare-const dm-eagle-threat-likelihood == 1)
+				(game-time < 120))))
+	(can-train militiaman-line)
+=>
+	(up-train 0 c: militiaman-line)
+)
+
+(defrule
+	(or	(and	(goal gl-strategy dm-eagles)
+			(gold-amount > 4000))
+		(and	(or	(civ-selected aztec)
+				(civ-selected incan))
+			(and	(players-unit-type-count focus-player archer-line > 7)
+				(unit-type-count eagle-warrior-line < 20))))
+	(food-amount g:> gl-required-food)
+	(can-train eagle-warrior-line)
+=>
+	(up-train 0 c: eagle-warrior-line)
+)
+
+(defrule
+	(civ-selected mayan)
+	(food-amount g:> gl-required-food)
+	(gold-amount > 500)
+	(or	(players-unit-type-count focus-player skirmisher-line > 7)
+		(or	(players-unit-type-count focus-player war-wagon-line > 7)
+			(or	(players-unit-type-count focus-player huskarl-line > 4)
+				(or	(players-unit-type-count focus-player scorpion-line > 3)
+					(or	(players-unit-type-count focus-player battering-ram-line > 5)
+						(players-unit-type-count focus-player mangonel-line > 1))))))
+	(can-train eagle-warrior-line)
+=>
+	(up-train 0 c: eagle-warrior-line)
+)
+
+(defrule
+	(goal gl-strategy dm-halb-husk)
+	(food-amount g:> gl-required-food)
+	(or	(unit-type-count-total spearman-line < 15)
+		(unit-type-count-total huskarl-set > 5))
+	(or	(unit-type-count-total spearman-line < 25)
+		(unit-type-count-total huskarl-set > 12))
+	(or	(unit-type-count-total spearman-line < 45)
+		(unit-type-count-total huskarl-set > 25))
+	(unit-type-count-total spearman-line < 175)
+	(can-train spearman-line)
+=>
+	(up-train 0 c: spearman-line)
+)
+
+(defrule
+	(goal gl-strategy dm-UU-halb)
+	(food-amount g:> gl-required-food)
+	(or	(unit-type-count-total spearman-line < 15)
+		(unit-type-count-total my-unique-unit-line > 5))
+	(or	(unit-type-count-total spearman-line < 17)
+		(unit-type-count-total my-unique-unit-line > 12))
+	(or	(unit-type-count-total spearman-line < 37)
+		(unit-type-count-total my-unique-unit-line > 25))
+	(unit-type-count-total spearman-line < 40)
+	(can-train spearman-line)
+=>
+	(up-train 0 c: spearman-line)
+)
+
+(defrule
+	(goal gl-strategy dm-UU-halb)
+	(food-amount g:> gl-required-food)
+	(unit-type-count-total my-unique-unit-line > 35)
+	(or	(unit-type-count-total spearman-line < 50)
+		(unit-type-count-total my-unique-unit-line > 50))
+	(or	(unit-type-count-total spearman-line < 65)
+		(unit-type-count-total my-unique-unit-line > 65))
+	(or	(unit-type-count-total spearman-line < 80)
+		(unit-type-count-total my-unique-unit-line > 80))
+	(unit-type-count-total spearman-line < 130)
+	(can-train spearman-line)
+=>
+	(up-train 0 c: spearman-line)
+)
+
+(defrule
+	(goal gl-strategy dm-husk-champ)
+	(food-amount g:> gl-required-food)
+	(unit-type-count-total huskarl-set > 2)
+	(or	(unit-type-count-total militiaman-line < 10)
+		(unit-type-count-total huskarl-set > 5))
+	(or	(unit-type-count-total militiaman-line < 15)
+		(unit-type-count-total huskarl-set > 12))
+	(or	(unit-type-count-total militiaman-line < 20)
+		(unit-type-count-total huskarl-set > 20))
+	(unit-type-count-total militiaman-line < 35)
+	(can-train militiaman-line)
+=>
+	(up-train 0 c: militiaman-line)
+)
+
+(defrule
+	(goal gl-strategy dm-husk-champ)
+	(food-amount g:> gl-required-food)
+	(unit-type-count-total huskarl-set > 30)
+	(or	(unit-type-count-total militiaman-line < 40)
+		(unit-type-count-total huskarl-set > 45))
+	(or	(unit-type-count-total militiaman-line < 60)
+		(unit-type-count-total huskarl-set > 60))
+	(or	(unit-type-count-total militiaman-line < 75)
+		(unit-type-count-total huskarl-set > 75))
+	(unit-type-count-total militiaman-line < 125)
+	(can-train militiaman-line)
+=>
+	(up-train 0 c: militiaman-line)
+)
+
+(defrule
+	(research-completed ri-champion)
+	(or	(and	(goal gl-dm-main-unit huskarl)
+			(players-unit-type-count focus-player champion > 4))
+		(or	(goal gl-dm-main-unit champion)
+			(and	(goal gl-strategy dm-pala-turtle)
+				(and	(unit-type-count-total militiaman-line < 25)
+					(up-compare-const dm-cavalry-threat-likelihood == 0)))))
+	(unit-type-count-total militiaman-line < 85)
+	(food-amount g:> gl-required-food)
+	(can-train militiaman-line)
+=>
+	(up-train 0 c: militiaman-line)
+)
+
+(defrule
+	(goal gl-dm-main-unit huskarl)
+	(food-amount g:> gl-required-food)
+	(or	(can-train huskarl2)
+		(can-train elite-huskarl2))
+=>
+	(up-train 0 c: huskarl2)
+	(up-train 0 c: elite-huskarl2)
+)
+
+(defrule
+	(or	(up-research-status c: ri-paladin <= research-pending)
+		(game-time > 900))
+	(food-amount g:> gl-required-food)
+	(or	(players-unit-type-count focus-player knight-line > 5)
+		(or	(players-unit-type-count focus-player tarkan-line > 5)
+			(or	(players-unit-type-count target-player knight-line > 5)
+				(players-unit-type-count target-player tarkan-line > 5))))
+	(unit-type-count-total camel-line < 22)
+	(can-train camel-line)
+=>
+	(up-train 0 c: camel-line)
+)
+
+(defrule
+	(civ-selected turkish)
+	(food-amount g:> gl-required-food)
+	(or	(players-unit-type-count focus-player knight-line > 5)
+		(or	(players-unit-type-count focus-player tarkan-line > 5)
+			(or	(players-unit-type-count target-player knight-line > 5)
+				(players-unit-type-count target-player tarkan-line > 5))))
+	(unit-type-count-total camel-line < 38)
+	(can-train camel-line)
+=>
+	(up-train 0 c: camel-line)
+)
+
+(defrule
+	(or	(goal gl-dm-main-unit camel)
+		(and	(or	(civ-selected turkish)
+				(and	(up-compare-const dm-cavalry-threat-likelihood == 1)
+					(or	(game-time > 120)
+						(up-research-status c: ri-paladin <= research-pending))))
+			(game-time < 240)))
+	(food-amount g:> gl-required-food)
+	(unit-type-count-total camel-line < 70)
+	(can-train camel-line)
+=>
+	(up-train 0 c: camel-line)
+)
+
+(defrule
+	(or	(goal gl-dm-main-unit paladin)
+		(and	(goal gl-dm-main-unit my-unique-unit)
+			(and	(research-completed ri-cavalier)
+				(and	(research-completed ri-plate-barding)
+					(and	(game-time < 180)
+						(up-compare-const dm-cavalry-threat-likelihood == 0))))))
+	(not	(civ-selected byzantine))
+	(food-amount g:> gl-required-food)
+	(can-train knight-line)
+=>
+	(up-train 0 c: knight-line)
+)
+
+#load-if-not-defined CELTIC-CIV
+(defrule
+	(not	(civ-selected byzantine))
+	(research-completed ri-paladin)
+	(game-time < 600)
+	(gold-amount > 2000)
+	(food-amount g:> gl-required-food)
+	(or	(unit-type-count-total knight-line < 30)
+		(or	(unit-type-count-total trade-cart > 30)
+			(up-compare-goal gl-gathered-relics > 6)))
+	(can-train knight-line)
+=>
+	(up-train 0 c: knight-line)
+)
+#else
+(defrule
+	(research-completed ri-paladin)
+	(gold-amount > 2000)
+	(food-amount g:> gl-required-food)
+	(or	(unit-type-count-total trade-cart > 30)
+		(up-compare-goal gl-gathered-relics > 6))
+	(can-train knight-line)
+=>
+	(up-train 0 c: knight-line)
+)
+#end-if
+
+(defrule
+	(goal gl-dm-main-unit my-unique-unit)
+	(or	(and	(game-time < 180)
+			(up-compare-const dm-cavalry-threat-likelihood == 1))
+		(or	(players-unit-type-count focus-player knight-line > 5)
+			(players-unit-type-count focus-player tarkan-line > 5)))
+	(unit-type-count-total camel-line < 22)
+	(food-amount g:> gl-required-food)
+	(can-train camel-line)
+=>
+	(up-train 0 c: camel-line)
+)
+
+(defrule
+	(goal gl-dm-main-unit my-unique-unit)
+	(food-amount g:> gl-required-food)
+	(research-completed ri-champion)
+	(or	(and	(players-unit-type-count focus-player eagle-warrior-line > 7)
+			(up-compare-const dm-UU-type != anti-infantry-type))
+		(or	(and	(up-compare-const dm-eagle-threat-likelihood == 1)
+				(game-time < 210))
+			(and	(game-time < 180)
+				(up-compare-const dm-cavalry-threat-likelihood == 0))))
+	(can-train militiaman-line)
+=>
+	(up-train 0 c: militiaman-line)
+)
+
+(defrule
+	(food-amount g:> gl-required-food)
+	(research-completed ri-halberdier)
+	(or	(and	(game-time < 240)
+			(up-compare-const dm-cavalry-threat-likelihood == 1))
+		(and	(players-unit-type-count focus-player war-elephant-line > 2)
+			(or	(unit-type-count-total spearman-line < 30)
+				(players-unit-type-count focus-player war-elephant-line > 10))))
+	(unit-type-count-total spearman-line < 60)
+	(can-train spearman-line)
+=>
+	(up-train 0 c: spearman-line)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-halbs 1)
+	(food-amount g:> gl-required-food)
+	(or	(players-unit-type-count focus-player knight-line > 2)
+		(or	(players-unit-type-count focus-player camel-line > 2)
+			(or	(players-unit-type-count focus-player cataphract-line > 2)
+				(or	(players-unit-type-count focus-player scout-cavalry-line > 2)
+					(or	(players-building-type-count target-player stable > 1)
+						(players-unit-type-count focus-player mameluke-line > 7))))))
+	(unit-type-count-total spearman-line < 45)
+	(can-train spearman-line)
+=>
+	(up-train 0 c: spearman-line)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-halbs 1)
+	(food-amount g:> gl-required-food)
+	(or	(players-unit-type-count focus-player knight-line > 10)
+		(or	(players-unit-type-count focus-player camel-line > 10)
+			(or	(players-unit-type-count focus-player cataphract-line > 10)
+				(or	(players-unit-type-count focus-player scout-cavalry-line > 10)
+					(and	(goal gl-strategy dm-halb-scorpion)
+						(up-compare-const dm-eagle-threat-likelihood == 0))))))
+	(unit-type-count-total spearman-line < 65)
+	(can-train spearman-line)
+=>
+	(up-train 0 c: spearman-line)
+)
+
+(defrule
+	(or	(goal gl-strategy dm-arbalests)
+		(or	(goal gl-strategy dm-halb-arbalest)
+			(or	(goal gl-strategy dm-eagle-arbalest)
+				(or	(goal gl-strategy dm-pala-arbalest)
+					(and	(civ-selected incan)
+						(unit-type-count-total slinger < 10))))))
+	(unit-type-count-total archer-line < 70)
+	(can-train archer-line)
+=>
+	(up-train 0 c: archer-line)
+)
+
+(defrule
+	(food-amount g:> gl-required-food)
+	(or	(goal gl-strategy dm-champ-cannoneer)
+		(or	(goal gl-strategy dm-camel-cannoneer)
+			(or	(goal gl-strategy dm-pala-cannoneer)
+				(or	(goal gl-strategy dm-cannoneers)
+					(and	(goal gl-strategy dm-UU-halb)
+						(unit-type-count-total hand-cannoneer < 30))))))
+	(unit-type-count-total hand-cannoneer < 70)
+	(can-train hand-cannoneer)
+=>
+	(up-train 0 c: hand-cannoneer)
+)
+
+(defrule
+	(food-amount g:> gl-required-food)
+	(or	(and	(or	(players-civ focus-player incan)
+				(players-civ focus-player gothic))
+			(unit-type-count-total hand-cannoneer < 30))
+		(or	(goal gl-dm-main-unit hand-cannoneer)
+			(and	(game-time < 300)
+				(up-compare-const dm-infantry-threat-likelihood == 1))))
+	(unit-type-count-total hand-cannoneer < 80)
+	(can-train hand-cannoneer)
+=>
+	(up-train 0 c: hand-cannoneer)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-halbs 1)
+	(research-completed ri-pikeman)
+	(or	(research-completed ri-halberdier)
+		(and	(research-completed ri-blast-furnace)
+			(up-research-status c: ri-hussar < research-pending)))
+	(food-amount > 1500)
+	(wood-amount > 2000)
+	(gold-amount < 300)
+	(unit-type-count-total spearman-line < 55)
+	(can-train spearman-line)
+=>
+	(up-train 0 c: spearman-line)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-halbs 1)
+	(food-amount > 600)
+	(research-completed ri-halberdier)
+	(unit-type-count-total spearman-line < 25)
+	(up-compare-const dm-cavalry-threat-likelihood == 1)
+	(up-compare-const dm-archer-threat-likelihood == 0)
+	(up-compare-const dm-gunpowder-threat-likelihood == 0)
+	(game-time < 300)
+	(can-train spearman-line)
+=>
+	(up-train 0 c: spearman-line)
+)
+
+(defrule
+	(research-completed ri-hussar)
+	(research-completed ri-bloodlines)
+	(food-amount g:> gl-required-food)
+	(wood-amount > 800)
+	(or	(and	(food-amount > 1500)
+			(wood-amount > 2000))
+		(civ-selected hun))
+	(gold-amount < 300)
+	(unit-type-count-total scout-cavalry-line < 55)
+	(can-train scout-cavalry-line)
+=>
+	(up-train 0 c: scout-cavalry-line)
+)
+
+(defrule
+	(or	(research-completed ri-hussar)
+		(research-completed ri-plate-barding))
+	(research-completed ri-bloodlines)
+	(food-amount g:> gl-required-food)
+	(or	(up-compare-const dm-UU-type == archer-type)
+		(up-compare-const dm-UU-type == gunpowder-type))
+	(or	(gold-amount < 2000)
+		(food-amount > 3500))
+	(gold-amount < 2700)
+	(unit-type-count-total scout-cavalry-line < 55)
+	(can-train scout-cavalry-line)
+=>
+	(up-train 0 c: scout-cavalry-line)
+)
+
+(defrule
+	(or	(and	(goal gl-strategy dm-UU)
+			(and	(up-compare-goal gl-dm-main-unit != champion)
+				(civ-selected mongol)))
+		(and	(or	(civ-selected turkish)
+				(civ-selected saracen))
+			(game-time > 240)))
+	(food-amount g:> gl-required-food)
+	(unit-type-count-total scout-cavalry-line < 85)
+	(can-train scout-cavalry-line)
+=>
+	(up-train 0 c: scout-cavalry-line)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-skirms 1)
+	(food-amount g:> gl-required-food)
+	(or	(players-unit-type-count focus-player archer-line > 5)
+		(or	(players-unit-type-count focus-player cavalry-archer-line > 5)
+			(or	(players-unit-type-count focus-player hand-cannoneer > 2)
+				(or	(players-unit-type-count focus-player mameluke-line > 2)
+					(and	(players-building-type-count focus-player spearman-line > 5)
+						(gold-amount < 3000))))))
+	(unit-type-count-total skirmisher-line < 45)
+	(can-train skirmisher-line)
+=>
+	(up-train 0 c: skirmisher-line)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-skirms 1)
+	(food-amount g:> gl-required-food)
+	(or	(players-unit-type-count focus-player mangudai-line > 3)
+		(or	(players-unit-type-count focus-player janissary-line > 3)
+			(or	(players-unit-type-count focus-player plumed-archer-line > 3)
+				(or	(players-unit-type-count focus-player chu-ko-nu-line > 3)
+					(or	(players-building-type-count focus-player conquistador-line > 7)
+						(players-building-type-count focus-player longbowman-line > 5))))))
+	(unit-type-count-total skirmisher-line < 45)
+	(can-train skirmisher-line)
+=>
+	(up-train 0 c: skirmisher-line)
+)
+
+(defrule
+	(goal gl-dm-allow-counter-skirms 1)
+	(food-amount g:> gl-required-food)
+	(or	(and	(research-completed ri-elite-skirmisher)
+			(and	(food-amount > 1500)
+				(and	(wood-amount > 2000)
+					(gold-amount < 300))))
+		(or	(players-unit-type-count focus-player genoese-crossbowman > 8)
+			(players-unit-type-count focus-player elephant-archer > 5)))
+	(unit-type-count-total skirmisher-line < 65)
+	(can-train skirmisher-line)
+=>
+	(up-train 0 c: skirmisher-line)
+)
+
+(defrule
+	(or	(up-compare-goal gl-dm-allow-UU-training != 1)
+		(civ-selected saracen))
+	(research-completed ri-heavy-cavalry-archer)
+	(research-completed ri-bracer)
+	(research-completed ri-parthian-tactics)
+	(food-amount < 1000)
+	(or	(players-unit-type-count focus-player spearman-line > 8)
+		(or	(players-unit-type-count focus-player militiaman-line > 8)
+			(civ-selected hun)))
+	(unit-type-count-total cavalry-archer-line < 65)
+	(can-train cavalry-archer-line)
+=>
+	(up-train 0 c: cavalry-archer-line)
+)
+
+(defrule
+	(goal gl-dm-main-unit paladin)
+	(research-completed ri-heavy-cavalry-archer)
+	(research-completed ri-bracer)
+	(research-completed ri-parthian-tactics)
+	(not	(unit-available hand-cannoneer))
+	(or	(and	(up-compare-goal gl-dm-allow-UU-training != 1)
+			(players-civ focus-player gothic))
+		(and	(civ-selected magyar)
+			(game-time > 500)))
+	(unit-type-count-total cavalry-archer-line < 65)
+	(can-train cavalry-archer-line)
+=>
+	(up-train 0 c: cavalry-archer-line)
+)
+
+(defrule
+	(civ-selected turkish)
+	(or	(players-unit-type-count focus-player huskarl-line > 3)
+		(or	(players-unit-type-count focus-player jaguar-man-line > 4)
+			(or	(players-unit-type-count focus-player berserk-line > 4)
+				(or	(players-unit-type-count focus-player woad-raider-line > 4)
+					(or	(players-unit-type-count focus-player samurai-line > 4)
+						(players-unit-type-count focus-player teutonic-knight-line > 2))))))
+	(unit-type-count-total hand-cannoneer < 35)
+	(can-train hand-cannoneer)
+=>
+	(up-train 0 c: hand-cannoneer)
+)
+
+(defrule
+	(goal gl-dm-main-unit champion)
+	(or	(players-unit-type-count focus-player militiaman-line > 6)
+		(or	(players-unit-type-count focus-player jaguar-man-line > 4)
+			(or	(players-unit-type-count focus-player berserk-line > 4)
+				(or	(players-unit-type-count focus-player woad-raider-line > 4)
+					(or	(players-unit-type-count focus-player throwing-axeman-line > 4)
+						(players-unit-type-count focus-player teutonic-knight-line > 2))))))
+	(unit-type-count-total hand-cannoneer < 30)
+	(can-train hand-cannoneer)
+=>
+	(up-train 0 c: hand-cannoneer)
+)
+
+(defrule
+	(goal gl-dm-main-unit huskarl)
+	(or	(players-unit-type-count focus-player militiaman-line > 6)
+		(or	(players-unit-type-count focus-player jaguar-man-line > 4)
+			(or	(players-unit-type-count focus-player berserk-line > 4)
+				(or	(players-unit-type-count focus-player woad-raider-line > 4)
+					(or	(players-unit-type-count focus-player throwing-axeman-line > 4)
+						(players-unit-type-count focus-player teutonic-knight-line > 2))))))
+	(unit-type-count-total hand-cannoneer < 30)
+	(can-train hand-cannoneer)
+=>
+	(up-train 0 c: hand-cannoneer)
+)
+
+(defrule
+	(or	(players-building-type-count target-player castle > 0)
+		(players-building-type-count target-player bombard-tower > 0))
+	(goal MILITARY 1)
+	(unit-type-count-total battering-ram-line < 4)
+	(unit-type-count-total trebuchet-set < 2)
+=>
+	(up-jump-rule 11)
+)
+
+(defrule
+	(up-research-status c: ri-siege-onager <= research-pending)
+	(research-completed ri-heavy-scorpion)
+	(or	(players-unit-type-count focus-player teutonic-knight-line > 3)
+		(or	(players-unit-type-count focus-player boyar > 3)
+			(or	(players-unit-type-count focus-player kamayuk > 7)
+				(and	(game-time < 300)
+					(or	(civ-selected chinese)
+						(civ-selected viking))))))
+	(unit-type-count-total scorpion-line < 12)
+	(can-train scorpion-line)
+=>
+	(up-train 0 c: scorpion-line)
+)
+
+(defrule
+	(research-completed ri-siege-onager)
+	(soldier-count > 30)
+	(or	(players-unit-type-count focus-player archer-line > 10)
+		(or	(players-unit-type-count focus-player cavalry-archer-line > 10)
+			(or	(players-unit-type-count focus-player hand-cannoneer > 10)
+				(or	(players-unit-type-count focus-player mameluke-line > 7)
+					(or	(players-unit-type-count focus-player scorpion-line > 5)
+						(players-unit-type-count focus-player teutonic-knight-line > 7))))))
+	(unit-type-count-total mangonel-line < 10)
+	(can-train mangonel-line)
+=>
+	(up-train 0 c: mangonel-line)
+)
+
+(defrule
+	(research-completed ri-siege-onager)
+	(soldier-count > 30)
+	(or	(players-unit-type-count focus-player mangudai-line > 10)
+		(or	(players-unit-type-count focus-player janissary-line > 10)
+			(or	(players-unit-type-count focus-player plumed-archer-line > 10)
+				(or	(players-unit-type-count focus-player chu-ko-nu-line > 10)
+					(or	(players-building-type-count focus-player conquistador-line > 10)
+						(players-building-type-count focus-player longbowman-line > 10))))))
+	(unit-type-count-total mangonel-line < 10)
+	(can-train mangonel-line)
+=>
+	(up-train 0 c: mangonel-line)
+)
+
+(defrule
+	(research-completed ri-onager)
+	(soldier-count > 30)
+	(or	(players-unit-type-count focus-player genoese-crossbowman > 8)
+		(or	(players-unit-type-count focus-player elephant-archer > 8)
+			(or	(players-unit-type-count focus-player slinger > 8)
+				(players-unit-type-count focus-player skirmisher-line > 8))))
+	(or	(unit-type-count-total mangonel-line < 7)
+		(research-completed ri-siege-onager))
+	(unit-type-count-total mangonel-line < 10)
+	(can-train mangonel-line)
+=>
+	(up-train 0 c: mangonel-line)
+)
+
+
+(defrule
+	(research-completed ri-onager)
+	(soldier-count > 30)
+	(or	(players-unit-type-count focus-player archer-line > 10)
+		(or	(players-unit-type-count focus-player cavalry-archer-line > 10)
+			(or	(players-unit-type-count focus-player hand-cannoneer > 10)
+				(or	(players-unit-type-count focus-player mameluke-line > 7)
+					(or	(players-unit-type-count focus-player scorpion-line > 5)
+						(players-unit-type-count focus-player teutonic-knight-line > 7))))))
+	(unit-type-count-total mangonel-line < 7)
+	(can-train mangonel-line)
+=>
+	(up-train 0 c: mangonel-line)
+)
+
+(defrule
+	(research-completed ri-onager)
+	(soldier-count > 30)
+	(or	(players-unit-type-count focus-player mangudai-line > 10)
+		(or	(players-unit-type-count focus-player janissary-line > 10)
+			(or	(players-unit-type-count focus-player plumed-archer-line > 10)
+				(or	(players-unit-type-count focus-player chu-ko-nu-line > 10)
+					(or	(players-building-type-count focus-player conquistador-line > 10)
+						(players-building-type-count focus-player longbowman-line > 10))))))
+	(unit-type-count-total mangonel-line < 7)
+	(can-train mangonel-line)
+=>
+	(up-train 0 c: mangonel-line)
+)
+
+(defrule
+	(gold-amount > 1000)
+	(or	(players-unit-type-count focus-player mangonel-line > 1)
+		(or	(players-unit-type-count focus-player scorpion-line > 5)
+			(or	(players-building-type-count focus-player longbowman-line > 10)
+				(or	(players-unit-type-count focus-player archer-line > 10)
+					(or	(players-unit-type-count focus-player chu-ko-nu-line > 10)
+						(players-unit-type-count focus-player janissary-line > 10))))))
+	(unit-type-count-total bombard-cannon < 7)
+	(can-train bombard-cannon)
+=>
+	(up-train 0 c: bombard-cannon)
+)
+
+(defrule
+	(gold-amount > 1000)
+	(or	(players-unit-type-count focus-player plumed-archer-line > 10)
+		(or	(players-unit-type-count focus-player genoese-crossbowman > 10)
+			(or	(players-unit-type-count focus-player slinger > 10)
+				(players-unit-type-count focus-player skirmisher-line > 10))))
+	(unit-type-count-total bombard-cannon < 7)
+	(can-train bombard-cannon)
+=>
+	(up-train 0 c: bombard-cannon)
+)
+
+(defrule
+	(or	(civ-selected celtic)
+		(or	(civ-selected chinese)
+			(civ-selected slavic)))
+	(nand	(civ-selected chinese)
+		(and	(game-time < 1200)
+			(unit-type-count-total scorpion-line > 15)))
+	(or	(unit-type-count-total scorpion-line < 35)
+		(food-amount < 1500))
+	(can-train scorpion-line)
+=>
+	(up-train 0 c: scorpion-line)
+)
+
+(defrule
+	(up-research-status c: ri-siege-onager <= research-pending)
+	(research-completed ri-heavy-scorpion)
+	(or	(players-unit-type-count focus-player archer-line > 10)
+		(or	(players-unit-type-count focus-player cavalry-archer-line > 10)
+			(or	(players-unit-type-count focus-player hand-cannoneer > 10)
+				(or	(players-unit-type-count focus-player mameluke-line > 7)
+					(or	(players-unit-type-count focus-player militiaman-line > 10)
+						(food-amount < 1000))))))
+	(unit-type-count-total scorpion-line < 30)
+	(can-train scorpion-line)
+=>
+	(up-train 0 c: scorpion-line)
+)
+
+(defrule
+	(up-research-status c: ri-siege-onager <= research-pending)
+	(research-completed ri-heavy-scorpion)
+	(or	(players-unit-type-count focus-player mangudai-line > 10)
+		(or	(players-unit-type-count focus-player janissary-line > 10)
+			(or	(players-unit-type-count focus-player plumed-archer-line > 10)
+				(or	(players-unit-type-count focus-player chu-ko-nu-line > 10)
+					(or	(players-building-type-count focus-player conquistador-line > 10)
+						(players-building-type-count focus-player longbowman-line > 10))))))
+	(unit-type-count-total scorpion-line < 30)
+	(can-train scorpion-line)
+=>
+	(up-train 0 c: scorpion-line)
+)
+
+(defrule
+	(gold-amount > 1500)
+	(civ-selected aztec)
+	(or	(players-civ focus-player gothic)
+		(or	(players-civ focus-player korean)
+			(or	(players-civ focus-player persian)
+				(or	(players-civ focus-player chinese)
+					(or	(players-civ focus-player indian)
+						(players-civ focus-player japanese))))))
+	(unit-type-count-total monk < 30)
+	(can-train monk)
+=>
+	(up-train 0 c: monk)
+)
+
+(defrule
+	(gold-amount > 1500)
+	(civ-selected aztec)
+	(players-civ focus-player slavic)
+	(unit-type-count-total monk < 30)
+	(can-train monk)
+=>
+	(up-train 0 c: monk)
+)
+
+(defrule
+	(civ-selected turkish)
+=>
+	(up-jump-rule 2)
+)
+
+#load-if-not-defined TINY-MAP
+(defrule
+	(or	(gold-amount < 50)
+		(and	(food-amount > 500)
+			(wood-amount > 500)))
+	(gold-amount < 350)
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(food-amount > 75)
+	(current-age-time > 1200)
+	(or	(gold-amount < 50)
+		(unit-type-count-total skirmisher-line < 30))
+	(unit-type-count-total skirmisher-line < 70)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(or	(gold-amount < 50)
+		(and	(food-amount > 500)
+			(wood-amount > 500)))
+	(gold-amount < 350)
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(food-amount > 75)
+	(current-age-time > 1200)
+	(or	(gold-amount < 50)
+		(unit-type-count-total spearman-line < 30))
+	(unit-type-count-total skirmisher-line < 50)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+#else
+(defrule
+	(or	(gold-amount < 50)
+		(and	(food-amount > 500)
+			(wood-amount > 500)))
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(food-amount > 75)
+	(current-age-time > 1200)
+	(or	(gold-amount < 50)
+		(unit-type-count-total skirmisher-line < 30))
+	(unit-type-count-total skirmisher-line < 70)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line)
+)
+
+(defrule
+	(or	(gold-amount < 50)
+		(and	(food-amount > 500)
+			(wood-amount > 500)))
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(food-amount > 75)
+	(current-age-time > 1200)
+	(or	(gold-amount < 50)
+		(unit-type-count-total spearman-line < 30))
+	(unit-type-count-total skirmisher-line < 50)
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+#end-if
+
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 1200)
+	(gold-amount < 50)
+	(food-amount > 1000)
+	(unit-type-count-total scout-cavalry-line < late-game-scout-amount)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 1200)
+	(gold-amount < 100)
+	(food-amount > 1000)
+	(unit-type-count-total scout-cavalry-line < upgraded-scout-amount)
+	(research-completed ri-chain-barding)
+	(research-completed ri-iron-casting)
+	(nor	(research-available ri-light-cavalry)
+		(research-available ri-hussar))
+	(nor	(research-available ri-blast-furnace)
+		(research-available ri-plate-barding))
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(game-time < 480)
+	(up-compare-goal temporary-goal > 0)
+=>
+	(up-jump-rule -67)
+	(up-modify-goal temporary-goal c:- 1)
+)
+
+(defrule
+	(or	(not	(player-valid any-ally))
+		(or	(goal POSITION POCKET)
+			(unit-type-count-total monk < 1)))
+	(or	(unit-type-count-total monk < 1)
+		(game-time < 600))
+	(unit-type-count-total monk < 2)
+	(can-train monk)
+=>
+	(up-train 0 c: monk)
+	(set-strategic-number sn-monk-trained 1)
+)
+
+(defrule
+	(or	(goal DOCK 1)
+		(and	(goal MILITARY 1)
+			(soldier-count > 15)))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(or	(unit-type-count-total transport-ship < 3)
+		(and	(soldier-count > 30)
+			(unit-type-count-total transport-ship < 6)))
+	(can-train transport-ship)
+=>
+	(train transport-ship)
+)
+
+(defrule
+	(game-time > 360)
+	(warboat-count > 18)
+	(or	(players-military-population target-player < 20)
+		(or	(game-time > 1500)
+			(or	(players-building-type-count target-player castle > 0)
+				(players-building-type-count target-player bombard-tower > 0))))
+	(or	(warboat-count > 50)
+		(unit-type-count-total cannon-galleon-line < 5))
+	(unit-type-count-total cannon-galleon-line < 10)
+	(can-train cannon-galleon-line)
+=>
+	(up-train 0 c: cannon-galleon-line)
+)
+
+(defrule
+	(research-completed ri-heavy-demolition-ship)
+	(or	(and	(players-unit-type-count any-enemy fire-ship-line > 4)
+			(unit-type-count-total demolition-ship-line < 1))
+		(and	(players-unit-type-count any-enemy fire-ship-line > 7)
+			(unit-type-count-total demolition-ship-line < 5)))
+	(can-train demolition-ship)
+=>
+	(train demolition-ship)
+)
+
+(defrule
+	(current-age < imperial-age)
+	(nand	(population-cap < 200)
+		(population > almost-full-pop))
+	(unit-type-count-total galley-line < 150)
+	(can-train galley-line)
+=>
+	(up-train 0 c: galley-line)
+)
+
+(defrule
+	(goal gl-dm-water-strategy dm-galleons)
+	(or	(game-time < 600)
+		(unit-type-count-total galley-line < 80))
+	(nand	(population-cap < 200)
+		(population > almost-full-pop))
+	(unit-type-count-total galley-line < 150)
+	(can-train galley-line)
+=>
+	(up-train 0 c: galley-line)
+)
+
+(defrule
+	(goal gl-dm-water-strategy dm-fire-galley)
+	(or	(game-time < 600)
+		(unit-type-count-total galley-line < 40))
+	(nand	(population-cap < 200)
+		(population > almost-full-pop))
+	(unit-type-count-total galley-line < 75)
+	(can-train galley-line)
+=>
+	(up-train 0 c: galley-line)
+)
+
+(defrule
+	(goal gl-dm-water-strategy dm-fire-galley)
+	(or	(game-time < 600)
+		(unit-type-count-total fire-ship-line < 40))
+	(nand	(population-cap < 200)
+		(population > almost-full-pop))
+	(unit-type-count-total fire-ship-line < 75)
+	(can-train fire-ship-line)
+=>
+	(up-train 0 c: fire-ship-line)
+)
+
+(defrule
+	(goal gl-dm-water-strategy dm-fireships)
+	(or	(game-time < 600)
+		(unit-type-count-total fire-ship-line < 80))
+	(nand	(population-cap < 200)
+		(population > almost-full-pop))
+	(unit-type-count-total fire-ship-line < 150)
+	(can-train fire-ship-line)
+=>
+	(up-train 0 c: fire-ship-line)
+)
+
+(defrule
+	(goal gl-dm-water-strategy dm-light-galleons)
+	(or	(game-time < 600)
+		(unit-type-count-total galley-line < 55))
+	(nand	(population-cap < 200)
+		(population > almost-full-pop))
+	(unit-type-count-total galley-line < 90)
+	(can-train galley-line)
+=>
+	(up-train 0 c: galley-line)
+)
+
+(defrule
+	(goal gl-dm-water-strategy dm-light-fire-galley)
+	(or	(game-time < 600)
+		(unit-type-count-total galley-line < 35))
+	(nand	(population-cap < 200)
+		(population > almost-full-pop))
+	(unit-type-count-total galley-line < 60)
+	(can-train galley-line)
+=>
+	(up-train 0 c: galley-line)
+)
+
+(defrule
+	(goal gl-dm-water-strategy dm-light-fire-galley)
+	(or	(game-time < 600)
+		(unit-type-count-total fire-ship-line < 20))
+	(nand	(population-cap < 200)
+		(population > almost-full-pop))
+	(unit-type-count-total fire-ship-line < 30)
+	(can-train fire-ship-line)
+=>
+	(up-train 0 c: fire-ship-line)
+)
+
+(defrule
+	(goal gl-dm-water-strategy dm-light-fireships)
+	(or	(game-time < 600)
+		(unit-type-count-total fire-ship-line < 40))
+	(nand	(population-cap < 200)
+		(population > almost-full-pop))
+	(unit-type-count-total fire-ship-line < 65)
+	(can-train fire-ship-line)
+=>
+	(up-train 0 c: fire-ship-line)
+)
+
+(defrule
+	(goal gl-dm-water-strategy dm-light-fireships)
+	(nand	(population-cap < 200)
+		(population > almost-full-pop))
+	(unit-type-count-total fire-ship-line > 9)
+	(unit-type-count-total galley-line < 25)
+	(can-train galley-line)
+=>
+	(up-train 0 c: galley-line)
+)
+
+(defrule
+	(civ-selected spanish)
+	(game-time > 120)
+	(gold-amount > 3000)
+	(warboat-count > 10)
+	(or	(warboat-count > 20)
+		(unit-type-count-total cannon-galleon-line < 3))
+	(or	(warboat-count > 35)
+		(unit-type-count-total cannon-galleon-line < 6))
+	(or	(warboat-count > 50)
+		(unit-type-count-total cannon-galleon-line < 8))
+	(unit-type-count-total cannon-galleon-line < 15)
+	(can-train cannon-galleon-line)
+=>
+	(up-train 0 c: cannon-galleon-line)
+)
+
+(defrule
+	(civ-selected korean)
+	(game-time > 120)
+	(gold-amount > 3000)
+	(or	(warboat-count > 10)
+		(unit-type-count-total turtle-ship-line < 3))
+	(or	(warboat-count > 20)
+		(unit-type-count-total turtle-ship-line < 6))
+	(or	(warboat-count > 35)
+		(unit-type-count-total turtle-ship-line < 8))
+	(unit-type-count-total turtle-ship-line < 15)
+	(can-train turtle-ship-line)
+=>
+	(up-train 0 c: turtle-ship-line)
+)
+
+(defrule
+	(up-compare-goal MILITARY <= 0)
+	(strategic-number sn-number-boat-attack-groups > 0)
+=>
+	(set-strategic-number sn-number-boat-attack-groups 0)
+	(enable-timer 1 10)
+)
+
+(defrule
+	(game-time > 360)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(warboat-count > relative-10-units)
+=>
+	(set-strategic-number sn-dock-training-filter 2)
+	(disable-self)
+)
+
+(defrule
+	(or	(goal gl-heavy-water-map YES)
+		(strategic-number sn-minimum-water-body-size-for-dock >= 1999))
+=>
+	(up-get-fact warboat-count 0 gl-my-warboat-count)
+	(up-modify-goal gl-my-warboat-count c:+ 1)
+)
+
+(defrule
+	(or	(goal gl-heavy-water-map YES)
+		(strategic-number sn-minimum-water-body-size-for-dock >= 1999))
+	(up-compare-goal gl-my-warboat-count > 20)
+=>
+	(set-goal gl-my-warboat-count 20)
+)
+
+(defrule
+	(or	(goal gl-heavy-water-map YES)
+		(strategic-number sn-minimum-water-body-size-for-dock >= 1999))
+	(warboat-count > 0)
+	(players-building-type-count every-enemy dock == 0)
+	(strategic-number sn-total-number-explorers g:!= gl-my-warboat-count)
+	(up-compare-goal threat-time >= 20000)
+=>
+	(up-modify-sn sn-total-number-explorers g:= gl-my-warboat-count)
+	(up-modify-goal gl-my-warboat-count c:- 1)
+	(up-modify-sn sn-number-boat-explore-groups g:= gl-my-warboat-count)
+	(up-chat-data-to-player my-player-number "Boat explorers %d" g: gl-my-warboat-count)
+)
+
+(defrule
+	(or	(goal gl-heavy-water-map YES)
+		(strategic-number sn-minimum-water-body-size-for-dock >= 1999))
+	(players-unit-type-count every-enemy galley-line < 5)
+	(players-unit-type-count every-enemy fire-ship-line < 5)
+	(players-unit-type-count every-enemy longboat-line < 5)
+	(players-unit-type-count every-enemy turtle-ship-line < 1)
+	(players-unit-type-count every-enemy cannon-galleon-line < 2)
+	(players-building-type-count any-enemy dock > 0)
+	(strategic-number sn-number-boat-explore-groups > 1)
+=>
+	(set-strategic-number sn-total-number-explorers 2)
+	(set-strategic-number sn-number-boat-explore-groups 1)
+	(chat-to-player my-player-number "Boat explorers 1")
+	(up-reset-scouts)
+)
+
+(defrule
+	(or	(goal gl-heavy-water-map YES)
+		(strategic-number sn-minimum-water-body-size-for-dock >= 1999))
+	(up-compare-goal threat-time < 20000)
+	(or	(up-projectile-target projectile-any == warship-class)
+		(up-compare-goal threat-target == warship-class))
+	(players-building-type-count every-enemy dock == 0)
+	(strategic-number sn-number-boat-explore-groups > 1)
+=>
+	(set-strategic-number sn-total-number-explorers 2)
+	(set-strategic-number sn-number-boat-explore-groups 1)
+	(chat-to-player my-player-number "Boat explorers 1")
+	(up-reset-scouts)
+)
+
+(defrule
+	(or	(goal gl-heavy-water-map YES)
+		(strategic-number sn-minimum-water-body-size-for-dock >= 1999))
+	(up-compare-goal threat-time < 20000)
+	(or	(up-projectile-target projectile-any == warship-class)
+		(up-compare-goal threat-target == warship-class))
+	(players-building-type-count any-enemy dock > 0)
+	(strategic-number sn-number-boat-explore-groups > 0)
+=>
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-number-boat-explore-groups 0)
+	(chat-to-player my-player-number "Boat explorers 0")
+	(up-reset-scouts)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(game-time > 1800)
+	(players-building-count any-enemy > 0)
+	(warboat-count > 27)
+	(players-unit-type-count every-enemy fire-ship-line < 13)
+	(players-unit-type-count every-enemy galley-line < 13)
+	(players-unit-type-count every-enemy longboat-line < 10)
+	(players-unit-type-count every-enemy turtle-ship-line < 2)
+	(players-unit-type-count every-enemy cannon-galleon-line < 2)
+=>
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1999)
+	(set-strategic-number sn-group-form-distance 30)
+	(set-goal DOCK 1)
+	(chat-to-player my-player-number "Enable landing")
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(game-time > 1800)
+	(players-building-count any-enemy > 0)
+	(warboat-count > 38)
+	(players-unit-type-count every-enemy fire-ship-line < 17)
+	(players-unit-type-count every-enemy galley-line < 17)
+	(players-unit-type-count every-enemy longboat-line < 13)
+	(players-unit-type-count every-enemy turtle-ship-line < 3)
+	(players-unit-type-count every-enemy cannon-galleon-line < 3)
+=>
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1999)
+	(set-strategic-number sn-group-form-distance 30)
+	(set-goal DOCK 1)
+	(chat-to-player my-player-number "Enable landing")
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(game-time > 500)
+	(players-building-count any-enemy > 0)
+	(warboat-count > 20)
+	(or	(players-building-type-count any-enemy wonder > 0)
+		(enemy-captured-relics))
+	(victory-condition standard)
+=>
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-minimum-water-body-size-for-dock 1999)
+	(set-strategic-number sn-group-form-distance 30)
+	(set-goal DOCK 1)
+	(chat-to-player my-player-number "Enable landing")
+)
+
+(defrule
+	(up-timer-status 1 != timer-running)
+	(goal MILITARY 1)
+	(or	(goal DOCK 1)
+		(population > 190))
+	(soldier-count > 20)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+=>
+	(set-strategic-number sn-disable-attack-groups 0)
+	(enable-timer 1 240)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-scale-minimum-attack-group-size 10)
+	(set-strategic-number sn-scale-maximum-attack-group-size 25)
+	(set-strategic-number sn-group-form-distance 30)
+	(set-strategic-number sn-attack-group-gather-spacing 80)
+	(chat-to-player my-player-number "Attack now (landing)")
+	(set-strategic-number sn-number-attack-groups 199)
+)
+
+(defrule
+	(up-timer-status 1 != timer-running)
+	(population > almost-full-pop)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+=>
+	(set-strategic-number sn-disable-attack-groups 0)
+	(enable-timer 1 150)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-strategic-number sn-scale-minimum-attack-group-size 10)
+	(set-strategic-number sn-scale-maximum-attack-group-size 25)
+	(set-strategic-number sn-group-form-distance 30)
+	(set-strategic-number sn-attack-group-gather-spacing 80)
+	(set-goal MILITARY 1)
+	(set-strategic-number sn-hitting-pop-cap YES)
+	(chat-to-player my-player-number "Assume to have military superiority due high population")
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+	(warboat-count < 50)
+	(nand	(players-building-type-count any-enemy wonder > 0)
+		(and	(victory-condition standard)
+			(map-type custom)))
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock 2001)
+	(set-goal DOCK 2)
+	(chat-to-player my-player-number "Start training more navy again")
+)
+
+; ============== ECONOMICAL BUILDINGS
+
+(defrule
+	(unit-type-count-total villager > 22)
+	(or	(building-type-count-total mining-camp < 4)
+		(or	(dropsite-min-distance gold > 4)
+			(and	(building-type-count-total mining-camp < 8)
+				(unit-type-count-total villager > 70))))
+	(building-type-count-total mining-camp < 14)
+	(goal gl-fixed-eco-balancing NO)
+	(dropsite-min-distance gold >= 0)
+	(dropsite-min-distance gold < 255)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(set-strategic-number sn-dropsite-separation-distance 6)
+	(build mining-camp)
+)
+
+(defrule
+	(timer-triggered 8)
+	(unit-type-count-total villager > 22)
+	(unit-type-count-total villager < 30)
+	(resource-found wood)
+	(can-build lumber-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 1)
+	(set-strategic-number sn-dropsite-separation-distance 3)
+	(enable-timer 8 360)
+	(build lumber-camp)
+)
+
+(defrule
+	(timer-triggered 8)
+	(unit-type-count-total villager > 30)
+	(unit-type-count-total villager <= 70)
+	(resource-found wood)
+	(can-build lumber-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 1)
+	(set-strategic-number sn-dropsite-separation-distance 3)
+	(enable-timer 8 220)
+	(build lumber-camp)
+)
+
+(defrule
+	(timer-triggered 8)
+	(unit-type-count-total villager > 70)
+	(resource-found wood)
+	(can-build lumber-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 1)
+	(set-strategic-number sn-dropsite-separation-distance 3)
+	(enable-timer 8 130)
+	(build lumber-camp)
+)
+
+(defrule
+	(building-type-count town-center > 0)
+	(game-time > 300)
+	(or	(building-type-count-total mill < 5)
+		(and	(building-type-count-total farm > 60)
+			(wood-amount > 350)))
+	(building-type-count-total mill < 7)
+	(building-type-count-total farm > 15)
+	(or	(building-type-count-total farm > 30)
+		(building-type-count-total mill < 2))
+	(can-build mill)
+=>
+	(build mill)
+)
+
+(defrule
+	(game-time > 300)
+	(goal gl-fixed-eco-balancing NO)
+=>
+	(up-get-fact unit-type-count villager gl-my-villager-count)
+	(up-modify-goal gl-my-food-gp s:= sn-food-gatherer-percentage)
+	(up-modify-goal gl-max-farm-count g:= gl-my-villager-count)
+	(up-modify-goal gl-max-farm-count g:* gl-my-food-gp)
+	(up-modify-goal gl-max-farm-count c:/ 100)
+	(up-get-fact unit-type-count villager-hunter temporary-goal)
+	(up-modify-goal gl-max-farm-count g:- temporary-goal)
+	(up-get-fact unit-type-count villager-forager temporary-goal)
+	(up-modify-goal gl-max-farm-count g:- temporary-goal)
+	(up-get-fact unit-type-count villager-fisherman temporary-goal)
+	(up-modify-goal gl-max-farm-count g:- temporary-goal)
+)
+
+(defrule
+	(building-type-count-total farm g:< gl-max-farm-count)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+#load-if-not-defined UP-4-PLAYER-GAME
+(defrule
+	(up-compare-goal gl-disable-market-placing != YES)
+	(not	(goal POSITION FLANK))
+	(population > 130)
+	(game-time > 500)
+	(building-type-count-total market < 3)
+	(players-building-type-count any-ally market > 0)
+	(building-type-count town-center > 0)
+	(can-build market)
+=>
+	(up-set-placement-data my-player-number -1 c: -100)
+	(up-build place-control 0 c: market)
+	(set-strategic-number sn-object-repair-level 20611)
+	(set-strategic-number sn-placement-fail-delta -1)
+)
+
+(defrule
+	(up-compare-goal gl-disable-market-placing != YES)
+	(goal POSITION FLANK)
+	(population > 130)
+	(game-time > 500)
+	(building-type-count-total market < 3)
+	(players-building-type-count any-ally market > 0)
+	(building-type-count town-center > 0)
+	(can-build market)
+=>
+	(set-strategic-number sn-placement-to-center 1)
+	(up-set-placement-data my-player-number -1 c: -100)
+	(up-build place-control 0 c: market)
+	(set-strategic-number sn-object-repair-level 20611)
+	(set-strategic-number sn-placement-fail-delta -1)
+)
+#else
+(defrule
+	(up-compare-goal gl-disable-market-placing != YES)
+	(population > 130)
+	(game-time > 500)
+	(building-type-count-total market < 3)
+	(players-building-type-count any-ally market > 0)
+	(building-type-count town-center > 0)
+	(can-build market)
+=>
+	(set-strategic-number sn-placement-to-center 1)
+	(up-set-placement-data any-ally -1 c: -130)
+	(up-build place-control 0 c: market)
+	(set-strategic-number sn-object-repair-level 20611)
+	(set-strategic-number sn-placement-fail-delta -1)
+)
+#end-if
+
+(defrule
+	(up-pending-objects c: market == 0)
+	(strategic-number sn-placement-fail-delta == -1)
+=>
+	(set-strategic-number sn-placement-to-center 0)
+	(set-strategic-number sn-placement-fail-delta 0)
+)
+
+; ============== ECO BALANCING
+
+(defrule
+	(not	(timer-triggered 3))
+=>
+	(up-jump-rule 12)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+=>
+	(set-goal gl-my-total-stockpile 0)
+	(up-get-fact food-amount 0 gl-my-food-stockpile)
+	(up-get-fact wood-amount 0 gl-my-wood-stockpile)
+	(up-get-fact gold-amount 0 gl-my-gold-stockpile)
+	(up-modify-goal gl-my-food-stockpile c:/ 100)
+	(up-modify-goal gl-my-wood-stockpile c:/ 100)
+	(up-modify-goal gl-my-gold-stockpile c:/ 100)
+	(up-modify-goal gl-my-total-stockpile g:+ gl-my-food-stockpile)
+	(up-modify-goal gl-my-total-stockpile g:+ gl-my-wood-stockpile)
+	(up-modify-goal gl-my-total-stockpile g:+ gl-my-gold-stockpile)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+=>
+	(up-modify-goal gl-food-gp-points g:= gl-my-total-stockpile)
+	(up-modify-goal gl-wood-gp-points g:= gl-my-total-stockpile)
+	(up-modify-goal gl-gold-gp-points g:= gl-my-total-stockpile)
+	(up-modify-goal gl-food-gp-points g:- gl-my-food-stockpile)
+	(up-modify-goal gl-wood-gp-points g:- gl-my-wood-stockpile)
+	(up-modify-goal gl-gold-gp-points g:- gl-my-gold-stockpile)
+	(up-modify-goal gl-food-gp-points c:+ 8); Ensuring they don't ever end up 0 and balancing them a bit
+	(up-modify-goal gl-wood-gp-points c:+ 8)
+	(up-modify-goal gl-gold-gp-points c:+ 8)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(or	(gold-amount < 2000)
+		(game-time < 300))
+	(game-time < 600)
+=>
+	(up-modify-goal gl-gold-gp-points c:+ 30)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(food-amount < 2000)
+	(game-time < 600)
+=>
+	(up-modify-goal gl-food-gp-points c:+ 30)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(wood-amount < 1500)
+	(game-time < 600)
+=>
+	(up-modify-goal gl-wood-gp-points c:+ 30)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(wood-amount < 600)
+	(food-amount > 2000)
+=>
+	(up-modify-goal gl-wood-gp-points c:+ 22)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(or	(food-amount < 3500)
+		(game-time < 800))
+	(or	(civ-selected gothic)
+		(civ-selected slavic))
+=>
+	(up-modify-goal gl-food-gp-points c:+ 22)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(food-amount > 800)
+	(wood-amount < 1500)
+	(or	(civ-selected briton)
+		(or	(civ-selected chinese)
+			(or	(civ-selected korean)
+				(civ-selected mongol))))
+=>
+	(up-modify-goal gl-wood-gp-points c:+ 13)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(up-compare-goal gl-gathered-relics > 0)
+=>
+	(up-modify-goal gl-gold-gp-points g:- gl-gathered-relics)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(unit-type-count trade-cart > 10)
+=>
+	(up-modify-goal gl-gold-gp-points c:- 3)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(unit-type-count trade-cart > 20)
+=>
+	(up-modify-goal gl-gold-gp-points c:- 3)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(unit-type-count trade-cart > 30)
+=>
+	(up-modify-goal gl-gold-gp-points c:- 3)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(game-time < 1200)
+	(gold-amount > 1000)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+=>
+	(up-modify-goal gl-wood-gp-points c:+ 350)
+	(up-modify-goal gl-food-gp-points c:- 10)
+)
+
+(defrule
+	(goal gl-fixed-eco-balancing NO)
+	(timer-triggered 3)
+	(or	(and	(game-time > 1200)
+			(wood-amount < 2000))
+		(and	(game-time < 1200)
+			(and	(gold-amount > 1000)
+				(goal gl-heavy-water-map YES))))
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+=>
+	(up-modify-goal gl-wood-gp-points c:+ 200)
+)
+
+; ============== THREAT LEVEL
+
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-threat-level dm-early-threat-level)
+	(disable-self)
+)
+
+(defrule
+	(game-time < 30)
+	(or	(goal gl-heavy-water-map YES)
+		(strategic-number sn-minimum-water-body-size-for-dock >= 1999))
+=>
+	(set-strategic-number sn-threat-level -2)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(unit-type-count battering-ram-line < 6)
+	(unit-type-count trebuchet-set < 3)
+	(population < almost-full-pop)
+	(or	(players-building-type-count target-player castle > 1)
+		(players-building-type-count target-player bombard-tower > 0))
+	(or	(up-projectile-detected projectile-castle < 500000)
+		(up-projectile-detected projectile-bombard-tower < 500000))
+	(game-time < 420)
+=>
+	(set-strategic-number sn-threat-level 1)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(or	(unit-type-count battering-ram-line > 5)
+		(unit-type-count trebuchet-set > 2))
+	(game-time < 420)
+=>
+	(set-strategic-number sn-threat-level dm-early-threat-level)
+	(disable-self)
+)
+
+(defrule
+	(or	(not	(goal MILITARY 1))
+		(strategic-number sn-threat-level > 0))
+	(game-time > 420)
+=>
+	(set-strategic-number sn-threat-level dm-default-threat-level)
+	(disable-self)
+)
+
+(defrule
+	(player-valid any-ally)
+	(game-time > 420)
+	(strategic-number sn-threat-level > dm-default-threat-level)
+=>
+	(set-strategic-number sn-threat-level dm-default-threat-level)
+)
+
+

@@ -1,0 +1,431 @@
+; STRATEGY
+
+#load-if-defined BLACK-FOREST-MAP
+(defrule
+	(true)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	(disable-self)
+)
+#else
+
+
+; Aztec KLEWs are extremely dangerous. Mayan ones not so much because their economy is good but not so good.
+; The m@a rush is a nice tool to counter KLEWs
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	;(strategic-number G-THREAT-EAGLE >= 1)
+	(players-building-type-count any-enemy archery-range == 0)
+	(players-building-type-count any-enemy monastery == 0)
+	(strategic-number G-THREAT-ARCHERY-GROUP == 0)
+	(strategic-number G-THREAT-MONK == 0)
+	;(nand	(players-current-age any-enemy < castle-age)
+	;	(players-military-population any-enemy > 1)
+	;)
+	;(or	
+	;	(players-civ any-enemy aztec)
+		(strategic-number G-THREAT-EAGLE >= 1)
+	;)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-ANTIEAGLE)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+	(or	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+		(or	(players-building-type-count any-enemy archery-range >= 1)
+			(or	(players-building-type-count any-enemy monastery >= 1)
+				(strategic-number G-THREAT-MONK >= 1)
+			)
+		)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-SWORD-ARCHERS)
+	(disable-self)
+)
+
+; If enemy goes for a mush, mesos massed archers or scout flushes can be a good way to face it
+#load-if-defined AZTEC-CIV
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(nor	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+	)
+	(players-building-type-count any-enemy barracks < 2)
+	(players-building-type-count any-enemy stable == 0)
+	(players-building-type-count any-enemy watch-tower < 5)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(strategic-number G-THREAT-CAVALRY-GROUP == 0)
+	(or	(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+		(players-building-type-count any-enemy archery-range >= 2)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(not(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3))
+	(players-building-type-count any-enemy watch-tower == 0)
+	(or	(players-building-type-count any-enemy monastery >= 1)
+		(strategic-number G-THREAT-MONK >= 1)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(disable-self)
+)
+#end-if
+
+#load-if-defined MAYAN-CIV
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(nor	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+	)
+	(players-building-type-count any-enemy barracks < 2)
+	(players-building-type-count any-enemy stable == 0)
+	(players-building-type-count any-enemy watch-tower < 5)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(strategic-number G-THREAT-CAVALRY-GROUP == 0)
+	(or	(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+		(players-building-type-count any-enemy archery-range >= 2)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(not(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3))
+	(players-building-type-count any-enemy watch-tower == 0)
+	(or	(players-building-type-count any-enemy monastery >= 1)
+		(strategic-number G-THREAT-MONK >= 1)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(disable-self)
+)
+#end-if
+
+#load-if-defined INCAN-CIV
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(nor	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+	)
+	(players-building-type-count any-enemy barracks < 2)
+	(players-building-type-count any-enemy stable == 0)
+	(players-building-type-count any-enemy watch-tower < 5)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(strategic-number G-THREAT-CAVALRY-GROUP == 0)
+	(or	(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+		(players-building-type-count any-enemy archery-range >= 2)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(not(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3))
+	(players-building-type-count any-enemy watch-tower == 0)
+	(or	(players-building-type-count any-enemy monastery >= 1)
+		(strategic-number G-THREAT-MONK >= 1)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(disable-self)
+)
+#end-if
+
+#load-if-defined SARACEN-CIV
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(nor	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	)
+	(players-building-type-count any-enemy barracks < 2)
+	(players-building-type-count any-enemy stable == 0)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(strategic-number G-THREAT-CAVALRY-GROUP == 0)
+	(or	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+		(players-building-type-count any-enemy archery-range >= 2)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(nor	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	)
+	(or	(players-building-type-count any-enemy monastery >= 1)
+		(strategic-number G-THREAT-MONK >= 1)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(disable-self)
+)
+#end-if
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined SARACEN-CIV
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(nor	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+		(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+			(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+		)
+	)
+	(players-building-type-count any-enemy barracks < 2)
+	(players-building-type-count any-enemy stable == 0)
+	(strategic-number G-THREAT-EAGLE == 0)
+	(strategic-number G-THREAT-CAVALRY-GROUP == 0)
+	(or	(strategic-number G-THREAT-ARCHERY-GROUP >= 1)
+		(players-building-type-count any-enemy archery-range >= 2)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(nor	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+		(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+			(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+		)
+	)
+	(or	(players-building-type-count any-enemy monastery >= 1)
+		(strategic-number G-THREAT-MONK >= 1)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(players-building-type-count any-enemy watch-tower >= 1)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-SWORD-ARCHERS)
+)
+
+
+; Next two rules are for trush disabling in big maps, or full of predators
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+	(or	(or	(cc-players-unit-type-count 0 WOLF > 18)
+			(cc-players-unit-type-count 0 JAGUAR > 18)
+		)
+		(and	(cc-players-unit-type-count 0 WOLF > 7)
+			(cc-players-unit-type-count 0 JAGUAR > 7)
+		)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-SWORD-ARCHERS)
+	;(chat-to-player my-player-number "Trush disabled because this map is too big or has got too many predators")
+)
+
+#load-if-not-defined SARACEN-CIV
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	(or	(or	(cc-players-unit-type-count 0 WOLF > 18)
+			(cc-players-unit-type-count 0 JAGUAR > 18)
+		)
+		(and	(cc-players-unit-type-count 0 WOLF > 7)
+			(cc-players-unit-type-count 0 JAGUAR > 7)
+		)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+	;(chat-to-player my-player-number "Trush disabled because this map is too big or has got too many predators")
+)
+#else
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	(or	(or	(cc-players-unit-type-count 0 WOLF > 18)
+			(cc-players-unit-type-count 0 JAGUAR > 18)
+		)
+		(and	(cc-players-unit-type-count 0 WOLF > 7)
+			(cc-players-unit-type-count 0 JAGUAR > 7)
+		)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	;(chat-to-player my-player-number "Trush disabled because this map is too big or has got too many predators")
+)
+#end-if
+
+; Trush also must be disabled if enemy is much faster than us
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+	(or	(or	(cc-players-unit-type-count 0 STONE-MINE == 0)
+			(or	(unit-type-count-total MALE-DEAD-VILLAGER > 0)
+				(unit-type-count-total FEMALE-DEAD-VILLAGER > 0)
+			)
+		)
+		(and	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+			(players-current-age any-enemy >= feudal-age)
+		)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-SWORD-ARCHERS)
+	;(chat-to-player my-player-number "Trush disabled the enemy has been too fast to be trushed")
+	;(chat-to-player my-player-number "Or not stone in the map")
+	;(chat-to-player my-player-number "Or dead villagers")
+)
+
+#load-if-not-defined SARACEN-CIV
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	(or	(or	(cc-players-unit-type-count 0 STONE-MINE == 0)
+			(or	(unit-type-count-total MALE-DEAD-VILLAGER > 0)
+				(unit-type-count-total FEMALE-DEAD-VILLAGER > 0)
+			)
+		)
+		(and	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+			(players-current-age any-enemy >= feudal-age)
+		)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+	;(chat-to-player my-player-number "Trush disabled the enemy has been too fast to be trushed")
+	;(chat-to-player my-player-number "Or not stone in the map")
+	;(chat-to-player my-player-number "Or dead villagers")
+)
+#else
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	(or	(or	(cc-players-unit-type-count 0 STONE-MINE == 0)
+			(or	(unit-type-count-total MALE-DEAD-VILLAGER > 0)
+				(unit-type-count-total FEMALE-DEAD-VILLAGER > 0)
+			)
+		)
+		(and	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+			(players-current-age any-enemy >= feudal-age)
+		)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	;(chat-to-player my-player-number "Trush disabled the enemy has been too fast to be trushed")
+	;(chat-to-player my-player-number "Or not stone in the map")
+	;(chat-to-player my-player-number "Or dead villagers")
+)
+#end-if
+
+
+(defrule
+	(not(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY))
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(or	(taunt-detected my-player-number TA-WALLED-MAP)
+		(map-size giant)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	;(chat-to-player my-player-number "Changing into a Fast Castle strategy because this settings are not good to flush.")
+)
+#end-if ; Not Black Forest
+
+
+; Water maps
+#load-if-not-defined COASTAL-MAP ;This map is ideal to flush, and fishing delays it.
+#load-if-not-defined POPULATION-CAP-25
+(defrule
+	;(strategic-number sn-minimum-water-body-size-for-dock == SEA-SIZE-FOR-DOCK)
+	(xor	(cc-players-unit-type-count 0 SHORE-FISH-GROUP >= SEA-FISHES)
+		(cc-players-unit-type-count 0 FISHING-GROUNDS-GROUP >= SEA-FISHES)
+	)
+	(or	(cc-players-unit-type-count 0 SNOW-PINE-TREE < 20); Pine trees means iced maps, so AIs can't build docks here. Idea taken from The Horde, by Archon/Zergs
+		(map-type baltic) ; This map often is snow, but you can fish in it
+	)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	(set-strategic-number sn-minimum-water-body-size-for-dock MIXED-MAP)
+	(chat-to-player my-player-number "Mixed map detected")
+	(chat-to-player my-player-number "Changing into an amphibian strategy")
+)
+
+(defrule
+	(cc-players-unit-type-count 0 SHORE-FISH-GROUP >= SEA-FISHES)
+	(cc-players-unit-type-count 0 FISHING-GROUNDS-GROUP >= SEA-FISHES)
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+=>
+	(set-strategic-number sn-minimum-water-body-size-for-dock WATER-MAP)
+	(set-strategic-number sn-garrison-rams 0); don't load rams or the computer messes up with transports
+	(set-strategic-number sn-group-form-distance 255); big distances to load transport ships
+	;(set-difficulty-parameter ability-to-maintain-distance 100); dont back up with fireships
+	(set-goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	(chat-to-player my-player-number "Water map detected")
+	(chat-to-player my-player-number "Changing into an amphibian strategy")
+)
+#end-if
+#end-if
+
+#load-if-defined POPULATION-CAP-25
+(defrule
+	(nor	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	)
+	(nor	(or	(cc-players-unit-type-count 0 WOLF > 18)
+			(cc-players-unit-type-count 0 JAGUAR > 18)
+		)
+		(and	(cc-players-unit-type-count 0 WOLF > 7)
+			(cc-players-unit-type-count 0 JAGUAR > 7)
+		)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+	;(chat-to-player my-player-number "Flush changed again")
+	;(chat-to-player my-player-number "Towers work great in 25 POP")
+	;(disable-self)
+)
+
+(defrule
+	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	)
+	(nor	(or	(cc-players-unit-type-count 0 WOLF > 18)
+			(cc-players-unit-type-count 0 JAGUAR > 18)
+		)
+		(and	(cc-players-unit-type-count 0 WOLF > 7)
+			(cc-players-unit-type-count 0 JAGUAR > 7)
+		)
+	)
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	;(chat-to-player my-player-number "Flush changed again")
+	;(chat-to-player my-player-number "Towers work great in 25 POP")
+	;(disable-self)
+)
+#end-if

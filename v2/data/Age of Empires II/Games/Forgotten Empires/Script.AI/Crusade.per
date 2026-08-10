@@ -1,0 +1,429 @@
+;(load "Anti Hardest Cheat")
+;(load "resign - AI Ladder")
+(load "Crusade 4.42\Resign - Human")
+;(load "resign - land map")
+; Gold/stone
+; Champs but smith
+
+;(load "resign")
+(load "Crusade 4.42\Constants")
+(load "Crusade 4.42\Constants FactID")
+(load "Crusade 4.42\Constants for civs")
+(load "Crusade 4.42\Forgotten Empires Constants")
+
+; STRATEGY SELECTION
+#load-if-defined AZTEC-CIV
+(load-random 	40 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		20 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		10 "Crusade 4.42\Strategy Default - Flush Archery-3"
+		30 "Crusade 4.42\Strategy Default - Flush Man-at-arms"
+)
+#end-if
+#load-if-defined BRITON-CIV
+(load-random 	50 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		15 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+		25 "Crusade 4.42\Strategy Default - Flush Archery-3"
+)
+#end-if
+#load-if-defined BYZANTINE-CIV
+(load-random 	10 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		60 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		25 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined CELTIC-CIV
+(load-random 	40 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		25 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+		25 "Crusade 4.42\Strategy Default - Flush Man-at-arms"
+)
+#end-if
+#load-if-defined CHINESE-CIV
+(load-random 	25 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		10 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		35 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		20 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+		10 "Crusade 4.42\Strategy Default - Flush Man-at-arms"
+)
+#end-if
+#load-if-defined FRANKISH-CIV
+(load-random 	20 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		10 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		60 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		10 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined GOTHIC-CIV
+(load-random 	30 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		20 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+		40 "Crusade 4.42\Strategy Default - Flush Man-at-arms"
+)
+#end-if
+#load-if-defined HUN-CIV
+(load-random 	 5 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		65 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		25 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined INCAN-CIV
+(load-random 	35 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		30 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		10 "Crusade 4.42\Strategy Default - Flush Archery-3"
+		25 "Crusade 4.42\Strategy Default - Flush Man-at-arms"
+)
+#end-if
+#load-if-defined INDIAN-CIV
+(load-random 	20 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		15 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		45 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		20 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined ITALIAN-CIV
+(load-random 	50 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		30 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+		10 "Crusade 4.42\Strategy Default - Flush Archery-3"
+)
+#end-if
+#load-if-defined JAPANESE-CIV
+(load-random 	20 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		30 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+		40 "Crusade 4.42\Strategy Default - Flush Man-at-arms"
+)
+#end-if
+#load-if-defined KOREAN-CIV
+(load-random 	 5 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		85 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined MAGYAR-CIV
+(load-random 	 5 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		55 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		35 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined MAYAN-CIV
+(load-random 	15 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		15 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		70 "Crusade 4.42\Strategy Default - Flush Archery-3"
+)
+#end-if
+#load-if-defined MONGOL-CIV
+(load-random 	 5 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		60 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		30 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined PERSIAN-CIV
+(load-random 	 5 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		55 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		35 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined SARACEN-CIV
+(load-random 	25 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		65 "Crusade 4.42\Strategy Default - Flush Market Scouts-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined SLAVIC-CIV
+(load-random 	 5 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		60 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		30 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined SPANISH-CIV
+(load-random 	10 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		30 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		15 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		40 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+		 5 "Crusade 4.42\Strategy Default - Flush Man-at-arms"
+)
+#end-if
+#load-if-defined TEUTONIC-CIV
+(load-random 	10 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		35 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		15 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		40 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined TURKISH-CIV
+(load-random 	20 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		15 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		45 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		20 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+)
+#end-if
+#load-if-defined VIKING-CIV
+(load-random 	40 "Crusade 4.42\Strategy Default - Flush Swords-Archers"
+		20 "Crusade 4.42\Strategy Default - Trush Swords-Archers"
+		 5 "Crusade 4.42\Strategy Default - Flush Scouts-Archers"
+		 5 "Crusade 4.42\Strategy Default - Trush Scouts-Archers"
+		30 "Crusade 4.42\Strategy Default - Flush Man-at-arms"
+)
+#end-if
+
+
+(load "Crusade 4.42\Initial strategic numbers"); Partially copied from other AI's
+(load-random + "Crusade 4.42\UP initialization")
+;#load-if-defined UP-AVAILABLE
+(load-random + "Crusade 4.42\Boar Hunting")
+;(load "Boar Hunting")
+;#end-if
+
+(load "Crusade 4.42\Threat Rules")
+(load "Crusade 4.42\Trebuchet") ; Copied from Goose, by TEA4.115
+
+(load "Crusade 4.42\Sheep") ; Taken from ARFII
+
+#load-if-defined UP-AVAILABLE
+(load-random + "Crusade 4.42\Buildings Zero - UP")
+#else
+(load "Crusade 4.42\Buildings Zero - 1c")
+#end-if
+(load "Crusade 4.42\General Economy")
+#load-if-defined UP-AVAILABLE
+(load-random + "Crusade 4.42\Camps - UP")
+#else
+(load "Crusade 4.42\Camps - 1c")
+#end-if
+(load "Crusade 4.42\Gatherer percentages Dark Age")
+
+
+#load-if-not-defined WONDER-RACE
+
+(load "Crusade 4.42\g-jollygoal-0")
+(load "Crusade 4.42\Amphibian")
+(load "Crusade 4.42\FC Archery")
+
+#load-if-defined AZTEC-CIV
+(load "Crusade 4.42\Flush Archery-3")
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+#end-if
+#load-if-defined BRITON-CIV
+(load "Crusade 4.42\Flush Archery-3")
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined BYZANTINE-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined CELTIC-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined CHINESE-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined FRANKISH-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined GOTHIC-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined HUN-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined INCAN-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Archery-3")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+#end-if
+#load-if-defined INDIAN-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined ITALIAN-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Archery-3")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined JAPANESE-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined KOREAN-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined MAGYAR-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined MAYAN-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Archery-3")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+#end-if
+#load-if-defined MONGOL-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+#end-if
+#load-if-defined PERSIAN-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined SARACEN-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Market Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined SLAVIC-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+#end-if
+#load-if-defined SPANISH-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined TEUTONIC-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined TURKISH-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+#load-if-defined VIKING-CIV
+(load "Crusade 4.42\Flush Man-at-arms")
+(load "Crusade 4.42\Flush Swords-Archers")
+(load "Crusade 4.42\Flush Scouts-Archers")
+(load "Crusade 4.42\Trush Swords-Archers")
+(load "Crusade 4.42\Trush Scouts-Archers")
+#end-if
+
+(load "Crusade 4.42\Gatherer-Dynamic percentages Late Feudal")
+(load "Crusade 4.42\Gatherer percentages Late Game")
+(load "Crusade 4.42\Strategy selection")
+(load "Crusade 4.42\Buildings Alpha")
+(load "Crusade 4.42\Army Selection")
+(load "Crusade 4.42\Main Upgrades")
+(load "Crusade 4.42\Control Upgrades")
+(load "Crusade 4.42\Unit Training")
+(load "Crusade 4.42\Extra Upgrades")
+
+#load-if-defined UP-AVAILABLE
+(load-random + "Crusade 4.42\Buildings Betha - UP")
+#else
+(load "Crusade 4.42\Buildings Betha - 1c")
+#end-if
+
+#load-if-not-defined POPULATION-CAP-25
+#load-if-not-defined POPULATION-CAP-50
+#load-if-defined UP-AVAILABLE
+(load-random + "Crusade 4.42\Buildings Omega - UP")
+#else
+(load "Crusade 4.42\Buildings Omega - 1c")
+#end-if
+#end-if
+#end-if
+
+(load "Crusade 4.42\Market rules")
+(load "Crusade 4.42\Tribute")
+
+;(load "Crusade 4.42\TSA256 Down")
+;(load "Crusade 4.42\TSA256 Up"); Based in Training AI
+(load "Crusade 4.42\TSA")
+(load "Crusade 4.42\Military superiority")
+(load "Crusade 4.42\Military superiority 2")
+(load "Crusade 4.42\Navy superiority")
+
+(load "Crusade 4.42\Battle behavior")
+(load "Crusade 4.42\Attack rules")
+(load "Crusade 4.42\Attack evolution")
+
+
+(load "Crusade 4.42\TSA Defensive"); Idea from Marathon
+(load "Crusade 4.42\TS Building")
+
+#load-if-defined UP-AVAILABLE
+(load-random + "Crusade 4.42\Chat") ; Only for fun
+#end-if
+
+#else ; Wonder Race
+(load "Crusade 4.42\Wonder Race")
+(load "Crusade 4.42\TS Building")
+#end-if ; End Wonder Race

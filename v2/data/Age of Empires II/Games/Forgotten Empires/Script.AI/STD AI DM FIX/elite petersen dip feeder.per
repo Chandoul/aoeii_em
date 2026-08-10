@@ -1,0 +1,245 @@
+;make sure we have allies
+(defrule
+	(difficulty < easy)
+	(game-time < 30)
+	(or
+		(player-computer any-ally)
+		(player-human any-ally)
+	)
+=>
+	(set-goal personality NOTICE)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 30)
+	(not (player-in-game any-ally) )
+=>
+	(set-goal personality 0)
+	(disable-self)
+)
+
+(defrule
+	(taunt-detected any-ally 221)
+=>
+	(set-goal rush-control CASTLE)
+	(set-goal personality 0)
+	(acknowledge-taunt this-any-ally 221)
+	(disable-self)
+)
+
+(defrule
+	(goal personality NOTICE)
+=>
+	(set-goal personality 1)
+	(chat-to-player-using-id every-ally 22401)	;221
+	(disable-self)
+)
+
+;don't rush if we're a feeder also no wonder
+(defrule
+	(goal personality 1)
+	(current-age < imperial-age)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(set-goal rush-control IMPERIAL)
+)
+
+(defrule
+	(goal personality 1)
+	(goal wonder-attempt POSSIBLE)
+=>
+	(set-goal wonder-attempt NO)
+)
+
+(defrule
+	(goal personality 1)
+	(or
+		(and
+			(current-age == feudal-age)
+			(players-current-age any-ally >= castle-age)
+		)
+		(and
+			(current-age == castle-age)
+			(players-current-age any-ally == imperial-age)
+		)
+	)
+=>
+	(set-goal upgrade-conflict NOTICE)
+)
+
+(defrule
+	(goal personality 1)
+	(building-type-count market > 0)
+	(players-population any-ally > 10)
+=>
+	(chat-to-player-using-id every-ally 22072)
+	(chat-to-player-using-id every-ally 22073)
+		;"39 I shall tribute to thee as many resources as I can muster."
+		;"Go forth and thrash our opponents!"
+	(disable-self)
+)
+
+;stop being a feeder if your allies are weenies
+(defrule
+	(goal personality 1)
+	(game-time > 900)
+	(or
+		(players-population every-ally <= 10)
+		(not (player-in-game any-ally) )
+	)
+=>
+	(set-goal personality 20)
+	(set-goal rush-control IMPERIAL)
+	(chat-to-player-using-id every-ally 22074)
+		;"41 Whoa, I'll not feed such puny allies! 'Tis every man for himself!"
+	(disable-self)
+)
+
+	#load-if-not-defined TEAMS-LOCKED
+	(defrule
+		(goal personality 20)
+		(difficulty <= hard)
+		(players-stance any-human ally)
+	=>
+		(chat-to-player-using-id every-ally 22075)
+			;"40 In fact, I'm switching sides! Fare thee well, losers."
+		(set-stance every-computer ally)
+		(set-stance this-any-human enemy)
+		(set-goal personality 10)
+		(disable-self)
+	)
+	#end-if
+
+;***********************
+;TRIBUTE
+(defrule
+	(true)
+=>
+	(set-goal 29 YES)
+	(disable-self)
+)
+
+(defrule
+	(goal personality 1)
+	(goal 29 NO)
+=>
+	(set-goal 29 YES)	; ok to tribute!
+)
+
+(defrule
+	(goal personality 1)
+	(town-under-attack)
+=>
+	(set-goal 29 NO)	; NOT ok to tribute!
+)
+
+(defrule
+	(goal personality 1)
+	(goal 29 YES)
+	(taunt-detected any-ally 4)
+	(wood-amount > 100)
+=>
+	(release-escrow wood)
+	(tribute-to-player this-any-ally wood 100)
+	(acknowledge-taunt this-any-ally 4)
+	(chat-local-to-self "Tribute wood")
+)
+
+(defrule
+	(goal personality 1)
+	(goal 29 YES)
+	(taunt-detected any-ally 3)
+	(food-amount > 100)
+=>
+	(release-escrow food)
+	(tribute-to-player this-any-ally food 100)
+	(acknowledge-taunt this-any-ally 3)
+	(chat-local-to-self "Tribute food")
+)
+
+(defrule
+	(goal personality 1)
+	(goal 29 YES)
+	(taunt-detected any-ally 5)
+	(gold-amount > 100)
+=>
+	(release-escrow gold)
+	(tribute-to-player this-any-ally gold 100)
+	(acknowledge-taunt this-any-ally 5)
+	(chat-local-to-self "Tribute gold")
+)
+
+(defrule
+	(goal personality 1)
+	(goal 29 YES)
+	(taunt-detected any-ally 6)
+	(stone-amount > 100)
+=>
+	(release-escrow stone)
+	(tribute-to-player this-any-ally stone 100)
+	(acknowledge-taunt this-any-ally 6)
+	(chat-local-to-self "Tribute stone")
+)
+
+(defrule
+	(goal personality 1)
+	(goal 29 YES)
+	(player-in-game any-ally)
+	(building-type-count market > 0)
+	(current-age-time < 240)
+	(wood-amount > 300)
+=>
+	(release-escrow wood)
+	(tribute-to-player this-any-ally wood 100)
+	(chat-to-player-using-id this-any-ally 22076)
+		;"39 Here art some wood!"
+	(chat-local-to-self "Tribute wood")
+)
+
+(defrule
+	(goal personality 1)
+	(goal 29 YES)
+	(player-in-game any-ally)
+	(building-type-count market > 0)
+	(current-age-time < 240)
+	(food-amount > 200)
+=>
+	(release-escrow food)
+	(tribute-to-player this-any-ally food 100)
+	(chat-to-player-using-id this-any-ally 22077)
+		;"39 Here art some food!"
+	(chat-local-to-self "Tribute food")
+)
+
+(defrule
+	(goal personality 1)
+	(goal 29 YES)
+	(player-in-game any-ally)
+	(building-type-count market > 0)
+	(current-age-time < 240)
+	(gold-amount > 200)
+=>
+	(release-escrow gold)
+	(tribute-to-player this-any-ally gold 100)
+	(chat-to-player-using-id this-any-ally 22078)
+		;"39 Here art some gold!"
+	(chat-local-to-self "Tribute gold")
+)
+
+(defrule
+	(goal personality 1)
+	(goal 29 YES)
+	(player-in-game any-ally)
+	(building-type-count market > 0)
+	(current-age-time < 240)
+	(stone-amount > 100)
+=>
+	(release-escrow stone)
+	(tribute-to-player this-any-ally stone 100)
+	(chat-to-player-using-id this-any-ally 22079)
+		;"39 Here art some stone!"
+	(chat-local-to-self "Tribute stone")
+)
+
+

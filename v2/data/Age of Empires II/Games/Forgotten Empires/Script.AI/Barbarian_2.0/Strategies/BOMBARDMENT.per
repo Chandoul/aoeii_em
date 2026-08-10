@@ -1,0 +1,24 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy castle-drop)
+	(disable-self)
+)
+
+(defrule
+	(or	(goal POSITION POCKET)
+		(goal gl-rush-suitability-on-map VERY-LOW))
+	(civ-selected turkish)
+	(or	(player-valid any-human-enemy)
+		(goal gl-rush-suitability-on-map VERY-LOW))
+	(game-time > 20)
+	(game-time < 30)
+=>
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy turkish-bombardment)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+	(disable-self)
+)

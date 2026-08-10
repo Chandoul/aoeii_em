@@ -1,0 +1,72 @@
+; Emergency town-center
+(defrule
+	(building-type-count-total town-center < 1)
+	(can-build-with-escrow town-center)
+	(up-pending-objects c: town-center < 1)
+=>
+	(build town-center)
+	;(set-goal G-BUILDING 0)
+	(chat-to-player my-player-number "Emergency town center")
+)
+
+
+; Land nomad lumber camp
+(defrule
+	(or	(and	(wood-amount > 10000)
+			(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+		)
+		(and	(building-type-count-total town-center == 0)
+			(not(can-afford-building town-center))
+		)
+	)
+	(building-type-count-total lumber-camp == 0)
+	(can-build-with-escrow lumber-camp)
+	(up-pending-objects c: lumber-camp < 1)
+=>
+	(build lumber-camp)
+	;(set-goal G-BUILDING 0)
+	(chat-to-player my-player-number "Emergency lumber camp")
+)
+
+
+; Building houses
+(defrule
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(or	(housing-headroom < 4)
+		(or	(and	(current-age >= feudal-age)
+				(housing-headroom < 15)
+			)
+			(current-age >= castle-age)
+		)
+	)
+	(housing-headroom < 25)
+	(population-headroom > 3)
+	(can-build house)
+	(up-pending-objects c: house < 1)
+=>
+	(build house)
+)
+
+(defrule
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(wood-amount > 2000)
+	(housing-headroom < 25)
+	(population-headroom > 3)
+	(can-build house)
+	(up-pending-objects c: house < 5)
+=>
+	(build house)
+)
+
+(defrule
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(building-type-count-total town-center >= 1)
+	(building-type-count-total dock >= 1)
+	(not(goal G-BOAT GV-NONE))
+	(housing-headroom < 5)
+	(population-headroom > 3)
+	(can-build house)
+	(up-pending-objects c: house < 1)
+=>
+	(build house)
+)

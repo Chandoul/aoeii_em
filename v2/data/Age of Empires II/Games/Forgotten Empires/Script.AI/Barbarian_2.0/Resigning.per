@@ -1,0 +1,250 @@
+#load-if-defined UP-ALLY-IN-GAME
+(defrule
+	(or	(building-type-count market == 0)
+		(or	(goal gl-trade-sling YES)
+			(not	(player-in-game any-ally))))
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(unit-type-count-total villager == 0)
+	(building-type-count town-center == 0)
+	(or	(and	(unit-type-count trade-cart > 0)
+			(players-building-type-count any-ally market > 0))
+		(or	(and	(unit-type-count trade-cog > 0)
+				(and	(building-type-count dock > 0)
+					(players-building-type-count any-ally dock > 0)))
+			(up-compare-goal gl-gathered-relics > 0)))
+=>
+	(set-goal gl-trade-sling YES)
+	(chat-to-allies "I may not have any villagers left but I can still sling you.")
+)
+#end-if
+
+#load-if-not-defined UP-SCENARIO-GAME
+
+#load-if-not-defined UP-TEAM-DISADVANTAGE
+(defrule
+	(goal FFA YES)
+=>
+	(up-jump-rule 3)
+)
+#end-if
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(or	(building-type-count-total wonder > 0)
+		(or	(players-building-type-count any-ally wonder > 0)
+			(hold-relics)))
+=>
+	(up-jump-rule 2)
+)
+#end-if
+
+#load-if-not-defined UP-MULTIPLAYER-GAME
+#load-if-defined UP-HUMAN-IN-GAME
+(defrule
+	(game-time > 300)
+	(up-compare-goal gl-trade-sling != YES)
+	(unit-type-count villager == 0)
+	(building-type-count town-center == 0)
+=>
+	(set-strategic-number sn-number-explore-groups 0)
+	(set-strategic-number sn-total-number-explorers 0)
+	(chat-to-all-using-range 22300 22)
+	(chat-to-all-using-id 22322)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#load-if-not-defined DEATH-MATCH
+#load-if-defined UP-1-PLAYER-TEAM
+(defrule
+	(or	(and	(unit-type-count-total villager < 15)
+			(soldier-count < 5))
+		(and	(player-in-game any-human-enemy)
+			(players-population any-enemy > 160)))
+	(unit-type-count-total villager < 50)
+	(population < 75)
+	(players-military-population any-enemy > 30)
+=>
+	(chat-to-all-using-range 22300 22)
+	(chat-to-all-using-id 22322)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#else
+(defrule
+	(or	(and	(unit-type-count-total villager < 15)
+			(soldier-count < 8))
+		(players-population any-enemy > 180))
+	(population < 75)
+	(players-military-population any-enemy > 30)
+	(nand	(player-in-game any-ally)
+		(or	(players-population any-ally >= 75)
+			(game-time < 1800)))
+=>
+	(chat-to-all-using-range 22300 22)
+	(chat-to-all-using-id 22322)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#end-if
+#else
+(defrule
+	(game-time > 600)
+	(or	(and	(unit-type-count-total villager < 15)
+			(soldier-count < 8))
+		(players-population any-enemy > 180))
+	(population < 75)
+	(players-military-population any-enemy > 30)
+	(nand	(player-in-game any-ally)
+		(players-population any-ally >= 75))
+=>
+	(chat-to-all-using-range 22300 22)
+	(chat-to-all-using-id 22322)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#end-if
+
+#else
+(defrule
+	(game-time > 300)
+	(up-compare-goal gl-trade-sling != YES)
+	(unit-type-count villager == 0)
+	(building-type-count town-center == 0)
+=>
+	(set-strategic-number sn-number-explore-groups 0)
+	(set-strategic-number sn-total-number-explorers 0)
+	(chat-to-all gg-chat)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#load-if-not-defined DEATH-MATCH
+#load-if-defined UP-1-PLAYER-TEAM
+(defrule
+	(or	(and	(unit-type-count-total villager < 15)
+			(soldier-count < 5))
+		(and	(player-in-game any-human-enemy)
+			(players-population any-enemy > 160)))
+	(unit-type-count-total villager < 50)
+	(population < 75)
+	(players-military-population any-enemy > 30)
+=>
+	(chat-to-all gg-chat)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#else
+(defrule
+	(or	(and	(unit-type-count-total villager < 15)
+			(soldier-count < 8))
+		(players-population any-enemy > 180))
+	(population < 75)
+	(players-military-population any-enemy > 30)
+	(nand	(player-in-game any-ally)
+		(or	(players-population any-ally >= 75)
+			(game-time < 1800)))
+=>
+	(chat-to-all gg-chat)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#end-if
+#else
+(defrule
+	(game-time > 600)
+	(or	(and	(unit-type-count-total villager < 15)
+			(soldier-count < 8))
+		(players-population any-enemy > 180))
+	(population < 75)
+	(players-military-population any-enemy > 30)
+	(nand	(player-in-game any-ally)
+		(players-population any-ally >= 75))
+=>
+	(chat-to-all gg-chat)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#end-if
+
+#end-if
+
+#else
+(defrule
+	(game-time > 300)
+	(up-compare-goal gl-trade-sling != YES)
+	(unit-type-count villager == 0)
+	(building-type-count town-center == 0)
+=>
+	(set-strategic-number sn-number-explore-groups 0)
+	(set-strategic-number sn-total-number-explorers 0)
+	(chat-to-all gg-chat)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#load-if-not-defined DEATH-MATCH
+#load-if-defined UP-1-PLAYER-TEAM
+(defrule
+	(or	(and	(unit-type-count-total villager < 15)
+			(soldier-count < 5))
+		(and	(player-in-game any-human-enemy)
+			(players-population any-enemy > 160)))
+	(unit-type-count-total villager < 50)
+	(population < 75)
+	(players-military-population any-enemy > 30)
+=>
+	(chat-to-all gg-chat)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#else
+(defrule
+	(or	(and	(unit-type-count-total villager < 15)
+			(soldier-count < 8))
+		(players-population any-enemy > 180))
+	(population < 75)
+	(players-military-population any-enemy > 30)
+	(nand	(player-in-game any-ally)
+		(or	(players-population any-ally >= 75)
+			(game-time < 1800)))
+=>
+	(chat-to-all gg-chat)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#end-if
+#else
+(defrule
+	(game-time > 600)
+	(or	(and	(unit-type-count-total villager < 15)
+			(soldier-count < 8))
+		(players-population any-enemy > 180))
+	(population < 75)
+	(players-military-population any-enemy > 30)
+	(nand	(player-in-game any-ally)
+		(players-population any-ally >= 75))
+=>
+	(chat-to-all gg-chat)
+	(enable-timer 49 5)
+ 	(disable-self)
+)
+#end-if
+
+#end-if
+
+#end-if
+
+(defrule
+	(timer-triggered 49)
+=>
+	(set-goal 6 0)
+	(tribute-to-player any-ally wood 100000)
+	(tribute-to-player any-ally food 100000)
+	(tribute-to-player any-ally gold 100000)
+	(tribute-to-player any-ally stone 100000)
+	(chat-to-allies "98")
+	(chat-to-player my-player-number "gb")
+	(resign)
+)

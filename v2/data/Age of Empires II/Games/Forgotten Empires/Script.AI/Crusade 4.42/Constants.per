@@ -1,0 +1,1104 @@
+#load-if-defined COMMENT-OUT
+(defconst my-player-number 0)
+(defconst my-unique-unit-upgrade 0)
+(defconst UP-AVAILABLE 0)
+
+(defconst up-can-research 0)
+(defconst up-can-train 0)
+(defconst up-can-build 0)
+(defconst up-resource-amount 0)
+(defconst up-compare-goal 0)
+(defconst up-compare-sn 0)
+(defconst up-object-type-count 0)
+(defconst up-object-type-count-total 0)
+(defconst up-research-status 0)
+(defconst up-pending-objects 0)
+(defconst up-pending-placement 0)
+(defconst up-get-player-fact 0)
+(defconst up-get-target-fact 0)
+(defconst up-attacker-class 0)
+(defconst up-projectile-detected 0)
+
+;------------------------------
+;New Script Rule Actions
+;------------------------------
+(defconst up-research 0)
+(defconst up-train 0)
+(defconst up-build 0)
+(defconst up-release-escrow 0)
+(defconst up-modify-escrow 0)
+(defconst up-modify-goal 0)
+(defconst up-modify-sn 0)
+(defconst up-chat-data-to-self 0)
+(defconst up-chat-data-to-player 0)
+(defconst up-drop-resources 0)
+(defconst up-retask-gatherers 0)
+(defconst up-find-player 0)
+(defconst up-get-player-fact 0)
+(defconst up-get-target-fact 0)
+(defconst up-get-allied-target 0)
+(defconst up-get-attacker-class 0)
+(defconst up-get-projectile-player 0)
+(defconst up-get-threat-data 0)
+(defconst up-get-victory-data 0)
+(defconst up-guard-unit 0)
+(defconst up-reset-unit 0)
+(defconst up-retask-gatherers 0)
+(defconst up-set-attack-stance 0)
+(defconst up-retreat-to 0)
+(defconst up-retreat-now 0)
+
+;------------------------------
+;New Strategic Numbers
+;------------------------------
+(defconst sn-enable-new-building-system 0)
+(defconst sn-percent-building-cancellation 0)
+(defconst sn-enable-boar-hunting 0)
+(defconst sn-minimum-number-hunters 0)
+(defconst sn-object-repair-level 0)
+(defconst sn-enable-patrol-attack 0)
+(defconst sn-dropsite-separation-distance 0)
+(defconst sn-target-player-number 0)
+(defconst sn-safe-town-size 0)
+(defconst sn-focus-player-number 0)
+(defconst sn-minimum-boar-lure-group-size 0)
+(defconst sn-home-exploration-time 0)
+(defconst sn-maximum-tower-attackers 0)
+
+;------------------------------
+;Forgotten Empires constants
+;------------------------------
+(defconst ITALIAN-CIV 0)
+(defconst MAGYAR-CIV 0)
+(defconst INDIAN-CIV 0)
+(defconst SLAVIC-CIV 0)
+(defconst INCAN-CIV 0)
+#end-if
+
+; General Constants
+
+#load-if-defined POPULATION-CAP-25
+(defconst TOP-VILLAGERS 17)
+(defconst SUB-TOP-VILLAGERS 15)
+(defconst SUB-BOOM-VILLAGERS 15)
+#load-if-not-defined GOTHIC-CIV
+(defconst TOP-POPULATION 25)
+(defconst SUB-TOP-POPULATION 20)
+#else
+(defconst TOP-POPULATION 35)
+(defconst SUB-TOP-POPULATION 30)
+#end-if
+(defconst FIVE-PERCENT-POP 1)
+(defconst TEN-PERCENT-POP 2)
+(defconst FIFTEEN-PERCENT-POP 3)
+(defconst TWENTY-PERCENT-POP 5)
+(defconst TWENTY-TWO-PERCENT-POP 6)
+(defconst THIRTY-PERCENT-POP 7)
+(defconst FORTY-PERCENT-POP 10)
+(defconst FIFTY-PERCENT-POP 13)
+(defconst EIGHTY-PERCENT-POP 20)
+
+
+(defconst DARK-FLUSH-VILLAGERS 15)
+(defconst DARK-VILLAGERS-480 15)
+(defconst DARK-VILLAGERS-490 15)
+(defconst DARK-VILLAGERS 15)
+(defconst DARK-VILLAGERS-1 14)
+(defconst DARK-VILLAGERS-FC 15)
+(defconst VILLAGERS-FC-2 17)
+(defconst WHEEL-BARROW-VILLAGERS 15)
+(defconst HAND-CART-VILLAGERS 15)
+(defconst MAX-TRADE-CARTS 0)
+
+#end-if
+
+#load-if-defined POPULATION-CAP-50
+(defconst TOP-VILLAGERS 30)
+(defconst SUB-TOP-VILLAGERS 25)
+(defconst SUB-BOOM-VILLAGERS 25)
+#load-if-not-defined GOTHIC-CIV
+(defconst TOP-POPULATION 50)
+(defconst SUB-TOP-POPULATION 45)
+#else
+(defconst TOP-POPULATION 60)
+(defconst SUB-TOP-POPULATION 55)
+#end-if
+(defconst FIVE-PERCENT-POP 2)
+(defconst TEN-PERCENT-POP 5)
+(defconst FIFTEEN-PERCENT-POP 7)
+(defconst TWENTY-PERCENT-POP 10)
+(defconst TWENTY-TWO-PERCENT-POP 11)
+(defconst THIRTY-PERCENT-POP 15)
+(defconst FORTY-PERCENT-POP 20)
+(defconst FIFTY-PERCENT-POP 25)
+(defconst EIGHTY-PERCENT-POP 40)
+
+;(defconst DARK-FLUSH-VILLAGERS 26)
+;(defconst DARK-VILLAGERS-480 29)
+;(defconst DARK-VILLAGERS-490 30)
+(defconst DARK-VILLAGERS 25)
+(defconst DARK-VILLAGERS-1 24)
+(defconst DARK-VILLAGERS-FC 25)
+(defconst VILLAGERS-FC-2 28)
+(defconst WHEEL-BARROW-VILLAGERS 25)
+(defconst HAND-CART-VILLAGERS 25)
+(defconst MAX-TRADE-CARTS 2)
+#end-if
+
+#load-if-defined POPULATION-CAP-75
+(defconst TOP-VILLAGERS 45)
+(defconst SUB-TOP-VILLAGERS 40)
+(defconst SUB-BOOM-VILLAGERS 40)
+#load-if-not-defined GOTHIC-CIV
+(defconst TOP-POPULATION 75)
+(defconst SUB-TOP-POPULATION 70)
+#else
+(defconst TOP-POPULATION 85)
+(defconst SUB-TOP-POPULATION 80)
+#end-if
+(defconst FIVE-PERCENT-POP 4)
+(defconst TEN-PERCENT-POP 7)
+(defconst FIFTEEN-PERCENT-POP 12)
+(defconst TWENTY-PERCENT-POP 15)
+(defconst TWENTY-TWO-PERCENT-POP 17)
+(defconst THIRTY-PERCENT-POP 22)
+(defconst FORTY-PERCENT-POP 30)
+(defconst FIFTY-PERCENT-POP 37)
+(defconst EIGHTY-PERCENT-POP 60)
+
+;(defconst DARK-FLUSH-VILLAGERS 26)
+;(defconst DARK-VILLAGERS-480 29)
+;(defconst DARK-VILLAGERS-490 30)
+
+;(defconst DARK-FLUSH-VILLAGERS 26)
+;(defconst DARK-VILLAGERS-480 29)
+;(defconst DARK-VILLAGERS-490 30)
+#load-if-defined CHINESE-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 30)
+(defconst DARK-VILLAGERS-1 29)
+#end-if
+#end-if
+(defconst DARK-VILLAGERS-FC 33)
+(defconst VILLAGERS-FC-2 37)
+(defconst WHEEL-BARROW-VILLAGERS 28)
+(defconst HAND-CART-VILLAGERS 40)
+(defconst MAX-TRADE-CARTS 5)
+#end-if
+
+#load-if-defined POPULATION-CAP-100
+(defconst TOP-VILLAGERS 60)
+(defconst SUB-TOP-VILLAGERS 55)
+(defconst SUB-BOOM-VILLAGERS 55)
+#load-if-not-defined GOTHIC-CIV
+(defconst TOP-POPULATION 100)
+(defconst SUB-TOP-POPULATION 95)
+#else
+(defconst TOP-POPULATION 110)
+(defconst SUB-TOP-POPULATION 105)
+#end-if
+(defconst FIVE-PERCENT-POP 5)
+(defconst TEN-PERCENT-POP 10)
+(defconst FIFTEEN-PERCENT-POP 15)
+(defconst TWENTY-PERCENT-POP 20)
+(defconst TWENTY-TWO-PERCENT-POP 22)
+(defconst THIRTY-PERCENT-POP 30)
+(defconst FORTY-PERCENT-POP 40)
+(defconst FIFTY-PERCENT-POP 50)
+(defconst EIGHTY-PERCENT-POP 80)
+
+;(defconst DARK-FLUSH-VILLAGERS 26)
+;(defconst DARK-VILLAGERS-480 29)
+;(defconst DARK-VILLAGERS-490 30)
+
+;(defconst DARK-FLUSH-VILLAGERS 26)
+;(defconst DARK-VILLAGERS-480 29)
+;(defconst DARK-VILLAGERS-490 30)
+#load-if-defined CHINESE-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 30)
+(defconst DARK-VILLAGERS-1 29)
+#end-if
+#end-if
+(defconst DARK-VILLAGERS-FC 33)
+(defconst VILLAGERS-FC-2 37)
+(defconst WHEEL-BARROW-VILLAGERS 28)
+(defconst HAND-CART-VILLAGERS 48)
+(defconst MAX-TRADE-CARTS 8)
+#end-if
+
+#load-if-defined POPULATION-CAP-125
+(defconst TOP-VILLAGERS 80)
+(defconst SUB-TOP-VILLAGERS 75)
+(defconst SUB-BOOM-VILLAGERS 75)
+#load-if-not-defined GOTHIC-CIV
+(defconst TOP-POPULATION 125)
+(defconst SUB-TOP-POPULATION 120)
+#else
+(defconst TOP-POPULATION 135)
+(defconst SUB-TOP-POPULATION 130)
+#end-if
+(defconst FIVE-PERCENT-POP 6)
+(defconst TEN-PERCENT-POP 12)
+(defconst FIFTEEN-PERCENT-POP 18)
+(defconst TWENTY-PERCENT-POP 25)
+(defconst TWENTY-TWO-PERCENT-POP 27)
+(defconst THIRTY-PERCENT-POP 37)
+(defconst FORTY-PERCENT-POP 50)
+(defconst FIFTY-PERCENT-POP 63)
+(defconst EIGHTY-PERCENT-POP 100)
+
+;(defconst DARK-FLUSH-VILLAGERS 26)
+;(defconst DARK-VILLAGERS-480 29)
+;(defconst DARK-VILLAGERS-490 30)
+#load-if-defined CHINESE-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 30)
+(defconst DARK-VILLAGERS-1 29)
+#end-if
+#end-if
+(defconst DARK-VILLAGERS-FC 33)
+(defconst VILLAGERS-FC-2 37)
+(defconst WHEEL-BARROW-VILLAGERS 28)
+(defconst HAND-CART-VILLAGERS 48)
+(defconst MAX-TRADE-CARTS 11)
+#end-if
+
+#load-if-defined POPULATION-CAP-150
+(defconst TOP-VILLAGERS 90)
+(defconst SUB-TOP-VILLAGERS 85)
+(defconst SUB-BOOM-VILLAGERS 80)
+#load-if-not-defined GOTHIC-CIV
+(defconst TOP-POPULATION 150)
+(defconst SUB-TOP-POPULATION 145)
+#else
+(defconst TOP-POPULATION 160)
+(defconst SUB-TOP-POPULATION 155)
+#end-if
+(defconst FIVE-PERCENT-POP 7)
+(defconst TEN-PERCENT-POP 15)
+(defconst FIFTEEN-PERCENT-POP 22)
+(defconst TWENTY-PERCENT-POP 30)
+(defconst TWENTY-TWO-PERCENT-POP 33)
+(defconst THIRTY-PERCENT-POP 45)
+(defconst FORTY-PERCENT-POP 60)
+(defconst FIFTY-PERCENT-POP 75)
+(defconst EIGHTY-PERCENT-POP 120)
+
+;(defconst DARK-FLUSH-VILLAGERS 26)
+;(defconst DARK-VILLAGERS-480 29)
+;(defconst DARK-VILLAGERS-490 30)
+#load-if-defined CHINESE-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 30)
+(defconst DARK-VILLAGERS-1 29)
+#end-if
+#end-if
+(defconst DARK-VILLAGERS-FC 33)
+(defconst VILLAGERS-FC-2 37)
+(defconst WHEEL-BARROW-VILLAGERS 28)
+(defconst HAND-CART-VILLAGERS 48)
+(defconst MAX-TRADE-CARTS 14)
+#end-if
+
+#load-if-defined POPULATION-CAP-175
+(defconst TOP-VILLAGERS 100)
+(defconst SUB-TOP-VILLAGERS 95)
+(defconst SUB-BOOM-VILLAGERS 85)
+#load-if-not-defined GOTHIC-CIV
+(defconst TOP-POPULATION 175)
+(defconst SUB-TOP-POPULATION 170)
+#else
+(defconst TOP-POPULATION 185)
+(defconst SUB-TOP-POPULATION 180)
+#end-if
+(defconst FIVE-PERCENT-POP 8)
+(defconst TEN-PERCENT-POP 17)
+(defconst FIFTEEN-PERCENT-POP 26)
+(defconst TWENTY-PERCENT-POP 35)
+(defconst TWENTY-TWO-PERCENT-POP 38)
+(defconst THIRTY-PERCENT-POP 52)
+(defconst FORTY-PERCENT-POP 70)
+(defconst FIFTY-PERCENT-POP 88)
+(defconst EIGHTY-PERCENT-POP 140)
+
+;(defconst DARK-FLUSH-VILLAGERS 26)
+;(defconst DARK-VILLAGERS-480 29)
+;(defconst DARK-VILLAGERS-490 30)
+#load-if-defined CHINESE-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 30)
+(defconst DARK-VILLAGERS-1 29)
+#end-if
+#end-if
+(defconst DARK-VILLAGERS-FC 33)
+(defconst VILLAGERS-FC-2 37)
+(defconst WHEEL-BARROW-VILLAGERS 28)
+(defconst HAND-CART-VILLAGERS 48)
+(defconst MAX-TRADE-CARTS 17)
+#end-if
+
+
+#load-if-defined POPULATION-CAP-200
+#load-if-not-defined UP-AVAILABLE
+(defconst TOP-VILLAGERS 100)
+(defconst SUB-TOP-VILLAGERS 95)
+(defconst SUB-BOOM-VILLAGERS 85)
+#else
+(defconst TOP-VILLAGERS 105)
+(defconst SUB-TOP-VILLAGERS 100)
+(defconst SUB-BOOM-VILLAGERS 95)
+#end-if
+#load-if-not-defined GOTHIC-CIV
+(defconst TOP-POPULATION 200)
+(defconst SUB-TOP-POPULATION 195)
+#else
+(defconst TOP-POPULATION 210)
+(defconst SUB-TOP-POPULATION 205)
+#end-if
+(defconst FIVE-PERCENT-POP 10)
+(defconst TEN-PERCENT-POP 20)
+(defconst FIFTEEN-PERCENT-POP 30)
+(defconst TWENTY-PERCENT-POP 40)
+(defconst TWENTY-TWO-PERCENT-POP 44)
+(defconst THIRTY-PERCENT-POP 60)
+(defconst FORTY-PERCENT-POP 80)
+(defconst FIFTY-PERCENT-POP 100)
+(defconst EIGHTY-PERCENT-POP 160)
+
+;(defconst DARK-FLUSH-VILLAGERS 26)
+;(defconst DARK-VILLAGERS-480 29)
+;(defconst DARK-VILLAGERS-490 30)
+#load-if-defined CHINESE-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 30)
+(defconst DARK-VILLAGERS-1 29)
+#end-if
+#end-if
+(defconst DARK-VILLAGERS-FC 33)
+(defconst VILLAGERS-FC-2 37)
+(defconst WHEEL-BARROW-VILLAGERS 28)
+(defconst HAND-CART-VILLAGERS 48)
+(defconst MAX-TRADE-CARTS 20)
+#end-if
+
+#load-if-not-defined POPULATION-CAP-25
+#load-if-not-defined POPULATION-CAP-50
+#load-if-not-defined POPULATION-CAP-75
+#load-if-not-defined POPULATION-CAP-100
+#load-if-not-defined POPULATION-CAP-125
+#load-if-not-defined POPULATION-CAP-150
+#load-if-not-defined POPULATION-CAP-175
+#load-if-not-defined POPULATION-CAP-200
+(defconst TOP-VILLAGERS 135)
+(defconst SUB-TOP-VILLAGERS 125)
+(defconst SUB-BOOM-VILLAGERS 120)
+#load-if-not-defined GOTHIC-CIV
+(defconst TOP-POPULATION 225)
+(defconst SUB-TOP-POPULATION 220)
+#else
+(defconst TOP-POPULATION 235)
+(defconst SUB-TOP-POPULATION 230)
+#end-if
+(defconst FIVE-PERCENT-POP 11)
+(defconst TEN-PERCENT-POP 22)
+(defconst FIFTEEN-PERCENT-POP 33)
+(defconst TWENTY-PERCENT-POP 45)
+(defconst TWENTY-TWO-PERCENT-POP 47)
+(defconst THIRTY-PERCENT-POP 77)
+(defconst FORTY-PERCENT-POP 90)
+(defconst FIFTY-PERCENT-POP 113)
+(defconst EIGHTY-PERCENT-POP 180)
+
+;(defconst DARK-FLUSH-VILLAGERS 26)
+;(defconst DARK-VILLAGERS-480 29)
+;(defconst DARK-VILLAGERS-490 30)
+#load-if-defined CHINESE-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 33)
+(defconst DARK-VILLAGERS-1 32)
+#end-if
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined MAYAN-CIV
+(defconst DARK-VILLAGERS 30)
+(defconst DARK-VILLAGERS-1 29)
+#end-if
+#end-if
+(defconst DARK-VILLAGERS-FC 33)
+(defconst VILLAGERS-FC-2 37)
+(defconst WHEEL-BARROW-VILLAGERS 28)
+(defconst HAND-CART-VILLAGERS 48)
+(defconst MAX-TRADE-CARTS 23)
+#end-if ; pop 25
+#end-if ; pop 50
+#end-if ; pop 75
+#end-if ; pop 100
+#end-if ; pop 125
+#end-if ; pop 150
+#end-if ; pop 175
+#end-if ; pop 200
+
+
+; Boar hunting constants
+(defconst LOOM-VILLAGERS-BOAR-HUNTING 14)
+#load-if-defined GOTHIC-CIV
+(defconst BOAR-HUNTERS 4)
+(defconst BOAR-HUNTERS+1 5)
+#else
+(defconst BOAR-HUNTERS 5)
+(defconst BOAR-HUNTERS+1 6)
+#end-if
+
+
+(defconst IDEAL-DROP-DISTANCE 5)
+(defconst BUILDING-DROP-DISTANCE 3)
+
+
+(defconst DARK-MILL1-FARMS 10)
+(defconst DARK-MILL2-FARMS 8) ;Yucatan
+
+(defconst BUILDINGS-FEUDAL-TO-CASTLE 135)
+
+
+; Constants for gatherer percentages
+(defconst FOOD-VERY-LOW 27)
+(defconst GOLD-VERY-HIGH 31)
+
+(defconst FOOD-LOW 31)
+(defconst GOLD-HIGH 27)
+
+(defconst FOOD-AVERAGE 35)
+(defconst GOLD-AVERAGE 23)
+
+(defconst FOOD-HIGH 39)
+(defconst GOLD-LOW 19)
+
+(defconst FOOD-VERY-HIGH 43)
+(defconst GOLD-VERY-LOW 15)
+
+
+(defconst FOOD-VERY-LOW-AMPHIBIAN 14)
+(defconst GOLD-VERY-HIGH-AMPHIBIAN 28)
+
+(defconst FOOD-LOW-AMPHIBIAN 18)
+(defconst GOLD-HIGH-AMPHIBIAN 24)
+
+(defconst FOOD-AVERAGE-AMPHIBIAN 21)
+(defconst GOLD-AVERAGE-AMPHIBIAN 21)
+
+(defconst FOOD-HIGH-AMPHIBIAN 23)
+(defconst GOLD-LOW-AMPHIBIAN 19)
+
+(defconst FOOD-VERY-HIGH-AMPHIBIAN 25)
+(defconst GOLD-VERY-LOW-AMPHIBIAN 17)
+
+
+
+
+(defconst INFANTRY-GROUP 906)
+(defconst CAVALRY-GROUP 912)
+(defconst SCOUT-CAVALRY-GROUP 947) 
+(defconst CAVALRY-ARCHER-GROUP 936)
+(defconst ARCHERY-GROUP 900)
+(defconst HAND-CANNONEER-GROUP 944)
+(defconst MONK-GROUP 918)
+(defconst SIEGE-GROUP 913)
+(defconst TREBUCHET-PACKED 951)
+(defconst TREBUCHET-UNPACKED 954)
+(defconst BATTLE-SHIP-GROUP 922)
+
+(defconst BARRACK-HUSCARL-LINE 759)
+
+
+
+
+
+
+
+
+
+
+; ID Constants
+(defconst BERRIES 59)
+(defconst DEER 65)
+(defconst MEAT-BOAR 910)
+(defconst LIVESTOCK-GROUP 958)
+(defconst FARM-FOOD 949) 
+(defconst FORAGE-FOOD 907) 
+;(defconst DEER-FOOD 909)
+;(defconst BOAR-FOOD 910) 
+;(defconst HUNTER-FOOD 15) 
+(defconst FORAGER-FOOD 16) 
+(defconst FISHER-FOOD 17)
+(defconst WOLF 126)
+(defconst JAGUAR 812)
+(defconst FISHING-GROUNDS-GROUP 905)
+(defconst SHORE-FISH-GROUP 933)
+(defconst SNOW-PINE-TREE 413)
+
+(defconst LAND-MAP 400)
+(defconst MIXED-MAP 700)
+(defconst WATER-MAP 1000)
+
+(defconst ENEMY-MISSILE 112)
+(defconst ARROW-GALLEY 540)
+(defconst ARROW-WAR-GALLEY 372)
+(defconst ARROW-GALLEON 373)
+(defconst ARROW-WAR-WAGON-LINE 373)
+(defconst ARROW-LONGBOAT-LINE 512)
+(defconst FLAMING-ARROW-GALLEY 541)
+(defconst FLAMING-ARROW-WAR-GALLEY 470)
+(defconst FLAMING-ARROW-GALLEON 471)
+(defconst FLAMING-ARROW-WAR-WAGON-LINE 471)
+(defconst FLAMING-ARROW-LONGBOAT-LINE 524)
+(defconst FIRE-FIRE-SHIP-LINE 676)
+(defconst BULLET-CANNON-GALLEON-LINE 374)
+(defconst BULLET-TURTLE-SHIP-LINE 767)
+
+(defconst GOLD-MINE 66)
+(defconst STONE-MINE 102)
+
+(defconst MALE-FORAGER 120)
+(defconst FEMALE-FORAGER 354)
+(defconst MALE-SHEPHERD 592)
+(defconst FEMALE-SHEPHERD 590)
+(defconst MALE-HUNTER 122)
+(defconst FEMALE-HUNTER 216)
+(defconst FISHERMAN 56)
+(defconst FISHERWOMAN 57)
+(defconst MALE-FARMER 259)
+(defconst FEMALE-FARMER 214)
+(defconst MALE-LUMBERJACK 123)
+(defconst FEMALE-LUMBERJACK 218)
+(defconst MALE-GOLD-MINER 579)
+(defconst FEMALE-GOLD-MINER 581)
+(defconst MALE-STONE-MINER 124)
+(defconst FEMALE-STONE-MINER 220)
+
+(defconst MALE-DEAD-VILLAGER 224)
+(defconst FEMALE-DEAD-VILLAGER 211)
+(defconst MALE-DEAD-LUMBERJACK 219)
+(defconst FEMALE-DEAD-LUMBERJACK 228)
+(defconst MALE-DEAD-MINER 229)
+(defconst FEMALE-DEAD-MINER 221)
+(defconst DEAD-MONK 134)
+(defconst MONK-WITH-RELIC 286)
+(defconst RELIC-WITHOUT-MONK 285)
+
+(defconst food-gatherer 978)
+
+
+; Unique researches
+(defconst RI-ATHEISM 21)
+(defconst RI-YEOMEN   3)
+(defconst RI-LOGISTICA 61)
+(defconst RI-ELDORADO 4)
+(defconst RI-MAHOUTS 7)
+(defconst RI-ZEALOTRY 9)
+(defconst RI-HERBAL-MEDICINE 441)
+(defconst RI-ANARCHY 16)
+(defconst RI-PERFUSION 457)
+
+(defconst BARRACK-HUSCARL-LINE 759)
+
+; Forgotten Empires Researches
+(defconst RI-ELITE-GENOESE-CROSSBOWMAN 468)
+(defconst RI-PAVISE 494) ; +1/+1 arnmour to UU
+;(defconst RI-SILK-ROAD 499)
+(defconst GENOESE-CROSSBOWMAN 866)
+(defconst ELITE-GENOESE-CROSSBOWMAN 868)
+;(defconst CONDOTTIERO 900)
+(defconst RI-HEAVY-EAGLE 437)
+
+
+; Wall constants
+(defconst MIN-WALL-1 60)
+(defconst MIN-WALL-2 60)
+
+; Attack group size constant
+(defconst ATTACK-GROUPS-SIZE 5)
+
+
+
+;Map Size Constants. From Bear The Great
+;(defconst SEA-SIZE-FOR-DOCK 3000)
+
+#load-if-defined TINY-MAP
+(defconst HALF-MAP-SIZE 60)
+(defconst FULL-MAP-SIZE 120)
+(defconst GROUP-DISTANCE 0)
+(defconst SEA-FISHES 40)
+#end-if
+#load-if-defined SMALL-MAP
+(defconst HALF-MAP-SIZE 60)
+(defconst FULL-MAP-SIZE 120)
+(defconst GROUP-DISTANCE 0)
+(defconst SEA-FISHES 60)
+#end-if
+#load-if-defined MEDIUM-MAP
+(defconst HALF-MAP-SIZE 60)
+(defconst FULL-MAP-SIZE 120)
+(defconst GROUP-DISTANCE 7)
+(defconst SEA-FISHES 80)
+#end-if
+#load-if-defined NORMAL-MAP
+(defconst HALF-MAP-SIZE 72)
+(defconst FULL-MAP-SIZE 144)
+(defconst GROUP-DISTANCE 10)
+(defconst SEA-FISHES 120)
+#end-if
+#load-if-defined LARGE-MAP
+(defconst HALF-MAP-SIZE 100)
+(defconst FULL-MAP-SIZE 200)
+(defconst GROUP-DISTANCE 10)
+(defconst SEA-FISHES 140)
+#end-if
+#load-if-defined GIANT-MAP
+(defconst HALF-MAP-SIZE 128)
+(defconst FULL-MAP-SIZE 256)
+(defconst GROUP-DISTANCE 10)
+(defconst SEA-FISHES 160)
+#end-if
+
+
+; Required numbers to take researches
+(defconst MIN-SPEARS-TO-ELITE 0)
+(defconst MAX-SPEARS-TO-ELITE 10)
+
+;(defconst MIN-SKIRMS-TO-ELITE 4)
+(defconst MAX-SKIRMS-TO-ELITE 12)
+
+(defconst MAX-SWORDS-TO-ELITE 12)
+
+(defconst MIN-ARCHERS-TO-ELITE 4)
+(defconst MAX-ARCHERS-TO-ELITE 12)
+
+(defconst MIN-CAV-ARCHERS-TO-ELITE 4)
+(defconst MAX-CAV-ARCHERS-TO-ELITE 12)
+
+(defconst MIN-KNIGHTS-TO-ELITE 4)
+(defconst MAX-KNIGHTS-TO-ELITE 12)
+
+(defconst MIN-CAMELS-TO-ELITE 4)
+(defconst MAX-CAMELS-TO-ELITE 12)
+
+(defconst MIN-EAGLES-TO-ELITE 4)
+(defconst MAX-EAGLES-TO-ELITE 12)
+
+(defconst MIN-SCOUTS-TO-ELITE 0)
+(defconst MAX-SCOUTS-TO-ELITE 10)
+
+(defconst MAX-GALLEYS-TO-ELITE 6)
+(defconst MAX-FIRING-SHIPS-TO-ELITE 6)
+(defconst MAX-DEMOLITION-SHIPS-TO-ELITE 6)
+(defconst MAX-CANNON-GALLEONS-TO-ELITE 6)
+(defconst MAX-DRAGON-BOATS-TO-ELITE 6)
+(defconst MAX-TURTLE-SHIPS-TO-ELITE 6)
+
+
+
+
+; TSA constants
+(defconst TS-SIZE-0 30)
+(defconst TS-SIZE-1 35)
+(defconst TS-SIZE-2 40)
+(defconst TS-SIZE-3 44)
+(defconst TS-SIZE-4 48)
+(defconst TS-SIZE-5 52)
+(defconst TS-SIZE-6 56)
+(defconst TS-SIZE-7 58)
+(defconst TS-SIZE-8 60)
+(defconst TS-SIZE-9 62)
+(defconst TS-SIZE-10 64)
+(defconst TS-SIZE-11 66)
+(defconst TS-SIZE-12 68)
+(defconst TS-SIZE-13 70)
+(defconst TS-SIZE-14 72)
+(defconst TS-SIZE-15 74)
+(defconst TS-SIZE-16 76)
+(defconst TS-SIZE-17 78)
+(defconst TS-SIZE-18 80)
+(defconst TS-SIZE-19 83)
+(defconst TS-SIZE-20 86)
+(defconst TS-SIZE-21 88)
+(defconst TS-SIZE-22 91)
+(defconst TS-SIZE-23 94)
+(defconst TS-SIZE-24 97)
+(defconst TS-SIZE-25 100)
+(defconst TS-SIZE-26 120)
+(defconst TS-SIZE-27 140)
+(defconst TS-SIZE-28 160)
+(defconst TS-SIZE-29 180)
+(defconst TS-SIZE-30 200)
+(defconst TS-SIZE-31 228)
+(defconst TS-SIZE-32 256)
+
+
+
+
+
+
+
+(defconst G-AGE-STATUS 6) ;sn-attack-separation-time
+(defconst GV-DARK-AGE 0)
+(defconst GV-DARK-MILL 1)
+(defconst GV-DARK-LUMBER-CAMP 2)
+(defconst GV-ADVANCING-TO-FEUDAL 19)
+(defconst GV-FEUDAL-AGE 20)
+(defconst GV-FEUDAL-AGE-1 21)
+(defconst GV-FEUDAL-AGE-2 22)
+(defconst GV-FEUDAL-AGE-3 23)
+(defconst GV-FEUDAL-AGE-4 24)
+(defconst GV-FEUDAL-AGE-5 25)
+(defconst GV-FEUDAL-AGE-6 26)
+(defconst GV-FEUDAL-AGE-7 27)
+(defconst GV-ADVANCING-TO-CASTLE-ABORTED 38)
+(defconst GV-ADVANCING-TO-CASTLE 39)
+(defconst GV-CASTLE-AGE 40)
+(defconst GV-CASTLE-AGE-1 41)
+(defconst GV-CASTLE-AGE-2 42)
+(defconst GV-CASTLE-AGE-3 43)
+(defconst GV-ADVANCING-TO-IMPERIAL-ABORTED 38)
+(defconst GV-ADVANCING-TO-IMPERIAL 59)
+(defconst GV-IMPERIAL-AGE 60)
+
+
+
+(defconst G-THREAT-CAVALRY-GROUP 7)
+(defconst G-THREAT-ARCHERY-GROUP 8)
+(defconst G-THREAT-MONK 9)
+;(defconst G-THREAT-SKIRM 10)
+(defconst G-THREAT-EAGLE 11)
+;(defconst G-THREAT-SPEAR 12)
+(defconst G-THREAT-HUSCARL 13)
+;(defconst G-THREAT-ARCHERY-CAVALRY-GROUP 13) ; Not an obsolete SN
+(defconst G-MILITARY-SUPERIORITY 14)
+(defconst G-HEAVY-CAVALRY-SUPERIORITY 15)
+(defconst G-NUMERICAL-MILITARY-SUPERIORITY 17)
+
+(defconst G-AGE-SUPERIORITY 21)
+(defconst GV-AGE-SUPERIORITY-LAST -2)
+(defconst GV-AGE-SUPERIORITY-EQUAL 0)
+(defconst GV-AGE-SUPERIORITY-FIRST 2)
+
+
+
+; Obsolete SN to know how many trebuchets we have. Copied from Goose, by TEA315(Leo)
+(defconst G-TREBUCHET 27)
+
+(defconst G-TSA-PAUSED-TOWN-SIZE 33)
+
+(defconst G-FARMING 113)
+(defconst GV-FARM-NONE 0)
+(defconst GV-FARM-IDLE-1 1)
+(defconst GV-FARM-IDLE-2 2)
+(defconst GV-FARM-IDLE-3 3)
+(defconst GV-FARM-IDLE-4 4)
+(defconst GV-FARM-IDLE-6 6)
+(defconst GV-FARM-IDLE-8 8)
+
+(defconst G-BUILDING-EXPANSION 116)
+
+(defconst G-WEAKER-ENEMY 137)
+(defconst G-NUMERICAL-WEAKER-ENEMY 153)
+(defconst G-SHEEP-TOTAL 154)
+
+; Obsolote strategic number used. Obtained from Scripter64 and Marathon.
+
+(defconst SN-FOOD-MODIFIER-PERCENTAGE 156)
+(defconst SN-WOOD-MODIFIER-PERCENTAGE 157)
+(defconst SN-STONE-MODIFIER-PERCENTAGE 158)
+(defconst SN-GOLD-MODIFIER-PERCENTAGE 159)
+
+
+; UserPatch strategic numbers
+(defconst SN-ENABLE-BOAR-HUNTING 244)
+(defconst SN-MINIMUM-NUMBER-HUNTERS 245)
+(defconst SN-MAXIMUM-TOWER-ATTACKERS 257)
+(defconst SN-ALLOW-CIVILIAN-OFFENSE 258)
+
+
+
+;(defconst G-MAP-KIND 1) 
+;(defconst G-RESIGN 1)
+
+;(defconst G-INITIAL-AGE 2) ; To optimize the initial gatherer percentages in no-dark-age starts
+
+; Goal to select preferred units
+(defconst GV-NONE 0)
+(defconst G-BARRACK-UNIT 3)
+(defconst GV-SWORD 1)
+(defconst GV-SPEAR 2)
+(defconst GV-EAGLE 3)
+;(defconst GV-TRASH-SPEAR 4)
+(defconst GV-HUSKARL 4)
+(defconst GV-CONDOTTIERO 5)
+(defconst G-ARCHERY-UNIT 4)
+(defconst GV-ARCHER 1)
+(defconst GV-SKIRM 2)
+(defconst GV-CAV-ARCHER 3)
+(defconst GV-HAND-CANNON 4)
+(defconst GV-TRASH-SKIRM 5)
+(defconst G-STABLE-UNIT 5)
+(defconst GV-KNIGHT 1)
+(defconst GV-SCOUT 2)
+(defconst GV-CAMEL 3)
+(defconst G-SIEGE-UNIT 6)
+(defconst GV-RAM 1)
+(defconst GV-TREBUCHET 2)
+(defconst GV-BOMBARD-CANNON 3)
+(defconst G-WORKSHOP 7)
+;(defconst GV-RAM 1)
+;(defconst GV-TREBUCHET 2)
+;(defconst GV-BOMBARD-CANNON 3)
+(defconst GV-SCORPION 4)
+(defconst GV-ONAGER 5)
+
+(defconst G-BOAT 8)
+(defconst GV-GALLEY 1)
+(defconst GV-FIRE-SHIP 2)
+(defconst GV-DEMOLITION-SHIP 3)
+(defconst GV-TRADE-COG 4)
+(defconst GV-FISHING-SHIP 5)
+(defconst GV-CANNON-GALLEON 6)
+(defconst GV-TURTLE-SHIP 7)
+(defconst GV-DRAGON-BOAT 8)
+(defconst GV-TRANSPORT-SHIP 9)
+
+; Goal to control villagers training
+(defconst G-VILLAGERS-TRAINING 9)
+(defconst GV-VILLAGERS-NEEDED 		1)
+(defconst GV-VILLAGERS-ALLOWED	 	2)
+(defconst GV-VILLAGERS-EXCESS	 	3)
+
+
+; Goal to indicate if blacksmith technologies has been researched
+;(defconst G-BLACKSMITH 10)
+
+; Goal to indicate if most important military upgrades has been researched
+;(defconst G-MILITARY-UPGRADES 11)
+
+; Goal to choose between m@a/archers and scout/archers flushes
+(defconst G-FEUDAL-STRATEGY 12)
+(defconst GV-FLUSH-ARCHER-SWORDS 1)
+(defconst GV-FLUSH-SWORD-ARCHERS 2)
+(defconst GV-FLUSH-SCOUT-ARCHERS 3)
+(defconst GV-FLUSH-MARKET-SCOUTS-ARCHERS 4)
+(defconst GV-TRUSH-SCOUT-ARCHERS 5)
+(defconst GV-TRUSH-SWORD-ARCHERS 6)
+(defconst GV-FC-ARCHERY 7)
+;(defconst GV-FLUSH-MARKET-SWORDS-ARCHERS 8)
+(defconst GV-FLUSH-MARKET-SWORDS 9)
+(defconst GV-AMPHIBIAN -1)
+(defconst GV-FLUSH-ARCHERY-3 -2)
+(defconst GV-TRIBUTARY -3)
+(defconst GV-FLUSH-MAN-AT-ARMS -4)
+
+; Goal to indicate if we have contructed every building need  in this age
+;(defconst G-BUILDING-WANTED 13)
+(defconst GV-LATE-FEUDAL-0 -100)
+(defconst GV-LATE-FEUDAL-1 -101)
+(defconst GV-LATE-FEUDAL-2 -102)
+
+
+
+
+
+
+;(defconst G-GOLD-MINING 14)
+;(defconst G-STONE-MINING 15)
+
+; If our army is so strongly upgraded than enemy's, we can attack-now even with even numbers
+(defconst G-NAVY-STRONG-PREPARED 14)
+
+; If our army is so strongly upgraded than enemy's, we can attack-now even with even numbers
+(defconst G-ARMY-STRONG-PREPARED 15)
+
+
+(defconst G-UNIQUE-UNIT-TYPE 16)
+(defconst GV-INFANTRY 1)
+(defconst GV-ARCHERY 2)
+(defconst GV-CAVALRY 3)
+
+(defconst G-THREAT-ARCHERY-CAVALRY-GROUP 17) ;Not an obsolete SN
+
+(defconst G-THREAT-UNIQUE-UNIT-GROUP 18) ;Not an obsolete SN
+
+
+; Goal to melt two rules when we need one too long. Idea from Norman_Duck
+(defconst G-JOLLYGOAL 19)
+
+
+
+; Change to trah units if we need gold for upgrades and siege units
+(defconst G-TRASH 20)
+; 0 no
+; 1 yes
+
+
+(defconst G-NAVAL-SUPERIORITY 21)
+
+; TSA goal and timer
+(defconst G-TSA 22)
+
+;(defconst G-TSA-PHASE 23)
+(defconst G-ATTACK 23)
+(defconst GV-TSA-ONLY 1)
+(defconst GV-TSA+ATT-GROUPS 2)
+;(defconst GV-TSA+ATTACK-NOW 3)
+
+;(defconst G-ENEMY-FORTIFIED 24)
+
+(defconst G-TRUSH-AGRESSIVENESS 25)
+
+(defconst G-HELPING-ALLY 26)
+
+(defconst G-HELPING-FORWARD-TOWERS 27)
+
+;(defconst G-WALL-ENABLED 28)
+
+(defconst G-TRADE 29)
+(defconst GV-TRADE-LAND 1)
+(defconst GV-TRADE-WATER 2)
+
+(defconst G-UNIQUE-UNIT-ALLOWED 30)
+
+;(defconst G-GATHER-LEVEL-FOOD 31)
+(defconst G-GATHER-LEVEL-WOOD 32)
+(defconst G-GATHER-LEVEL-GOLD 33)
+(defconst G-GATHER-LEVEL-STONE 34)
+
+(defconst G-SHEEP 35)
+
+(defconst G-ATTACK-PHASE 36)
+(defconst GV-ATTACK-PHASE-0 0)
+(defconst GV-ATTACK-PHASE-1 1)
+(defconst GV-ATTACK-PHASE-2 2)
+(defconst GV-ATTACK-PHASE-3 3)
+(defconst GV-ATTACK-PHASE-4 4)
+(defconst GV-ATTACK-PHASE-5 5)
+(defconst GV-ATTACK-PHASE-6 6)
+(defconst GV-ATTACK-PHASE-7 7)
+
+(defconst G-COOPERATION 37)
+
+
+(defconst G-MATH-1 41)
+(defconst G-MATH-2 42)
+(defconst G-MATH-3 43)
+
+(defconst G-BOAR-HUNTING 50)
+(defconst G-ENEMY-WARBOATS 51)
+(defconst G-ALLY-WARBOATS 52)
+
+
+; Taunts
+(defconst TA-STOP-VILLAGER-TRAINING 32)
+
+(defconst TA-GOLD-MINING 43)
+(defconst TA-STONE-MINING 44)
+
+(defconst TA-INITIAL-AGE-FINISHED 45)
+(defconst TA-SHEEP-FLAG 46)
+(defconst TA-PREDATORS 47)
+(defconst TA-WALLED-MAP 48)
+(defconst TA-WONDER 49)
+
+(defconst TA-WATER-ATTACK 100)
+
+; 201, 202, 203, 204, 205, 206
+
+; Timers
+(defconst T-BUILDING 1)
+(defconst TV-BUILDING 4)
+
+; Villager retasking
+(defconst T-VILLAGER-WOOD-STONE 2)
+(defconst T-VILLAGER-FOOD-GOLD 3)
+;(defconst TV-VILLAGER-RETASKING-CASTLE 60)
+;(defconst TV-VILLAGER-RETASKING-IMPERIAL 90)
+
+
+(defconst T-TSA-RETREAT 4)
+(defconst TV-DEFENSIVE-TSA 10)
+(defconst TV-TOWN-UNDER-ATTACK 10)
+
+; Timer to request ally help to attack or defend in land
+(defconst T-ATTACK-TEAM 5)
+(defconst TV-ATTACK-TEAM 100)
+
+; Timer to request ally help to attack or defend in water
+(defconst T-WATER-ATTACK-TEAM 6)
+(defconst TV-WATER-ATTACK-TEAM 100)
+
+(defconst T-ALLY-NEEDS-HELP 7)
+(defconst TV-ALLY-NEEDS-HELP 150)
+
+(defconst T-ALLY-NEEDS-NAVAL-HELP 8)
+(defconst TV-ALLY-NEEDS-NAVAL-HELP 120)
+
+(defconst T-TSA-PHASE 9)
+(defconst TV-TSA-PHASE-1 7)
+(defconst TV-TSA-PHASE-2 3)
+(defconst TV-TSA-PHASE-3 7)
+(defconst TV-TSA-PHASE-4 3)
+(defconst TV-TSA-PHASE-5 3)
+
+(defconst T-TRIBUTE 10)
+(defconst TV-TRIBUTE 60)
+
+; Timer to villager retasking if economy is unbalanced3
+(defconst T-BOAR-HUNTING 11)
+(defconst TV-BOAR-HUNTING 10)
+;(defconst TV-VILLAGER-RETASKING 45)

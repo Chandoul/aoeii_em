@@ -1,0 +1,142 @@
+;goal 2 NO = no problem; 2 YES = we've won at sea!
+
+; transport-ships
+(defrule
+	(military-population > 10)
+	(unit-type-count-total transport-ship < 2)
+	(can-train transport-ship)
+=>
+	(train transport-ship)
+)
+
+;********************************************
+;CANNON GALLEONS
+(defrule
+	(goal make-warboat YES)
+	(difficulty <= hard)
+	(unit-type-count cannon-galleon-line < five-percent-pop)
+	(can-train cannon-galleon-line)
+	(or
+		(goal 2 YES)
+		(warboat-count > ten-percent-pop)
+	)
+=>
+	(train cannon-galleon-line)
+)
+
+(defrule
+	(goal make-warboat YES)
+	(can-train-with-escrow cannon-galleon-line)
+	(difficulty <= hard)
+	(or
+		(unit-type-count cannon-galleon-line < five-percent-pop)
+		(and
+			(goal sea-owner YES)
+			(unit-type-count cannon-galleon-line < ten-percent-pop)
+		)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train cannon-galleon-line)
+)
+
+#load-if-defined VIKING-CIV
+;LONGBOATS
+(defrule
+	(goal make-warboat YES)
+	(goal 2 0)
+	(can-train longboat-line)
+	(or
+		(warboat-count < fifteen-percent-pop)
+		(and
+			(goal sea-owner YES)
+			(warboat-count < thirty-percent-pop)
+		)
+	)
+=>
+	(train longboat-line)
+	(set-goal make-fire-boat YES)
+)
+#end-if
+
+#load-if-defined KOREAN-CIV
+;TURTLE SHIPS
+(defrule
+	(goal make-warboat YES)
+	(goal 2 0)
+	(can-train-with-escrow turtle-ship-line)
+	(or
+		(unit-type-count-total turtle-ship-line < 3)
+		(and
+			(goal sea-owner YES)
+			(unit-type-count-total turtle-ship-line < ten-percent-pop)
+		)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train turtle-ship-line)
+	(set-goal make-fire-boat YES)
+)
+#end-if
+
+;DEMOLITION SHIPS	
+(defrule
+	(goal make-warboat YES)
+	(goal 2 0)
+	(warboat-count < five-percent-pop)
+	(unit-type-count-total demolition-ship-line == 0)
+	(can-train demolition-ship-line)
+=>
+	(train demolition-ship-line)
+)
+
+;fire-ships
+(defrule
+	(goal make-warboat YES)
+	(goal 2 0)
+	(can-train fire-ship-line)
+	(or
+		(civ-selected aztec)
+		(or
+			(civ-selected byzantine)
+			(goal make-fire-boat YES)
+		)
+	)
+	(or
+		(warboat-count < fifteen-percent-pop)
+		(and
+			(goal sea-owner YES)
+			(warboat-count < thirty-percent-pop)
+		)
+	)
+=>
+	(train fire-ship-line)
+	(set-goal make-fire-boat NO)
+)
+
+;galleys
+(defrule
+	(goal make-warboat YES)
+	(goal 2 0)
+	(can-train galley-line)
+	(nor 
+		(unit-available longboat-line)
+		(unit-available turtle-ship-line)
+	)
+	(nand
+		(civ-selected aztec)
+		(current-age == imperial-age)
+	)
+	(or
+		(warboat-count < fifteen-percent-pop)
+		(and
+			(goal sea-owner YES)
+			(warboat-count < thirty-percent-pop)
+		)
+	)
+=>
+	(train galley-line)
+	(set-goal make-fire-boat YES)
+)

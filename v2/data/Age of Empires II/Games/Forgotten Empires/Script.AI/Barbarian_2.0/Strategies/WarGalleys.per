@@ -1,0 +1,670 @@
+(defrule
+	(or	(and	(up-compare-goal gl-strategy != war-galley-rush)
+			(and	(up-compare-goal gl-strategy != fire-ship-rush)
+				(game-time > 1200)))
+		(or	(and	(or	(goal gl-strategy grush)
+					(goal gl-strategy turtle-rush))
+				(strategic-number sn-minimum-water-body-size-for-dock == 1000))
+			(strategic-number sn-minimum-water-body-size-for-dock == 998)))
+=>
+	(up-jump-rule 50)
+)
+
+(defrule
+	(game-time > 60)
+	(goal gl-current-age gv-dark)
+	(goal SLING 0)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(or	(map-type mediterranean)
+		(or	(map-type baltic)
+			(map-type crater-lake)))
+=>
+	(set-goal gl-strategy war-galley-rush)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC2)
+	(set-strategic-number sn-dock-proximity-factor 200)
+	(set-strategic-number sn-dock-placement-mode -1)
+	(set-strategic-number sn-allow-new-build-order 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(up-compare-goal gl-current-age <= gv-feudal-up)
+	(not	(civ-selected viking))
+	(or	(players-unit-type-count focus-player galley-line > 1)
+		(not	(player-valid any-human-enemy))); Prefer fireships in AI wars
+	(or	(unit-type-count-total galley-line < 2)
+		(players-unit-type-count focus-player galley-line > 4))
+	(unit-type-count-total galley-line < 5)
+=>
+	(set-goal gl-strategy fire-ship-rush)
+	(chat-to-player my-player-number "1Switch to fire ships")
+	(disable-self)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(strategic-number sn-minimum-water-body-size-for-dock == 998); Placing dock has failed
+=>
+	(set-goal gl-strategy regicide-strategy)
+	(chat-to-player my-player-number "1Switch to back up strategy")
+	(set-strategic-number sn-enemy-sighted-response-distance 7)
+	(set-goal gl-islands-style NO)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(game-time > 2100)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+=>
+	(set-goal gl-strategy watermap-fc)
+	(chat-to-player my-player-number "1Return to default strategy")
+	(set-strategic-number sn-dock-placement-mode 0)
+	(set-goal gl-islands-style YES)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(game-time > 1300)
+	(or	(game-time > 2100)
+		(and	(warboat-count < 4)
+			(or	(players-unit-type-count focus-player fire-ship-line > 6)
+				(players-unit-type-count focus-player galley-line > 8))))
+=>
+	(set-goal gl-strategy default)
+	(chat-to-player my-player-number "1Return to default strategy")
+	(set-strategic-number sn-enemy-sighted-response-distance 7)
+	(set-goal gl-islands-style NO)
+)
+
+
+(defrule
+	(goal gl-strategy fire-ship-rush)
+	(current-age >= castle-age)
+	(unit-type-count-total fire-ship-line < 3)
+	(players-unit-type-count focus-player galley-line > 2)
+	(up-compare-goal gl-gathering-inside < MOST)
+	(goal MILITARY 0)
+=>
+	(set-goal gl-gathering-inside MOST)
+)
+
+(defrule
+	(goal gl-strategy fire-ship-rush)
+	(up-compare-goal gl-gathering-inside >= MOST)
+	(unit-type-count fire-ship-line > 2)
+	(or	(players-unit-type-count focus-player galley-line < 4)
+		(unit-type-count fire-ship-line > 3))
+	(or	(players-unit-type-count focus-player galley-line < 7)
+		(unit-type-count fire-ship-line > 4))
+	(or	(players-unit-type-count focus-player galley-line < 10)
+		(unit-type-count fire-ship-line > 6))
+=>
+	(set-goal gl-gathering-inside RESET)
+)
+
+(defrule
+	(goal gl-strategy fire-ship-rush)
+	(up-compare-goal gl-gathering-inside >= MOST)
+	(not	(goal MILITARY 0))
+=>
+	(set-goal gl-gathering-inside RESET)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(warboat-count > 6)
+	(strategic-number sn-enemy-sighted-response-distance != 17)
+=>
+	(set-strategic-number sn-percent-enemy-sighted-response 100)
+	(set-strategic-number sn-enemy-sighted-response-distance 17)
+)
+
+; ============ BUILDINGS
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(up-compare-goal gl-current-age > gv-dark-up)
+	(up-pending-objects c: house < 3)
+	(or	(game-time > 1400)
+		(building-type-count-total town-center > 2))
+	(building-type-count-total town-center > 1)
+	(current-age >= castle-age)
+	(population-headroom > 4)
+	(housing-headroom < 17)
+	(can-build house)
+=>
+	(build house)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(research-available ri-war-galley)
+	(unit-type-count-total galley-line > 1)
+=>
+	(set-escrow-percentage food 70)
+	(set-escrow-percentage gold 70)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(can-research-with-escrow ri-war-galley)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(research ri-war-galley)
+	(set-strategic-number sn-allow-resource-spending 2)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build market)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build blacksmith)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(current-age == dark-age)
+	(building-type-count dock > 0)
+	(unit-type-count-total villager > 25)
+	(dropsite-min-distance deer-hunting > 7)
+	(dropsite-min-distance deer-hunting < 27)
+	(strategic-number sn-enable-boar-hunting < 2)
+	(building-type-count-total mill < 2)
+	(can-build mill)
+=>
+	(set-strategic-number sn-preferred-mill-placement 1)
+	(build mill)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(or	(players-unit-type-count focus-player fire-ship-line > 4)
+		(players-unit-type-count target-player fire-ship-line > 4))
+	(or	(unit-type-count-total demolition-ship-line < 1)
+		(or	(players-unit-type-count focus-player fire-ship-line > 7)
+			(players-unit-type-count target-player fire-ship-line > 7)))
+	(unit-type-count-total demolition-ship-line < 3)
+	(can-train demolition-ship)
+=>
+	(train demolition-ship)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(up-compare-goal gl-current-age >= gv-feudal)
+	(or	(up-compare-goal gl-current-age >= gv-feudal-up)
+		(and	(gold-amount >= 230)
+			(and	(building-type-count-total blacksmith > 0)
+				(building-type-count-total market > 0))))
+	(unit-type-count-total galley-line < 100)
+	(can-train galley-line)
+=>
+	(train galley-line)
+)
+
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(up-compare-goal gl-current-age > gv-feudal-up)
+	(or	(players-unit-type-count focus-player militiaman-line > 3)
+		(or	(players-unit-type-count focus-player eagle-warrior-line > 2)
+			(players-unit-type-count focus-player scout-cavalry-line > 3))); Train monks as defence since we don't have much choices
+	(unit-type-count-total monk < 6)
+	(can-train monk)
+=>
+	(train monk)
+)
+
+
+(defrule
+	(up-compare-goal gl-current-age > gv-feudal-up)
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(or	(players-unit-type-count focus-player archer-line > 4)
+		(or	(players-unit-type-count focus-player cavalry-archer-line > 4)
+			(players-unit-type-count focus-player skirmisher-line > 6)))
+	(unit-type-count-total mangonel-line < 1)
+	(building-available siege-workshop)
+=>
+	(set-escrow-percentage wood 70)
+	(set-escrow-percentage gold 70)
+	(set-strategic-number sn-percent-enemy-sighted-response 99)
+)
+
+(defrule
+	(up-compare-goal gl-current-age > gv-feudal-up)
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(or	(players-unit-type-count focus-player plumed-archer-line > 4)
+		(or	(players-unit-type-count focus-player chu-ko-nu-line > 4)
+			(or	(players-unit-type-count focus-player longbowman-line > 4)
+				(players-unit-type-count focus-player genoese-crossbowman > 4))))
+	(unit-type-count-total mangonel-line < 1)
+	(building-available siege-workshop)
+=>
+	(set-escrow-percentage wood 70)
+	(set-escrow-percentage gold 70)
+	(set-strategic-number sn-percent-enemy-sighted-response 99)
+)
+
+(defrule
+	(up-compare-goal gl-current-age > gv-feudal-up)
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(or	(players-unit-type-count focus-player archer-line > 4)
+		(or	(players-unit-type-count focus-player cavalry-archer-line > 4)
+			(or	(players-unit-type-count focus-player skirmisher-line > 6)
+				(strategic-number sn-percent-enemy-sighted-response == 99))))
+	(building-type-count-total siege-workshop < 1)
+	(can-build-with-escrow siege-workshop)
+=>
+	(release-escrow wood)
+	(build siege-workshop)
+	(set-strategic-number sn-percent-enemy-sighted-response 100)
+)
+
+(defrule
+	(up-compare-goal gl-current-age > gv-feudal-up)
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(or	(players-unit-type-count focus-player plumed-archer-line > 4)
+		(or	(players-unit-type-count focus-player chu-ko-nu-line > 4)
+			(or	(players-unit-type-count focus-player longbowman-line > 4)
+				(players-unit-type-count focus-player genoese-crossbowman > 4))))
+	(building-type-count-total siege-workshop < 1)
+	(can-build-with-escrow siege-workshop)
+=>
+	(release-escrow wood)
+	(build siege-workshop)
+	(set-strategic-number sn-percent-enemy-sighted-response 100)
+)
+
+(defrule
+	(up-compare-goal gl-current-age > gv-feudal-up)
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(or	(players-unit-type-count focus-player archer-line > 4)
+		(or	(players-unit-type-count focus-player cavalry-archer-line > 4)
+			(strategic-number sn-percent-enemy-sighted-response == 99)))
+	(unit-type-count-total mangonel-line < 3)
+	(can-train-with-escrow mangonel-line)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train mangonel-line)
+	(set-strategic-number sn-percent-enemy-sighted-response 100)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(or	(players-unit-type-count focus-player plumed-archer-line > 4)
+		(or	(players-unit-type-count focus-player chu-ko-nu-line > 4)
+			(or	(players-unit-type-count focus-player longbowman-line > 4)
+				(players-unit-type-count focus-player genoese-crossbowman > 4))))
+	(unit-type-count-total mangonel-line < 3)
+	(can-train-with-escrow mangonel-line)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train mangonel-line)
+	(set-strategic-number sn-percent-enemy-sighted-response 100)
+)
+
+(defrule
+	(up-compare-goal gl-current-age > gv-feudal-up)
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(up-enemy-units-in-town > 2)
+	(or	(players-unit-type-count focus-player militiaman-line > 3)
+		(or	(players-unit-type-count focus-player eagle-warrior-line > 2)
+			(players-unit-type-count focus-player scout-cavalry-line > 3)))
+	(unit-type-count-total scorpion-line < 2)
+	(can-train scorpion-line)
+=>
+	(train scorpion-line)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(game-time > 1200)
+	(up-compare-goal gl-current-age > gv-feudal-up)
+	(or	(building-type-count-total farm < 7)
+		(building-type-count-total town-center > 1))
+	(or	(building-type-count-total farm < 14)
+		(building-type-count-total town-center > 2))
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(warboat-count > 20)
+	(or	(cc-players-unit-type-count 0 deep-fish > 9)
+		(cc-players-unit-type-count 0 shore-fish > 9))
+	(players-unit-type-count every-enemy galley-line < 5)
+	(players-unit-type-count every-enemy fire-ship-line < 5)
+	(players-unit-type-count every-enemy longboat-line < 5)
+	(players-unit-type-count every-enemy turtle-ship-line < 1)
+	(building-type-count-total town-center > 2)
+	(unit-type-count-total fishing-ship < 15)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(warboat-count > 20)
+	(players-unit-type-count every-enemy galley-line < 5)
+	(players-unit-type-count every-enemy fire-ship-line < 5)
+	(players-unit-type-count every-enemy longboat-line < 5)
+	(players-unit-type-count every-enemy turtle-ship-line < 1)
+	(building-type-count-total town-center < 5)
+	(can-build-with-escrow town-center)
+=>
+	(up-modify-sn sn-camp-max-distance g:= gl-my-town-size)
+	(set-strategic-number sn-town-center-placement lumber-camp)
+	(release-escrow wood)
+	(build town-center)
+	(chat-to-player my-player-number "Town center")
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(or	(and	(warboat-count > 20)
+			(and	(players-unit-type-count every-enemy galley-line < 5)
+				(and	(players-unit-type-count every-enemy fire-ship-line < 5)
+					(players-unit-type-count every-enemy longboat-line < 5))))
+		(wood-amount > 300))
+	(building-type-count-total town-center > 2)
+	(building-type-count-total town-center < 5)
+=>
+	(set-strategic-number sn-stone-gatherer-percentage 7)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total town-center < 3)
+	(strategic-number sn-stone-gatherer-percentage ==  0)
+	(stone-amount < 100)
+	(can-buy-commodity stone)
+=>
+	(buy-commodity stone)
+	(chat-to-player my-player-number "Buy stone for TC")
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(building-type-count-total town-center > 2)
+	(not	(goal TC -1))
+=>
+	(set-goal TC -1)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(or	(and	(warboat-count > 20)
+			(and	(players-unit-type-count every-enemy galley-line < 5)
+				(and	(players-unit-type-count every-enemy fire-ship-line < 5)
+					(and	(players-unit-type-count every-enemy longboat-line < 5)
+						(players-unit-type-count every-enemy turtle-ship-line < 1)))))
+		(game-time > 1500))
+=>
+	(set-goal TC 1)
+	(disable-self)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(building-type-count-total town-center < 3)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(current-age-time > 20)
+	(or	(wood-amount >= 275)
+		(food-amount >= 500))
+=>
+	(set-goal TC 1)
+	(disable-self)
+)
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(current-age <= castle-age)
+	(players-current-age focus-player > castle-age)
+	(strategic-number sn-threat-level < 1)
+=>
+	(set-strategic-number sn-threat-level 1)
+)
+
+(defrule
+	(or	(and	(goal gl-strategy war-galley-rush)
+			(research-completed ri-war-galley))
+		(and	(goal gl-strategy fire-ship-rush)
+			(unit-type-count fire-ship-line > 0)))
+	(or	(players-current-age focus-player == castle-age)
+		(current-age == imperial-age))
+	(strategic-number sn-threat-level > -2)
+=>
+	(set-strategic-number sn-threat-level -2)
+)
+
+(defrule
+	(or	(and	(goal gl-strategy war-galley-rush)
+			(research-completed ri-war-galley))
+		(and	(goal gl-strategy fire-ship-rush)
+			(unit-type-count fire-ship-line > 0)))
+	(players-current-age focus-player < castle-age)
+	(strategic-number sn-threat-level > -4)
+=>
+	(set-strategic-number sn-threat-level -4)
+)
+
+; =============== ECO
+
+(defrule
+	(or	(goal gl-strategy war-galley-rush)
+		(goal gl-strategy fire-ship-rush))
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == dark-age)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(or	(strategic-number sn-wood-gatherer-percentage != 45)
+			(or	(strategic-number sn-gold-gatherer-percentage != 15)
+				(strategic-number sn-skip-first-mining-camp != 0))))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(strategic-number sn-food-gatherer-percentage != 17)
+		(strategic-number sn-gold-gatherer-percentage != 16))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 17)
+	(set-strategic-number sn-wood-gatherer-percentage 67)
+	(set-strategic-number sn-gold-gatherer-percentage 16)
+	(set-goal gl-islands-style YES)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(up-research-status c: ri-war-galley >= research-pending)
+	(up-research-status c: ri-bodkin-arrow >= research-pending)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(building-type-count-total town-center == 1)
+	(or	(strategic-number sn-food-gatherer-percentage != 10)
+		(strategic-number sn-gold-gatherer-percentage != 16))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 10)
+	(set-strategic-number sn-wood-gatherer-percentage 74)
+	(set-strategic-number sn-gold-gatherer-percentage 16)
+	(set-goal gl-islands-style YES)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(building-type-count-total town-center == 2)
+	(or	(strategic-number sn-food-gatherer-percentage != 20)
+		(strategic-number sn-gold-gatherer-percentage != 15))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 65)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-goal gl-islands-style YES)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(building-type-count-total town-center > 2)
+	(or	(strategic-number sn-food-gatherer-percentage != 26)
+		(strategic-number sn-gold-gatherer-percentage != 17))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 26)
+	(set-strategic-number sn-wood-gatherer-percentage 57)
+	(set-strategic-number sn-gold-gatherer-percentage 17)
+	(set-goal gl-islands-style YES)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total town-center > 3)
+	(or	(strategic-number sn-food-gatherer-percentage != 35)
+		(strategic-number sn-gold-gatherer-percentage != 17))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 48)
+	(set-strategic-number sn-gold-gatherer-percentage 17)
+	(set-goal gl-islands-style YES)
+)
+
+(defrule
+	(goal gl-strategy fire-ship-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total town-center == 1)
+	(or	(strategic-number sn-food-gatherer-percentage != 10)
+		(strategic-number sn-gold-gatherer-percentage != 20))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 10)
+	(set-strategic-number sn-wood-gatherer-percentage 70)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(set-goal gl-islands-style YES)
+)
+
+(defrule
+	(goal gl-strategy fire-ship-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total town-center == 2)
+	(or	(strategic-number sn-food-gatherer-percentage != 20)
+		(strategic-number sn-gold-gatherer-percentage != 17))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 63)
+	(set-strategic-number sn-gold-gatherer-percentage 17)
+	(set-goal gl-islands-style YES)
+)
+
+(defrule
+	(goal gl-strategy fire-ship-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total town-center > 2)
+	(or	(strategic-number sn-food-gatherer-percentage != 26)
+		(strategic-number sn-gold-gatherer-percentage != 20))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 26)
+	(set-strategic-number sn-wood-gatherer-percentage 54)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(set-goal gl-islands-style YES)
+)
+
+(defrule
+	(goal gl-strategy fire-ship-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total town-center > 3)
+	(or	(strategic-number sn-food-gatherer-percentage != 35)
+		(strategic-number sn-gold-gatherer-percentage != 20))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(set-goal gl-islands-style YES)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(up-compare-goal DOCK != 6)
+=>
+	(set-goal DOCK 6)
+)
+
+(defrule
+	(goal gl-strategy war-galley-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(up-compare-goal DOCK != 3)
+=>
+	(set-goal DOCK 3)
+)
+
+(defrule
+	(goal gl-strategy fire-ship-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(up-compare-goal DOCK != 5)
+=>
+	(set-goal DOCK 5)
+)
+
+(defrule
+	(goal gl-strategy fire-ship-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+	(up-compare-goal DOCK != 4)
+=>
+	(set-goal DOCK 4)
+)

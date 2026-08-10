@@ -1,0 +1,199 @@
+;******************************************************************************
+;
+; Warfare settings
+;
+;******************************************************************************
+
+
+#load-if-defined UP-AVAILABLE
+(defrule
+	(current-age >= feudal-age)
+	(military-population > 5)
+	(strategic-number G-MILITARY-SUPERIORITY >= -1)
+	(not(strategic-number SN-MAXIMUM-TOWER-ATTACKERS == 0))
+=>
+	(set-strategic-number SN-MAXIMUM-TOWER-ATTACKERS 0)
+)
+
+(defrule
+	(nand	(current-age >= feudal-age)
+		(and	(military-population > 5)
+			(strategic-number G-MILITARY-SUPERIORITY >= -1)
+		)
+	)
+	(not(strategic-number SN-MAXIMUM-TOWER-ATTACKERS == 10))
+=>
+	(set-strategic-number SN-MAXIMUM-TOWER-ATTACKERS 10)
+)
+#else
+(defrule
+	(current-age == feudal-age)
+	(military-population > 1)
+	(strategic-number sn-maximum-town-size > 16)
+	(not(strategic-number sn-allow-civilian-defense == 0))
+=>
+	(set-strategic-number sn-allow-civilian-defense 0)
+)
+
+(defrule
+	(nand	(current-age == feudal-age)
+		(and	(strategic-number sn-maximum-town-size > 16)
+			(military-population > 1)
+		)
+	)
+	(not(strategic-number sn-allow-civilian-defense == 1))
+=>
+	(set-strategic-number sn-allow-civilian-defense 1)
+)
+#end-if
+
+
+; Towers built in more random place in trushes to reduce suicidal forward builders
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number sn-random-placement-factor < 100)
+	(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+	)
+=>
+	(set-strategic-number sn-random-placement-factor 100) ;Maximum
+)
+
+(defrule
+	(current-age >= castle-age)
+	(strategic-number sn-random-placement-factor > 50)
+	(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+	)
+=>
+	(set-strategic-number sn-random-placement-factor 50) ;Maximum
+)
+
+
+
+; King of the Hill
+#load-if-defined KING-OF-THE-HILL
+(defrule
+	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+	(military-population > 5)
+	(not(strategic-number sn-gather-idle-soldiers-at-center == 1))
+=>
+	(set-strategic-number sn-gather-idle-soldiers-at-center 1)
+)
+
+(defrule
+	(nand	(strategic-number G-MILITARY-SUPERIORITY >= 0)
+		(military-population > 5)
+	)
+	(not(strategic-number sn-gather-idle-soldiers-at-center == 0))
+=>
+	(set-strategic-number sn-gather-idle-soldiers-at-center 0)
+)
+#end-if
+
+
+; To make attacking soldiers harder to lure
+
+(defrule
+	(strategic-number sn-enemy-sighted-response-distance != 256)
+=>
+	(set-strategic-number sn-enemy-sighted-response-distance 256) ;Maximum
+)
+#load-if-defined x
+(defrule
+	(strategic-number sn-enemy-sighted-response-distance < 10)
+	(not(goal G-TSA 1))
+=>
+	(set-strategic-number sn-enemy-sighted-response-distance 10) ;Maximum
+)
+
+(defrule
+	;(or	(not	(town-under-attack))
+		(goal G-TSA 1)
+	;)
+	(strategic-number sn-enemy-sighted-response-distance > 0)
+=>
+	(set-strategic-number sn-enemy-sighted-response-distance 0) ;On Sight Only
+)
+#end-if
+
+
+; Defend camps near but not inside the base without make our oofensive soldiers to suicidal
+
+(defrule
+	(strategic-number sn-defense-distance < 15)
+	(nor	(goal G-TSA 1)
+		(strategic-number G-MILITARY-SUPERIORITY < 0)
+	)
+=>
+	(set-strategic-number sn-defense-distance 15)
+)
+
+(defrule
+	(strategic-number sn-defense-distance > 0)
+	(or	(goal G-TSA 1)
+		(strategic-number G-MILITARY-SUPERIORITY < 0)
+	)
+=>
+	(set-strategic-number sn-defense-distance 0)
+)
+
+(defrule
+	(or	(current-age <= feudal-age)
+		(and	(building-type-count siege-workshop == 0)
+			(building-type-count castle == 0)
+		)
+	)
+	(not(enemy-captured-relics))
+=>
+	(set-strategic-number sn-special-attack-type1 town-center)
+	(set-strategic-number sn-special-attack-influence1 -999)
+)
+
+(defrule
+	(nor	(current-age <= feudal-age)
+		(and	(building-type-count siege-workshop == 0)
+			(building-type-count castle == 0)
+		)
+	)
+	(not(enemy-captured-relics))
+=>
+	(set-strategic-number sn-special-attack-type1 lumber-camp)
+	(set-strategic-number sn-special-attack-type2 mining-camp)
+	(set-strategic-number sn-special-attack-influence1 200)
+)
+
+(defrule
+	(enemy-captured-relics)
+=>
+	(set-strategic-number sn-special-attack-type1 monastery)
+	(set-strategic-number sn-special-attack-influence1 999)
+)
+
+
+
+; Villager rushes
+#load-if-defined UP-AVAILABLE
+#load-if-defined SPANISH-CIV
+(defrule
+	(strategic-number SN-ALLOW-CIVILIAN-OFFENSE == 0)
+	(research-completed my-unique-research)
+	(or	(and	(not(goal G-TSA 1))
+			(town-under-attack)
+		)
+		(not(research-available ri-sappers))
+	)
+=>
+	(set-strategic-number SN-ALLOW-CIVILIAN-OFFENSE 1)
+)
+
+(defrule
+	(strategic-number SN-ALLOW-CIVILIAN-OFFENSE == 1)
+	(goal G-TSA 1)
+	(research-available ri-sappers)
+=>
+	(set-strategic-number SN-ALLOW-CIVILIAN-OFFENSE 0)
+)
+#end-if
+#end-if

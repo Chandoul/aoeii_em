@@ -1,0 +1,225 @@
+(defrule
+	(true)
+   =>
+	(set-strategic-number G-THREAT-CAVALRY-GROUP 3)
+	(set-strategic-number G-THREAT-ARCHERY-GROUP 3)
+	(set-strategic-number G-THREAT-MONK 0)
+	(set-goal G-THREAT-ARCHERY-CAVALRY-GROUP 0)
+	;(set-strategic-number G-THREAT-SKIRM 0)
+	(set-strategic-number G-THREAT-EAGLE 0)
+	(set-strategic-number G-THREAT-HUSCARL 0)
+	(set-goal G-THREAT-UNIQUE-UNIT-GROUP 1)
+)
+
+
+
+	; ANTI CAVALRY COUNTERING
+
+(defrule
+	(players-unit-type-count every-enemy knight-line < 25)
+	(players-unit-type-count every-enemy camel-line < 30)
+	(players-unit-type-count every-enemy scout-cavalry-line < 40)
+	(players-unit-type-count every-enemy cataphract-line < 20)
+	(players-unit-type-count every-enemy tarkan-line < 30)
+	(players-unit-type-count every-enemy war-elephant-line < 7)
+	(or	(players-unit-type-count every-enemy knight-line < 12)
+		(players-unit-type-count every-enemy scout-cavalry-line < 20)
+	)
+=>
+	(set-strategic-number G-THREAT-CAVALRY-GROUP 2)
+)
+
+(defrule
+	(players-unit-type-count every-enemy knight-line < 3)
+	(players-unit-type-count every-enemy camel-line < 4)
+	(players-unit-type-count every-enemy scout-cavalry-line < 7)
+	(players-unit-type-count every-enemy cataphract-line < 3)
+	(players-unit-type-count every-enemy tarkan-line < 4)
+	(players-unit-type-count every-enemy war-elephant-line < 2)
+=>
+	(set-strategic-number G-THREAT-CAVALRY-GROUP 1)
+)
+
+(defrule
+	(players-building-type-count every-enemy stable == 0)
+	(players-unit-type-count every-enemy knight-line == 0)
+	(players-unit-type-count every-enemy camel-line == 0)
+	(players-unit-type-count every-enemy scout-cavalry-line < 3)
+	(players-unit-type-count every-enemy cataphract-line == 0)
+	(players-unit-type-count every-enemy tarkan-line == 0)
+	(players-unit-type-count every-enemy war-elephant-line == 0)
+=>
+	(set-strategic-number G-THREAT-CAVALRY-GROUP 0)
+)
+
+
+
+
+
+
+
+
+
+	; ANTI ARCHER COUNTERING
+
+
+(defrule
+	(or	(or	(players-unit-type-count any-enemy war-wagon-line > 0)
+			(players-unit-type-count any-enemy mangudai-line > 2)
+		)
+		(or	(players-unit-type-count any-enemy cavalry-archer-line > 2)
+			(players-unit-type-count any-enemy  conquistador-line > 2)
+		)
+	)
+=>
+	(set-goal G-THREAT-ARCHERY-CAVALRY-GROUP 1)
+)
+
+(defrule
+	(players-unit-type-count every-enemy archer-line < 25)
+	(players-unit-type-count every-enemy skirmisher-line < 25)
+	(players-unit-type-count every-enemy plumed-archer-line < 25)
+	(players-unit-type-count every-enemy chu-ko-nu-line < 25)
+	(players-unit-type-count every-enemy  longbowman-line < 25)
+	(players-unit-type-count every-enemy war-wagon-line < 12)
+	(players-unit-type-count every-enemy mangudai-line < 20)
+	(players-unit-type-count every-enemy cavalry-archer-line < 20)
+	(players-unit-type-count every-enemy  conquistador-line < 20)
+=>
+	(set-strategic-number G-THREAT-ARCHERY-GROUP 2)
+)
+
+(defrule
+	(players-unit-type-count every-enemy archer-line < 15)
+	(players-unit-type-count every-enemy skirmisher-line < 15)
+	(players-unit-type-count every-enemy plumed-archer-line < 15)
+	(players-unit-type-count every-enemy chu-ko-nu-line < 15)
+	(players-unit-type-count every-enemy  longbowman-line < 15)
+	(players-unit-type-count every-enemy war-wagon-line < 8)
+	(players-unit-type-count every-enemy mangudai-line < 12)
+	(players-unit-type-count every-enemy cavalry-archer-line < 12)
+	(players-unit-type-count every-enemy  conquistador-line < 12)
+=>
+	(set-strategic-number G-THREAT-ARCHERY-GROUP 1)
+)
+
+(defrule
+	(players-unit-type-count every-enemy archer-line < 5)
+	(players-unit-type-count every-enemy skirmisher-line < 5)
+	(players-unit-type-count every-enemy plumed-archer-line < 5)
+	(players-unit-type-count every-enemy chu-ko-nu-line < 5)
+	(players-unit-type-count every-enemy  longbowman-line < 5)
+	(players-unit-type-count every-enemy war-wagon-line < 3)
+	(players-unit-type-count every-enemy mangudai-line < 4)
+	(players-unit-type-count every-enemy cavalry-archer-line < 4)
+	(players-unit-type-count every-enemy  conquistador-line < 4)
+=>
+	(set-strategic-number G-THREAT-ARCHERY-GROUP 0)
+)
+
+
+
+
+
+
+
+	; ANTI MONK COUNTERING
+
+
+; We have enough with a few scouts or eagle warriors
+(defrule
+	(or	(and	(and	(players-building-type-count any-enemy monastery >= 2)
+				(players-building-type-count any-enemy barracks == 0)
+			)
+			(and	(players-building-type-count any-enemy archer-line == 0)
+				(players-building-type-count any-enemy stable == 0)
+			)
+		)
+		(or	(players-unit-type-count any-enemy monk > 1)
+			(players-unit-type-count any-enemy missionary > 1)
+		)
+	)
+=>
+	(set-strategic-number G-THREAT-MONK 1)
+)
+
+; We need some scouts or eagle warriors
+(defrule
+	(or	(players-unit-type-count any-enemy monk > 4)
+		(or	(players-unit-type-count any-enemy missionary > 4)
+			(and	(players-unit-type-count any-enemy monk > 2)
+				(players-unit-type-count any-enemy missionary > 2)
+			)
+		)
+	)
+=>
+	(set-strategic-number G-THREAT-MONK 2)
+)
+
+; We need lots of scouts or eagle warriors
+(defrule
+	(or	(players-unit-type-count any-enemy monk > 10)
+		(or	(players-unit-type-count any-enemy missionary > 10)
+			(and	(players-unit-type-count any-enemy monk > 5)
+				(players-unit-type-count any-enemy missionary > 5)
+			)
+		)
+	)
+=>
+	(set-strategic-number G-THREAT-MONK 3)
+)
+
+
+	; ANTI EAGLE COUNTERING
+(defrule
+	(or
+		(players-civ any-enemy aztec)
+		(players-civ any-enemy mayan)
+	)
+	(or	(players-unit-type-count any-enemy eagle-warrior-line >= 2) ; the explorer and a fighter
+		(and	(players-building-type-count any-enemy barracks >= 2)
+			(players-building-type-count every-enemy archery-range == 0)
+		)
+	)
+=>
+	(set-strategic-number G-THREAT-EAGLE 1)
+)
+
+	; HUSCARL COUNTERING
+(defrule
+	(or	(players-unit-type-count any-enemy huskarl-line >= 1)
+		(players-unit-type-count any-enemy BARRACK-HUSCARL-LINE >= 1)
+	)
+=>
+	(set-strategic-number G-THREAT-HUSCARL 1)
+)
+
+
+	; UNIQUE UNIT COUNTERING
+(defrule
+	(players-unit-type-count every-enemy jaguar-man-line == 0)
+	(players-unit-type-count every-enemy cataphract-line == 0)
+	(players-unit-type-count every-enemy woad-raider-line == 0)
+	(players-unit-type-count every-enemy chu-ko-nu-line == 0)
+	(players-unit-type-count every-enemy war-wagon-line == 0)
+	(players-unit-type-count every-enemy conquistador-line == 0)
+	(players-unit-type-count every-enemy throwing-axeman-line == 0)
+	(players-unit-type-count every-enemy huskarl-line == 0)
+	(players-unit-type-count every-enemy BARRACK-HUSCARL-LINE == 0)
+	(players-unit-type-count every-enemy tarkan-line == 0)
+	(players-unit-type-count every-enemy longbowman-line == 0)
+	(players-unit-type-count every-enemy plumed-archer-line == 0)
+	(players-unit-type-count every-enemy mangudai-line == 0)
+	(players-unit-type-count every-enemy mameluke-line == 0)
+	(players-unit-type-count every-enemy teutonic-knight-line == 0)
+=>
+	(set-goal G-THREAT-UNIQUE-UNIT-GROUP 0)
+)
+
+(defrule
+	(or	(players-unit-type-count any-enemy janissary-line >= 1)
+		(players-unit-type-count any-enemy berserk-line >= 1)
+	)
+=>
+	(set-goal G-THREAT-UNIQUE-UNIT-GROUP 1)
+)

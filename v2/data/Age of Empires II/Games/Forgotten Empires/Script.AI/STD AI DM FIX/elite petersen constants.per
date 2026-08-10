@@ -1,0 +1,712 @@
+; Common constants used in AI goals - other constants will follow the specific goals
+	; Common.
+	(defconst NO 0)		 ;Used to indicate not set or initial value (as Normal)
+	(defconst YES 1)		 ;Used to indicate set
+	(defconst NORMAL 0)	 ;Used for default values
+	(defconst NOTICE 99)  ;Used for special highlight or initialization values that should be set
+
+	; Constants used for ratings (i.e. monk-rating)
+	(defconst EXCELLENT 99); For any rating-type value highest to lowest
+	(defconst GOOD	70)		
+	(defconst MEDIUM 50)
+	(defconst FAIR 30)
+	(defconst POOR 10) 
+
+	; Constants used for combat or defense strategy selection
+	(defconst INFANTRY 1)
+	(defconst CAVALRY 2)
+	(defconst LIGHTCAV 3)
+	(defconst CAVARCHER 4)
+	(defconst ARCHER 5)
+	(defconst EAGLEMAN 6)
+	(defconst SCORPION 12)
+	(defconst UNIQUE 13)
+	(defconst UNIT20 20) ;SP - wasn't sure what 20 was used for in combat-arm and combat-supp
+
+;NOTE: Goal 1 0 = no boats; Goal 1 1 = boats; Goal 1 10 = lotsa boats (island map)
+	(defconst boat-strategy 1)
+	(defconst SOMEBOATS 1)	;this actually means we're on a water map
+	(defconst MANYBOATS 10)	; this actually means we're on an islands map
+
+;goal 2 0 okay on boats; 2 1 need warships! 2 2 we've won with ships
+	(defconst boats-needed 2)
+	(defconst WARSHIPS 1)	;I don't think this is used any more
+	(defconst CONTROL 2)
+
+;Goal  3 0 = military parity; Goal  3 1 = an enemy outnumbers us!
+	(defconst military-parity 3)
+	;uses NO, YES
+	(defconst SUPERIOR 2)
+
+;goal  4 = used to track attack group AI
+	(defconst attack-control 4)
+	;SP - need doc for
+	;0=   okay to launch an attack
+	;1=	not okay - because we're outnumbered, building a wonder, or have no enemies
+	;2=	not okay - because we lack siege
+	;3=	not okay - because we're trying to rush to the next age and want to limit losses
+
+;goal  5 = controls gather rates - 5 0 = normal; 5 1 = wood; 5 2 = food; 5 3 = gold; 5 4 = stone
+	(defconst resource-needed 5)
+	(defconst WOOD 1)
+	(defconst FOOD 2)
+	(defconst GOLD 3)
+	(defconst STONE 4)
+	;(defconst GOLD-STONE 5) this means you want both gold & stone
+
+;goal  6 = controls rushes!; also uses NOTICE
+	(defconst rush-control 6)
+	(defconst FEUDAL 2) ;we have just eliminated this as too puny
+	(defconst CASTLE 3)
+	(defconst IMPERIAL 4)
+	(defconst RUSHING 10)
+	(defconst BOOMING 18)
+	(defconst FEEDING 19)
+;goal 7 used for deathmatch to determine whether or not to build more units
+	(defconst need-deathmatch-villagers 7)
+	;uses NO, YES
+;goal 8 secondary-build controls secondary builds (ensures there are already soldiers before doing a secondary build)
+	(defconst secondary-build 8)
+	;0 = it's okay to build a secondary unit
+	;1 = don't build a secondary unit
+;goal 9 resource-supp used in conjunction with resource-needed to determine what to gather
+	(defconst resource-supp 9)
+	(defconst FOOD-ONLY 2)
+	(defconst GOLD-ONLY 3)
+	(defconst WOOD-FOOD 12)
+	(defconst WOOD-GOLD 13)
+	(defconst WOOD-STONE 14)
+	(defconst FOOD-GOLD 23)
+	(defconst FOOD-STONE 24)
+;goal 10 used to keep from building siege if I have few or no other units
+	(defconst soldiers-available 10)
+;goal 11 = used to determine your main combat arm; in deathmatch, it determines your unique unit type
+	(defconst combat-arm  11)
+	;--Converted to constant  combat-arm, uses common offense/defense unit line numbers.
+		;repl	goal 11 1 = Infantry	goal  12 1
+		;repl	goal 11 2 = Cavalry		goal  12 2
+		;repl	goal 11 3 = Light Cav	goal  12 3
+		;repl	goal 11 4 = Cav Archer	goal  12 4
+		;repl	goal 11 5 = Archer		goal  12 5
+		;repl	goal 11 6 = Eagle Man	goal  12 6
+		;repl			     scorpion =	goal  12 12
+		;repl	goal 11 13 = Unique
+
+;goal  12 = used to supplement goal 11. 
+	(defconst combat-supp 12)
+	; Uses combat and defense strategy standard codes
+
+;goal  13 = used to keep CP from attacking if we the player don't want him to do so.
+	(defconst attack-enabled 13)
+	; uses YES & NO. I.e., "No" means don't attack. 
+
+;goal  14 helps in age advancement 
+			(defconst age-advancement 14) ; Uses NO, NOTICE
+			;--Converted 14 to constant  age-advancement  (was 0,99)
+			;SP - we should document our notice value -what does it indicate?
+			;NO = it's okay to start saving up for the next age advance, assuming all other criteria are met
+			;NOTICE - we are currently researching the next age. Keeps the CP from trying to "save up" for that age when it's already researching it
+
+;goal  15 controls warboat builds according to pop cap; 15 0 = build warships
+			(defconst make-warboat 15) ; Uses NO, YES
+			;--Converted 15 to constant  make-warboat  Standard 0 = NO, 1 = YES
+;goal  16 helps control upgrade conflicts
+			(defconst upgrade-conflict 16)
+			;NOTICE is  99 -- it means we're saving for age advancement or a wonder
+;goal  17 controls builds based on civ type before unique units are available
+			(defconst pre-unique-arm 17)
+			;SP - need doc for
+			;1 = we're training infantry (until our castle is finished)
+			;2= we're training cavalry (till our castle is finished)
+			;3= we're training light-cavalry (till our castle is finished)
+			;4 = we're training cav archers (till our castle is finished)
+			;5 = we're training archers (till our castle is finished)
+			;note that these numbers correspond to the combat-arm and combat-supp goals above.
+;goal 18 = used to decide on personalities 
+;	goal 18 1 = feeder; 18 2 = boomer; 18 3 = bully; 18 4 = liar; 18 5 = "ally"
+			(defconst personality 18)
+			(defconst FEEDER 1)
+			(defconst BOOMER 2)
+			(defconst BULLY  3) ;m
+			(defconst LIAR 4)  
+			(defconst ALLY 5) ;m
+			(defconst SENTTRIBUTE 10) ;SP - not sure about this one, check and correct
+			;SP: Document 11
+			;SP: Document 12
+			;SP: Document 13
+			;SP: Document 14
+			;SP: Document 15
+			(defconst TRADENEUTRAL 50) ;SP - not sure about this one, check and correct
+
+;goal  19 = make-villagers ; used to have the CP build tons of military in diplomacy
+			(defconst make-villagers 19)
+;goal  20 = helps control wonder-building
+			(defconst wonder-attempt 20) ; Uses NO, YES, POSSIBLE, MAYBE, NOTICE
+			(defconst POSSIBLE 10)
+			(defconst MAYBE 90)		  ;SP:Not sure on this one, took a guess.
+			;--Converted to constant  wonder-attempt  Standard 0 = NO, 1 = YES
+			;if you are playing kill the wonder, uses two different codes: 
+			(defconst ATTACK 1)	;kill the wonder
+			(defconst DEFEND 0) ;save the wonder
+;goal 21 = helps control castle-building
+			(defconst castle-attempt 21) ; Uses: NO, YES
+			;--Converted to constant castle-attempt   Standard 0=NO, 1 = YES
+			;sandy - is goal 21 2 the 'possible/attempt' state?  Can I change them to 10s?
+			;0 = not planning to build a castle. 
+			;1 = want to build a castle, but haven't succeeded yet.
+			;2 = have already built 1 castle. Will build more if convenient. 
+;goal 22 = used to help in diplomacy
+;goal 23 = goal 23 2 we are the main ship builder. 
+			(defconst sea-owner 23) ; Uses: NO, YES, NOTICE
+			;--Converted 23 to constant sea-owner
+			;SP: Note changed all '2' to YES, all 0 to NO, all 99 to NOTICE.   
+;goal 24 = used to control the CP stopping giving away tribute to the player when 
+		;asked to do so
+		;uses NO, YES
+;goal 25 = controls alliance & resource types 
+	;uses WOOD, FOOD, GOLD, STONE, NOTICE, NO. also uses
+			(defconst CASTLE-AGE-WOOD 11)
+			(defconst CASTLE-AGE-FOOD 12)
+			(defconst CASTLE-AGE-GOLD 13)
+			(defconst CASTLE-AGE-STONE 14)
+			(defconst IMPERIAL-AGE-WOOD 21)
+			(defconst IMPERIAL-AGE-FOOD 22)
+			(defconst IMPERIAL-AGE-GOLD 23)
+			(defconst IMPERIAL-AGE-STONE 24)
+;goal 26 = checks to see how big the enemy military is in absolute terms. 
+			(defconst enemy-soldiers 26) ;the number given is app the enemy's size
+			(defconst siege-rating 26) ;uses GOOD, FAIR, POOR -- used only in wonder-kill
+;goal 27 = determines monk prowess  
+			(defconst monk-rating 27)  ;Uses: GOOD, FAIR, NO
+			;--Converted 27 to constant monk-rating
+			; Changed to GOOD = good monks  FAIR = bad monks  POOR = terrible monks,  NO = no monks
+;goal 28 = helps keep alliances straight
+			(defconst get-mad 28)
+			;SP-uses NO, YES, 
+			(defconst ANGRY 2)
+			(defconst ANGRIER 3)
+			(defconst ANGRIEST 4)
+;goal 29 = controls tribute for feeder personalities
+;goal 30 = toggle to control boat-building
+			(defconst make-fire-boat 30) ; Uses: NO, YES
+			;--Converted 30 to constant make-fire-boat
+;goal 31 1 = infantry
+			(defconst infantry-upgrades 31)
+	;SP: Need documentation
+	;0 = not training infantry
+	;1 = training infantry
+;goal 32 1 = archers
+			(defconst archer-upgrades 32)
+	;SP: Need documentation
+	;0 = not training archers
+	;1 = training archers
+;goal 33 1 = cav
+			(defconst cav-upgrades 33)
+	;SP: Need documentation
+	;0 = not training cav
+	;1 = training cav
+;goal 34 used to see if we are short on siege equipment
+			(defconst siege-available 34)
+	;0 = NO (we don't have enough siege)
+	;1 = YES (we have some siege)
+;goal 35 = used for diplomacy on Easy & Easiest difficulty levels only. Also used to track
+;used to calculate enemy navy size on higher levels of difficulty
+;goal 36, 37, 38, 39 = wood, food, gold, stone checks for script parts that require them. 
+	;SP: Need documentation
+;goal 40 = wall-construction
+			(defconst wall-build 40) ; Uses: NO, YES, NOTICE
+			;Converted 40 to constant wall-build  
+			;previously used 40 0 = walls off 40 1 = walls on, and 10 as initialized.
+			;Converted to NO, YES, NOTICE (was 10).
+			;uses POOR = 10, for not building walls at first, then switching. 
+;timers
+;timer 1 = controls tribute
+;timer 2 = controls attack groups
+;timer 3 = checks on what we are currently producing
+;timer 5 = used to control chat messages
+;timer 6 = additional chat message help
+;timer 7 = wall-building timer
+;timer 8 = yet more chat-message help
+;timer 9 = the lumber-camp timer
+;timer 10 = used to see if we've risen in age. Once we're imperial, used to build extraneous units
+(defconst t-tribute 1)
+(defconst t-attackgroup 2)
+(defconst t-production 3)
+(defconst t-chat 5)
+(defconst t-chathelp 6)
+(defconst t-tower 7)
+(defconst t-chatmore 8)
+(defconst t-lumbercamp 9)
+(defconst t-ageup 10)
+
+;*************************************************************
+#load-if-defined POPULATION-CAP-25
+(defconst civ-dark-rush 10)
+(defconst civ-dark 11)
+(defconst civ-dark-mod 10)
+(defconst civ-feudal-mod 12)
+(defconst civ-feudal 13)
+(defconst civ-castle 15)
+(defconst pop-cap 25)
+(defconst deathmatch-unit-max 13)
+
+(defconst feudal-town-size 20)
+(defconst castle-town-size 25)
+(defconst imperial-town-size 25)
+(defconst town-center-count 2)
+
+#load-if-defined DIFFICULTY-EASIEST
+(defconst unit-max 19)
+#end-if
+
+#load-if-defined DIFFICULTY-EASY
+(defconst unit-max 19)
+#end-if
+
+#load-if-defined DIFFICULTY-MODERATE
+(defconst unit-max 21)
+#end-if
+
+#load-if-defined DIFFICULTY-HARD
+(defconst unit-max 23)
+#end-if
+
+#load-if-defined DIFFICULTY-HARDEST
+(defconst unit-max 23)
+#end-if
+
+(defconst five-percent-pop 1)
+(defconst ten-percent-pop 3)
+(defconst fifteen-percent-pop 4)
+(defconst twenty-percent-pop 5)
+(defconst thirty-percent-pop 8)
+(defconst fifty-percent-pop 12)
+#end-if
+;***************************
+#load-if-defined POPULATION-CAP-50
+(defconst civ-dark-rush 15)
+(defconst civ-dark 20)
+(defconst civ-dark-mod 15)
+(defconst civ-feudal-mod 20)
+(defconst civ-feudal 30)
+(defconst civ-castle 35)
+(defconst pop-cap 50)
+(defconst deathmatch-unit-max 25)
+
+(defconst feudal-town-size 20)
+(defconst castle-town-size 25)
+(defconst imperial-town-size 30)
+(defconst town-center-count 3)
+
+#load-if-defined DIFFICULTY-EASIEST
+(defconst unit-max 35)
+#end-if
+
+#load-if-defined DIFFICULTY-EASY
+(defconst unit-max 35)
+#end-if
+
+#load-if-defined DIFFICULTY-MODERATE
+(defconst unit-max 40)
+#end-if
+
+#load-if-defined DIFFICULTY-HARD
+(defconst unit-max 45)
+#end-if
+
+#load-if-defined DIFFICULTY-HARDEST
+(defconst unit-max 45)
+#end-if
+
+(defconst five-percent-pop 2)
+(defconst ten-percent-pop 5)
+(defconst fifteen-percent-pop 7)
+(defconst twenty-percent-pop 10)
+(defconst thirty-percent-pop 15)
+(defconst fifty-percent-pop 25)
+#end-if
+;***************************
+#load-if-defined POPULATION-CAP-75
+(defconst civ-dark-rush 20)
+(defconst civ-dark 25)
+(defconst civ-dark-mod 15)
+(defconst civ-feudal-mod 20)
+(defconst civ-feudal 35)
+(defconst civ-castle 40)
+(defconst pop-cap 75)
+(defconst deathmatch-unit-max 55)
+
+(defconst feudal-town-size 20)
+(defconst castle-town-size 30)
+(defconst imperial-town-size 30)
+(defconst town-center-count 4)
+
+#load-if-defined DIFFICULTY-EASIEST
+(defconst unit-max 56)
+#end-if
+
+#load-if-defined DIFFICULTY-EASY
+(defconst unit-max 56)
+#end-if
+
+#load-if-defined DIFFICULTY-MODERATE
+(defconst unit-max 63)
+#end-if
+
+#load-if-defined DIFFICULTY-HARD
+(defconst unit-max 70)
+#end-if
+
+#load-if-defined DIFFICULTY-HARDEST
+(defconst unit-max 70)
+#end-if
+
+(defconst five-percent-pop 3)
+(defconst ten-percent-pop 8)
+(defconst fifteen-percent-pop 10)
+(defconst twenty-percent-pop 15)
+(defconst thirty-percent-pop 23)
+(defconst fifty-percent-pop 37)
+#end-if
+;***************************
+#load-if-defined POPULATION-CAP-100
+(defconst civ-dark-rush 20)
+(defconst civ-dark 25)
+(defconst civ-dark-mod 15)
+(defconst civ-feudal-mod 20)
+(defconst civ-feudal 40)
+(defconst civ-castle 50)
+(defconst pop-cap 100)
+(defconst deathmatch-unit-max 70)
+
+(defconst feudal-town-size 20)
+(defconst castle-town-size 30)
+(defconst imperial-town-size 35)
+(defconst town-center-count 5)
+
+#load-if-defined DIFFICULTY-EASIEST
+(defconst unit-max 70)
+#end-if
+
+#load-if-defined DIFFICULTY-EASY
+(defconst unit-max 70)
+#end-if
+
+#load-if-defined DIFFICULTY-MODERATE
+(defconst unit-max 80)
+#end-if
+
+#load-if-defined DIFFICULTY-HARD
+(defconst unit-max 90)
+#end-if
+
+#load-if-defined DIFFICULTY-HARDEST
+(defconst unit-max 90)
+#end-if
+
+(defconst five-percent-pop 5)
+(defconst ten-percent-pop 10)
+(defconst fifteen-percent-pop 15)
+(defconst twenty-percent-pop 20)
+(defconst thirty-percent-pop 30)
+(defconst fifty-percent-pop 50)
+#end-if
+;***************************
+#load-if-defined POPULATION-CAP-125
+(defconst civ-dark-rush 20)
+(defconst civ-dark 25)
+(defconst civ-dark-mod 15)
+(defconst civ-feudal-mod 20)
+(defconst civ-feudal 40)
+(defconst civ-castle 55)
+(defconst pop-cap 125)
+(defconst deathmatch-unit-max 95)
+(defconst town-center-count 6)
+
+(defconst feudal-town-size 20)
+(defconst castle-town-size 35)
+(defconst imperial-town-size 40)
+
+#load-if-defined DIFFICULTY-EASIEST
+(defconst unit-max 90)
+#end-if
+
+#load-if-defined DIFFICULTY-EASY
+(defconst unit-max 90)
+#end-if
+
+#load-if-defined DIFFICULTY-MODERATE
+(defconst unit-max 103)
+#end-if
+
+#load-if-defined DIFFICULTY-HARD
+(defconst unit-max 115)
+#end-if
+
+#load-if-defined DIFFICULTY-HARDEST
+(defconst unit-max 115)
+#end-if
+
+(defconst five-percent-pop 6)
+(defconst ten-percent-pop 13)
+(defconst fifteen-percent-pop 18)
+(defconst twenty-percent-pop 25)
+(defconst thirty-percent-pop 38)
+(defconst fifty-percent-pop 62)
+#end-if
+;***************************
+#load-if-defined POPULATION-CAP-150
+(defconst civ-dark-rush 20)
+(defconst civ-dark 25)
+(defconst civ-dark-mod 15)
+(defconst civ-feudal-mod 20)
+(defconst civ-feudal 40)
+(defconst civ-castle 60)
+(defconst pop-cap 150)
+(defconst deathmatch-unit-max 120)
+
+(defconst feudal-town-size 20)
+(defconst castle-town-size 35)
+(defconst imperial-town-size 40)
+(defconst town-center-count 7)
+
+#load-if-defined DIFFICULTY-EASIEST
+(defconst unit-max 110)
+#end-if
+
+#load-if-defined DIFFICULTY-EASY
+(defconst unit-max 110)
+#end-if
+
+#load-if-defined DIFFICULTY-MODERATE
+(defconst unit-max 125)
+#end-if
+
+#load-if-defined DIFFICULTY-HARD
+(defconst unit-max 140)
+#end-if
+
+#load-if-defined DIFFICULTY-HARDEST
+(defconst unit-max 140)
+#end-if
+
+(defconst five-percent-pop 7)
+(defconst ten-percent-pop 15)
+(defconst fifteen-percent-pop 22)
+(defconst twenty-percent-pop 30)
+(defconst thirty-percent-pop 45)
+(defconst fifty-percent-pop 75)
+#end-if
+;***************************
+#load-if-defined POPULATION-CAP-175
+(defconst civ-dark-rush 20)
+(defconst civ-dark 25)
+(defconst civ-dark-mod 15)
+(defconst civ-feudal-mod 20)
+(defconst civ-feudal 40)
+(defconst civ-castle 65)
+(defconst pop-cap 175)
+(defconst deathmatch-unit-max 145)
+
+(defconst feudal-town-size 20)
+(defconst castle-town-size 35)
+(defconst imperial-town-size 40)
+(defconst town-center-count 8)
+
+#load-if-defined DIFFICULTY-EASIEST
+(defconst unit-max 125)
+#end-if
+
+#load-if-defined DIFFICULTY-EASY
+(defconst unit-max 125)
+#end-if
+
+#load-if-defined DIFFICULTY-MODERATE
+(defconst unit-max 145)
+#end-if
+
+#load-if-defined DIFFICULTY-HARD
+(defconst unit-max 165)
+#end-if
+
+#load-if-defined DIFFICULTY-HARDEST
+(defconst unit-max 165)
+#end-if
+
+(defconst five-percent-pop 8)
+(defconst ten-percent-pop 18)
+(defconst fifteen-percent-pop 27)
+(defconst twenty-percent-pop 35)
+(defconst thirty-percent-pop 53)
+(defconst fifty-percent-pop 87)
+#end-if
+;***************************
+#load-if-defined POPULATION-CAP-200
+(defconst civ-dark-rush 20)
+(defconst civ-dark 25)
+(defconst civ-dark-mod 15)
+(defconst civ-feudal-mod 20)
+(defconst civ-feudal 40)
+(defconst civ-castle 70)
+(defconst pop-cap 200)
+(defconst deathmatch-unit-max 170)
+
+(defconst feudal-town-size 20)
+(defconst castle-town-size 35)
+(defconst imperial-town-size 40)
+(defconst town-center-count 9)
+
+#load-if-defined DIFFICULTY-EASIEST
+(defconst unit-max 130)
+#end-if
+
+#load-if-defined DIFFICULTY-EASY
+(defconst unit-max 130)
+#end-if
+
+#load-if-defined DIFFICULTY-MODERATE
+(defconst unit-max 160)
+#end-if
+
+#load-if-defined DIFFICULTY-HARD
+(defconst unit-max 190)
+#end-if
+
+#load-if-defined DIFFICULTY-HARDEST
+(defconst unit-max 190)
+#end-if
+
+(defconst five-percent-pop 10)
+(defconst ten-percent-pop 20)
+(defconst fifteen-percent-pop 30)
+(defconst twenty-percent-pop 40)
+(defconst thirty-percent-pop 60)
+(defconst fifty-percent-pop 100)
+#end-if
+;*************************************************************
+;*************************************************************
+#load-if-defined TINY-MAP
+(defconst feudal-mill-count 1)
+(defconst castle-mill-count 1)
+(defconst imperial-mill-count 1)
+(defconst mining-count 8)
+#end-if
+;**************************
+#load-if-defined SMALL-MAP
+(defconst feudal-mill-count 1)
+(defconst castle-mill-count 1)
+(defconst imperial-mill-count 1)
+(defconst mining-count 8)
+#end-if
+;**************************
+#load-if-defined MEDIUM-MAP
+(defconst feudal-mill-count 1)
+(defconst castle-mill-count 1)
+(defconst imperial-mill-count 1)
+(defconst mining-count 10)
+#end-if
+;**************************
+#load-if-defined NORMAL-MAP
+(defconst feudal-mill-count 1)
+(defconst castle-mill-count 1)
+(defconst imperial-mill-count 2)
+(defconst mining-count 11)
+#end-if
+;**************************
+#load-if-defined LARGE-MAP
+(defconst feudal-mill-count 1)
+(defconst castle-mill-count 2)
+(defconst imperial-mill-count 3)
+(defconst mining-count 12)
+#end-if
+;**************************
+#load-if-defined GIANT-MAP
+(defconst feudal-mill-count 2)
+(defconst castle-mill-count 3)
+(defconst imperial-mill-count 4)
+(defconst mining-count 15)
+#end-if
+
+
+(defconst ri-chivalry 493)
+(defconst ri-inquisition 492)
+(defconst ri-sipahi 491)
+(defconst ri-madrasah 490)
+(defconst ri-ironclad 489)
+(defconst ri-boiling-oil 488)
+(defconst ri-nomads 487)
+(defconst ri-panokseon 486)
+(defconst ri-yasama 485)
+(defconst ri-renegades 483)
+(defconst ri-atlatl 460)
+(defconst ri-war-wolf 461)
+(defconst ri-greek-fire 464)
+(defconst ri-chieftains 463)
+(defconst ri-great-wall 462)
+(defconst ri-stronghold 482)
+
+
+(defconst stable-tarkan 886)
+(defconst stable-elite-tarkan 887)
+
+(defconst ri-orthodoxy 512)
+(defconst ri-druzhina 513)
+(defconst ri-elite-boyar 504)
+
+(defconst boyar 876)
+(defconst elite-boyar 878)
+
+(defconst ri-andean-sling 516)
+(defconst ri-couriers 517)
+(defconst ri-elite-kamayuk 509)
+
+(defconst kamayuk 879)
+(defconst elite-kamayuk 881)
+(defconst slinger 185)
+
+(defconst ri-sultans 506)
+(defconst ri-shatagni 507)
+(defconst ri-imperial-camel 521)
+(defconst ri-elite-elephant-archer 481)
+
+(defconst elephant-archer 873)
+(defconst elite-elephant-archer 875)
+(defconst imperial-camel 897)
+
+(defconst ri-mercenaries 514)
+(defconst ri-recurve-bow 515)
+(defconst ri-elite-magyar-huszar 472)
+
+(defconst magyar-huszar 869)
+(defconst elite-magyar-huszar 871)
+
+(defconst ri-silk-road 499)
+(defconst ri-pavise 494)
+(defconst ri-elite-genoese-crossbow 468)
+
+(defconst genoese-crossbowman 866)
+(defconst elite-genoese-crossbowman 868)
+(defconst condottiero 882)
+
+(defconst heavy-eagle-warrior 753)
+
+(defconst ri-revetments 525)
+(defconst ri-eagle-warrior 384)
+(defconst ri-gillnets 65)
+(defconst ri-hunting-dogs 526)
+
+(defconst siege-tower 885)
+(defconst sea-tower 785)
+(defconst sea-wall 788)
+
+(defconst forage-food 907)
+(defconst deer-food 909)
+(defconst boar-food 910)
+(defconst fish-food 933)
+(defconst farm-food 949)
+(defconst sheep-food 958) 
+
+(defconst threat-time 41)
+(defconst threat-player 42)
+(defconst threat-source 43)
+(defconst threat-target 44)

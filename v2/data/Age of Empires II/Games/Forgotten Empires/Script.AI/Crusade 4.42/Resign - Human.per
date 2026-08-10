@@ -1,0 +1,15 @@
+;Resign file used for games against humans
+
+(defrule
+	(player-in-game any-human)
+	(not(player-in-game any-ally))
+	(building-type-count-total town-center == 0)
+	(building-type-count-total castle == 0)
+	(building-type-count-total watch-tower == 0)
+	(building-type-count-total bombard-tower == 0)
+	(unit-type-count-total villager < 3)
+	(not(can-train villager))
+	(military-population < 2)
+=>
+	(resign)
+)

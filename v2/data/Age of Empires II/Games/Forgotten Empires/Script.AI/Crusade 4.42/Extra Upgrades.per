@@ -1,0 +1,267 @@
+; Nice but not prioristic researches
+
+(defrule
+	(can-research ri-siege-engineers)
+=>
+	(research ri-siege-engineers)
+)
+
+(defrule
+	(building-type-count-total castle >= 3)
+	(can-research ri-hoardings)
+=>
+	(research ri-hoardings)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(or	(unit-type-count-total SHORE-FISH-GROUP > 0)
+		(unit-type-count-total SEA-FISHES > 0)
+	)
+	(unit-type-count-total fishing-ship >= 1)
+	(can-research ri-gillnets)
+=>
+	(research ri-gillnets)
+)
+
+(defrule
+	(true)
+=>
+	(set-goal G-JOLLYGOAL 0)
+)
+
+(defrule
+	(nor	(research-available ri-heavy-plow)
+		(research-available ri-bow-saw)
+	)
+	(nor	(research-available ri-hand-cart)
+		(research-available ri-gold-mining)
+	)
+	(or	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+		(goal G-BARRACK-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+		(goal G-ARCHERY-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+=>
+	(set-goal G-JOLLYGOAL 1)
+)
+
+(defrule
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+	(or	(building-type-count-total town-center >= 3)
+		(stone-amount < 100)
+	)
+	(building-type-count-total watch-tower > 1)
+	(or	(food-amount > 1150)
+		(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+	)
+	(goal G-JOLLYGOAL 1)
+=>
+	(research ri-guard-tower)
+	(research ri-keep)
+	(research ri-yasama)
+)
+
+(defrule
+	(building-type-count-total watch-tower > 1)
+	(or	(players-building-type-count any-enemy dock >= 1)
+		(or	(players-unit-type-count any-enemy galley-line >= 1)
+			(or	(players-unit-type-count any-enemy fire-ship-line >= 1)
+				(or	(players-unit-type-count any-enemy longboat-line >= 1)
+					(players-unit-type-count any-enemy fishing-ship >= 1)
+				)
+			)
+		)
+	)
+=>
+	(research ri-heated-shot)
+)
+
+(defrule
+	;(current-age >= castle-age)
+	;(strategic-number sn-minimum-water-body-size-for-dock >= 4000)
+	(building-type-count-total watch-tower > 1)
+	(or	(players-unit-type-count any-enemy demolition-ship-line >= 1)
+		(or	(players-unit-type-count any-enemy cannon-galleon-line >= 1)
+			(or	(players-unit-type-count any-enemy transport-ship >= 1)
+				(or	(players-unit-type-count any-enemy turtle-ship-line >= 1)
+					(players-unit-type-count any-enemy trade-cog >= 1)
+				)
+			)
+		)
+	)
+=>
+	(research ri-heated-shot)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(or	(current-age == imperial-age)
+		(goal G-ARMY-STRONG-PREPARED 1)
+	)
+	(goal G-JOLLYGOAL 1)
+=>
+	(research ri-stonecutting)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(or	(and	(food-amount > 1150)
+			(gold-amount < 800)
+		)
+		(current-age == imperial-age)
+	)
+	(goal G-JOLLYGOAL 1)
+=>
+	(research ri-masonry)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(goal G-ARMY-STRONG-PREPARED 1)
+=>
+	(research ri-masonry)
+	(research ri-architecture)
+	(research ri-stonecutting)
+	(research ri-conscription)
+	(research ri-guilds)
+	(research ri-falconry)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(food-amount > TRASH-FOOD+200)
+	(wood-amount > TRASH-WOOD+200)
+	(or	(building-type-count-total stone-wall > 20)
+		(or	(wall-completed-percentage 1 == 100)
+			(wall-completed-percentage 2 == 100)
+		)
+	)
+	(can-research ri-fortified-wall)
+=>
+	(research ri-fortified-wall)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(food-amount > TRASH-FOOD+200)
+	(wood-amount > TRASH-WOOD+200)
+	(building-type-count-total palisade-wall > 1)
+=>
+	(research ri-revetments)
+)
+
+(defrule
+	(or	(or	(goal G-ARMY-STRONG-PREPARED 1)
+			(research-completed ri-siege-engineers)
+		)
+		(or	(civ-selected chinese)
+			(civ-selected mongol)
+		)
+	)
+	(nor	(civ-selected briton)
+		(civ-selected mayan)
+	)
+	(nand	(building-type-count university >= 1)
+		(or	(research-available ri-ballistics)
+			(research-available ri-siege-engineers)
+		)
+	)
+=>
+	(research ri-heavy-scorpion)
+)
+
+; Bombard towers
+(defrule
+	(current-age == imperial-age)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(food-amount > TRASH-FOOD)
+	(wood-amount > TRASH-WOOD)
+	(gold-amount > TRASH-GOLD)
+	(nor	(research-available ri-pikeman)
+		(research-available ri-elite-skirmisher)
+	)
+	(can-research ri-bombard-tower)
+=>
+	(research ri-bombard-tower)
+)
+
+
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(current-age == imperial-age)
+	(or	(unit-type-count-total MONK-GROUP >= 20)
+		(population >= TOP-POPULATION)
+	)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(gold-amount > 500)
+	(nor	(research-available ri-pikeman)
+		(research-available ri-elite-skirmisher)
+	)
+=>
+	(research RI-HERBAL-MEDICINE)
+)
+#end-if
+
+#load-if-defined CHINESE-CIV
+(defrule
+	(or	(wall-completed-percentage 1 == 100)
+		(wall-completed-percentage 2 == 100)
+	)
+	(building-type-count-total stone-wall-line > 1)
+	(or	(gate-count 1 > 0)
+		(gate-count 2 > 0)
+	)
+=>
+	(research ri-great-wall)
+)
+#end-if
+
+#load-if-defined UP-AVAILABLE
+#load-if-defined SPANISH-CIV
+(defrule
+	(current-age == imperial-age)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(nor	(research-available my-unique-research)
+		(research-available ri-light-cavalry)
+	)
+	(nor	(research-available ri-pikeman)
+		(research-available ri-elite-skirmisher)
+	)
+	(can-research ri-sappers)
+=>
+	(research ri-sappers)
+)
+#end-if
+#end-if
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-CASTLE)
+	(not(goal G-BARRACK-UNIT GV-NONE))
+=>
+	(research ri-scale-mail)
+	(research ri-forging)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-CASTLE)
+	(not(goal G-STABLE-UNIT GV-NONE))
+=>
+	(research ri-bloodlines)
+	(research ri-scale-barding)
+	(research ri-forging)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-CASTLE)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+=>
+	(research ri-fletching)
+	(research ri-padded-archer-armor)
+)

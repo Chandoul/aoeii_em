@@ -1,0 +1,120 @@
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-goal G-JOLLYGOAL GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+)
+
+
+
+; Warning about strategy to allies
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+=>
+	(chat-to-allies "I'm going to flush with scouts+archers")
+	(chat-to-allies "Possible changes with unit selection to counter")
+	(chat-to-player my-player-number "I'm going to flush with scouts+archers")
+	(chat-to-player my-player-number "Possible changes with unit selection to counter")
+	(disable-self)
+)
+
+; Scanning building phase
+
+(defrule
+	(goal G-JOLLYGOAL GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(or	(building-type-count-total barracks == 0)
+		(or	(building-type-count-total archery-range == 0)
+			(or	(building-type-count-total stable == 0)
+				(or	(building-type-count-total market == 0)
+					(dropsite-min-distance stone > IDEAL-DROP-DISTANCE)
+				)
+			)
+		)
+	)
+	(strategic-number sn-wood-gatherer-percentage != 60)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total stable >= 1)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith == 0)
+	(commodity-selling-price stone > 100)
+	(or	(strategic-number sn-wood-gatherer-percentage != 40)
+		(strategic-number sn-stone-gatherer-percentage != 10)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 10)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total stable >= 1)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith == 0)
+	(commodity-selling-price stone <= 100)
+	(or	(strategic-number sn-wood-gatherer-percentage != 40)
+		(strategic-number sn-gold-gatherer-percentage != 10)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total stable >= 1)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith >= 1)
+	(commodity-selling-price stone > 100)
+	(or	(strategic-number sn-wood-gatherer-percentage != 30)
+		(strategic-number sn-stone-gatherer-percentage != 11)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 59)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 11)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total stable >= 1)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith == 0)
+	(commodity-selling-price stone <= 100)
+	(or	(strategic-number sn-wood-gatherer-percentage != 30)
+		(strategic-number sn-gold-gatherer-percentage != 11)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 59)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 11)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)

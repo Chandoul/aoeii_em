@@ -1,0 +1,165 @@
+;need to add a section in which he joins our side then betrays us!
+(defrule
+	(current-age >= feudal-age)
+=>
+	(set-goal personality NOTICE)
+	(generate-random-number 6)
+	(disable-self)
+)
+
+(defrule
+	(goal personality NOTICE)
+	(random-number == 1)
+=>
+	(set-goal personality 11)
+	(disable-self)
+)
+
+(defrule
+	(goal personality NOTICE)
+	(random-number == 2)
+=>
+	(set-goal personality 12)
+	(disable-self)
+)
+
+(defrule
+	(goal personality NOTICE)
+	(random-number == 3)
+=>
+	(set-goal personality 13)
+	(disable-self)
+)
+
+(defrule
+	(goal personality NOTICE)
+	(random-number == 4)
+=>
+	(set-goal personality 14)
+	(disable-self)
+)
+
+(defrule
+	(goal personality NOTICE)
+	(random-number == 5)
+=>
+	(set-goal personality 15)
+	(disable-self)
+)
+
+(defrule
+	(goal personality NOTICE)
+	(random-number == 6)
+=>
+	(set-goal personality 16)
+	(disable-self)
+)
+
+#load-if-not-defined TEAMS-LOCKED
+(defrule
+	(timer-triggered  t-chat)
+	(goal personality BULLY)
+	(goal rush-control RUSHING)
+=>
+	(chat-to-player-using-id this-any-human-enemy 22105)
+	(chat-to-player-using-id this-any-human-enemy 22106)
+	(disable-timer t-chat)
+	(enable-timer t-chat 1200)
+	(disable-self)
+)
+
+(defrule
+	(goal personality BULLY)
+	(players-stance any-human ally)
+=>
+	(chat-to-player-using-id this-any-human 22107)
+	(set-goal rush-control RUSHING)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(timer-triggered  t-chat)
+	(xor
+		(xor
+			(and
+				(population > 50)
+				(players-population any-human-enemy < 40)
+			)
+			(and
+				(population > 40)
+				(players-population any-human-enemy < 30)
+			)
+		)
+		(and
+			(population > 30)
+			(players-population any-human-enemy < 20)
+		)
+	)
+=>
+	(chat-to-player-using-id this-any-human-enemy 22108)
+	(chat-to-player-using-id this-any-human-enemy 22109)
+	(disable-timer t-chat)
+	(enable-timer t-chat 1200)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(building-type-count-total market > 0)
+	(cc-players-building-type-count any-human-enemy market > 0)
+	(not (goal 1 10) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22110)
+	(chat-to-player-using-id this-any-human-enemy 22111)
+	(disable-timer t-chat)
+	(enable-timer t-chat 1200)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(building-type-count-total dock > 0)
+	(cc-players-building-type-count any-human-enemy dock > 0)
+	(goal 1 10)
+=>
+	(chat-to-player-using-id this-any-human-enemy 22112)
+	(chat-to-player-using-id this-any-human-enemy 22110)
+	(disable-timer t-chat)
+	(enable-timer t-chat 1200)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(stance-toward any-human enemy)
+=>
+	(chat-to-player-using-id this-any-human-enemy 22113)
+	(clear-tribute-memory this-any-human-enemy food)
+	(clear-tribute-memory this-any-human-enemy wood)
+	(clear-tribute-memory this-any-human-enemy gold)
+	(clear-tribute-memory this-any-human-enemy stone)
+	(disable-timer t-chat)
+	(enable-timer t-chat 1200)
+	(disable-self)
+)
+
+(defrule
+	(or
+		(or
+			(players-tribute-memory any-human-enemy wood >= 100)
+			(players-tribute-memory any-human-enemy food >= 100)
+		)
+		(or
+			(players-tribute-memory any-human-enemy gold >= 100)
+			(players-tribute-memory any-human-enemy stone >= 100)
+		)
+	)
+=>
+	(chat-to-player-using-id this-any-human-enemy 22114)
+	(clear-tribute-memory this-any-human-enemy food)
+	(clear-tribute-memory this-any-human-enemy wood)
+	(clear-tribute-memory this-any-human-enemy gold)
+	(clear-tribute-memory this-any-human-enemy stone)
+)
+

@@ -1,0 +1,57 @@
+;make the castle
+(defrule
+	(goal castle-attempt NO)
+	(current-age == imperial-age)
+	(stone-amount > 400)
+	(nor 
+		(goal wonder-attempt POSSIBLE)
+		(goal wonder-attempt YES)
+	)
+=>
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(stone-amount > 800)
+	(nor 
+		(goal wonder-attempt POSSIBLE)
+		(goal wonder-attempt YES)
+	)
+	(building-type-count-total castle < five-percent-pop)
+	(can-build-with-escrow castle)
+=>
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal castle-attempt YES)
+	(can-build-with-escrow castle)
+=>
+	(release-escrow stone)
+	(set-strategic-number sn-percent-civilian-builders 75)
+	(set-strategic-number sn-cap-civilian-builders 15)
+	(set-strategic-number sn-percent-civilian-gatherers 25)
+	(build castle)
+	(set-goal castle-attempt 2)
+)
+
+(defrule
+	(building-type-count castle > 0)
+	(or
+		(not (goal castle-attempt 2) )
+		(strategic-number sn-cap-civilian-builders == 15)
+	)
+=>
+	(set-strategic-number sn-percent-civilian-builders 10)
+	(set-strategic-number sn-cap-civilian-builders 8)
+	(set-strategic-number sn-percent-civilian-gatherers 90)
+	(set-goal castle-attempt 2)
+)
+
+(defrule
+	(goal castle-attempt 2)
+	(building-type-count-total castle == 0)
+=>
+	(set-goal castle-attempt YES)
+)
+

@@ -1,0 +1,692 @@
+(defrule
+	(up-compare-goal gl-strategy != monk-scorpion-rush)
+	(game-time > 1200)
+=>
+	(up-jump-rule 52)
+)
+
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy monk-scorpion-rush)
+	(disable-self)
+)
+
+; ================= ECO
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == dark-age)
+	(strategic-number sn-wood-gatherer-percentage != 50)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-skip-first-mining-camp 1)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(current-age == feudal-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 13)
+	(set-strategic-number sn-wood-gatherer-percentage 53)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 24)
+	(set-strategic-number sn-add-rams-in-attack 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(building-type-count-total siege-workshop > 0)
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 13)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 13)
+	(set-strategic-number sn-stone-gatherer-percentage 24)
+	(set-goal MILITARY 0)
+	(set-goal TSA 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(building-type-count-total siege-workshop > 0)
+	(building-type-count-total monastery > 3)
+	(current-age == castle-age)
+	(game-time < 2000)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 13)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 17)
+	(set-strategic-number sn-stone-gatherer-percentage 35)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(building-type-count-total siege-workshop > 0)
+	(commodity-selling-price stone < 105)
+	(building-type-count-total monastery > 3)
+	(current-age == castle-age)
+	(game-time < 2000)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 45)
+	(set-strategic-number sn-stone-gatherer-percentage 10)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(building-type-count-total siege-workshop > 0)
+	(commodity-buying-price food >= 150)
+	(commodity-selling-price stone >= 105)
+	(current-age == castle-age)
+	(game-time < 2000)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 30)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(building-type-count-total siege-workshop > 0)
+	(commodity-buying-price food >= 150)
+	(commodity-selling-price stone < 105)
+	(current-age == castle-age)
+	(game-time < 2000)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 35)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(current-age == castle-age)
+	(game-time > 2000)
+	(commodity-selling-price stone >= 105)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 25)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(current-age == castle-age)
+	(game-time > 2000)
+	(commodity-selling-price stone < 105)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 30)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(current-age == castle-age)
+	(game-time > 2000)
+	(commodity-selling-price stone >= 105)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 13)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 14)
+	(set-strategic-number sn-stone-gatherer-percentage 33)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(current-age == castle-age)
+	(game-time > 2000)
+	(commodity-selling-price stone < 105)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 13)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 38)
+	(set-strategic-number sn-stone-gatherer-percentage 9)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(unit-type-count-total monk > 7)
+=>
+	(enable-timer 1 10)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(game-time > 2800)
+=>
+	(set-goal gl-strategy default)
+)
+
+; ============ RESEARCHES
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(or	(commodity-buying-price food >= 140)
+		(game-time > 1600))
+	(can-research-with-escrow ri-heavy-plow)
+=>
+	(release-escrow food)
+	(release-escrow wood)
+	(research ri-heavy-plow)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(or	(unit-type-count-total monk > 2)
+		(and	(or	(players-unit-type-count any-enemy knight-line > 0)
+				(town-under-attack))
+			(unit-type-count-total monk > 0)))
+	(can-research ri-sanctity)
+=>
+	(research ri-sanctity)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(unit-type-count-total monk > 5)
+	(or	(players-unit-type-count any-enemy mangonel-line > 0)
+		(or	(players-unit-type-count any-enemy bombard-cannon > 0)
+			(or	(players-building-type-count any-enemy bombard-tower > 0)
+				(players-building-type-count any-enemy watch-tower > 0))))
+	(research-available ri-redemption)
+=>
+	(set-escrow-percentage gold 80)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(unit-type-count-total monk > 5)
+	(or	(players-unit-type-count any-enemy battering-ram-line > 0)
+		(or	(players-unit-type-count any-enemy scorpion-line > 0)
+			(and	(goal MILITARY 0)
+				(enemy-buildings-in-town))))
+	(research-available ri-redemption)
+=>
+	(set-escrow-percentage gold 80)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(unit-type-count-total monk > 5)
+	(or	(players-unit-type-count any-enemy battering-ram-line > 0)
+		(or	(players-unit-type-count any-enemy scorpion-line > 0)
+			(or	(players-military-population every-enemy < 13)
+				(and	(goal MILITARY 0)
+					(enemy-buildings-in-town)))))
+	(can-research-with-escrow ri-redemption)
+=>
+	(set-escrow-percentage gold 0)
+	(release-escrow gold)
+	(research ri-redemption)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(unit-type-count-total monk > 5)
+	(or	(players-unit-type-count any-enemy mangonel-line > 0)
+		(or	(players-unit-type-count any-enemy bombard-cannon > 0)
+			(or	(players-building-type-count any-enemy bombard-tower > 0)
+				(players-building-type-count any-enemy watch-tower > 0))))
+	(can-research-with-escrow ri-redemption)
+=>
+	(set-escrow-percentage gold 0)
+	(release-escrow gold)
+	(research ri-redemption)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(current-age-time > 200)
+	(unit-type-count-total monk > 1)
+;	(or	(can-research ri-fervor)
+		(or	(can-research ri-theocracy)
+			(or	(can-research ri-block-printing)
+				(can-research ri-illumination)))
+;)
+=>
+;	(research ri-fervor)
+	(research ri-theocracy)
+	(research ri-block-printing)
+	(research ri-illumination)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(unit-type-count-total battering-ram-line > 1)
+	(or	(can-research ri-capped-ram)
+		(can-research ri-siege-ram))
+=>
+	(research ri-capped-ram)
+	(research ri-siege-ram)
+)
+
+; ============ BUILDINGS
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build market)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(and	(building-type-count-total farm < 7)
+			(idle-farm-count < 1))
+		(or	(research-completed ri-heavy-plow)
+			(game-time > 2000)))
+	(or	(idle-farm-count <= 1)
+		(game-time > 2000))
+	(idle-farm-count <= 5)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total mining-camp < 4)
+	(or	(dropsite-min-distance stone > 3)
+		(or	(dropsite-min-distance gold > 3)
+			(and	(building-type-count-total siege-workshop > 0)
+				(building-type-count-total monastery > 0))))
+	(or	(up-pending-objects c: mining-camp < 1)
+		(strategic-number sn-defer-dropsite-update == 0))
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(game-time > 2000)
+	(building-type-count-total mining-camp < 6)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(or	(and	(building-type-count-total monastery > 0)
+			(or	(building-type-count-total siege-workshop < 1)
+				(building-type-count-total monastery > 3)))
+		(and	(players-current-age every-enemy <= feudal-age)
+			(players-military-population any-enemy > 2)))
+	(building-type-count-total siege-workshop < 2)
+	(can-build siege-workshop)
+=>
+	(build siege-workshop)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(nand	(and	(players-current-age every-enemy <= feudal-age)
+			(players-military-population any-enemy > 2))
+		(building-type-count-total siege-workshop < 2))
+	(or	(building-type-count-total monastery < 2)
+		(building-type-count-total siege-workshop > 0))
+	(or	(building-type-count-total monastery < 5)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(building-type-count-total monastery < 8)
+	(can-build monastery)
+=>
+	(build monastery)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(not	(goal MILITARY 1))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 0)
+=>
+	(set-strategic-number sn-add-rams-in-attack 1)
+	(disable-timer 2)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(goal MILITARY 1)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 1)
+=>
+	(enable-timer 2 70)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(goal MILITARY 1)
+	(timer-triggered 2)
+	(building-type-count-total farm > 7)
+	(strategic-number sn-add-rams-in-attack == 0)
+	(building-type-count-total siege-workshop < 1)
+	(wood-amount < 200)
+=>
+	(set-escrow-percentage wood 100)
+	(set-strategic-number sn-add-rams-in-attack 2)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(strategic-number sn-add-rams-in-attack == 2)
+	(or	(building-type-count-total siege-workshop > 0)
+		(or	(wood-amount >= 200)
+			(or	(goal MILITARY 0)
+				(building-type-count-total farm <= 7))))
+=>
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(goal MILITARY 1)
+	(timer-triggered 2)
+	(building-type-count-total siege-workshop < 1)
+	(can-build-with-escrow siege-workshop)
+=>
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(build siege-workshop)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(unit-type-count-total monk > 5)
+=>
+	(set-strategic-number sn-percent-attack-soldiers 1)
+	(attack-now)
+	(chat-to-player my-player-number "Scout attack")
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(or	(not	(town-under-attack))
+		(or	(goal TSA 1)
+			(goal TSA 2)))
+	(current-age >= castle-age)
+	(strategic-number sn-target-evaluation-kills != 5)
+=>
+	(set-strategic-number sn-target-evaluation-kills 5)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(goal TSA 0)
+	(town-under-attack)
+	(current-age >= castle-age)
+	(strategic-number sn-target-evaluation-kills != 4)
+=>
+	(set-strategic-number sn-target-evaluation-kills 4)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(strategic-number sn-target-evaluation-kills == 5)
+	(unit-type-count-total battering-ram-line > 1)
+	(or 	(and	(unit-type-count-total monk > 9)
+			(players-military-population any-enemy < 19))
+		(and	(unit-type-count-total monk > 14)
+			(players-military-population any-enemy < 26)))
+	(timer-triggered 1)
+=>
+	(enable-timer 1 50)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-goal MILITARY 1)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(strategic-number sn-target-evaluation-kills == 5)
+	(unit-type-count-total battering-ram-line > 1)
+	(soldier-count > 21)
+	(or	(players-military-population any-enemy < 33)
+		(soldier-count > 27))
+	(players-military-population any-enemy < 39)
+	(timer-triggered 1)
+=>
+	(enable-timer 1 10)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-goal MILITARY 1)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(strategic-number sn-target-evaluation-kills == 5)
+	(unit-type-count-total battering-ram-line > 1)
+	(soldier-count > 32)
+	(or 	(players-military-population any-enemy < 45)
+		(soldier-count > 38))
+	(or	(players-military-population any-enemy < 57)
+		(soldier-count > 44))
+	(timer-triggered 1)
+=>
+	(enable-timer 1 10)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-goal MILITARY 1)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(current-age >= feudal-age)
+	(or 	(and	(soldier-count <= 9)
+			(players-military-population any-enemy >= 19))
+		(and	(soldier-count <= 14)
+			(players-military-population any-enemy >= 26)))
+	(timer-triggered 1)
+=>
+	(enable-timer 1 10)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-goal MILITARY 0)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(current-age >= feudal-age)
+	(or 	(and	(soldier-count <= 21)
+			(players-military-population any-enemy >= 33))
+		(and	(soldier-count <= 27)
+			(players-military-population any-enemy >= 39)))
+	(timer-triggered 1)
+=>
+	(enable-timer 1 10)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-goal MILITARY 0)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(current-age >= feudal-age)
+	(or 	(and	(soldier-count <= 32)
+			(players-military-population any-enemy >= 45))
+		(and	(soldier-count <= 38)
+			(players-military-population any-enemy >= 57)))
+	(soldier-count <= 44)
+	(timer-triggered 1)
+=>
+	(enable-timer 1 10)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(set-goal MILITARY 0)
+)
+
+; ============ UNITS
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(soldier-count > 10)
+	(or	(not	(town-under-attack))
+		(goal MILITARY 1))
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(or	(food-amount < high-castle-food)
+			(goal MILITARY 1)))
+	(unit-type-count-total battering-ram-line < 5)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(or	(game-time < 2000)
+		(gold-amount > 300))
+	(or	(unit-type-count-total scorpion-line < 6)
+		(unit-type-count-total battering-ram-line > 2))
+	(unit-type-count-total scorpion-line < 25)
+	(or	(goal MILITARY 0)
+		(unit-type-count-total battering-ram-line > 0))
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(food-amount < high-castle-food))
+	(can-train scorpion-line)
+=>
+	(train scorpion-line)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(current-age == castle-age)
+	(unit-type-count-total monk < 80)
+	(or	(game-time < 2000)
+		(gold-amount > 300))
+	(or	(food-amount < high-castle-food)
+		(town-under-attack))
+	(can-train monk)
+=>
+	(train monk)
+	(set-strategic-number sn-monk-trained 1)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(or	(unit-type-count-total monk < 8)
+		(and	(up-compare-goal gl-current-age >= gv-castle-up)
+			(current-age == castle-age)))
+	(unit-type-count-total monk < 80)
+	(can-train monk)
+=>
+	(train monk)
+	(set-strategic-number sn-monk-trained 1)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(research-completed ri-redemption)
+	(research-completed ri-theocracy)
+	(research-completed ri-block-printing)
+	(research-completed ri-illumination)
+	(nand	(players-unit-type-count any-enemy monk > 3)
+		(not	(research-completed ri-atonement)))
+	(unit-type-count-total monk < 80)
+	(can-train monk)
+=>
+	(train monk)
+	(set-strategic-number sn-monk-trained 1)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(research-completed ri-redemption)
+	(research-completed ri-theocracy)
+	(research-completed ri-block-printing)
+	(research-completed ri-illumination)
+	(or	(unit-type-count-total scorpion-line < 6)
+		(unit-type-count-total battering-ram-line > 2))
+	(nand	(players-unit-type-count any-enemy monk > 3)
+		(not	(research-completed ri-atonement)))
+	(unit-type-count-total scorpion-line < 25)
+	(can-train scorpion-line)
+=>
+	(train scorpion-line)
+)
+
+; ============ MARKET
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+	(sell-commodity stone)
+)
+
+(defrule
+	(goal gl-strategy monk-scorpion-rush)
+	(or	(and	(commodity-buying-price food < 150)
+			(or	(food-amount < 50)
+				(and	(research-available ri-wheel-barrow)
+					(food-amount < 175))))
+		(and	(game-time > 2000)
+			(up-compare-goal gl-current-age <= gv-castle)))
+	(food-amount < high-castle-food)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+)
+
+(defrule
+	(or	(and	(up-compare-goal gl-current-age >= gv-castle-up)
+			(and	(food-amount > 300)
+				(gold-amount < 200)))
+		(food-amount > very-high-castle-food))
+	(gold-amount < needed-castle-gold)
+	(can-sell-commodity food)
+	(commodity-selling-price food >= 60)
+=>
+	(sell-commodity food)
+)
+

@@ -1,0 +1,31 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-strategy scrush)
+	(disable-self)
+)
+
+#load-if-not-defined OASIS-MAP
+#load-if-not-defined BLACK-FOREST-MAP
+(defrule
+	(strategic-number sn-boars-on-map != NONE)
+	(strategic-number sn-nomad-style-start == 0)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(goal gl-current-age gv-dark)
+	(game-time > 65)
+	(game-time < 75)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(goal gl-rush-suitability-on-map GOOD)
+	(goal POSITION POCKET)
+=>
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-strategy scrush)
+	(set-goal gl-anti-cysion YES)
+	(disable-self)
+)
+#end-if
+#end-if

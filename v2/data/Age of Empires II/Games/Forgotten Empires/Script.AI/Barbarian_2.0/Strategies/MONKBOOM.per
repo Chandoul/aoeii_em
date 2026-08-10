@@ -1,0 +1,32 @@
+(defrule
+	(game-time > 30)
+=>
+	(up-jump-rule 2)
+)
+
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-strategy regicide-strategy)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 20)
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(or	(goal POSITION POCKET)
+		(or	(up-compare-goal gl-rush-suitability-on-map <= LOW)
+			(goal FFA YES)))
+	(up-compare-goal gl-strategy-aggressiveness-level != VERY-LOW)
+	(up-compare-goal gl-strategy != fi-monk-rush)
+	(goal SLING 0)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+=>
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-strategy monk-boom)
+	(disable-self)
+)

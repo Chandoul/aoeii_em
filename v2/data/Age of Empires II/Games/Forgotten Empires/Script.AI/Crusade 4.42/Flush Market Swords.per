@@ -1,0 +1,345 @@
+; Warning about strategy to allies
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+=>
+	(chat-to-allies "I'm going to flush with scouts+archers")
+	(chat-to-allies "Possible changes with unit selection to counter")
+	(chat-to-player my-player-number "I'm going to flush with scouts+archers")
+	(chat-to-player my-player-number "Possible changes with unit selection to counter")
+	(disable-self)
+)
+
+; Scanning building phase
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(building-type-count-total barracks == 0)
+=>
+	(set-goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total market == 0)
+=>
+	(set-goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-1)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone > IDEAL-DROP-DISTANCE)
+=>
+	(set-goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-2)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith == 0)
+=>
+	(set-goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-3)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith >= 1)
+=>
+	(set-goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-4)
+)
+
+#load-if-defined FEUDAL-AGE-START
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-INITIAL-AGE 1)
+=>
+	(set-goal G-BUILDING-WANTED 0)
+)
+#end-if
+
+
+; Feudal Buildings
+
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(building-type-count-total barracks < 1)
+	(can-build barracks)
+=>
+	(build barracks)
+	(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+; We stop to build farms once advancing to feudal to accelerate the essential barracks.
+; We won't be able to start our archery range or our stable, even with enough resources, until barracks finished
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	(strategic-number G-FARMING < GV-FARM-IDLE-2)
+=>
+	(set-strategic-number G-FARMING GV-FARM-IDLE-2)
+)
+
+; Saracen market to sell stone.
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total market < 1)
+	(can-build market)
+	;(wood-amount > 235) ;175 market + 60 farm
+=>
+	(build market)
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)
+
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total market >= 1)
+	(strategic-number G-FARMING < GV-FARM-IDLE-3)
+=>
+	(set-strategic-number G-FARMING GV-FARM-IDLE-3)
+	(set-goal G-STONE-MINING 1)
+	(set-goal G-EXTRA-DROPSITES 1)
+)
+
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total market >= 1)
+=>
+	(set-goal G-STONE-MINING 1)
+	(set-goal G-EXTRA-DROPSITES 1)
+)
+
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(food-amount > 230)
+	(nor	(research-available ri-double-bit-axe)
+		(or	(research-available ri-horse-collar)
+			(research-available ri-wheel-barrow)
+		)
+	)
+	(can-research ri-stone-mining)
+=>
+	(research ri-stone-mining)
+)
+
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total market >= 1)
+	(research-completed ri-horse-collar)
+	(strategic-number G-FARMING < GV-FARM-IDLE-8)
+=>
+	(set-strategic-number G-FARMING GV-FARM-IDLE-8)
+)
+
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(building-type-count-total barracks < 2)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(can-build barracks)
+=>
+	(build barracks)
+	(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+; Blacksmith once military buildings are finished and we are mining gold/stone
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == blacksmith)
+	)
+	(building-type-count-total barracks >= 2)
+	(building-type-count-total market >= 1)
+	(building-type-count-total blacksmith == 0)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+	(set-strategic-number G-BUILDING-EXPANSION blacksmith)
+)
+
+
+
+; Swords/scouts require too much food, so we need a lot of farmers in the Feudal Age.
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 2)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith >= 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(building-type-count-total market >= 1)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith >= 1)
+	(can-build barracks)
+=>
+	(build barracks)
+	(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+
+
+
+
+; Adjusting gatherer percentages
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-0)
+=>
+	;(chat-to-allies "Transition")
+	(set-strategic-number sn-retask-gather-amount 0);minimum amount to collect before allowed to switch
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-1)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(strategic-number sn-wood-gatherer-percentage != 60)
+	)
+=>
+	;(set-strategic-number sn-retask-gather-amount 30);minimum amount to collect before allowed to switch
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(chat-to-allies "Barracks")
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-2)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(strategic-number sn-wood-gatherer-percentage != 60)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage  0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(chat-to-allies "Barracks => Market")
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-3)
+	(commodity-selling-price stone <= 100)
+	(or	(strategic-number sn-food-gatherer-percentage != 56)
+		(strategic-number sn-wood-gatherer-percentage != 37)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 56)
+	(set-strategic-number sn-wood-gatherer-percentage 37)
+	(set-strategic-number sn-gold-gatherer-percentage  7)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(chat-to-allies "Barracks => Market => Mine Camp")
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-3)
+	(commodity-selling-price stone > 100)
+	(or	(strategic-number sn-food-gatherer-percentage != 56)
+		(strategic-number sn-wood-gatherer-percentage != 37)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 56)
+	(set-strategic-number sn-wood-gatherer-percentage 37)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 7)
+	(chat-to-allies "Barracks => Market => Mine Camp")
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-4)
+	(commodity-selling-price stone > 100)
+	(or	(strategic-number sn-food-gatherer-percentage != 59)
+		(strategic-number sn-wood-gatherer-percentage != 32)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 59)
+	(set-strategic-number sn-wood-gatherer-percentage 32)
+	(set-strategic-number sn-gold-gatherer-percentage  0)
+	(set-strategic-number sn-stone-gatherer-percentage 9)
+	(chat-to-allies "Buildings finished.")
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-BUILDING-WANTED GV-FLUSH-MARKET-SWORDS-4)
+	(commodity-selling-price stone <= 100)
+	(or	(strategic-number sn-food-gatherer-percentage != 59)
+		(strategic-number sn-wood-gatherer-percentage != 32)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 59)
+	(set-strategic-number sn-wood-gatherer-percentage 32)
+	(set-strategic-number sn-gold-gatherer-percentage  9)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(chat-to-allies "Buildings finished.")
+)

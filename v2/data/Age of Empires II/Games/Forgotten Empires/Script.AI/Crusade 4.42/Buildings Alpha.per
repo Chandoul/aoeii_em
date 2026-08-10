@@ -1,0 +1,642 @@
+#load-if-not-defined GOTHIC-CIV
+
+; Wall enablement for mixed and closed maps
+(defrule
+	;(current-age >= feudal-age)
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	;(wall-completed-percentage 2 < 100)
+	(or	(map-type black-forest)
+		(and	(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+			(building-type-count-total dock >= 1)
+		)
+	)							; If you put together the walls from maps like Arena, Fortress, etc.
+	(not(taunt-detected my-player-number TA-WALLED-MAP))	; together with your built wall from perimeter 2 you will close villagers and buildings
+=>								; in them
+	(enable-wall-placement 2)
+	;(chat-to-player my-player-number "hhhhhhhhhhhhh")
+)
+
+#load-if-not-defined BLACK-FOREST-MAP
+; Stone walls to save wood for boats in mixed maps
+(defrule
+	(current-age >= feudal-age)
+	(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	(not(town-under-attack))
+	(can-build-gate 2)
+	(building-type-count-total gate < 5)
+=>
+	(build-gate 2)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	(not(town-under-attack))
+	(can-build-wall 2 stone-wall-line)
+=>
+	(build-wall 2 stone-wall-line)
+)
+; Emergency palisades to complete walls in mixed maps
+(defrule
+	(current-age >= feudal-age)
+	(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	(not(town-under-attack))
+	(not(can-build-wall 2 stone-wall-line))
+	;(building-type-count-total gate > 0)
+	(can-build-wall 2 palisade-wall)
+=>
+	(build-wall 2 palisade-wall)
+)
+#else ; Black Forest
+(defrule
+	(current-age >= feudal-age)
+	(not(town-under-attack))
+	(can-build-gate 2)
+	(building-type-count-total gate < 8)
+=>
+	(build-gate 2)
+)
+
+(defrule
+	(current-age >= feudal-age)
+	(not(town-under-attack))
+	(can-build-wall 2 stone-wall-line)
+=>
+	(build-wall 2 stone-wall-line)
+)
+
+; Emergency palisades to complete walls in mixed maps
+(defrule
+	(current-age >= feudal-age)
+	(not(town-under-attack))
+	(not(can-build-wall 2 stone-wall-line))
+	;(building-type-count-total gate > 0)
+	(can-build-wall 2 palisade-wall)
+=>
+	(build-wall 2 palisade-wall)
+)
+#end-if
+#end-if ; end no Goth
+
+; Dark forward outpost to accelerate forward towres and improve their placing
+#load-if-not-defined UP-AVAILABLE
+(defrule
+	(current-age == dark-age)
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-FEUDAL)
+	(or	
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	)
+	(unit-type-count-total MALE-DEAD-VILLAGER == 0) ; I want to be sure that my forward villagers
+	(unit-type-count-total FEMALE-DEAD-VILLAGER == 0) ; are not suiciding against enemy troops
+	(players-building-count any-enemy >= 1)
+	(research-completed ri-loom)
+	;(building-type-count-total barracks >= 1)
+	(building-type-count-total outpost < 1)
+	(can-build outpost)
+=>
+	(build-forward outpost)
+)
+#end-if
+
+
+; Feudal Buildings
+
+; Forward tower to help out attack
+;#load-if-not-defined GOLD-RUSH-MAP
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-TSA 1)
+	(not(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY))
+	;(enemy-buildings-in-town)
+	(players-building-count any-enemy >= 1)
+	(research-completed ri-loom)
+	(unit-type-count-total MALE-DEAD-VILLAGER == 0) ; I want to be sure that my forward villagers
+	(unit-type-count-total FEMALE-DEAD-VILLAGER == 0) ; are not suiciding against enemy troops
+	(cc-players-unit-type-count 0 WOLF < 18)
+	(cc-players-unit-type-count 0 JAGUAR < 18)
+	(nand	(cc-players-unit-type-count 0 WOLF > 7)
+		(cc-players-unit-type-count 0 JAGUAR > 7)
+	)
+	;(nand	(goal G-WALL-ENABLED 1)
+	;	(wall-completed-percentage 1 < 100)
+	;)
+
+	(can-build watch-tower-line)
+=>
+	(build-forward watch-tower-line)
+)
+;#end-if
+
+; Defensive tower when we are attacked or in military inferiority
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(nand	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+		(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	)
+	(nor	(goal G-TSA 1)
+		(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	)
+	(or	(town-under-attack)
+		(enemy-buildings-in-town)
+	)
+	(can-build watch-tower-line)
+=>
+	(build watch-tower-line)
+	(set-goal G-TRUSH-AGRESSIVENESS 0)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(nand	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+		(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	)
+	(nor	(goal G-TSA 1)
+		(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	)
+	(or	(strategic-number G-MILITARY-SUPERIORITY < 0)
+		(and	(military-population <= 1)
+			(players-military-population any-enemy >= 2)
+		)
+	)
+	(can-build watch-tower-line)
+=>
+	(build watch-tower-line)
+	(set-goal G-TRUSH-AGRESSIVENESS 0)
+)
+
+(defrule
+	(goal G-TSA 1)
+	(nand	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+		(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	)
+	(players-building-count any-enemy >= 1)
+	(strategic-number G-THREAT-MONK >= 3)
+	(can-build watch-tower-line)
+=>
+	(build-forward watch-tower-line)
+)
+
+; Forward towers to trush, if it's the selected strategy
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	)
+	(unit-type-count-total MALE-DEAD-VILLAGER == 0) ; I want to be sure that my forward villagers
+	(unit-type-count-total FEMALE-DEAD-VILLAGER == 0) ; are not suiciding against enemy troops
+	(players-building-count any-enemy >= 1)
+	(research-completed ri-loom)
+	(can-build watch-tower-line)
+=>
+	(build-forward watch-tower-line)
+)
+
+
+
+; BUILD ORDERS
+; Flush Swords-Archers: Barracks => Gold => Archery => Blacksmith				g1
+; Flush Scouts-Archers: Barracks => Archery => Stable => Gold => Blacksmith			g2
+; Trush Swords-Archers: Stone => Barracks => Gold => Archery => Blacksmith			g1	st
+; Trush Scouts-Archers: Barracks => Stone => Archery => Stable => Gold => Blacksmith		g2	st
+; FC. Gold included in the file								g4
+; Market: Barracks => Archery => Stable (or 2nd Barracks) => Market => Stone/Gold => Blacksmith	gm	sm
+; Amphibian: Dock => Gold => Barracks => Archery/Blacksmith					g4
+; Archery-3: Barracks => Gold => Archery 2 => Blacksmith => Archery 3				g3
+; Mat-at-arms: Barracks => Gold => Barracks 2 => Blacksmith => Barracks_3/Archery			g1
+
+
+; Feudal Buildings
+
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(building-type-count-total mill >= 1)
+	(building-type-count-total lumber-camp >= 1)
+	(building-type-count-total dock < 2)
+	(nand	(building-type-count-total dock >= 1)
+		(goal G-BOAT GV-NONE)
+	)
+	(can-build dock)
+=>
+	(build dock)
+	;(set-strategic-number G-BUILDING-EXPANSION dock)
+)
+
+(defrule
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == archery-range)
+	)
+	(building-type-count-total barracks >= 1)
+	(or	(building-type-count-total blacksmith >= 1)
+		(and	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+			(players-military-population any-enemy > 1)
+		)
+	)
+	(building-type-count-total archery-range < 1)
+	(can-build archery-range)
+=>
+	(build archery-range)
+	(set-strategic-number G-BUILDING-EXPANSION archery-range)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+	(or	(building-type-count-total barracks < 1)
+		(and	(building-type-count-total archery-range >= 1)
+			(building-type-count-total blacksmith >= 1)
+		)
+	)			
+	(building-type-count-total barracks < 2)
+	(can-build barracks)
+=>
+	(build barracks)
+	(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(or	(or	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+			(players-military-population any-enemy > 1)
+		)
+		(and	(building-type-count-total blacksmith >= 1)
+			(building-type-count-total market >= 1)
+		)
+	)			
+	(building-type-count-total barracks < 1)
+	(can-build barracks)
+=>
+	(build barracks)
+	(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+
+(defrule
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == archery-range)
+	)
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(nor	(goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+		(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	)
+	(building-type-count-total archery-range < 2)
+	(or	(building-type-count-total archery-range < 1)
+		(or	(goal G-STABLE-UNIT GV-NONE)
+			(building-type-count-total stable >= 1)
+		)
+	)
+	(can-build archery-range)
+=>
+	(build archery-range)
+	(set-strategic-number G-BUILDING-EXPANSION archery-range)
+)
+
+(defrule
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == archery-range)
+	)
+	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	(building-type-count-total archery-range < 1)
+	(can-build archery-range)
+=>
+	(build archery-range)
+	(set-strategic-number G-BUILDING-EXPANSION archery-range)
+)
+
+(defrule
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == archery-range)
+	)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(building-type-count-total archery-range < 3)
+	(or	(building-type-count-total archery-range < 2)
+		(building-type-count-total blacksmith >= 1)
+	)
+	(can-build archery-range)
+=>
+	(build archery-range)
+	(set-strategic-number G-BUILDING-EXPANSION archery-range)
+)
+
+
+
+(defrule
+	;(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	(or	(building-type-count-total archery-range >= 1)
+		(building-type-count-total blacksmith >= 1)
+	)
+	(strategic-number G-FARMING < GV-FARM-IDLE-2)
+=>
+	(set-strategic-number G-FARMING GV-FARM-IDLE-2)
+)
+
+(defrule
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == stable)
+	)
+	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+		(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+			(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+		)
+	)
+	(building-type-count-total stable < 1)
+	(can-build stable)
+=>
+	(build stable)
+	(set-strategic-number G-BUILDING-EXPANSION stable)
+)
+
+; Saracen market flush
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total stable >= 1)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(build market)
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)
+
+; Blacksmith once military buildings are finished and we are mining gold/stone
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == blacksmith)
+	)
+	(or	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+		(and	(building-type-count-total barracks >= 1)
+			(and	(goal G-FEUDAL-STRATEGY GV-FLUSH-SWORD-ARCHERS)
+				(building-type-count-total archery-range >= 1)
+			)
+		)
+	)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+	(set-strategic-number G-BUILDING-EXPANSION blacksmith)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == blacksmith)
+	)
+	(or	(wood-amount > 400)
+		(building-type-count-total archery-range >= 2)
+	)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+	(set-strategic-number G-BUILDING-EXPANSION blacksmith)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == blacksmith)
+	)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+	(set-strategic-number G-BUILDING-EXPANSION blacksmith)
+)
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == blacksmith)
+	)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+		(and	(building-type-count-total barracks >= 1)
+			(or	(building-type-count-total archery-range >= 1)
+				(players-military-population any-enemy < 2) ; To accelerate fletching if no land threat
+			)
+		)
+	)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+	(set-strategic-number G-BUILDING-EXPANSION blacksmith)
+)
+
+(defrule
+	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == blacksmith)
+	)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 2)
+	(building-type-count-total stable >= 1)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+	(set-strategic-number G-BUILDING-EXPANSION blacksmith)
+)
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == blacksmith)
+	)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total stable >= 1)
+	(building-type-count-total market >= 1)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+	(set-strategic-number G-BUILDING-EXPANSION blacksmith)
+)
+
+; Emergency archery for m@a rushes
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total blacksmith >= 1)
+	(building-type-count-total archery-range < 1)
+	(can-build archery-range)
+=>
+	(build archery-range)
+	(set-strategic-number G-BUILDING-EXPANSION archery-range)
+)
+
+
+; Quick farms to accelerate castle-age
+
+(defrule
+	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SWORD-ARCHERS)
+		(or	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+			(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+				(goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+			)
+		)
+	)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith >= 1)
+	(research-completed ri-horse-collar)
+	(strategic-number G-FARMING < GV-FARM-IDLE-8)
+=>
+	(set-strategic-number G-FARMING GV-FARM-IDLE-8)
+)
+
+(defrule
+	(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SWORD-ARCHERS)
+		(and	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+			(building-type-count-total stable >= 1)
+		)
+	)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith >= 1)
+	(research-completed ri-horse-collar)
+	(strategic-number G-FARMING < GV-FARM-IDLE-8)
+=>
+	(set-strategic-number G-FARMING GV-FARM-IDLE-8)
+)
+
+(defrule
+	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+		(and	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+			(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+		)
+	)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total stable >= 1)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total blacksmith >= 1)
+	(research-completed ri-horse-collar)
+	(strategic-number G-FARMING < GV-FARM-IDLE-8)
+=>
+	(set-strategic-number G-FARMING GV-FARM-IDLE-8)
+)
+
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total stable >= 1)
+	(building-type-count-total market >= 1)
+	(or	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+		(dropsite-min-distance stone <= IDEAL-DROP-DISTANCE)
+	)
+	(building-type-count-total blacksmith >= 1)
+	(research-completed ri-horse-collar)
+	(strategic-number G-FARMING < GV-FARM-IDLE-8)
+=>
+	(set-strategic-number G-FARMING GV-FARM-IDLE-8)
+)
+
+
+
+; Emergency market to sell resources
+
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total blacksmith >= 1)
+	(building-type-count-total market < 1)
+	(can-build market)
+	(wood-amount > 325) ;175 market + 90 galley + 60 farm
+=>
+	(build market)
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)
+
+(defrule
+	;(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(nor	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+		(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+			(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+		)
+	)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 1)
+	(building-type-count-total blacksmith >= 1)
+	(building-type-count-total market < 1)
+	(can-build market)
+	(wood-amount > 235) ;175 market + 90 galley + 60 farm
+=>
+	(build market)
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)
+(defrule
+	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+		(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+	)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 2)
+	(building-type-count-total stable >= 1)
+	(building-type-count-total blacksmith >= 1)
+	(building-type-count-total market < 1)
+	(can-build market)
+	(wood-amount > 235) ;175 market + 90 galley + 60 farm
+=>
+	(build market)
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)
+
+(defrule
+	(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total barracks >= 1)
+	(building-type-count-total archery-range >= 3)
+	(building-type-count-total blacksmith >= 1)
+	(building-type-count-total market < 1)
+	(can-build market)
+	(wood-amount > 235) ;175 market + 90 galley + 60 farm
+=>
+	(build market)
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)

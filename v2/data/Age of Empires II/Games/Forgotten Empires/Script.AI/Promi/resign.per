@@ -1,0 +1,187 @@
+#load-if-not-defined UP-SCENARIO-GAME
+
+#load-if-not-defined POPULATION-CAP-200
+#load-if-not-defined POPULATION-CAP-EXTENDED
+
+(defrule
+	(game-time > 8)
+	(player-in-game any-human)
+=>
+	(chat-to-all "Optimized for 200+ population.")
+;	(resign)
+	(disable-self))
+
+#end-if
+#end-if
+
+#load-if-not-defined DIFFICULTY-HARDEST
+#load-if-not-defined DIFFICULTY-HARD
+
+(defrule
+	(game-time > 8)
+	(player-in-game any-human)
+=>
+	(chat-to-all "On this difficulty level the AI is handicapped.")
+	(chat-to-all "Play on 'hard' difficulty for an absolutely fair competition.")
+;	(resign)
+	(disable-self))
+#end-if
+#end-if
+
+#load-if-defined DIFFICULTY-HARDEST
+
+(defrule
+	(game-time > 8)
+	(player-in-game any-human)
+=>
+	(chat-to-all "On this difficulty level all AI's are automatically cheating some resources.")
+	(chat-to-all "Play on 'hard' difficulty for an absolutely fair competition.")
+;	(resign)
+	(disable-self))
+
+#end-if
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(game-time > 8)
+	(up-compare-goal victory-time > 0)
+	(up-compare-goal victory-time < 3)
+(not	(hold-relics))
+	(building-type-count wonder == 0)
+	(players-building-type-count every-ally wonder == 0)
+(or	(players-building-type-count any-enemy wonder > 0)
+	(enemy-captured-relics))
+=>
+	(chat-to-all "gg")
+	(disable-self))
+#end-if
+
+(defrule
+	(game-time > 600)
+	(player-resigned any-enemy)
+=>
+	(chat-to-all "gg")
+	(disable-self))
+
+(defrule
+(or	(hold-relics)
+	(and	(building-type-count wonder >= 1)
+		(and	(players-building-type-count any-ally wonder >= 1)
+			(players-building-type-count every-enemy wonder <= 0))))
+=>
+	(up-jump-rule 8))
+
+(defrule
+	(game-time > 600)
+(or	(player-in-game any-human-enemy)
+	(not(player-in-game any-human-ally)))
+	(strategic-number my-sn-military-superiority <= -3)
+	(strategic-number teamsuperiority <= -3)
+	(population < 60)
+	(players-population every-ally < 60)
+	(players-population every-enemy >= 160)
+=>
+	(chat-to-all "gg wp")
+	(resign)
+	(up-jump-rule 7))
+
+(defrule
+	(game-time > 600)
+	(strategic-number my-sn-military-superiority <= -3)
+	(unit-type-count-total villager < 1)
+	(unit-type-count-total monk < 1)
+	(building-type-count town-center < 1)
+	(building-type-count monastery < 1)
+	(player-in-game any-ally)
+=>
+	(tribute-to-player this-any-ally wood 99999)
+	(tribute-to-player this-any-ally food 99999)
+	(tribute-to-player this-any-ally gold 99999)
+	(tribute-to-player this-any-ally stone 99999)
+	(disable-self))
+
+(defrule
+	(game-time > 600)
+	(player-in-game any-human-enemy)
+	(strategic-number my-sn-military-superiority <= -3)
+	(unit-type-count-total villager < 1)
+	(building-type-count town-center < 1)
+	(player-in-game any-ally)
+=>
+	(tribute-to-player this-any-ally wood 99999)
+	(tribute-to-player this-any-ally food 99999)
+	(tribute-to-player this-any-ally gold 99999)
+	(tribute-to-player this-any-ally stone 99999)
+	(disable-self))
+
+(defrule
+	(game-time > 600)
+	(strategic-number my-sn-military-superiority <= -3)
+	(strategic-number teamsuperiority <= -3); test
+	(unit-type-count-total villager < 1)
+	(unit-type-count-total monk < 1)
+	(building-type-count town-center < 1)
+	(building-type-count monastery < 1)
+=>
+	(chat-to-all "gg wp")
+	(resign)
+	(up-jump-rule 4))
+
+(defrule
+	(game-time > 600)
+	(player-in-game any-human-enemy)
+	(strategic-number my-sn-military-superiority <= -3)
+	(unit-type-count-total villager < 1)
+	(building-type-count town-center < 1)
+=>
+	(chat-to-all "gg wp")
+	(resign)
+	(up-jump-rule 3))
+
+(defrule
+	(game-time > 600)
+	(player-in-game any-human-enemy)
+	(strategic-number my-sn-military-superiority <= -3)
+;	(building-type-count town-center < 1)
+(or	(and	(population < 10)
+		(players-population every-enemy >= 25))
+	(and	(population < 30)
+		(players-population every-enemy >= 65)))
+(not	(player-in-game any-ally))
+=>
+	(chat-to-all "gg wp")
+	(resign)
+	(up-jump-rule 2))
+
+(defrule
+	(game-time > 600)
+	(player-in-game any-human-enemy)
+	(strategic-number my-sn-military-superiority <= -3)
+;	(building-type-count town-center < 1)
+(or	(and	(population < 50)
+		(players-population every-enemy >= 100))
+	(and	(population < 70)
+		(players-population every-enemy >= 130)))
+(not	(player-in-game any-ally))
+=>
+	(chat-to-all "gg wp")
+	(resign)
+	(up-jump-rule 1))
+
+(defrule
+	(game-time > 600)
+	(player-in-game any-human-enemy)
+;	(goal Multiplayer yes)
+	(strategic-number my-sn-military-superiority <= -3)
+	(strategic-number teamsuperiority <= -3)
+;	(building-type-count town-center < 2)
+(or	(population < 75)
+	(and	(player-resigned any-ally)
+		(population < 125)))
+	(players-population every-enemy >= 175)
+(not	(player-in-game any-ally))
+=>
+	(chat-to-all "gg wp")
+	(resign))
+
+#end-if

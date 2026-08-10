@@ -1,0 +1,440 @@
+;******************************************************************************
+;
+; Market Feudal Rules
+;
+;******************************************************************************
+
+
+; It's difficult to balance our stock resources for AIs. You often get excess of a resource while a lack of other one.
+; Market tries to compensate it. I'ts not very efficient because the interests pais in every transaction, but it's still better than
+; have much more wood (for example) than needed and can't train villagers and infantry because lack of food.
+
+(defrule
+	(true)
+=>
+	(set-goal G-JOLLYGOAL 0)   
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(building-type-count-total barracks >= 1)
+	;(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total archery-range >= 1)
+	(nand	(or	(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+				(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+			)
+			(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+				(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS)
+				;(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SWORDS-ARCHERS)
+			)
+		)
+		(building-type-count-total stable < 1)
+	)
+	(building-type-count-total blacksmith >= 1)
+=>
+	(set-goal G-JOLLYGOAL 1)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(wood-amount > 190)
+	(or	(gold-amount < 200)
+		(food-amount < 800)
+	)
+	(goal G-JOLLYGOAL 1)
+	(can-sell-commodity wood)
+=>
+	(sell-commodity wood)
+	(chat-to-player my-player-number "Selling wood")   
+)
+
+;Buy food if you have surplus gold.
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(food-amount < 800)
+	(gold-amount > 150)
+	(or 	(food-amount < 200)
+		(gold-amount > 250)
+	)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+	(chat-to-player my-player-number "Buying food") 
+)
+
+;Sell food if you have surplus food.
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)  
+	(food-amount > 400)
+	(gold-amount < 200)
+	(or	(food-amount > 850)
+		(gold-amount < 50)
+	)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(chat-to-player my-player-number "Selling food") 
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	;(building-type-count-total watch-tower-line >= 1)  
+	(or	(gold-amount < 200)
+		(food-amount < 800)
+	)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+	(chat-to-player my-player-number "Selling stone") 
+)
+
+
+
+;******************************************************************************
+;
+; Market Castle Rules
+;
+;******************************************************************************
+
+
+#load-if-defined BYZANTINE-CIV
+;Sell wood if you have surplus wood.
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(wood-amount > 450)
+	(or	(food-amount < 667)
+		(gold-amount < 534)
+	)
+	(can-sell-commodity wood)
+=>
+	(sell-commodity wood)
+	(chat-to-player my-player-number "Selling wood") 
+)
+
+;Buy food if you have surplus gold.
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(strategic-number sn-food-gatherer-percentage >= FOOD-HIGH)
+	(goal G-BOAT GV-NONE)
+	(food-amount < 667)
+	(gold-amount > 250)
+	(or	(food-amount < 150)
+		(gold-amount > 634)
+	)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+	(chat-to-player my-player-number "Buying food") 
+)
+
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(strategic-number sn-food-gatherer-percentage >= FOOD-HIGH-AMPHIBIAN)
+	(not(goal G-BOAT GV-NONE))
+	(food-amount < 667)
+	(gold-amount > 250)
+	(or	(food-amount < 150)
+		(gold-amount > 634)
+	)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+	(chat-to-player my-player-number "Buying food") 
+)
+
+;Sell food if you have surplus food.
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(strategic-number sn-gold-gatherer-percentage >= GOLD-HIGH)
+	(goal G-BOAT GV-NONE)
+	(food-amount > 250)
+	(gold-amount < 534)
+	(or	(food-amount > 725)
+		(gold-amount < 100)
+	)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(chat-to-player my-player-number "Selling food")
+)
+
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(strategic-number sn-gold-gatherer-percentage >= GOLD-HIGH-AMPHIBIAN)
+	(not(goal G-BOAT GV-NONE))
+	(food-amount > 250)
+	(gold-amount < 534)
+	(or	(food-amount > 725)
+		(gold-amount < 100)
+	)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(chat-to-player my-player-number "Selling food")
+)
+
+;Sell stone if you have surplus stone.
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(building-type-count castle >= 2)
+	(building-type-count-total town-center >= 3)
+	(research-completed ri-murder-holes)
+	(stone-amount > 200)
+	(or	(food-amount < 667)
+		(gold-amount < 534)
+	)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+	(chat-to-player my-player-number "Selling stone")
+)
+#else ; Not Byzantines
+
+;Sell wood if you have surplus wood.
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(wood-amount > 450)
+	(or	(food-amount < 1000)
+		(gold-amount < 800)
+	)
+	(can-sell-commodity wood)
+=>
+	(sell-commodity wood)
+	(chat-to-player my-player-number "Selling wood") 
+)
+
+;Buy food if you have surplus gold.
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(strategic-number sn-food-gatherer-percentage >= FOOD-HIGH)
+	(goal G-BOAT GV-NONE)
+	(food-amount < 1000)
+	(gold-amount > 250)
+	(or	(food-amount < 150)
+		(gold-amount > 900)
+	)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+	(chat-to-player my-player-number "Buying food") 
+)
+
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(strategic-number sn-food-gatherer-percentage >= FOOD-HIGH-AMPHIBIAN)
+	(not(goal G-BOAT GV-NONE))
+	(food-amount < 1000)
+	(gold-amount > 250)
+	(or	(food-amount < 150)
+		(gold-amount > 900)
+	)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+	(chat-to-player my-player-number "Buying food") 
+)
+
+;Sell food if you have surplus food.
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(strategic-number sn-gold-gatherer-percentage >= GOLD-HIGH)
+	(goal G-BOAT GV-NONE)
+	(food-amount > 250)
+	(gold-amount < 800)
+	(or	(food-amount > 1050)
+		(gold-amount < 100)
+	)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(chat-to-player my-player-number "Selling food")
+)
+
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(strategic-number sn-gold-gatherer-percentage >= GOLD-HIGH-AMPHIBIAN)
+	(not(goal G-BOAT GV-NONE))
+	(food-amount > 250)
+	(gold-amount < 800)
+	(or	(food-amount > 1050)
+		(gold-amount < 100)
+	)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(chat-to-player my-player-number "Selling food")
+)
+
+;Sell stone if you have surplus stone.
+(defrule
+	(current-age == castle-age)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-IMPERIAL)
+	(current-age-time > 5)
+	(building-type-count castle >= 2)
+	(building-type-count-total town-center >= 3)
+	(research-completed ri-murder-holes)
+	(stone-amount > 200)
+	(or	(food-amount < 1000)
+		(gold-amount < 800)
+	)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+	(chat-to-player my-player-number "Selling stone")
+)
+#end-if
+
+
+
+
+;******************************************************************************
+;
+; Market Imperial Rules
+;
+;******************************************************************************
+
+;Buy wood if you have surplus gold.
+
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 5)
+	(or	(wood-amount < 200)
+		(and	(wood-amount < TRASH-WOOD-200)
+			(commodity-buying-price wood > 100)
+		)
+	)
+	(gold-amount > TRASH-GOLD+200)
+	(can-buy-commodity wood)
+=>
+	(buy-commodity wood)
+	(chat-to-player my-player-number "Buying wood") 
+)
+
+;Sell wood if you have surplus wood.
+
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 5)
+	(wood-amount > 500)
+	(wood-amount > TRASH-WOOD+200)
+	(or	(food-amount < TRASH-FOOD-200)
+		(gold-amount < TRASH-GOLD-200)
+	)
+	(can-sell-commodity wood)
+=>
+	(sell-commodity wood)
+	(chat-to-player my-player-number "Selling wood")   
+)
+
+;Buy food if you have surplus gold.
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 5)
+	(strategic-number sn-food-gatherer-percentage >= FOOD-HIGH)
+	(goal G-BOAT GV-NONE)
+	(food-amount < 300)
+	(gold-amount > TRASH-GOLD-200)
+	(or	(food-amount < TRASH-FOOD-200)
+		(gold-amount > TRASH-GOLD+200)
+	)
+	(commodity-buying-price food > 100)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+	(chat-to-player my-player-number "Buying food") 
+)
+
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 5)
+	(strategic-number sn-food-gatherer-percentage >= FOOD-HIGH-AMPHIBIAN)
+	(not(goal G-BOAT GV-NONE))
+	(food-amount < 300)
+	(gold-amount > TRASH-GOLD-200)
+	(or	(food-amount < TRASH-FOOD-200)
+		(gold-amount > TRASH-GOLD+200)
+	)
+	(commodity-buying-price food > 100)
+	(can-buy-commodity food)
+=>
+	(buy-commodity food)
+	(chat-to-player my-player-number "Buying food") 
+)
+
+;Sell food if you have surplus food.
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 5)
+	(strategic-number sn-gold-gatherer-percentage >= GOLD-HIGH)
+	(goal G-BOAT GV-NONE)
+	(food-amount > 250)
+	(gold-amount < TRASH-GOLD+200)
+	(or	(food-amount > TRASH-FOOD+200)
+		(gold-amount < 100)
+	)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(chat-to-player my-player-number "Selling food")
+)
+
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 5)
+	(strategic-number sn-gold-gatherer-percentage >= GOLD-HIGH-AMPHIBIAN)
+	(not(goal G-BOAT GV-NONE))
+	(food-amount > 250)
+	(gold-amount < TRASH-GOLD+200)
+	(or	(food-amount > TRASH-FOOD+200)
+		(gold-amount < 100)
+	)
+	(can-sell-commodity food)
+=>
+	(sell-commodity food)
+	(chat-to-player my-player-number "Selling food")
+)
+
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 5)
+	(building-type-count-total castle >= 4)
+	(building-type-count-total town-center >= 3)
+	(research-completed ri-murder-holes)
+	(research-completed ri-hoardings)
+	(research-completed ri-stonecutting)
+	(stone-amount > 400)
+	(food-amount < TRASH-FOOD)
+	(gold-amount < TRASH-GOLD)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+	(chat-to-player my-player-number "Selling stone")
+)

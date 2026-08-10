@@ -1,0 +1,89 @@
+(defrule
+	(game-time > 30)
+=>
+	(up-jump-rule 2)
+)
+
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-strategy regicide-strategy)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 20)
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(nand	(map-size tiny)
+		(or	(players-civ every-enemy aztec)
+			(players-civ every-enemy mayan)))
+	(up-compare-goal gl-strategy-aggressiveness-level != VERY-LOW)
+	(up-compare-goal gl-strategy != fi-monk-rush)
+=>
+	(set-goal gl-strategy monk-scorpion-boom)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC2)
+	(disable-self)
+)
+
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined HUN-CIV
+(defrule
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(building-type-count-total town-center > 1)
+	(game-time > 30)
+=>
+	(set-goal gl-strategy xbow-boom)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC)
+	(disable-self)
+)
+#else
+(defrule
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(building-type-count-total town-center > 1)
+	(game-time > 30)
+=>
+	(set-goal gl-strategy CA-boom)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC)
+	(disable-self)
+)
+#end-if
+#else
+(defrule
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(building-type-count-total town-center > 1)
+	(game-time > 30)
+=>
+	(set-goal gl-strategy castle-drop)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC)
+	(disable-self)
+)
+#end-if
+
+#load-if-defined TINY-MAP
+#load-if-defined AZTEC-CIV
+#load-if-defined UP-AZTEC-CIV-ENEMY
+(defrule
+	(goal gl-strategy monk-scorpion-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(commodity-selling-price stone < default-stone-price)
+	(current-age <= feudal-age)
+=>
+	(set-goal gl-strategy eagle-monk-rush)
+	(set-goal gl-strategy-aggressiveness-level AVERAGE)
+	(set-goal gl-strategy-type FC)
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+

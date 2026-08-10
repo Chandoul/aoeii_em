@@ -1,0 +1,227 @@
+;insults the player
+(defrule
+	(true)
+=>
+	(enable-timer t-chat 10)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy british)
+	(not (civ-selected british) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22080)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy byzantine)
+	(not (civ-selected byzantine) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22081)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy celtic)
+	(not (civ-selected celtic) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22082)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy chinese)
+	(not (civ-selected chinese) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22083)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy french)
+	(not (civ-selected french) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22084)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy german)
+	(not (civ-selected german) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22085)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy gothic)
+	(not (civ-selected gothic) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22086)
+	(chat-to-player-using-id this-any-human-enemy 22087)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy japanese)
+	(not (civ-selected japanese) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22088)
+	(chat-to-player-using-id this-any-human-enemy 22089)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy mongol)
+	(not (civ-selected mongol) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22090)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy persian)
+	(not (civ-selected persian) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22091)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy saracen)
+	(not (civ-selected saracen) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22092)
+	(disable-self)
+)
+
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy turkish)
+	(not (civ-selected turkish) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22093)
+	(chat-to-player-using-id this-any-human-enemy 22094)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(players-civ any-human-enemy viking)
+	(not (civ-selected viking) )
+=>
+	(chat-to-player-using-id this-any-human-enemy 22095)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+=>
+	(generate-random-number 9)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(random-number == 1)
+=>
+	(chat-to-player-using-id every-enemy 22096)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(random-number == 2)
+=>
+	(chat-to-player-using-id every-enemy 22097)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(random-number == 3)
+=>
+	(chat-to-player-using-id every-enemy 22098)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(random-number == 4)
+=>
+	(chat-to-player-using-id every-enemy 22099)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(random-number == 5)
+=>
+	(chat-to-player-using-id every-enemy 22100)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(random-number == 6)
+=>
+	(chat-to-player-using-id every-enemy 22101)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(random-number == 7)
+=>
+	(chat-to-player-using-id every-enemy 22102)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(random-number == 8)
+=>
+	(chat-to-player-using-id every-enemy 22103)
+	(disable-timer t-chat)
+	(disable-self)
+)
+
+(defrule
+	(timer-triggered  t-chat)
+	(random-number == 9)
+=>
+	(chat-to-player-using-id every-enemy 22104)
+	(disable-timer t-chat)
+	(disable-self)
+)
+

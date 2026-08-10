@@ -1,0 +1,18 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-strategy scout-skirm-flush)
+	(disable-self)
+)
+
+(load "Barbarian_2.0\ScoutSkirm")
+
+(defrule
+	(goal gl-strategy scout-skirm-flush)
+	(up-compare-goal gl-current-age c:>= gv-feudal-up)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)

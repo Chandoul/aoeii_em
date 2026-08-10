@@ -1,0 +1,381 @@
+#load-if-defined DARK-AGE-START
+(defrule
+	(current-age == dark-age)
+=>
+	(cc-add-resource food -450)
+	(cc-add-resource wood -400)
+	(cc-add-resource gold -490)
+	(cc-add-resource stone -500)
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-nomad-style-start == 1)
+	(not	(map-type nomad))
+	(up-compare-const gv-nomad-style == 0)
+	(starting-resources == low-resources)
+	(current-age == dark-age)
+=>
+	(cc-add-resource wood -100)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 360)
+	(goal gl-DRUSH YES)
+	(current-age == dark-age)
+=>
+	(cc-add-resource food 50)
+	(cc-add-resource wood 100)
+	(disable-self)
+)
+
+(defrule
+	(current-age == dark-age)
+	(building-type-count-total town-center > 1)
+	(up-timer-status 44 != timer-running)
+=>
+	(cc-add-resource food 50)
+	(enable-timer 44 50)
+)
+
+(defrule
+	(nand	(goal gl-DRUSH YES)
+		(game-time < 570))
+	(game-time > 400)
+=>
+	(cc-add-resource food 500)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-strategy-type <= controlled-flush)
+	(goal gl-current-age gv-dark-up)
+=>
+	(cc-add-resource wood 400)
+	(cc-add-resource gold 50)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-strategy-type >= FC)
+	(goal gl-current-age gv-dark-up)
+=>
+	(cc-add-resource food 250)
+	(cc-add-resource wood 300)
+	(cc-add-resource gold 150)
+	(disable-self)
+)
+
+(defrule
+	(current-age == feudal-age)
+=>
+	(cc-add-resource food -500)
+	(cc-add-resource wood -500)
+	(cc-add-resource gold -500)
+	(cc-add-resource stone -500)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 1300)
+	(or	(game-time > 1500)
+		(strategic-number sn-nomad-style-start == 0))
+	(goal gl-current-age gv-feudal)
+=>
+	(cc-add-resource food 500)
+	(cc-add-resource gold 150)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 1200)
+	(goal gl-current-age gv-feudal-up)
+=>
+	(cc-add-resource wood 400)
+	(disable-self)
+)
+
+(defrule
+	(game-time < 1000)
+	(goal gl-current-age gv-feudal-up)
+=>
+	(cc-add-resource food 200)
+	(cc-add-resource wood 300)
+	(cc-add-resource gold 150)
+	(cc-add-resource stone 150)
+	(disable-self)
+)
+
+(defrule
+	(current-age == castle-age)
+=>
+	(cc-add-resource food -450)
+	(cc-add-resource wood -450)
+	(cc-add-resource gold -450)
+	(cc-add-resource stone -450)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-current-age gv-castle-up)
+=>
+	(cc-add-resource wood 100)
+	(cc-add-resource food 100)
+	(cc-add-resource gold 100)
+	(disable-self)
+)
+
+(defrule
+	(current-age == imperial-age)
+=>
+	(cc-add-resource food -400)
+	(cc-add-resource wood -400)
+	(cc-add-resource gold -400)
+	(cc-add-resource stone -400)
+	(disable-self)
+)
+#end-if
+#load-if-defined FEUDAL-AGE-START
+(defrule
+	(current-age == feudal-age)
+=>
+	(cc-add-resource food -950)
+	(cc-add-resource wood -950)
+	(cc-add-resource gold -990)
+	(cc-add-resource stone -900)
+	(disable-self)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(building-type-count-total town-center > 1)
+	(up-timer-status 44 != timer-running)
+=>
+	(cc-add-resource food 50)
+	(enable-timer 44 50)
+)
+
+(defrule
+	(game-time > 600)
+=>
+	(cc-add-resource food 800)
+	(cc-add-resource gold 200)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-current-age gv-feudal-up)
+=>
+	(cc-add-resource wood 300)
+	(cc-add-resource food 200)
+	(cc-add-resource gold 200)
+	(disable-self)
+)
+
+(defrule
+	(current-age == castle-age)
+=>
+	(cc-add-resource food -400)
+	(cc-add-resource wood -400)
+	(cc-add-resource gold -400)
+	(cc-add-resource stone -500)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-current-age gv-castle-up)
+=>
+	(cc-add-resource wood 100)
+	(cc-add-resource food 100)
+	(cc-add-resource gold 100)
+	(disable-self)
+)
+
+(defrule
+	(current-age == imperial-age)
+=>
+	(cc-add-resource food -400)
+	(cc-add-resource wood -400)
+	(cc-add-resource gold -400)
+	(cc-add-resource stone -400)
+	(disable-self)
+)
+#end-if
+#load-if-defined CASTLE-AGE-START
+(defrule
+	(current-age == castle-age)
+=>
+	(cc-add-resource food -1300)
+	(cc-add-resource wood -1300)
+	(cc-add-resource gold -1300)
+	(cc-add-resource stone -1400)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 400)
+=>
+	(cc-add-resource food 300)
+	(cc-add-resource gold 200)
+	(cc-add-resource wood 200)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 600)
+	(goal gl-current-age gv-castle-up)
+=>
+	(cc-add-resource wood 100)
+	(cc-add-resource food 100)
+	(cc-add-resource gold 100)
+	(disable-self)
+)
+
+(defrule
+	(current-age == imperial-age)
+=>
+	(cc-add-resource food -300)
+	(cc-add-resource wood -300)
+	(cc-add-resource gold -300)
+	(cc-add-resource stone -300)
+	(disable-self)
+)
+#else
+#load-if-not-defined DARK-AGE-START
+#load-if-not-defined FEUDAL-AGE-START
+(defrule
+	(game-time > 200)
+=>
+	(cc-add-resource food 300)
+	(cc-add-resource gold 300)
+	(cc-add-resource wood 300)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 450)
+=>
+	(cc-add-resource food 200)
+	(cc-add-resource gold 200)
+	(cc-add-resource wood 200)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 750)
+=>
+	(cc-add-resource food 200)
+	(cc-add-resource gold 200)
+	(cc-add-resource wood 200)
+	(cc-add-resource stone 200)
+	(disable-self)
+)
+
+(defrule
+	(current-age == imperial-age)
+=>
+	(cc-add-resource food -1700)
+	(cc-add-resource wood -1700)
+	(cc-add-resource gold -1800)
+	(cc-add-resource stone -1900)
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+(defrule
+	(game-time > 700)
+	(game-time < 1200)
+	(or	(civilian-population > 20); If we're going to die, we die
+		(strategic-number sn-nomad-style-start == 1)); In nomad up may be done too fast and some boost is required
+	(current-age >= feudal-age)
+	(goal gl-current-age gv-feudal)
+	(up-timer-status 44 != timer-running)
+=>
+	(cc-add-resource food 80)
+	(cc-add-resource wood 50)
+	(cc-add-resource gold 20)
+	(enable-timer 44 300)
+)
+
+(defrule
+	(game-time > 1200)
+	(game-time < 2100)
+	(civilian-population > 20)
+	(current-age >= feudal-age)
+	(up-timer-status 44 != timer-running)
+=>
+	(cc-add-resource food 80)
+	(cc-add-resource wood 80)
+	(cc-add-resource gold 65)
+	(cc-add-resource stone 30)
+	(enable-timer 44 150)
+)
+
+(defrule
+	(game-time > 2100)
+	(civilian-population > 20)
+	(current-age == feudal-age)
+	(up-timer-status 44 != timer-running)
+=>
+	(cc-add-resource food 120)
+	(cc-add-resource wood 120)
+	(cc-add-resource gold 80)
+	(enable-timer 44 150)
+)
+
+(defrule
+	(game-time > 3300)
+	(civilian-population > 65)
+	(current-age > feudal-age)
+	(up-timer-status 44 != timer-running)
+=>
+	(cc-add-resource food 70)
+	(cc-add-resource wood 70)
+	(cc-add-resource gold 70)
+	(cc-add-resource stone 20)
+	(enable-timer 44 60)
+)
+
+(defrule
+	(game-time > 2100)
+	(civilian-population > 20)
+	(current-age > feudal-age)
+	(up-timer-status 44 != timer-running)
+=>
+	(cc-add-resource food 75)
+	(cc-add-resource wood 75)
+	(cc-add-resource gold 75)
+	(cc-add-resource stone 30)
+	(enable-timer 44 90)
+)
+
+(defrule
+	(up-compare-goal gl-town-center-placed != placed-to-ally)
+	(building-type-count town-center > 0)
+	(current-age >= castle-age)
+	(population < 60)
+	(or	(population < 30)
+		(players-population focus-player > 90))
+	(players-military-population any-ally > 15)
+	(or	(wood-amount < town-center-wood)
+		(stone-amount < 100))
+	(up-enemy-units-in-town > 20)
+=>
+	(cc-add-resource wood 275)
+	(cc-add-resource stone 100)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-town-center-placed placed-to-ally)
+	(player-in-game every-ally)
+	(players-population any-ally > 150)
+	(building-type-count town-center > 0)
+	(unit-type-count-total villager < 21)
+	(up-timer-status 44 != timer-running)
+=>
+	(cc-add-resource food 50)
+	(enable-timer 44 60)
+)

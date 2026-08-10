@@ -1,0 +1,224 @@
+(defrule
+	(true)
+=>
+	(set-strategic-number sn-number-boat-explore-groups 1)
+	(set-strategic-number sn-dock-defend-priority 1)
+	(disable-self)
+)
+
+;make docks
+(defrule
+	(building-type-count-total dock == 0)
+	(building-type-count-total town-center > 1)
+	(can-build dock)
+=>
+	(build dock)
+)
+
+(defrule
+	(building-type-count-total dock < 2)
+	(goal sea-owner YES)
+	(can-build dock)
+=>
+	(build dock)
+)
+
+(defrule
+	(building-type-count-total dock == 0)
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith > 0)
+	(not (goal rush-control IMPERIAL) )
+	(can-build dock)
+=>
+	(build dock)
+)
+
+(defrule
+	(goal 1 10)
+	(current-age >= feudal-age)
+	(building-type-count-total dock < 2)
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith > 0)
+	(can-build-with-escrow dock)
+	(wood-amount > 400)
+=>
+	(release-escrow wood)
+	(build dock)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(wood-amount > 500)
+	(building-type-count-total dock < 2)
+	(can-build-with-escrow dock)
+=>
+	(release-escrow wood)
+	(build dock)
+)
+
+(defrule
+	(goal 1 10)
+	(current-age == imperial-age)
+	(wood-amount > 500)
+	(building-type-count-total dock < 3)
+	(can-build-with-escrow dock)
+=>
+	(release-escrow wood)
+	(build dock)
+)
+
+#load-if-defined DEFEND-WONDER
+(defrule
+	(or
+		(and
+			(goal 1 10)
+			(building-type-count-total dock < 2)
+		)
+		(and
+			(goal 1 1)
+			(building-type-count-total dock == 0)
+		)
+	)
+	(can-build-with-escrow dock)
+=>
+	(release-escrow wood)
+	(build dock)
+)
+#end-if
+
+#load-if-not-defined DEFEND-WONDER
+#load-if-not-defined DEATH-MATCH
+;build fishing ships in dark age
+
+(defrule
+	(current-age == dark-age)
+	(building-type-count-total lumber-camp > 0)
+	(civilian-population < civ-dark)
+	(or
+		(unit-type-count-total fishing-ship < five-percent-pop)
+		(and
+			(goal rush-control BOOMING)
+			(unit-type-count-total fishing-ship < ten-percent-pop)
+		)
+	)
+	(nand
+		(goal rush-control RUSHING)
+		(building-type-count-total barracks == 0)
+	)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+;feudal boats
+(defrule
+	(goal secondary-build 1)
+	(current-age == feudal-age)
+	(building-type-count-total blacksmith > 0)
+	(civilian-population < civ-feudal)
+	(unit-type-count-total fishing-ship < ten-percent-pop)
+	(unit-type-count-total galley > 0)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+;castle boats
+(defrule
+	(goal secondary-build 1)
+	(building-type-count-total siege-workshop > 0)
+	(civilian-population < civ-castle)
+	(unit-type-count-total fishing-ship < ten-percent-pop)
+	(or
+		(current-age == castle-age)
+		(and
+			(current-age == imperial-age)
+			(current-age-time < 2400)
+		)
+	)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+)
+
+#end-if
+#end-if
+
+(defrule
+	(population >= pop-cap)
+	(unit-type-count fishing-ship > ten-percent-pop)
+=>
+	(delete-unit fishing-ship)
+)
+
+(defrule
+	(population >= pop-cap)
+	(current-age == imperial-age)
+	(current-age-time > 2400)
+	(unit-type-count fishing-ship > 0)
+=>
+	(delete-unit fishing-ship)
+)
+
+;start the run-through for military ships & rulers of the sea
+(defrule
+	(not (goal 2 NO) )
+=>
+	(set-goal 2 NO)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(warboat-count > ten-percent-pop)
+	(cc-players-unit-type-count every-enemy galley-line < 4)
+	(cc-players-unit-type-count every-enemy cannon-galleon-line < 2)
+	(cc-players-unit-type-count every-enemy fire-ship-line < 4)
+	(cc-players-unit-type-count every-enemy longboat-line < 3)
+	(cc-players-unit-type-count every-enemy turtle-ship-line < 1)
+=>
+	(set-goal 2 YES)
+)
+
+;start the run-through for military ships
+(defrule
+	(true)
+=>
+	(set-goal make-warboat NO)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(building-type-count dock > 0)
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith > 0)
+=>
+	(set-goal make-warboat YES)
+)
+
+(defrule
+	(current-age == castle-age)
+	(building-type-count dock > 0)
+	(or
+		(building-type-count-total castle > 0)
+		(and
+			(building-type-count-total university > 0)
+			(building-type-count-total siege-workshop > 0)
+		)
+	)
+=>
+	(set-goal make-warboat YES)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(building-type-count dock > 0)
+=>
+	(set-goal make-warboat YES)
+)
+
+(defrule
+	(building-type-count dock > 0)
+	(warboat-count < five-percent-pop)
+=>
+	(set-goal make-warboat YES)
+)

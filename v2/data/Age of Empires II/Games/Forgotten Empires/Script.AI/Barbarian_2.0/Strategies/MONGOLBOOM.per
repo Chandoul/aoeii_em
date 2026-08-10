@@ -1,0 +1,343 @@
+(defrule
+	(up-compare-goal gl-strategy != mongol-boom)
+	(game-time > 1200)
+=>
+	(up-jump-rule 29)
+)
+
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy castle-drop)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 20)
+	(goal gl-current-age gv-dark)
+	(or	(goal POSITION POCKET)
+		(up-compare-goal gl-rush-suitability-on-map <= LOW))
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+=>
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC)
+	(set-goal gl-strategy mongol-boom)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(current-age >= castle-age)
+	(game-time > 3200)
+	(or	(game-time > 3600)
+		(and	(unit-type-count-total trade-cart < 13)
+			(gold-amount < 150)))
+=>
+	(set-goal gl-strategy default)
+	(chat-to-player my-player-number "1Switch to basic strategy")
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(build market)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(current-age > feudal-age)
+	(population-headroom > 3)
+	(building-type-count-total town-center > 3)
+	(building-type-count-total farm > 22)
+	(housing-headroom < 22)
+	(up-pending-objects c: house < 3)
+	(can-build house)
+=>
+	(build house)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(building-type-count-total town-center > 2)
+		(current-age-time > 70))
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(or	(and	(goal gl-current-age gv-castle)
+			(building-type-count-total siege-workshop < 1))
+		(up-research-status c: my-unique-unit-upgrade >= research-pending))
+	(building-type-count-total town-center > 3)
+	(building-type-count-total siege-workshop < 5)
+	(can-build siege-workshop)
+=>
+	(build siege-workshop)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(current-age == castle-age)
+	(town-under-attack)
+	(unit-type-count-total my-unique-unit-line < 7)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(building-type-count-total town-center < 4)
+	(can-build-with-escrow town-center)
+=>
+	(release-escrow wood)
+	(build town-center)
+	(chat-to-player my-player-number "Town center")
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(wood-amount > 450)
+	(game-time > 2100)
+	(or	(building-type-count-total mining-camp < 9)
+		(game-time > 2300))
+	(building-type-count-total mining-camp < 13)
+	(game-time < 3300)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(up-research-status c: my-unique-unit-upgrade >= research-pending)
+	(or	(unit-type-count-total battering-ram-line < 6)
+		(unit-type-count-total mangudai-line > 18))
+	(or	(unit-type-count-total battering-ram-line < 9)
+		(unit-type-count-total mangudai-line > 32))
+	(unit-type-count-total battering-ram-line < 17)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(research-completed ri-chemistry)
+	(research-completed ri-bracer)
+	(strategic-number sn-threat-level > -2)
+=>
+	(set-strategic-number sn-threat-level -2)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(research-completed my-unique-unit-upgrade)
+	(players-current-age every-enemy <= castle-age)
+	(strategic-number sn-threat-level > -4)
+=>
+	(set-strategic-number sn-threat-level -4)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(research-completed my-unique-unit-upgrade)
+	(strategic-number sn-threat-level > -3)
+=>
+	(set-strategic-number sn-threat-level -3)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(strategic-number sn-allow-resource-spending > 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 0)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-strategic-number sn-allow-resource-spending 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(up-research-status c: my-unique-unit-upgrade >= research-pending)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(up-research-status c: my-unique-unit-upgrade >= research-pending)
+	(or	(can-research-with-escrow ri-capped-ram)
+		(or	(can-research-with-escrow ri-siege-ram)
+			(can-research-with-escrow my-unique-research)))
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(release-escrow gold)
+	(research ri-capped-ram)
+	(research my-unique-research)
+	(research ri-siege-ram)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(building-type-count-total town-center > 3)
+	(up-research-status c: ri-hand-cart >= research-pending)
+	(food-amount > 300)
+	(or	(can-research ri-gold-shaft-mining)
+		(can-research ri-stone-shaft-mining))
+=>
+	(research ri-gold-shaft-mining)
+	(research ri-stone-shaft-mining)
+)
+
+; ================ ECO
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(goal gl-current-age gv-dark-up)
+	(or	(strategic-number sn-food-gatherer-percentage != 39)
+		(strategic-number sn-wood-gatherer-percentage != 43))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 39)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(set-strategic-number sn-gold-gatherer-percentage 12)
+	(set-strategic-number sn-stone-gatherer-percentage 7)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total castle == 0)
+	(stone-amount < castle-stone)
+	(or	(strategic-number sn-food-gatherer-percentage != 30)
+		(strategic-number sn-gold-gatherer-percentage != 36))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 36)
+	(set-strategic-number sn-gold-gatherer-percentage 5)
+	(set-strategic-number sn-stone-gatherer-percentage 29)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(and	(stone-amount >= 650)
+			(goal gl-current-age gv-feudal-up))
+		(building-type-count-total castle > 0))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 36)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 8)
+	(set-strategic-number sn-stone-gatherer-percentage 6)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(current-age >= castle-age)
+	(building-type-count-total town-center > 2)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 42)
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(set-strategic-number sn-gold-gatherer-percentage 7)
+	(set-strategic-number sn-stone-gatherer-percentage 6)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(current-age >= castle-age)
+	(building-type-count-total town-center > 3)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 48)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 13)
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(current-age >= castle-age)
+	(building-type-count-total town-center > 3)
+	(unit-type-count-total villager > 70)
+	(up-compare-goal gl-current-age <= gv-castle)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 39)
+	(set-strategic-number sn-wood-gatherer-percentage 33)
+	(set-strategic-number sn-gold-gatherer-percentage 22)
+	(set-strategic-number sn-stone-gatherer-percentage 11)
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(current-age >= castle-age)
+	(building-type-count-total town-center > 3)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 41)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 23)
+	(set-strategic-number sn-stone-gatherer-percentage 6)
+	(set-goal CASTLE 2)
+	(enable-timer 1 0)
+	(enable-timer 7 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(current-age == imperial-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 38)
+	(set-strategic-number sn-wood-gatherer-percentage 39)
+	(set-strategic-number sn-gold-gatherer-percentage 18)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy mongol-boom)
+	(current-age >= castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(up-research-status c: my-unique-unit-upgrade >= research-pending)
+	(up-research-status c: ri-siege-ram >= research-pending)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 10)
+	(set-strategic-number sn-wood-gatherer-percentage 55)
+	(set-strategic-number sn-gold-gatherer-percentage 30)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(disable-self)
+)
+

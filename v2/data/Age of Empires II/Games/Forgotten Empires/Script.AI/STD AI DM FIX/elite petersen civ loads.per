@@ -1,0 +1,1430 @@
+;*********************************************************
+#load-if-defined AZTEC-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating GOOD)
+	(generate-random-number 14)
+	(set-goal castle-attempt NO)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 3)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 4)
+	(random-number <= 6)
+=>
+	(set-goal combat-arm EAGLEMAN)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 7)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 8)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm INFANTRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+#end-if
+#load-if-defined INCAN-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating FAIR)
+	(generate-random-number 18)
+	(set-goal castle-attempt NO)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 1)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 2)
+	(random-number <= 4)
+=>
+	(set-goal combat-arm EAGLEMAN)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 5)
+	(random-number <= 8)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm INFANTRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+#end-if
+;*********************************************************
+#load-if-defined INDIAN-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating FAIR)
+	(set-goal castle-attempt NO)
+	(generate-random-number 22)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 3)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 4)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 5)
+	(random-number <= 11)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 12)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm ARCHER)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age == feudal-age)
+	(not (goal pre-unique-arm ARCHER) )
+=>
+	(set-goal pre-unique-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(current-age >= castle-age)
+	(not (goal pre-unique-arm ARCHER) )
+=>
+	(set-goal pre-unique-arm ARCHER)
+)
+#end-if
+
+;*********************************************************
+#load-if-defined ITALIAN-CIV
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating GOOD)
+	(set-goal castle-attempt NO)
+	(generate-random-number 18)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 3)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 4)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 5)
+	(random-number <= 7)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 8)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm ARCHER)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm ARCHER) )
+=>
+	(set-goal pre-unique-arm ARCHER)
+)
+
+#end-if
+;*********************************************************
+#load-if-defined HUN-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating FAIR)
+	(generate-random-number 24)
+	(set-goal castle-attempt NO)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 1)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 2)
+	(random-number <= 6)
+=>
+	(set-goal combat-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 7)
+	(random-number <= 8)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+	(random-number <= 12)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 13)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age == feudal-age)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(current-age >= castle-age)
+	(not (goal pre-unique-arm CAVALRY) )
+=>
+	(set-goal pre-unique-arm CAVALRY)
+)
+
+#end-if
+;*********************************************************
+#load-if-defined KOREAN-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating FAIR)
+	(generate-random-number 24)
+	(set-goal castle-attempt NO)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 1)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 2)
+=>
+	(set-goal combat-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 3)
+	(random-number <= 4)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 5)
+	(random-number <= 8)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+	(random-number <= 12)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 13)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age == feudal-age)
+	(not (goal pre-unique-arm ARCHER) )
+=>
+	(set-goal pre-unique-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(current-age >= castle-age)
+	(not (goal pre-unique-arm CAVARCHER) )
+=>
+	(set-goal pre-unique-arm CAVARCHER)
+)
+
+#end-if
+;*********************************************************
+#load-if-defined MAGYAR-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating FAIR)
+	(generate-random-number 16)
+	(set-goal castle-attempt NO)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 1)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 2)
+	(random-number <= 6)
+=>
+	(set-goal combat-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 7)
+	(random-number <= 8)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+	(random-number <= 12)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 13)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age == feudal-age)
+	(not (goal pre-unique-arm CAVALRY) )
+=>
+	(set-goal pre-unique-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(current-age >= castle-age)
+	(not (goal pre-unique-arm CAVALRY) )
+=>
+	(set-goal pre-unique-arm CAVALRY)
+)
+
+#end-if
+;*********************************************************
+#load-if-defined MAYAN-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating FAIR)
+	(generate-random-number 16)
+	(set-goal castle-attempt NO)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 1)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 2)
+	(random-number <= 4)
+=>
+	(set-goal combat-arm EAGLEMAN)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 5)
+	(random-number <= 8)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm ARCHER)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm ARCHER) )
+=>
+	(set-goal pre-unique-arm ARCHER)
+)
+
+#end-if
+;*********************************************************
+#load-if-defined SLAVIC-CIV
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating GOOD)
+	(set-goal castle-attempt NO)
+	(generate-random-number 24)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 5)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 6)
+	(random-number <= 8)
+=>
+	(set-goal combat-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 9)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 10)
+	(random-number <= 12)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 13)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm CAVALRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm CAVALRY) )
+=>
+	(set-goal pre-unique-arm CAVALRY)
+)
+
+#end-if
+
+;*********************************************************
+#load-if-defined SPANISH-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating GOOD)
+	(generate-random-number 24)
+	(set-goal castle-attempt NO)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 3)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 4)
+	(random-number <= 6)
+=>
+	(set-goal combat-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 7)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 8)
+	(random-number <= 12)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 13)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age == feudal-age)
+	(not (goal pre-unique-arm ARCHER) )
+=>
+	(set-goal pre-unique-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(current-age >= castle-age)
+	(not (goal pre-unique-arm CAVARCHER) )
+=>
+	(set-goal pre-unique-arm CAVARCHER)
+)
+
+#end-if
+
+;*********************************************************
+#load-if-defined BRITON-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating GOOD)
+	(generate-random-number 24)
+	(set-goal castle-attempt NO)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 3)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 4)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 5)
+	(random-number <= 7)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 8)
+	(random-number <= 12)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 13)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm ARCHER)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm ARCHER) )
+=>
+	(set-goal pre-unique-arm ARCHER)
+)
+
+#end-if
+
+;*********************************************************
+#load-if-defined BYZANTINE-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating GOOD)
+	(set-goal castle-attempt NO)
+	(generate-random-number 22)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 3)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 4)
+=>
+	(set-goal combat-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 5)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 6)
+	(random-number <= 8)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+	(random-number <= 11)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 12)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm CAVALRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age == feudal-age)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(current-age >= castle-age)
+	(not (goal pre-unique-arm CAVALRY) )
+=>
+	(set-goal pre-unique-arm CAVALRY)
+)
+
+#end-if
+
+;*********************************************************
+#load-if-defined CELTIC-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating POOR)
+	(set-goal castle-attempt NO)
+	(generate-random-number 24)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 5)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 6)
+	(random-number <= 8)
+=>
+	(set-goal combat-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 9)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 10)
+	(random-number <= 12)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 13)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm INFANTRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+#end-if
+
+;*********************************************************
+#load-if-defined CHINESE-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating FAIR)
+	(set-goal castle-attempt NO)
+	(generate-random-number 16)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 3)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 4)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 5)
+	(random-number <= 7)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 8)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm ARCHER)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm ARCHER) )
+=>
+	(set-goal pre-unique-arm ARCHER)
+)
+
+#end-if
+
+;*********************************************************
+#load-if-defined FRANKISH-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating FAIR)
+	(set-goal castle-attempt NO)
+	(generate-random-number 22)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 1)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 2)
+	(random-number <= 7)
+=>
+	(set-goal combat-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 8)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+	(random-number <= 11)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 12)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm INFANTRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+#end-if
+
+;*********************************************************
+#load-if-defined GOTHIC-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating POOR)
+	(set-goal castle-attempt NO)
+	(generate-random-number 18)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 5)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 6)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 7)
+	(random-number <= 9)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 10)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm INFANTRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (research-completed my-unique-research) )
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+(defrule
+	(goal wall-build YES)
+=>
+	(set-goal wall-build NO)
+)
+
+
+#end-if
+
+;*********************************************************
+#load-if-defined JAPANESE-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating GOOD)
+	(set-goal castle-attempt NO)
+	(generate-random-number 24)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 5)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 6)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 7)
+	(random-number <= 9)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 10)
+	(random-number <= 12)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 13)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm INFANTRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+#end-if
+
+;*********************************************************
+#load-if-defined MONGOL-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating POOR)
+	(set-goal castle-attempt NO)
+	(generate-random-number 32)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 3)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 4)
+	(random-number <= 8)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+	(random-number <= 13)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 14)
+	(random-number <= 16)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 17)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age == feudal-age)
+	(not (goal pre-unique-arm ARCHER) )
+=>
+	(set-goal pre-unique-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age >= castle-age)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm CAVARCHER) )
+=>
+	(set-goal pre-unique-arm CAVARCHER)
+)
+#end-if
+
+;*********************************************************
+#load-if-defined PERSIAN-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating POOR)
+	(set-goal castle-attempt NO)
+	(generate-random-number 10)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 1)
+=>
+	(set-goal combat-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 2)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 3)
+	(random-number <= 5)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 6)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age == feudal-age)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(current-age >= castle-age)
+	(not (goal pre-unique-arm CAVALRY) )
+=>
+	(set-goal pre-unique-arm CAVALRY)
+)
+#end-if
+
+;*********************************************************
+#load-if-defined SARACEN-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating GOOD)
+	(set-goal castle-attempt NO)
+	(generate-random-number 22)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 3)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 4)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 5)
+	(random-number <= 11)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 12)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm CAVALRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age == feudal-age)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(current-age >= castle-age)
+	(not (goal pre-unique-arm CAVALRY) )
+=>
+	(set-goal pre-unique-arm CAVALRY)
+)
+#end-if
+
+;*********************************************************
+#load-if-defined TEUTONIC-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating GOOD)
+	(set-goal castle-attempt NO)
+	(generate-random-number 8)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 1)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 2)
+	(random-number <= 4)
+=>
+	(set-goal combat-arm CAVALRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 5)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm INFANTRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+#end-if
+
+;*********************************************************
+#load-if-defined TURKISH-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating FAIR)
+	(set-goal castle-attempt NO)
+	(generate-random-number 28)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 3)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 4)
+	(random-number <= 8)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 9)
+	(random-number <= 11)
+=>
+	(set-goal combat-arm CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 12)
+	(random-number <= 14)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 15)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm ARCHER)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm ARCHER) )
+=>
+	(set-goal pre-unique-arm ARCHER)
+)
+
+#end-if
+
+;*********************************************************
+#load-if-defined VIKING-CIV
+
+(defrule
+	(goal combat-arm NOTICE)
+=>
+	(set-goal monk-rating POOR)
+	(set-goal castle-attempt NO)
+	(generate-random-number 18)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 1)
+	(random-number <= 5)
+=>
+	(set-goal combat-arm INFANTRY)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number == 6)
+=>
+	(set-goal combat-arm LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 7)
+	(random-number <= 9)
+=>
+	(set-goal combat-arm ARCHER)
+)
+
+(defrule
+	(goal combat-arm NOTICE)
+	(random-number >= 10)
+=>
+	(set-goal combat-arm UNIQUE)
+	(set-goal pre-unique-arm INFANTRY)
+	(set-goal castle-attempt YES)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(building-type-count castle == 0)
+	(not (goal pre-unique-arm INFANTRY) )
+=>
+	(set-goal pre-unique-arm INFANTRY)
+)
+
+(defrule
+	(goal castle-attempt NO)
+	(or
+		(goal sea-owner YES)
+		(nor
+			(player-in-game any-computer-ally)
+			(or
+				(player-in-game any-human-ally)
+				(goal 1 0)
+			)
+		)
+	)
+=>
+	(set-goal castle-attempt YES)
+)
+
+#end-if
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(current-age >= castle-age)
+	(building-type-count castle > 0)
+	(not (goal pre-unique-arm NO) )
+=>
+	(set-goal pre-unique-arm NO)
+)
+
+

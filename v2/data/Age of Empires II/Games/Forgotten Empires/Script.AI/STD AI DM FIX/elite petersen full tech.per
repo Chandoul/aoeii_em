@@ -1,0 +1,1230 @@
+(defrule
+	(timer-triggered  t-production)
+=>
+	(generate-random-number 3)
+)
+
+(defrule
+	(timer-triggered  t-production)
+	(or
+		(goal military-parity NO)
+		(random-number == 1)
+	)
+=>
+	(set-goal combat-supp UNIT20)
+)
+
+;************************
+(defrule
+	(timer-triggered  t-production)
+=>
+	(generate-random-number 12)
+)
+
+;feudal-age
+(defrule
+	(goal combat-supp UNIT20)
+	(current-age == feudal-age)
+	(timer-triggered  t-production)
+	(random-number <= 5)
+	(or
+		(or
+			(goal combat-arm INFANTRY)
+			(goal combat-arm CAVALRY)
+		)
+		(or
+			(goal combat-arm EAGLEMAN)
+			(goal pre-unique-arm INFANTRY)
+		)
+	)
+=>
+	(set-goal combat-supp ARCHER)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(current-age == feudal-age)
+	(timer-triggered  t-production)
+	(random-number >= 6)
+	(random-number <= 10)
+	(or
+		(or
+			(goal combat-arm CAVARCHER)
+			(goal combat-arm ARCHER)
+		)
+		(goal pre-unique-arm ARCHER)
+	)
+=>
+	(set-goal combat-supp INFANTRY)
+)
+
+(defrule
+	(goal combat-arm LIGHTCAV)
+	(goal combat-supp UNIT20)
+	(current-age == feudal-age)
+	(timer-triggered  t-production)
+	(random-number == 11)
+=>
+	(set-goal combat-supp INFANTRY)
+)
+
+(defrule
+	(goal combat-arm LIGHTCAV)
+	(goal combat-supp UNIT20)
+	(current-age == feudal-age)
+	(timer-triggered  t-production)
+	(random-number == 12)
+=>
+	(set-goal combat-supp ARCHER)
+)
+
+;castle-age & higher
+;if Infantry is the main build
+(defrule
+	(goal combat-arm INFANTRY)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number == 1)
+=>
+	(set-goal combat-supp CAVALRY)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number == 1)
+	(building-type-count castle > 0)
+	(or
+		(or
+			(civ-selected celtic)
+			(civ-selected frankish)
+		)
+		(or
+			(or
+				(civ-selected gothic)
+				(civ-selected japanese)
+			)
+			(or
+				(civ-selected teutonic)
+				(civ-selected viking)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp CAVALRY)
+)
+
+(defrule
+	(goal combat-arm INFANTRY)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 3)
+=>
+	(set-goal combat-supp LIGHTCAV)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 3)
+	(building-type-count castle > 0)
+	(or
+		(or
+			(civ-selected celtic)
+			(civ-selected frankish)
+		)
+		(or
+			(or
+				(civ-selected gothic)
+				(civ-selected japanese)
+			)
+			(or
+				(civ-selected teutonic)
+				(civ-selected viking)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp LIGHTCAV)
+)
+
+(defrule
+	(goal combat-arm INFANTRY)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 6)
+=>
+	(set-goal combat-supp CAVARCHER)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 6)
+	(building-type-count castle > 0)
+	(or
+		(or
+			(civ-selected celtic)
+			(civ-selected frankish)
+		)
+		(or
+			(or
+				(civ-selected gothic)
+				(civ-selected japanese)
+			)
+			(or
+				(civ-selected teutonic)
+				(civ-selected viking)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm INFANTRY)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 10)
+=>
+	(set-goal combat-supp ARCHER)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 10)
+	(building-type-count castle > 0)
+	(or
+		(or
+			(civ-selected celtic)
+			(civ-selected frankish)
+		)
+		(or
+			(civ-selected gothic)
+			(civ-selected japanese)
+		)
+	)
+=>
+	(set-goal combat-supp ARCHER)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 10)
+	(building-type-count castle > 0)
+	(or
+		(civ-selected aztec)
+		(or
+			(civ-selected teutonic)
+			(civ-selected viking)
+		)
+	)
+=>
+	(set-goal combat-supp ARCHER)
+)
+
+(defrule
+	(goal combat-arm INFANTRY)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 12)
+=>
+	(set-goal combat-supp SCORPION)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 12)
+	(building-type-count castle > 0)
+	(or
+		(or
+			(civ-selected celtic)
+			(civ-selected frankish)
+		)
+		(or
+			(civ-selected gothic)
+			(civ-selected japanese)
+		)
+	)
+=>
+	(set-goal combat-supp SCORPION)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 12)
+	(building-type-count castle > 0)
+	(or
+		(civ-selected aztec)
+		(or
+			(civ-selected teutonic)
+			(civ-selected viking)
+		)
+	)
+=>
+	(set-goal combat-supp SCORPION)
+)
+
+;if eagle warriors are the main build
+(defrule
+	(goal combat-arm EAGLEMAN)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 6)
+=>
+	(set-goal combat-supp INFANTRY)
+)
+
+(defrule
+	(goal combat-arm EAGLEMAN)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 11)
+=>
+	(set-goal combat-supp ARCHER)
+)
+
+(defrule
+	(goal combat-arm EAGLEMAN)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number == 12)
+=>
+	(set-goal combat-supp SCORPION)
+)
+
+;if Cavalry is the main build
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 2)
+	(or
+		(goal combat-arm CAVALRY)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected byzantine)
+				(or
+					(civ-selected persian)
+					(civ-selected saracen)
+				)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp INFANTRY)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 9)
+	(or
+		(goal combat-arm CAVALRY)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected byzantine)
+				(or
+					(civ-selected persian)
+					(civ-selected saracen)
+				)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp CAVARCHER)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 11)
+	(or
+		(goal combat-arm CAVALRY)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected byzantine)
+				(or
+					(civ-selected persian)
+					(civ-selected saracen)
+				)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp ARCHER)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number == 12)
+	(or
+		(goal combat-arm CAVALRY)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected byzantine)
+				(or
+					(civ-selected persian)
+					(civ-selected saracen)
+				)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp SCORPION)
+)
+
+;if Light Cav is the main build
+(defrule
+	(goal combat-arm LIGHTCAV)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number == 1)
+=>
+	(set-goal combat-supp INFANTRY)
+)
+
+(defrule
+	(goal combat-arm LIGHTCAV)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 6)
+=>
+	(set-goal combat-supp CAVALRY)
+)
+
+(defrule
+	(goal combat-arm LIGHTCAV)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 10)
+=>
+	(set-goal combat-supp CAVARCHER)
+)
+
+(defrule
+	(goal combat-arm LIGHTCAV)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number == 11)
+=>
+	(set-goal combat-supp ARCHER)
+)
+
+(defrule
+	(goal combat-arm LIGHTCAV)
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number == 12)
+=>
+	(set-goal combat-supp SCORPION)
+)
+
+;if Cav Archers are the main build
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 4)
+	(or
+		(goal combat-arm CAVARCHER)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected mongol)
+				(or
+					(civ-selected spanish)
+					(civ-selected korean)
+				)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp INFANTRY)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 8)
+	(or
+		(goal combat-arm CAVARCHER)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected mongol)
+				(or
+					(civ-selected spanish)
+					(civ-selected korean)
+				)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp CAVALRY)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 12)
+	(or
+		(goal combat-arm CAVARCHER)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected mongol)
+				(or
+					(civ-selected spanish)
+					(civ-selected korean)
+				)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp LIGHTCAV)
+)
+
+;if Archers are the main build
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 4)
+	(goal combat-arm ARCHER)
+=>
+	(set-goal combat-supp INFANTRY)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 4)
+	(building-type-count castle > 0)
+	(or
+		(civ-selected mayan)
+		(or
+			(or
+				(civ-selected briton)
+				(civ-selected chinese)
+			)
+			(or
+				(civ-selected mongol)
+				(civ-selected turkish)
+			)
+			
+		)
+	)
+=>
+	(set-goal combat-supp INFANTRY)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 7)
+	(or
+		(goal combat-arm ARCHER)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(or
+					(civ-selected briton)
+					(civ-selected chinese)
+				)
+				(civ-selected mayan)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp CAVALRY)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 7)
+	(or
+		(goal combat-arm ARCHER)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected mongol)
+				(civ-selected turkish)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp CAVALRY)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 11)
+	(or
+		(goal combat-arm ARCHER)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(or
+					(civ-selected briton)
+					(civ-selected chinese)
+				)
+				(civ-selected mayan)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp LIGHTCAV)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number <= 11)
+	(or
+		(goal combat-arm ARCHER)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected mongol)
+				(civ-selected turkish)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp LIGHTCAV)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number == 12)
+	(or
+		(goal combat-arm ARCHER)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected mayan)
+				(or
+					(civ-selected briton)
+					(civ-selected chinese)
+				)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp SCORPION)
+)
+
+(defrule
+	(goal combat-supp UNIT20)
+	(timer-triggered  t-production)
+	(random-number == 12)
+	(or
+		(goal combat-arm ARCHER)
+		(and
+			(building-type-count castle > 0)
+			(or
+				(civ-selected mongol)
+				(civ-selected turkish)
+			)
+		)
+	)
+=>
+	(set-goal combat-supp SCORPION)
+)
+
+;special civ stuff
+(defrule
+	(or
+		(civ-selected aztec)
+		(civ-selected mayan)
+	)
+	(or
+		(goal combat-supp CAVALRY)
+		(goal combat-supp LIGHTCAV)
+	)
+=>
+	(set-goal combat-supp EAGLEMAN)
+)
+
+(defrule
+	(or
+		(civ-selected aztec)
+		(civ-selected mayan)
+	)
+	(goal combat-supp CAVARCHER)
+=>
+	(set-goal combat-supp ARCHER)
+)
+
+(defrule
+	(civ-selected hun)
+	(goal combat-supp SCORPION)
+=>
+	(set-goal combat-supp CAVARCHER)
+)
+
+;periodically check how we're doing!
+(defrule
+	(timer-triggered  t-production)
+=>
+	(disable-timer t-production)
+	(enable-timer t-production 300)
+)
+
+;*******************************************************
+;INFANTRY ARMY 
+(defrule
+	(soldier-count < ten-percent-pop)
+	(building-type-count stable == 0)
+	(building-type-count archery-range == 0)
+	(building-type-count castle == 0)
+	(players-military-population any-enemy >= ten-percent-pop)
+	(can-train militiaman)
+=>
+	(train militiaman)
+	(chat-local-to-self "emergency militia")
+)
+
+(defrule
+	(goal rush-control RUSHING)
+	(soldier-count < ten-percent-pop)
+	(can-train-with-escrow militiaman-line)
+	(nor
+		(can-train militiaman-line)
+		(goal upgrade-conflict NOTICE)
+	)
+	(or
+		(goal combat-arm INFANTRY)
+		(goal pre-unique-arm INFANTRY)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(train militiaman-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(population < unit-max)
+	(can-train militiaman-line)
+	(or
+		(goal combat-arm INFANTRY)
+		(goal pre-unique-arm INFANTRY)
+	)
+=>
+	(train militiaman-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal secondary-build 0)
+	(goal combat-supp INFANTRY)
+	(population < unit-max)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+	(set-goal secondary-build 1)
+)
+
+;*******************************************************
+;EAGLE WARRIOR ARMY 
+(defrule
+	(goal rush-control RUSHING)
+	(current-age < castle-age)
+	(soldier-count < ten-percent-pop)
+	(can-train-with-escrow militiaman-line)
+	(goal combat-arm EAGLEMAN)
+	(nor
+		(can-train militiaman-line)
+		(goal upgrade-conflict NOTICE)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(train militiaman-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal rush-control RUSHING)
+	(soldier-count < ten-percent-pop)
+	(can-train-with-escrow eagle-warrior-line)
+	(goal combat-arm EAGLEMAN)
+	(nor
+		(can-train eagle-warrior-line)
+		(goal upgrade-conflict NOTICE)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(train eagle-warrior-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(soldier-count < twenty-percent-pop)
+	(players-military-population any-enemy >= ten-percent-pop)
+	(goal combat-arm EAGLEMAN)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(population < unit-max)
+	(can-train eagle-warrior-line)
+	(goal combat-arm EAGLEMAN)
+=>
+	(train eagle-warrior-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal secondary-build 0)
+	(goal combat-supp EAGLEMAN)
+	(population < unit-max)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line)
+	(set-goal secondary-build 1)
+)
+
+;********************************************************************
+;CAVALRY ARMY == goal combat-arm CAVALRY & goal combat-supp CAVALRY 
+(defrule
+	(goal rush-control RUSHING)
+	(current-age < castle-age)
+	(soldier-count < ten-percent-pop)
+	(can-train-with-escrow militiaman-line)
+	(goal combat-arm CAVALRY)
+	(nor
+		(can-train militiaman-line)
+		(goal upgrade-conflict NOTICE)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(train militiaman-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal rush-control RUSHING)
+	(soldier-count < ten-percent-pop)
+	(can-train-with-escrow knight-line)
+	(nor
+		(can-train knight-line)
+		(goal upgrade-conflict NOTICE)
+	)
+	(or
+		(goal combat-arm CAVALRY)
+		(goal pre-unique-arm CAVALRY)
+	)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(train knight-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(soldier-count < twenty-percent-pop)
+	(players-military-population any-enemy >= ten-percent-pop)
+	(or
+		(goal combat-arm CAVALRY)
+		(goal pre-unique-arm CAVALRY)
+	)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(population < unit-max)
+	(can-train knight-line)
+	(or
+		(goal combat-arm CAVALRY)
+		(goal pre-unique-arm CAVALRY)
+	)
+=>
+	(train knight-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal secondary-build 0)
+	(goal combat-supp CAVALRY)
+	(population < unit-max)
+	(can-train knight-line)
+=>
+	(train knight-line)
+	(set-goal secondary-build 1)
+)
+
+;********************************************************************
+;LIGHT CAV ARMY == goal combat-arm LIGHTCAV & goal combat-supp LIGHTCAV 
+(defrule
+	(goal rush-control RUSHING)
+	(goal combat-arm LIGHTCAV)
+	(soldier-count < ten-percent-pop)
+	(can-train-with-escrow scout-cavalry-line)
+	(nor
+		(can-train scout-cavalry-line)
+		(goal upgrade-conflict NOTICE)
+	)
+=>
+	(release-escrow food)
+	(train scout-cavalry-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal combat-arm LIGHTCAV)
+	(population < unit-max)
+	(can-train light-cavalry)
+	(or
+		(current-age == castle-age)
+		(not (can-afford-unit knight-line) )
+	)
+=>
+	(train light-cavalry)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal combat-arm LIGHTCAV)
+	(current-age == imperial-age)
+	(population < unit-max)
+	(can-train knight-line)
+=>
+	(train knight-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal secondary-build 0)
+	(population < unit-max)
+	(can-train light-cavalry)
+	(or
+		(goal combat-supp LIGHTCAV)
+		(and
+			(goal combat-arm LIGHTCAV)
+			(current-age == imperial-age)
+		)
+	)
+=>
+	(train light-cavalry)
+	(set-goal secondary-build 1)
+)
+
+;********************************************************************
+;CAV ARCHER ARMY == goal combat-arm CAVARCHER & goal combat-supp CAVARCHER 
+(defrule
+	(goal rush-control RUSHING)
+	(current-age == feudal-age)
+	(soldier-count < ten-percent-pop)
+	(can-train-with-escrow archer)
+	(nor
+		(can-train archer)
+		(goal upgrade-conflict NOTICE)
+	)
+	(or
+		(goal combat-arm CAVARCHER)
+		(goal pre-unique-arm CAVARCHER)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train archer)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal rush-control RUSHING)
+	(soldier-count < ten-percent-pop)
+	(can-train-with-escrow cavalry-archer-line)
+	(nor
+		(can-train cavalry-archer-line)
+		(goal upgrade-conflict NOTICE)
+	)
+	(or
+		(goal combat-arm CAVARCHER)
+		(goal pre-unique-arm CAVARCHER)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train cavalry-archer-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(soldier-count < twenty-percent-pop)
+	(can-train-with-escrow archer-line)
+	(not (can-train archer-line) )
+	(or
+		(goal rush-control RUSHING)
+		(players-military-population any-enemy >= ten-percent-pop)
+	)
+	(or
+		(goal combat-arm CAVARCHER)
+		(goal pre-unique-arm CAVARCHER)
+	)
+=>
+	(train archer-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(soldier-count < twenty-percent-pop)
+	(can-train-with-escrow archer-line)
+	(not (can-train archer-line) )
+	(or
+		(goal rush-control RUSHING)
+		(players-military-population any-enemy >= ten-percent-pop)
+	)
+	(or
+		(goal combat-arm CAVARCHER)
+		(goal pre-unique-arm CAVARCHER)
+	)
+=>
+	(train archer-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(population < unit-max)
+	(can-train cavalry-archer-line)
+	(or
+		(goal combat-arm CAVARCHER)
+		(goal pre-unique-arm CAVARCHER)
+	)
+=>
+	(train cavalry-archer-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal secondary-build 0)
+	(goal combat-supp CAVARCHER)
+	(population < unit-max)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line)
+	(set-goal secondary-build 1)
+)
+
+;*******************************************************
+;HAND-CANNONEERS 
+(defrule
+	(population < unit-max)
+	(can-train hand-cannoneer)
+	(or
+		(goal combat-arm ARCHER)
+		(goal pre-unique-arm ARCHER)
+	)
+=>
+	(train hand-cannoneer)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal secondary-build 0)
+	(goal combat-supp ARCHER)
+	(population < unit-max)
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer)
+	(set-goal secondary-build 1)
+)
+
+
+;*******************************************************
+;ARCHER ARMY == goal combat-arm ARCHER & goal combat-supp ARCHER
+(defrule
+	(goal rush-control RUSHING)
+	(soldier-count < ten-percent-pop)
+	(can-train-with-escrow archer-line)
+	(nor
+		(can-train archer)
+		(goal upgrade-conflict NOTICE)
+	)
+	(or
+		(goal combat-arm ARCHER)
+		(goal pre-unique-arm ARCHER)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train archer-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(population < unit-max)
+	(can-train archer-line)
+	(not (unit-available hand-cannoneer) )
+	(or
+		(goal combat-arm ARCHER)
+		(goal pre-unique-arm ARCHER)
+	)
+=>
+	(train archer-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal secondary-build 0)
+	(goal combat-supp ARCHER)
+	(population < unit-max)
+	(can-train archer-line)
+=>
+	(train archer-line)
+	(set-goal secondary-build 1)
+)
+
+;*******************************************************
+;SCORPION SUPPORT == goal combat-supp SCORPION
+(defrule
+	(goal secondary-build 0)
+	(goal combat-supp SCORPION)
+	(population < unit-max)
+	(can-train scorpion-line)
+=>
+	(train scorpion-line)
+	(set-goal secondary-build 1)
+)
+
+(defrule
+	(goal secondary-build 0)
+	(goal combat-supp SCORPION)
+	(population < unit-max)
+	(building-type-count siege-workshop == 0)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+	(set-goal secondary-build 1)
+)
+
+;*******************************************************
+;UNIQUE UNITS! == goal combat-arm UNIQUE
+
+(defrule
+	(soldier-count >= ten-percent-pop)
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(goal rush-control RUSHING)
+	(goal combat-arm UNIQUE)
+;	(soldier-count < ten-percent-pop)
+	(or	(can-train-with-escrow my-unique-unit-line)
+		(can-train-with-escrow my-unique-unit))
+	(nor
+		(or	(can-train my-unique-unit-line)
+			(can-train my-unique-unit))
+		(goal upgrade-conflict NOTICE)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow food)
+	(release-escrow gold)
+	(train my-unique-unit-line)
+	(train my-unique-unit)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(population < unit-max)
+	(or	(can-train my-unique-unit-line)
+		(can-train my-unique-unit))
+=>
+	(train my-unique-unit-line)
+	(train my-unique-unit)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(goal secondary-build 0)
+	(civ-selected persian)
+	(unit-type-count war-elephant-line < five-percent-pop)
+	(can-train-with-escrow war-elephant-line)
+	(not (goal upgrade-conflict NOTICE) )
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(train war-elephant-line)
+	(set-goal secondary-build 1)
+)
+
+(defrule
+	(goal combat-arm UNIQUE)
+	(goal secondary-build 0)
+	(civ-selected korean)
+	(unit-type-count war-wagon-line < five-percent-pop)
+	(can-train-with-escrow war-wagon-line)
+	(not (goal upgrade-conflict NOTICE) )
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train war-wagon-line)
+	(set-goal secondary-build 1)
+)
+
+;**********************************
+;what if we're all out of gold? 
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 1800)
+	(population < thirty-percent-pop)
+	(gold-amount < 100)
+	(can-train spearman-line)
+	(town-under-attack)
+=>
+	(train spearman-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 1800)
+	(population < thirty-percent-pop)
+	(gold-amount < 100)
+	(can-train scout-cavalry-line)
+	(town-under-attack)
+=>
+	(train scout-cavalry-line)
+	(set-goal secondary-build 0)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(current-age-time > 1800)
+	(population < thirty-percent-pop)
+	(gold-amount < 100)
+	(can-train skirmisher-line)
+	(town-under-attack)
+=>
+	(train skirmisher-line)
+	(set-goal secondary-build 0)
+)

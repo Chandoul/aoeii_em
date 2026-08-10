@@ -1,0 +1,1045 @@
+
+; ================= ECO
+
+#load-if-not-defined UP-MICHI-STYLE
+(defrule
+	(goal CASTLE 0)
+	(population-cap >= 65)
+	(up-compare-goal gl-strategy != jaguar-boom)
+	(or	(and	(up-compare-goal gl-current-age >= gv-castle-up)
+			(game-time > 3000))	
+		(cc-players-unit-type-count 0 gold-mine < 3))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-goal gl-strategy default)
+	(set-goal gl-advanced-infantry heavy-swordsmen)
+	(set-goal gl-advanced-archery 0)
+	(set-goal gl-eagles 0)
+	(chat-to-player my-player-number "1Map is running out of gold or the game is getting long")
+	(chat-to-player my-player-number "Switch to champions or jaguars")
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(up-compare-goal gl-strategy != eagle-monk-rush)
+=>
+	(up-jump-rule 69)
+)
+
+(defrule
+	(goal gl-strategy eagle-rush)
+	(map-size tiny)
+	(strategic-number sn-stone-gatherer-percentage == 0)
+	(strategic-number sn-low-eco-push != 1)
+	(game-time > 1500)
+	(building-type-count-total town-center == 2)
+	(stone-amount == 100)
+	(goal MILITARY 0)
+=>
+	(set-goal TC 1)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+)
+
+#load-if-defined TINY-MAP
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(strategic-number sn-stone-gatherer-percentage == 0)
+	(strategic-number sn-low-eco-push != 1)
+	(or	(and	(game-time > 1500)
+			(and	(stone-amount == 0)
+				(goal MILITARY 0)))
+		(or	(game-time > 2100)
+			(stone-amount == 75)))
+=>
+	(set-goal TC 1)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+)
+#else
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal TC 0)
+	(strategic-number sn-low-eco-push != 1)
+	(game-time > 1200)
+=>
+	(set-goal TC 1)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == dark-age)
+	(nor	(goal gl-DRUSH YES)
+		(goal gl-DRUSH-CONTROL DRUSH-OVER))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 60)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-add-rams-in-attack 0)
+	(set-strategic-number sn-skip-first-mining-camp 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == dark-age)
+	(or	(goal gl-DRUSH YES)
+		(goal gl-DRUSH-CONTROL DRUSH-OVER))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 45)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(set-strategic-number sn-gold-gatherer-percentage 12)
+	(set-strategic-number sn-add-rams-in-attack 0)
+	(set-strategic-number sn-skip-first-mining-camp 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == dark-age)
+	(gold-amount == 100)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+=>
+	(set-strategic-number sn-maximum-gold-drop-distance 20)
+	(set-strategic-number sn-gold-gatherer-percentage 5)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(dropsite-min-distance gold > 3)
+	(gold-amount >= 112)
+	(strategic-number sn-gold-gatherer-percentage != 0)
+	(nor	(goal gl-DRUSH YES)
+		(goal gl-DRUSH-CONTROL DRUSH-OVER))
+=>
+	(set-strategic-number sn-maximum-gold-drop-distance 6)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(current-age <= feudal-age)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(or	(building-type-count-total blacksmith > 0)
+		(wood-amount > 360))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 67)
+	(set-strategic-number sn-wood-gatherer-percentage 33)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total mining-camp > 0)
+	(dropsite-min-distance gold < 4)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(set-strategic-number sn-gold-gatherer-percentage 22)
+	(set-strategic-number sn-maximum-gold-drop-distance 6)
+	(set-goal target-system raid)
+	(disable-self)
+)
+
+(defrule
+	(map-size tiny)
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(game-time < 1200)
+	(building-type-count-total barracks > 0)
+	(dropsite-min-distance gold < 4)
+	(players-military-population every-enemy > 3)
+	(players-current-age every-enemy <= feudal-age)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 39)
+	(set-strategic-number sn-gold-gatherer-percentage 21)
+	(set-strategic-number sn-monk-trained 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(building-type-count-total monastery > 0)
+	(dropsite-min-distance gold < 4)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 25)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 40)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal TC 0)
+	(or	(strategic-number sn-low-eco-push != 1)
+		(building-type-count-total barracks > 3))
+	(building-type-count-total monastery > 1)
+	(dropsite-min-distance gold < 4)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 28)
+	(set-strategic-number sn-wood-gatherer-percentage 22)
+	(set-strategic-number sn-gold-gatherer-percentage 50)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal TC 0)
+	(or	(unit-type-count-total spearman-line > 5)
+		(strategic-number sn-low-eco-push == 1))
+	(building-type-count-total barracks > 2)
+	(dropsite-min-distance gold < 4)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 32)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 38)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal TC 1)
+	(building-type-count-total town-center < 3)
+	(building-type-count-total monastery > 1)
+	(dropsite-min-distance gold < 4)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 31)
+	(set-strategic-number sn-wood-gatherer-percentage 37)
+	(set-strategic-number sn-gold-gatherer-percentage 32)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal TC 1)
+	(building-type-count-total town-center < 3)
+	(unit-type-count-total spearman-line > 5)
+	(dropsite-min-distance gold < 4)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 32)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal TC 1)
+	(building-type-count-total town-center > 2)
+	(building-type-count-total monastery > 1)
+	(dropsite-min-distance gold < 4)
+	(gold-amount < 500)
+	(food-amount < 300)
+	(strategic-number sn-food-gatherer-percentage != 33)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 33)
+	(set-strategic-number sn-wood-gatherer-percentage 27)
+	(set-strategic-number sn-gold-gatherer-percentage 35)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal TC 1)
+	(building-type-count-total town-center > 2)
+	(building-type-count-total monastery > 1)
+	(dropsite-min-distance gold < 4)
+	(gold-amount < 500)
+	(food-amount > 300)
+	(strategic-number sn-food-gatherer-percentage != 31)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 31)
+	(set-strategic-number sn-wood-gatherer-percentage 17)
+	(set-strategic-number sn-gold-gatherer-percentage 47)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal TC 1)
+	(building-type-count-total town-center > 2)
+	(dropsite-min-distance gold < 4)
+	(gold-amount > 500)
+	(strategic-number sn-food-gatherer-percentage != 40)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal TC 1)
+	(game-time > 2100)
+	(food-amount > 600)
+	(wood-amount < 200)
+	(strategic-number sn-wood-gatherer-percentage < 32)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 32)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal TC 1)
+	(game-time > 2100)
+	(food-amount > 1200)
+	(wood-amount < 200)
+	(strategic-number sn-wood-gatherer-percentage < 40)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal TC 1)
+	(building-type-count-total town-center > 3)
+	(game-time > 2100)
+	(wood-amount > 500)
+	(food-amount < 1000)
+	(strategic-number sn-wood-gatherer-percentage >= 32)
+=>
+	(set-strategic-number sn-wood-gatherer-percentage 26)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(current-age <= castle-age)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(players-military-population any-enemy > 4)
+	(players-current-age any-enemy == feudal-age)
+=>
+	(set-goal gl-eagles flush-counter-eagles)
+	(chat-to-player my-player-number "Enemy flushing!")
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal gl-eagles flush-counter-eagles)
+	(unit-type-count-total eagle-warrior-line > 10)
+=>
+	(set-goal gl-eagles 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(current-age == imperial-age)
+	(not	(research-available ri-elite-eagle-warrior))
+=>
+	(set-goal gl-eagles heavy-eagles)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(players-current-age focus-player == castle-age)
+	(players-current-age every-enemy < imperial-age)
+	(strategic-number sn-threat-level < 0)
+	(not	(research-completed ri-chain-mail))
+=>
+	(set-strategic-number sn-threat-level 0)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(players-current-age any-enemy >= castle-age)
+	(current-age == castle-age)
+	(or	(and	(game-time > 1830)
+			(or	(players-unit-type-count any-enemy knight-line > 3)
+				(or	(players-unit-type-count any-enemy scout-cavalry-line > 3)
+					(players-unit-type-count any-enemy cavalry-archer-line > 3))))
+		(players-building-type-count any-enemy watch-tower > 3))
+=>
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(not	(goal gl-advanced-archery backup-xbows))
+	(players-current-age any-enemy == castle-age)
+	(players-current-age every-enemy < imperial-age)
+	(current-age == castle-age)
+	(research-completed ri-chain-mail)
+	(game-time < 1560)
+	(unit-type-count-total monk > 3)
+=>
+	(set-strategic-number sn-threat-level -2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(current-age >= castle-age)
+	(or	(players-current-age every-enemy <= feudal-age)
+		(and	(research-completed ri-elite-eagle-warrior)
+			(and	(research-completed ri-theocracy)
+				(and	(research-completed ri-block-printing)
+					(players-current-age every-enemy <= castle-age)))))
+	(research-completed ri-chain-mail)
+	(strategic-number sn-threat-level > -4)
+=>
+	(set-strategic-number sn-threat-level -4)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal gl-advanced-archery backup-xbows)
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-threat-level 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(players-current-age every-enemy < imperial-age)
+	(or	(and	(strategic-number sn-threat-level == -4)
+			(game-time < 1830))
+		(or	(and	(strategic-number sn-threat-level == -2)
+				(game-time > 1560))
+			(and	(goal gl-advanced-archery backup-xbows)
+				(unit-type-count-total archer-line > 12))))
+	(current-age == castle-age)
+=>
+	(set-strategic-number sn-threat-level -1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-strategic-number sn-allow-resource-spending 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(research-completed ri-elite-eagle-warrior)
+	(research-completed ri-theocracy)
+	(research-completed ri-block-printing)
+	(or	(strategic-number sn-allow-resource-spending < 6)
+		(and	(strategic-number sn-threat-level == -4)
+			(players-current-age any-enemy == imperial-age)))
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+	(set-strategic-number sn-threat-level -1)
+)
+
+; ================= AGE UP
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(and	(current-age == feudal-age)
+			(current-age-time < 45))
+		(or	(unit-type-count-total villager < 28)
+			(and	(player-valid 3)
+				(unit-type-count-total villager < 30))))
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(current-age == feudal-age)
+=>
+	(set-strategic-number sn-enable-training-queue 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(current-age == feudal-age)
+		(up-compare-goal gl-current-age >= gv-feudal-up))
+	(current-age-time > 15)
+=>
+	(set-strategic-number sn-enable-training-queue 0)
+	(disable-self)
+)
+
+; ================= RESEARCHES
+
+(defrule
+	(or	(map-size tiny)
+		(game-time > 1600))
+	(goal gl-strategy eagle-monk-rush)
+	(current-age == castle-age)
+	(food-amount < 200)
+	(research-available ri-chain-mail)
+	(or	(goal MILITARY 1)
+		(goal gl-eagles flush-counter-eagles))
+=>
+	(set-escrow-percentage food 100)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(and	(can-research ri-scale-mail)
+			(or	(current-age-time > 160)
+				(current-age >= castle-age)))
+		(can-research-with-escrow ri-chain-mail))
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(research ri-scale-mail)
+	(research ri-chain-mail)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(unit-type-count-total eagle-warrior-line > 3)
+	(research-completed ri-chain-mail)
+	(or	(can-research ri-forging)
+		(can-research ri-iron-casting))
+=>
+	(research ri-forging)
+	(research ri-iron-casting)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(or	(town-under-attack)
+			(goal MILITARY 1)))
+	(research-completed ri-iron-casting)
+	(unit-type-count-total eagle-warrior-line > 5)
+	(can-research ri-squires)
+=>
+	(research ri-squires)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(unit-type-count-total spearman-line > 4)
+	(can-research-with-escrow ri-pikeman)
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(research ri-pikeman)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(unit-type-count-total monk > 2)
+		(and	(or	(players-unit-type-count any-enemy knight-line > 0)
+				(town-under-attack))
+			(unit-type-count-total monk > 0)))
+	(can-research ri-sanctity)
+=>
+	(research ri-sanctity)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(players-unit-type-count any-enemy battering-ram-line > 0)
+		(or	(players-unit-type-count any-enemy mangonel-line > 0)
+			(or	(players-unit-type-count any-enemy scorpion-line > 0)
+				(or	(players-building-type-count any-enemy watch-tower > 0)
+					(or	(players-military-population every-enemy < 5)
+						(and	(goal MILITARY 0)
+							(enemy-buildings-in-town)))))))
+	(can-research ri-redemption)
+=>
+	(research ri-redemption)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(current-age-time > 200)
+		(goal gl-eagles heavy-eagles))
+	(unit-type-count-total monk > 1)
+	(or	(can-research ri-fervor)
+		(or	(can-research ri-theocracy)
+			(or	(can-research ri-block-printing)
+				(can-research ri-illumination))))
+=>
+	(research ri-fervor)
+	(research ri-theocracy)
+	(research ri-block-printing)
+	(research ri-illumination)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(building-type-count-total monastery > 1)
+	(or	(can-research-with-escrow ri-heavy-plow)
+		(and	(can-research-with-escrow ri-gold-shaft-mining)
+			(nand	(goal MILITARY 1)
+				(unit-type-count-total battering-ram-line < 1))))
+=>
+	(release-escrow food)
+	(release-escrow wood)
+	(research ri-heavy-plow)
+	(research ri-gold-shaft-mining)
+)
+
+; ================= BUILDINGS
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(or	(up-compare-goal gl-current-age >= gv-feudal-up)
+		(wood-amount > 450))
+	(or	(and	(building-type-count-total mining-camp < 2)
+			(dropsite-min-distance gold > 3))
+		(and	(game-time > 2100)
+			(wood-amount > 450)))
+	(building-type-count-total mining-camp < 6)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-advanced-archery backup-xbows)
+	(building-type-count-total town-center > 1)
+	(or	(building-type-count-total town-center > 2)
+		(building-type-count-total archery-range < 2))
+	(building-type-count-total archery-range < 4)
+	(can-build archery-range)
+=>
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total mining-camp > 0)
+	(or	(building-type-count-total barracks < 2)
+		(building-type-count-total monastery > 1))
+	(or	(building-type-count-total barracks < 3)
+		(building-type-count-total monastery > 2))
+	(building-type-count-total barracks < 5)
+	(or	(goal gl-advanced-archery 0)
+		(building-type-count-total town-center > 2))
+	(can-build barracks)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build barracks)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total barracks > 0)
+	(building-type-count-total monastery < 1)
+	(nand	(goal gl-eagles flush-counter-eagles)
+		(building-type-count-total barracks < 2))
+	(can-build monastery)
+=>
+	(set-strategic-number sn-maximum-town-size 11)
+	(build monastery)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(building-type-count-total monastery > 0)
+		(building-type-count-total farm < 8))
+	(or	(building-type-count-total farm < 10)
+		(idle-farm-count < 1))
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(building-type-count-total town-center > 1)
+		(game-time > 1620))
+	(building-type-count-total mining-camp < 3)
+	(resource-found gold)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(set-strategic-number sn-camp-max-distance 32)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal MILITARY 0)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 0)
+=>
+	(set-strategic-number sn-add-rams-in-attack 1)
+	(disable-timer 2)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal MILITARY 1)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 1)
+=>
+	(enable-timer 2 100)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal MILITARY 1)
+	(timer-triggered 2)
+	(building-type-count-total farm > 7)
+	(strategic-number sn-add-rams-in-attack == 0)
+	(building-type-count-total siege-workshop < 1)
+	(wood-amount < 200)
+=>
+	(set-escrow-percentage wood 100)
+	(set-strategic-number sn-add-rams-in-attack 2)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(strategic-number sn-add-rams-in-attack == 2)
+	(or	(building-type-count-total siege-workshop > 0)
+		(or	(wood-amount >= 200)
+			(or	(goal MILITARY 0)
+				(building-type-count-total farm <= 7))))
+=>
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal MILITARY 1)
+	(timer-triggered 2)
+	(building-type-count-total siege-workshop < 1)
+	(can-build-with-escrow siege-workshop)
+=>
+	(set-strategic-number sn-maximum-town-size 14)
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(build siege-workshop)
+)
+
+; ================= UNITS
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(unit-type-count-total monk < 17)
+		(and	(strategic-number sn-low-eco-push == 1)
+			(and	(unit-type-count-total monk < 24)
+				(current-age == castle-age))))
+	(can-train monk)
+=>
+	(train monk)
+	(set-strategic-number sn-monk-trained 1)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(food-amount < high-castle-food)
+		(or	(town-under-attack)
+			(up-compare-goal gl-current-age >= gv-castle-up)))
+	(or	(goal gl-eagles heavy-eagles)
+		(current-age == castle-age))
+	(or	(goal gl-advanced-archery backup-xbows)
+		(players-unit-type-count every-enemy jaguar-man-line > 2))
+	(unit-type-count-total archer-line < 35)
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(current-age == castle-age)
+	(or	(unit-type-count-total eagle-warrior-line < 6)
+		(and	(strategic-number sn-monk-trained == 1)
+			(and	(food-amount >= 60)
+				(or	(food-amount < high-castle-food)
+					(or	(town-under-attack)
+						(up-compare-goal gl-current-age >= gv-castle-up))))))
+	(unit-type-count-total eagle-warrior-line < 80)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(and	(goal gl-eagles flush-counter-eagles)
+			(and	(food-amount > 60)
+				(current-age == castle-age)))
+		(or	(up-compare-goal gl-current-age >= gv-castle-up)
+			(and	(current-age-time < 250)
+				(players-military-population every-enemy > 9))))
+	(unit-type-count-total eagle-warrior-line < 17)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(goal gl-advanced-infantry heavy-swordsmen)
+	(research-completed ri-elite-eagle-warrior)
+	(or	(soldier-count < 30)
+		(research-completed ri-champion))
+	(unit-type-count-total eagle-warrior-line < 17)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(food-amount > 55)
+	(current-age-time > 200)
+	(players-current-age any-enemy >= castle-age)
+	(or	(unit-type-count-total spearman-line < 10)
+		(and	(research-completed ri-pikeman)
+			(unit-type-count-total spearman-line < 30)))
+	(or	(players-unit-type-count any-enemy scout-cavalry-line > 5)
+		(players-unit-type-count any-enemy knight-line > 3))
+	(can-train spearman-line)
+=>
+	(train spearman-line)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(current-age == castle-age)
+	(nand	(goal MILITARY 1)
+		(unit-type-count-total battering-ram-line < 1))
+	(players-unit-type-count any-enemy archer-line > 13)
+	(unit-type-count-total scorpion-line < 6)
+	(can-train scorpion-line)
+=>
+	(train scorpion-line)
+)
+
+; ================= MARKET
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(stone-amount > 100)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(current-age >= castle-age)
+	(food-amount > 400)
+	(gold-amount < 100)
+	(can-sell-commodity food)
+	(or	(commodity-selling-price food >= 45)
+		(and	(commodity-selling-price food >= 35)
+			(food-amount > 650)))
+=>
+	(sell-commodity food)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(soldier-count > 6)
+		(research-completed ri-chain-mail))
+	(current-age >= castle-age)
+=>
+	(enable-timer 1 0)
+	(enable-timer 7 0)
+	(set-strategic-number sn-percent-attack-soldiers 100)
+	(disable-self)
+)
+
+; ================= PUSHING WITH LOW ECO
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal gl-advanced-archery 0)
+	(current-age == castle-age)
+	(game-time < 1600)
+	(or	(players-building-type-count every-enemy castle > 0)
+		(players-unit-type-count any-enemy jaguar-man-line > 2))
+	(players-civ any-enemy aztec)
+=>
+	(chat-to-player my-player-number "1Add xbows against jaguars")
+	(set-goal gl-advanced-archery backup-xbows)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(goal gl-advanced-archery backup-xbows)
+	(current-age == castle-age)
+	(game-time < 2130)
+	(players-current-age any-enemy == imperial-age)
+	(players-unit-type-count any-enemy eagle-warrior-line > 5)
+	(players-civ any-enemy aztec)
+=>
+	(chat-to-player my-player-number "24Give up with xbows against fast imp+eew")
+	(set-goal gl-advanced-archery 0)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(current-age <= feudal-age)
+		(game-time < 60))
+	(building-type-count-total castle > 0)
+=>
+	(set-strategic-number sn-low-eco-push 2)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(current-age >= castle-age)
+	(strategic-number sn-low-eco-push == 2)
+=>
+	(set-goal TC 1)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(set-strategic-number sn-low-eco-push 0)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(disable-self)
+)
+
+#load-if-defined TINY-MAP
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total barracks > 1)
+	(or	(building-type-count-total monastery < 2)
+		(building-type-count-total barracks > 2))
+	(building-type-count-total monastery < 3)
+	(or	(building-type-count-total town-center > 1)
+		(or	(goal MILITARY 1)
+			(strategic-number sn-low-eco-push == 1)))
+	(can-build monastery)
+=>
+	(set-strategic-number sn-maximum-town-size 11)
+	(build monastery)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(game-time < 2160)
+	(strategic-number sn-low-eco-push != 1)
+	(players-current-age every-enemy == castle-age)
+	(or	(unit-type-count-total villager < 40)
+		(or	(and	(unit-type-count-total villager < 45)
+				(players-civilian-population any-enemy > 52))
+			(players-civilian-population any-enemy > 58)))
+	(players-civilian-population any-enemy > 45)
+	(unit-type-count-total villager < 50)
+=>
+	(set-strategic-number sn-low-eco-push 1)
+	(set-goal TC 0)
+	(chat-to-player my-player-number "1Push with low eco")
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(strategic-number sn-low-eco-push == 1)
+	(unit-type-count-total monk > 15)
+	(strategic-number sn-threat-level > -3)
+=>
+	(set-strategic-number sn-threat-level -3)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(strategic-number sn-low-eco-push == 1)
+	(unit-type-count-total monk > 22)
+	(strategic-number sn-threat-level > -4)
+=>
+	(set-strategic-number sn-threat-level -4)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(strategic-number sn-low-eco-push == 1)
+	(unit-type-count-total villager > 90)
+=>
+	(set-strategic-number sn-low-eco-push 0)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(or	(and	(strategic-number sn-low-eco-push == 1)
+			(game-time > 2100))
+		(or	(players-building-type-count any-enemy castle > 0)
+			(and	(building-type-count-total town-center == 1)
+				(stone-amount == 0))))
+	(strategic-number sn-stone-gatherer-percentage == 0)
+=>
+	(set-goal TC 1)
+	(set-strategic-number sn-stone-gatherer-percentage 5)
+	(set-strategic-number sn-low-eco-push 0)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+)
+
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(strategic-number sn-low-eco-push == 1)
+	(goal TC 0)
+	(building-type-count-total barracks > 4)
+	(dropsite-min-distance gold < 4)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 20)
+	(set-strategic-number sn-gold-gatherer-percentage 50)
+	(disable-self)
+)
+#else
+(defrule
+	(goal gl-strategy eagle-monk-rush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total barracks > 1)
+	(or	(building-type-count-total monastery < 2)
+		(building-type-count-total barracks > 2))
+	(building-type-count-total monastery < 3)
+	(building-type-count-total town-center > 1)
+	(can-build monastery)
+=>
+	(set-strategic-number sn-maximum-town-size 11)
+	(build monastery)
+)
+#end-if
+
+
+
+
+
+
+
+
+
+
+

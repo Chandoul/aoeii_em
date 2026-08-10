@@ -1,0 +1,633 @@
+#load-if-defined WONDER-RACE
+(defrule
+	(not(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY))
+=>
+	(set-goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+)
+#end-if
+
+(defrule
+	(building-type-count-total town-center == 0)
+	(not(can-afford-building town-center))
+=>
+	(set-strategic-number sn-camp-max-distance FULL-MAP-SIZE)
+)
+
+
+; Researching ages
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-FEUDAL)
+	(research-available feudal-age)
+=>
+	(chat-to-allies "Age research misfire!")
+	(set-strategic-number G-FARMING GV-FARM-IDLE-8)
+	(set-strategic-number G-AGE-STATUS GV-DARK-AGE)
+)
+
+(defrule
+	(nand	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+		(and	(unit-type-count-total villager < DARK-VILLAGERS-FC)
+			(food-amount < 700)
+		)
+	)
+	(or	(not(research-available ri-loom))
+		(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+	)
+	(can-research feudal-age)
+=>
+	(research feudal-age)
+	(set-strategic-number G-FARMING GV-FARM-IDLE-1)
+	(set-strategic-number G-AGE-STATUS GV-ADVANCING-TO-FEUDAL)
+	;(chat-to-player my-player-number "Researching Feudal Age")
+	(chat-to-allies "Researching Feudal Age")
+	(set-strategic-number sn-maximum-town-size 8)
+	(set-strategic-number G-TSA-PAUSED-TOWN-SIZE 8)
+	;(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 0)
+	;(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	;(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 0)
+	;(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+)
+
+; Researching Castle Age
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-FEUDAL)
+	(research-completed feudal-age)
+=>
+	(set-strategic-number G-AGE-STATUS GV-FEUDAL-AGE)
+	(chat-to-player my-player-number "Finally I've arrived to Feudal age")
+	(disable-self)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-CASTLE)
+	(research-available castle-age)
+=>
+	(chat-to-allies "Age research misfire!")
+	(set-strategic-number G-AGE-STATUS GV-ADVANCING-TO-CASTLE-ABORTED)
+	(set-strategic-number G-FARMING GV-FARM-IDLE-8)
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+)
+
+(defrule
+	(can-research-with-escrow castle-age)
+=>
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(release-escrow food)
+	(release-escrow gold) 
+	(research castle-age)
+	(set-strategic-number G-AGE-STATUS GV-ADVANCING-TO-CASTLE)
+	(set-strategic-number G-FARMING GV-FARM-IDLE-2) ; Limiting farming for faster castle buildings
+	;(chat-to-player my-player-number "43") ; Taunt TA-GOLD-MINING. Market flushes delay gold mining until Castle Age
+	;(chat-to-player my-player-number "44") ; Taunt TA-STONE-MINING. Most strategies delay stone mining until Castle Age
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+	(chat-to-player my-player-number "Researching Castle Age")
+	(chat-to-allies "Researching Castle Age")
+)
+
+; Researching Imperial Age
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-CASTLE)
+	(research-completed castle-age)
+=>
+	(set-strategic-number G-AGE-STATUS GV-CASTLE-AGE)
+	(chat-to-player my-player-number "Finally I've arrived to Castle age")
+	(disable-self)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS == GV-ADVANCING-TO-IMPERIAL)
+	(research-available imperial-age)
+=>
+	(chat-to-allies "Age research misfire!")
+	(set-strategic-number G-AGE-STATUS GV-ADVANCING-TO-IMPERIAL-ABORTED)
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+)
+
+(defrule
+	(can-research-with-escrow imperial-age)
+=>
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(release-escrow food)
+	(release-escrow gold)
+	(research imperial-age)
+	(set-strategic-number G-AGE-STATUS GV-ADVANCING-TO-IMPERIAL)
+	(set-strategic-number SN-FOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-WOOD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-GOLD-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number SN-STONE-MODIFIER-PERCENTAGE 0)
+	(set-strategic-number G-FARMING GV-FARM-IDLE-8) ; Farming without any restriction in Imperial Age
+	(chat-to-player my-player-number "Researching Imperial Age")
+	(chat-to-allies "Researching Imperial Age")
+)
+
+
+; Loom
+
+#load-if-defined UP-AVAILABLE
+(defrule
+	(nand	(unit-type-count-total villager < LOOM-VILLAGERS-BOAR-HUNTING)
+		(can-train villager)
+	)
+	(can-research-with-escrow ri-loom)
+=>
+	(research ri-loom)
+	(chat-to-allies "Wolves danger. Researching loom.")
+)
+#end-if
+
+; Gold Rush map is full of wolves, so loom is a good idea to protect villagers from possible attacks.
+#load-if-defined GOLD-RUSH-MAP
+(defrule
+	;(nand	(unit-type-count-total villager < LOOM-VILLAGERS-BOAR-HUNTING)
+	;	(can-train villager)
+	;)
+	(can-research-with-escrow ri-loom)
+=>
+	(research ri-loom)
+	(chat-to-allies "Wolves danger. Researching loom.")
+)
+#else
+(defrule
+	(or	(town-under-attack)
+		(or	(unit-type-count-total MALE-HUNTER >= 1)
+			(or	(unit-type-count-total FEMALE-HUNTER >= 1)
+				(or	(unit-type-count-total MALE-DEAD-VILLAGER >= 1)
+					(unit-type-count-total FEMALE-DEAD-VILLAGER >= 1)
+				)
+			)
+		)
+	)
+	(can-research-with-escrow ri-loom)
+=>
+	(research ri-loom)
+	(chat-to-allies "Wolves danger. Researching loom.")
+)
+
+(defrule
+	(or	(or	(cc-players-unit-type-count 0 WOLF > 18)
+			(cc-players-unit-type-count 0 JAGUAR > 18)
+		)
+		(and	(cc-players-unit-type-count 0 WOLF > 7)
+			(cc-players-unit-type-count 0 JAGUAR > 7)
+		)
+	)
+	(can-research-with-escrow ri-loom)
+=>
+	(research ri-loom)
+	(chat-to-allies "Wolves danger. Researching loom.")
+)
+
+(defrule
+	(not(can-train villager))
+	(or	(civ-selected mayan)
+		(and	(or	(sheep-and-forage-too-far)
+				(civ-selected chinese)
+			)
+			(food-amount < 50)
+		)
+	)
+	(can-research-with-escrow ri-loom)
+=>
+	(research ri-loom)
+	(chat-to-allies "Researching loom.")
+)
+
+(defrule
+	(or	(nor	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+			(food-amount < 460)
+		)
+		(unit-type-count-total villager >= DARK-VILLAGERS)
+	)
+	(can-research-with-escrow ri-loom)
+=>
+	(research ri-loom)
+	(chat-to-allies "Researching loom.")
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(can-research-with-escrow ri-loom)
+=>
+	(research ri-loom)
+	(chat-to-allies "Researching loom.")
+)
+#end-if
+
+#load-if-not-defined WONDER-RACE
+; We research town watch when enemy is forward building
+(defrule
+	(or	(and	(research-completed ri-hand-cart) ; or if we have a powerful economy
+			(unit-type-count-total villager >= SUB-TOP-VILLAGERS)
+		)
+		(and	(goal G-TSA 0)
+			(enemy-buildings-in-town)
+		)
+	)
+	(can-research ri-town-watch)
+=>
+	(research ri-town-watch)
+	(chat-to-player my-player-number "Researching town-watch")
+)
+
+; Trade Cart Rules
+(defrule
+	(true)
+=>
+	(set-goal G-TRADE GV-NONE)
+)
+
+(defrule
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+		(map-type team-islands)
+	)
+	(players-building-type-count any-ally market >= 1)
+	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+	;(building-type-count-total university >= 1)
+	(nand	(or	(goal G-ARCHERY-UNIT GV-SKIRM)
+			(unit-type-count-total skirmisher-line > MAX-SKIRMS-TO-ELITE)
+		)
+		(research-available ri-elite-skirmisher)
+	)
+=>
+	(set-goal G-TRADE GV-TRADE-LAND)
+)
+
+#load-if-not-defined TEAM-ISLANDS-MAP
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+	(players-building-type-count any-ally dock >= 1)
+	(building-type-count-total dock >= 4)
+	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+	(building-type-count-total monastery >= 1)
+	;(building-type-count-total siege-workshop >= 1)
+	;(building-type-count-total market >= 1)
+	;(not(research-available ri-ballistics))
+	;(building-type-count-total university >= 1)
+	(nand	(or	(goal G-ARCHERY-UNIT GV-SKIRM)
+			(unit-type-count-total skirmisher-line > MAX-SKIRMS-TO-ELITE)
+		)
+		(research-available ri-elite-skirmisher)
+	)
+=>
+	(set-goal G-TRADE GV-TRADE-WATER)
+)
+#end-if
+
+(defrule
+	(goal G-TRADE GV-TRADE-LAND)
+	(unit-type-count-total trade-cart < MAX-TRADE-CARTS)
+=>
+	(research ri-silk-road)
+	(train trade-cart)
+)
+
+(defrule
+	(goal G-TRADE GV-TRADE-WATER)
+	(goal G-BOAT GV-TRADE-COG)
+	(unit-type-count-total trade-cog < MAX-TRADE-CARTS)
+=>
+	(research ri-silk-road)
+	(train trade-cog)
+)
+
+
+; Villagers and eco upgrades
+
+(defrule
+	(not(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED))
+	(unit-type-count-total villager < TOP-VILLAGERS)
+	(or	(unit-type-count-total villager < SUB-TOP-VILLAGERS)
+		(and	(goal G-TRADE GV-NONE)
+			(population < SUB-TOP-POPULATION)
+		)
+	)
+	(nand	(and	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+			(unit-type-count-total villager >= FORTY-PERCENT-POP)
+		)
+		(nand	(unit-type-count-total villager < FIFTEEN-PERCENT-POP)
+			(goal G-TRADE GV-NONE)
+		)
+	)
+=>
+	(set-goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+	;(chat-to-player my-player-number "Re-start villagers training")
+)
+
+(defrule
+	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+	(or	(strategic-number G-MILITARY-SUPERIORITY < 0)
+		(or	(goal G-TSA -1)
+			;(or
+			(and	(goal G-TSA 0)
+				(town-under-attack)
+			)
+			;	(and	(current-age <= feudal-age)
+			;		(players-current-age any-enemy >= castle-age)
+			;	)
+			;)
+		)
+	)
+=>
+	(set-goal G-VILLAGERS-TRAINING GV-VILLAGERS-ALLOWED)
+)
+
+(defrule
+	(not(goal G-VILLAGERS-TRAINING GV-VILLAGERS-EXCESS))
+	(unit-type-count-total villager >= SUB-TOP-VILLAGERS)
+	(or	(unit-type-count-total villager >= TOP-VILLAGERS)
+		(and	(goal G-TRADE GV-TRADE-LAND)
+			(population >= SUB-TOP-POPULATION)
+		)
+	)
+=>
+	(set-goal G-VILLAGERS-TRAINING GV-VILLAGERS-EXCESS)
+	(chat-to-player my-player-number "Stop villagers training")
+)
+
+(defrule
+	(not(goal G-VILLAGERS-TRAINING GV-VILLAGERS-EXCESS))
+	(strategic-number sn-minimum-water-body-size-for-dock >= MIXED-MAP)
+	(unit-type-count-total villager >= FORTY-PERCENT-POP)
+	(nand	(unit-type-count-total villager < FIFTEEN-PERCENT-POP)
+		(goal G-TRADE GV-NONE)
+	)
+=>
+	(set-goal G-VILLAGERS-TRAINING GV-VILLAGERS-EXCESS)
+	(chat-to-player my-player-number "Stop villagers training")
+)
+
+
+
+(defrule
+	(unit-type-count-total trade-cart > 0)
+	(not(player-in-game any-ally))
+	(players-building-type-count any-ally market == 0)
+	(population >= TOP-POPULATION)
+=>
+	(delete-unit trade-cart)
+	(chat-to-player my-player-number "Deleting trade-cart")
+)
+
+(defrule
+	(unit-type-count-total trade-cart > 0)
+	(not(player-in-game any-ally))
+	(players-building-type-count any-ally dock == 0)
+	(population >= TOP-POPULATION)
+=>
+	(delete-unit trade-cog)
+	(chat-to-player my-player-number "Deleting trade-cog")
+)
+
+(defrule
+	(unit-type-count-total villager > SUB-TOP-VILLAGERS)
+	(or	(unit-type-count-total villager > TOP-VILLAGERS)
+		(unit-type-count-total fishing-ship >= 1)
+	)
+	(population >= TOP-POPULATION)
+=>
+	(delete-unit villager)
+	(chat-to-player my-player-number "Deleting villager")
+)
+
+(defrule
+	(unit-type-count-total fishing-ship >= 1)
+	(or	(building-type-count-total dock == 0)
+		(and	(cc-players-unit-type-count 0 SHORE-FISH-GROUP == 0)
+			(cc-players-unit-type-count 0 FISHING-GROUNDS-GROUP == 0)
+		)
+	)
+	(population >= TOP-POPULATION)
+=>
+	(delete-unit fishing-ship)
+	(chat-to-player my-player-number "Deleting fishing-ship")
+)
+
+
+
+(defrule
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-VILLAGERS-TRAINING GV-VILLAGERS-EXCESS))
+	(unit-type-count-total villager < DARK-VILLAGERS-FC)
+	(or	(unit-type-count villager < DARK-VILLAGERS)
+		(or	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+			(and	(not(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN))
+				(or	(unit-type-count MALE-HUNTER == 0)
+					(unit-type-count FEMALE-HUNTER == 0)
+				)
+			)
+		)
+	)
+	;(nand	(unit-type-count villager >= DARK-VILLAGERS-490)
+	;	(food-amount > 490)
+	;)
+	;(nand	(unit-type-count villager >= DARK-VILLAGERS-480)
+	;	(food-amount > 480)
+	;)
+	(can-train-with-escrow villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(building-type-count-total barracks >= 1) ; I don't want essential buildings delayed.
+	(building-type-count-total archery-range >= 1)
+	(nand	(building-type-count-total stable == 0)
+		(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+			(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+				(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+			)
+		)
+	)	
+	(unit-type-count villager >= WHEEL-BARROW-VILLAGERS)
+	(nand	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+		(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	)
+	(can-research-with-escrow ri-wheel-barrow)
+=>
+	(research ri-wheel-barrow)
+)
+
+(defrule
+	(nand	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+		(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	)
+	(or	(housing-headroom == 0)
+		(and	(goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+			(building-type-count-total barracks >= 1)
+		)
+	)
+	(can-research-with-escrow ri-wheel-barrow)
+=>
+	(research ri-wheel-barrow)
+)
+
+(defrule
+	(or	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+		(goal G-BARRACK-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+		(goal G-ARCHERY-UNIT GV-NONE)
+	)
+	(or	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+		(goal G-STABLE-UNIT GV-NONE)
+	)
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+	(or	(unit-type-count villager >= HAND-CART-VILLAGERS)
+		(housing-headroom == 0)
+	)
+	(can-research-with-escrow ri-hand-cart)
+=>
+	(research ri-hand-cart)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(not(goal G-VILLAGERS-TRAINING GV-VILLAGERS-EXCESS))
+	(can-train-with-escrow villager)
+	(or	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+		(nand	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+			(unit-type-count-total villager >= VILLAGERS-FC-2)
+		)
+	)
+=>
+	(train villager)
+)
+
+(defrule
+	(building-type-count-total barracks >= 1) ; I don't want essential buildings delayed.
+	(building-type-count-total archery-range >= 1)
+	(nand	(building-type-count-total stable == 0)
+		(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+			(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+				(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+			)
+		)
+	)	
+	(unit-type-count villager >= WHEEL-BARROW-VILLAGERS)
+	(nand	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+		(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	)
+	(can-research-with-escrow ri-wheel-barrow)
+=>
+	(research ri-wheel-barrow)
+)
+
+(defrule
+	(nand	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+		(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	)
+=>
+	(research ri-double-bit-axe)
+	(research ri-bow-saw)
+	(research ri-two-man-saw)
+)
+
+(defrule
+	(building-type-count-total barracks >= 1) ; I don't want essential buildings delayed.
+	(or	(building-type-count-total archery-range >= 1)
+		(goal G-FEUDAL-STRATEGY GV-FLUSH-MAN-AT-ARMS)
+	)
+	(nand	(building-type-count-total stable == 0)
+		(or	(goal G-FEUDAL-STRATEGY GV-FLUSH-SCOUT-ARCHERS)
+			(or	(goal G-FEUDAL-STRATEGY GV-TRUSH-SCOUT-ARCHERS)
+				(goal G-FEUDAL-STRATEGY GV-FLUSH-MARKET-SCOUTS-ARCHERS)
+			)
+		)
+	)	
+	(nand	(goal G-FEUDAL-STRATEGY GV-FC-ARCHERY)
+		(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	)
+	(can-research ri-horse-collar)
+=>
+	(research ri-horse-collar)
+)
+
+(defrule
+	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+	;(building-type-count-total monastery >= 1)
+	;(building-type-count-total siege-workshop >= 1)
+=>
+	(research ri-heavy-plow)
+)
+
+(defrule
+	(building-type-count-total barracks >= BARRACKS-LATE-CASTLE)
+	(building-type-count-total archery-range >= ARCHERIES-LATE-CASTLE)
+	(building-type-count-total stable >= STABLES-LATE-CASTLE)
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+=>
+	(research ri-crop-rotation)
+)
+
+(defrule
+	(taunt-detected my-player-number TA-GOLD-MINING)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+	(or	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+		(goal G-FEUDAL-STRATEGY GV-FLUSH-ARCHERY-3)
+	)
+=>
+	(research ri-gold-mining)
+	(research ri-gold-shaft-mining)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(nor	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(research-available ri-hand-cart)
+	)
+	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total university >= 1)
+	(building-type-count-total market >= 1)
+	(or	(unit-type-count-total MALE-STONE-MINER >= 1)
+		(unit-type-count-total FEMALE-STONE-MINER >= 1)
+	)
+=>
+	(research ri-stone-mining)
+	(research ri-stone-shaft-mining)
+)
+
+; Town patrol is nice but expensive. I research it in late game or when tons of resources (mostly DM games).
+(defrule
+	(research-completed ri-hand-cart) ; or if we have a powerful economy
+	(not(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED))
+	(or	(and	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-IMPERIAL)
+			(goal G-ARMY-STRONG-PREPARED 1)
+		)
+		(and	(food-amount > 2500)
+			(gold-amount > 2000)
+		)
+	)
+	(nor	(research-available ri-pikeman)
+		(research-available ri-light-cavalry)
+	)
+	(can-research ri-town-patrol)
+=>
+	(research ri-town-patrol)
+	(chat-to-player my-player-number "Researching town-patrol")
+)
+#end-if ; Not Wonder Race

@@ -1,0 +1,87 @@
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY  GV-FLUSH-ARCHERY-3)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-goal G-JOLLYGOAL GV-FLUSH-ARCHERY-3)
+)
+
+
+; Warning about strategy to allies
+(defrule
+	(goal G-JOLLYGOAL GV-FLUSH-ARCHERY-3)
+=>
+	(chat-to-allies "I'm going to flush with archers and only a few infanry")
+	(chat-to-allies "Possible changes with unit selection to counter")
+	(chat-to-player my-player-number "I'm going to flush with scouts+archers")
+	(chat-to-player my-player-number "Possible changes with unit selection to counter")
+	(disable-self)
+)
+
+; Scanning building phase
+
+(defrule
+	(goal G-JOLLYGOAL GV-FLUSH-ARCHERY-3)
+	(or	(building-type-count-total barracks == 0)
+		(dropsite-min-distance gold > IDEAL-DROP-DISTANCE)
+	)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(strategic-number sn-wood-gatherer-percentage != 60)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-FLUSH-ARCHERY-3)
+	(building-type-count-total barracks >= 1)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total archery-range < 2)
+	(or	(strategic-number sn-food-gatherer-percentage != 40)
+		(strategic-number sn-wood-gatherer-percentage != 48)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 40)
+	(set-strategic-number sn-wood-gatherer-percentage 48)
+	(set-strategic-number sn-gold-gatherer-percentage 12)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-FLUSH-ARCHERY-3)
+	(building-type-count-total barracks >= 1)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total archery-range >= 2)
+	(or	(building-type-count-total blacksmith == 0)
+		(building-type-count-total archery-range < 3)
+	)
+	(or	(strategic-number sn-food-gatherer-percentage != 38)
+		(strategic-number sn-wood-gatherer-percentage != 44)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 38)
+	(set-strategic-number sn-wood-gatherer-percentage 44)
+	(set-strategic-number sn-gold-gatherer-percentage 18)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-FLUSH-ARCHERY-3)
+	(building-type-count-total barracks >= 1)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total archery-range >= 3)
+	(building-type-count-total blacksmith >= 1)
+	(or	(strategic-number sn-food-gatherer-percentage != 39)
+		(strategic-number sn-wood-gatherer-percentage != 35)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 39)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-goal G-JOLLYGOAL GV-LATE-FEUDAL-0)
+)

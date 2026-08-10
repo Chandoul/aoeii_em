@@ -1,0 +1,95 @@
+(defconst super-traitor-chat-id 22034); I have thought better of my previous merciful plan.
+(defconst traitor-chat-id 22097); You cannot possibly defeat my mighty forces.
+(defconst betrayed-chat-id 22071); From henceforth we are the bitterest of foes!
+(defconst wonder-game-time 3000)
+(defconst camp-raid-time-variance 800)
+(defconst nomad-tc-up-chat "Me")
+(defconst gg-chat "gg")
+#load-if-not-defined ISLANDS-MAP
+(defconst boar-stealing-nature 0)
+#else
+(defconst boar-stealing-nature 1)
+#end-if
+(defconst villager-laming-nature 0)
+
+#load-if-not-defined UP-SCENARIO-GAME
+
+#load-if-not-defined DEATH-MATCH
+#load-if-defined CHINESE-CIV
+(defrule
+	(game-time > 45)
+	(game-time < 55)
+	(building-type-count-total town-center == 0)
+=>
+	(chat-to-all "I can't handle this many villagers")
+	(disable-self)
+)
+#end-if
+#end-if
+
+(defrule
+	(strategic-number sn-nomad-style-start == 0)
+	(nor	(map-type custom)
+		(map-size tiny))
+	(not	(goal gl-uncommon-settings YES))
+	(starting-age == dark-age)
+	(player-valid 6)
+	(game-time > 150)
+	(difficulty <= hard)
+	(goal gl-x-vs-one-challenge YES)
+=>
+	(chat-to-all "It isn't going to be easy")
+	(disable-self)
+)
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(strategic-number sn-allow-resource-spending > 5)
+	(population > almost-full-pop)
+	(hold-relics)
+	(up-compare-goal gl-gathered-relics > 0)
+=>
+	(chat-to-all "Let's see how well you can lay siege.")
+	(chat-to-all "Give me your best shot!")
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(civ-selected aztec)
+	(difficulty <= hard)
+	(not	(goal gl-aofe-detected YES))
+	(up-research-status c: ri-fervor == research-pending)
+=>
+	(chat-to-all "Fervor may not work like it should, but I'll take it anyway.")
+	(disable-self)
+)
+
+(defrule
+	(up-research-status c: ri-herbal-medicine == research-pending)
+=>
+	(chat-to-all "It's time to take the most useful upgrade in the game:")
+	(chat-to-all "Herbal medicide!")
+	(disable-self)
+)
+
+(defrule
+	(not	(death-match-game))
+	(game-time < 3600)
+	(players-unit-type-count focus-player elite-eagle-warrior > 60)
+=>
+	(chat-to-all "That many eagle warriors!")
+	(chat-to-all "I'm impressed.")
+	(disable-self)
+)
+
+(defrule
+	(or	(players-tribute-memory any-ally food >= 1000)
+		(or	(players-tribute-memory any-ally wood >= 1000)
+			(or	(players-tribute-memory any-ally gold >= 1000)
+				(players-tribute-memory any-ally stone >= 500))))
+=>
+	(chat-to-allies-using-id 22002); I am grateful for thy tribute.
+	(disable-self)
+)
+#end-if

@@ -1,0 +1,163 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-feudal-infantry heavy-men-at-arms)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type basic-flush)
+	(set-goal gl-strategy flush)
+	(disable-self)
+)
+
+; ============= ECO CRAP
+
+(defrule
+	(goal gl-feudal-infantry heavy-men-at-arms)
+	(current-age == dark-age)
+	(building-type-count-total barracks > 0)
+	(or	(goal gl-current-age gv-dark-up)
+		(not	(goal gl-DRUSH YES)))
+=>
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-feudal-infantry heavy-men-at-arms)
+	(current-age == dark-age)
+	(building-type-count-total barracks > 1)
+	(or	(strategic-number sn-food-gatherer-percentage != 52)
+		(or	(strategic-number sn-wood-gatherer-percentage != 35)
+			(strategic-number sn-gold-gatherer-percentage != 13)))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 52)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 13)
+)
+
+(defrule
+	(goal gl-feudal-infantry heavy-men-at-arms)
+	(current-age == feudal-age)
+	(building-type-count-total barracks > 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 54)
+	(set-strategic-number sn-wood-gatherer-percentage 36)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-feudal-infantry heavy-men-at-arms)
+	(current-age == feudal-age)
+	(game-time > 1160)
+	(building-type-count-total barracks > 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 52)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 8)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-feudal-infantry heavy-men-at-arms)
+	(current-age == feudal-age)
+	(game-time > 1300)
+	(building-type-count-total barracks > 1)
+	(building-type-count-total archery-range > 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 62)
+	(set-strategic-number sn-wood-gatherer-percentage 27)
+	(set-strategic-number sn-gold-gatherer-percentage 11)
+	(disable-self)
+)
+
+; ============= RESEARCHES
+
+(defrule
+	(goal gl-feudal-infantry heavy-men-at-arms)
+	(research-completed ri-man-at-arms)
+	(not	(research-available ri-wheel-barrow))
+	(unit-type-count-total militiaman-line > 0)
+	(or	(can-research ri-scale-mail)
+		(can-research ri-forging))
+=>
+	(research ri-scale-mail)
+	(research ri-forging)
+)
+
+; ============= BUILDINGS
+
+(defrule
+	(goal gl-feudal-infantry heavy-men-at-arms)
+	(or	(unit-type-count-total villager > 28)
+		(up-compare-goal gl-current-age >= gv-dark-up))
+	(building-type-count-total barracks < 2)
+	(can-build barracks)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build barracks)
+)
+
+(defrule
+	(goal gl-feudal-infantry heavy-men-at-arms)
+	(building-type-count-total barracks > 0)
+	(dropsite-min-distance gold > 4)
+	(building-type-count-total mining-camp < 2)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-feudal-infantry heavy-men-at-arms)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(building-type-count-total barracks > 0)
+	(nand	(research-available ri-wheel-barrow)
+		(wood-amount < 110))
+	(research-completed ri-horse-collar)
+	(nand	(building-type-count-total farm > 16)
+		(building-type-count-total blacksmith == 0))
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy flush)
+	(building-type-count-total barracks > 1)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy flush)
+	(building-type-count-total archery-range < 2)
+	(building-type-count-total blacksmith > 0)
+	(can-build archery-range)
+=>
+	(build archery-range)
+)
+
+; ============= UNITS
+
+(defrule
+	(goal gl-feudal-infantry heavy-men-at-arms)
+	(current-age <= feudal-age)
+	(or	(up-compare-goal gl-current-age >= gv-dark-up)
+		(food-amount >= 560))
+	(nand	(current-age < feudal-age)
+		(civ-selected gothic))
+	(food-amount >= militia-food)
+	(or	(unit-type-count-total militiaman-line < 3)
+		(nor	(research-available ri-man-at-arms)
+			(research-available ri-wheel-barrow)))
+	(unit-type-count-total militiaman-line < 40)
+=>
+	(train militiaman-line)
+)
+
+
+

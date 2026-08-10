@@ -1,0 +1,297 @@
+(defrule
+	(research-completed ri-loom)
+	(unit-type-count villager >= LOOM-VILLAGERS-BOAR-HUNTING)
+	(dropsite-min-distance boar-hunting < 32)
+	(up-compare-goal G-BOAR-HUNTING < 1)
+	(unit-type-count-total villager-hunter == 0)
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance 32)
+	(set-strategic-number sn-minimum-number-hunters 1)
+	(up-retask-gatherers food c: 1)
+	(set-strategic-number sn-minimum-boar-lure-group-size 0)
+	(set-strategic-number sn-minimum-boar-hunt-group-size 0)
+	(set-strategic-number sn-enable-boar-hunting 2)
+	(set-goal G-BOAR-HUNTING 1)
+	(enable-timer T-BOAR-HUNTING 10)
+)
+(defrule
+	(timer-triggered T-BOAR-HUNTING)
+	(or
+		(goal G-BOAR-HUNTING 1)
+		(dropsite-min-distance live-boar < 6)
+	)
+	(unit-type-count villager-hunter > 0)
+	(unit-type-count villager-hunter < BOAR-HUNTERS)
+	(dropsite-min-distance live-boar < 5)
+=>
+	(set-goal G-BOAR-HUNTING 2)
+	(up-request-hunters c: 7)
+	(set-strategic-number sn-minimum-boar-hunt-group-size BOAR-HUNTERS); number of villagers to kill the boar
+	(set-strategic-number sn-minimum-number-hunters BOAR-HUNTERS); number of hunters to harvest the boar
+	(set-strategic-number sn-minimum-boar-lure-group-size 1000); AI won't lure a boar if they can't match this SN. So it's effectively blocked
+	(enable-timer T-BOAR-HUNTING 15)
+)
+(defrule
+	(goal G-BOAR-HUNTING 2); hunt a second boar while still eating the first
+	(up-remaining-boar-amount < 200)
+	(or
+		(dropsite-min-distance live-boar > 18)
+		(up-remaining-boar-amount < 170)
+	)
+	(dropsite-min-distance live-boar s:< sn-maximum-hunt-drop-distance)
+=>
+	(up-retask-gatherers food c: 1)
+	(set-strategic-number sn-minimum-number-hunters BOAR-HUNTERS+1); 9 hunters = lure 2nd boar
+	(set-strategic-number sn-minimum-boar-hunt-group-size 0)
+	(set-strategic-number sn-minimum-boar-lure-group-size 0)
+	(set-goal G-BOAR-HUNTING 3)
+	(enable-timer T-BOAR-HUNTING 5)
+	(chat-local-to-self "trying to lure second boar")
+)
+(defrule
+	(timer-triggered T-BOAR-HUNTING)
+	(goal G-BOAR-HUNTING 3)
+	(up-remaining-boar-amount == 65535); first boar finished
+	(dropsite-min-distance live-boar s:< sn-maximum-hunt-drop-distance)
+	(dropsite-min-distance live-boar > 5)
+=>
+	(set-strategic-number sn-minimum-number-hunters 1)
+	(set-strategic-number sn-minimum-boar-hunt-group-size 0)
+	(set-strategic-number sn-minimum-boar-lure-group-size 200); block again
+	(set-goal G-BOAR-HUNTING 1)
+	(enable-timer T-BOAR-HUNTING 10)
+	(chat-local-to-self "release hunters: min hunter = 1")
+)
+(defrule
+	(timer-triggered T-BOAR-HUNTING)
+	(goal G-BOAR-HUNTING 3)
+	(up-remaining-boar-amount < 50)
+	(dropsite-min-distance live-boar s:> sn-maximum-hunt-drop-distance)
+=>
+	(set-strategic-number sn-minimum-number-hunters 0)
+	(set-strategic-number sn-minimum-boar-hunt-group-size 0)
+	(set-strategic-number sn-minimum-boar-lure-group-size 200); block again
+	(set-goal G-BOAR-HUNTING 4)
+	(chat-local-to-self "release hunters: min hunter = 0")
+)
+(defrule
+	(dropsite-min-distance boar-hunting < 32)
+	(up-compare-goal G-BOAR-HUNTING >= 4)
+	(unit-type-count villager-hunter == 0)
+=>
+	(up-retask-gatherers food c: 1)
+	(set-strategic-number sn-minimum-number-hunters 1)
+	(set-strategic-number sn-enable-boar-hunting 2)
+	(set-strategic-number sn-minimum-boar-lure-group-size 0)
+	(set-goal G-BOAR-HUNTING 1)
+	(enable-timer T-BOAR-HUNTING 15)
+	(chat-local-to-self "hunting another boar")
+)
+(defrule
+	(research-completed ri-loom)
+	(unit-type-count villager >= 12)
+	(or
+		(unit-type-count villager >= 22)
+		(and
+			(cc-players-unit-type-count 0 48 == 0); no boar on map
+			(cc-players-unit-type-count 0 822 == 0)
+		)
+	)
+	(up-compare-goal G-BOAR-HUNTING < 5)
+	(dropsite-min-distance boar-hunting >= 32); either boar missed or already eaten - enable deer hunting
+=>
+	(set-strategic-number sn-enable-boar-hunting 1)
+	(set-strategic-number sn-minimum-number-hunters 0)
+	(set-goal G-BOAR-HUNTING 5)
+;	(chat-local-to-self "enable deer hunting")
+)
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager >= 22)
+	(goal G-BOAR-HUNTING 5)
+	(dropsite-min-distance deer-hunting < 30)
+	(dropsite-min-distance boar-hunting >= 32)
+	(unit-type-count villager-forager > 4)
+	(strategic-number sn-enable-boar-hunting == 1)
+	(strategic-number sn-minimum-number-hunters < 5)
+=>
+	(up-retask-gatherers 907 c: 1)
+	(up-modify-sn sn-minimum-number-hunters c:+ 1);forced hunting: retask one forager
+)
+
+#load-if-defined SCANDANAVIA-MAP
+(defrule
+	(research-completed ri-loom)
+	(unit-type-count villager > 16); start hunting boar in scandinavia later, but without check for existing hunters.
+	(or
+		(building-type-count-total mill == 0)
+		(unit-type-count villager > 10)
+	)
+	(dropsite-min-distance boar-hunting < 32)
+	(up-compare-goal G-BOAR-HUNTING < 1)
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance 32)
+	(set-strategic-number sn-minimum-number-hunters 1)
+	(up-retask-gatherers food c: 1)
+	(set-strategic-number sn-minimum-boar-lure-group-size 0)
+	(set-strategic-number sn-minimum-boar-hunt-group-size 0)
+	(set-strategic-number sn-enable-boar-hunting 2)
+	(set-goal G-BOAR-HUNTING 1)
+	(enable-timer T-BOAR-HUNTING 10)
+	(disable-self)
+)
+#end-if
+
+
+
+
+
+
+
+
+#load-if-defined x
+(defrule
+	(research-completed ri-loom); dont go without
+	(unit-type-count villager >= LOOM-VILLAGERS-BOAR-HUNTING)
+=>
+	(set-strategic-number sn-enable-boar-hunting 1); deer preferred
+	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-enable-boar-hunting == 1)
+	(research-completed ri-loom); dont go without
+	(unit-type-count villager >= LOOM-VILLAGERS-BOAR-HUNTING)
+	(dropsite-min-distance boar-hunting < 45); A boar within your hunting distance is sighted
+	;(or	(food-amount > 100)
+	;	(unit-type-count-total villager >= 19)
+	;)
+=>
+	(set-strategic-number sn-enable-boar-hunting 2); 2 = boar only; don't mess with deer hunting,
+	(set-strategic-number sn-minimum-number-hunters 1); number of hunters to harvest the boar
+	(up-retask-gatherers food c:< 1); retask one food gatherer to really have a hunter
+	(set-strategic-number sn-minimum-boar-lure-group-size 0); number of villagers required to lure
+	(set-strategic-number sn-minimum-boar-hunt-group-size 1); number of villagers to kill the boar
+	(set-goal G-BOAR-HUNTING 1); set a flag you started boar hunting
+)
+
+(defrule
+	(goal G-BOAR-HUNTING 1); boar hunting started
+	(dropsite-min-distance boar-hunting < 12)
+	(unit-type-count villager-hunter < BOAR-HUNTERS); not enough hunters yet
+=>
+	(set-goal G-BOAR-HUNTING 2); boar gets shot
+	(up-retask-gatherers food c:< 5); retask enough villager to kill it
+	;(set-strategic-number sn-minimum-boar-hunt-group-size BOAR-HUNTERS)
+	;(set-strategic-number sn-minimum-number-hunters 0)
+	(set-strategic-number sn-minimum-boar-hunt-group-size BOAR-HUNTERS)
+	(set-strategic-number sn-minimum-number-hunters BOAR-HUNTERS); make sure the hunters don't get retasked
+	(set-strategic-number sn-minimum-boar-lure-group-size 1000); don't lure a second boar yet
+	(enable-timer T-BOAR-HUNTING 15)
+)
+
+
+(defrule
+	(goal G-BOAR-HUNTING 2)
+	(timer-triggered T-BOAR-HUNTING)
+=>
+	(set-goal G-BOAR-HUNTING 3); harvesting the boar
+	(set-strategic-number sn-minimum-number-hunters BOAR-HUNTERS); make sure the hunters don't get retasked
+	(set-strategic-number sn-minimum-boar-hunt-group-size 0)
+	(set-strategic-number sn-minimum-boar-lure-group-size 1000); block luring
+	(enable-timer T-BOAR-HUNTING 30)
+)
+
+(defrule
+	(goal G-BOAR-HUNTING 3)
+	(timer-triggered T-BOAR-HUNTING)
+=>
+	(up-retask-gatherers food c:< 1); retask again
+	(set-strategic-number sn-minimum-boar-hunt-group-size BOAR-HUNTERS)
+	(set-strategic-number sn-minimum-number-hunters BOAR-HUNTERS); make sure the hunters don't get retasked
+	(set-strategic-number sn-minimum-boar-lure-group-size 0)
+)
+#end-if
+
+
+
+
+
+#load-if-defined x
+(defrule
+	(strategic-number SN-ENABLE-BOAR-HUNTING == 0)
+	(unit-type-count-total villager >= LOOM-VILLAGERS-BOAR-HUNTING)
+	(food-amount > 100)
+	(research-completed ri-loom)
+=>
+	(set-strategic-number SN-ENABLE-BOAR-HUNTING 2)
+	;(set-strategic-number sn-minimum-boar-hunt-group-size 0)
+	(set-strategic-number sn-minimum-boar-lure-group-size 1)
+)
+
+(defrule
+	(strategic-number SN-ENABLE-BOAR-HUNTING >= 1)
+	(strategic-number sn-maximum-hunt-drop-distance < 35)
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance 35)
+)
+
+(defrule
+	(strategic-number SN-ENABLE-BOAR-HUNTING >= 1)
+	(unit-type-count villager-hunter == 0)
+=>
+	;(set-strategic-number SN-MINIMUM-NUMBER-HUNTERS 1); forces at least one villager to hunt
+	(set-strategic-number sn-minimum-number-hunters 1); sends a villager to hunt
+	;(enable-timer T-BOAR-HUNTING 5)
+	(up-retask-gatherers food c:< 1); retasks one food gatherer; use it only once
+	(chat-to-player my-player-number "Sending a boar lurer.")
+	(disable-self)
+)
+
+(defrule
+	(strategic-number SN-ENABLE-BOAR-HUNTING >= 1)
+	(unit-type-count villager-hunter > 0)
+	(unit-type-count villager-hunter < BOAR-HUNTERS)
+
+=>
+	(set-strategic-number sn-minimum-number-hunters BOAR-HUNTERS); sends more villagers to hunt
+)
+
+(defrule
+	(strategic-number SN-ENABLE-BOAR-HUNTING >= 1)
+	(dropsite-min-distance boar-hunting < 7)
+	(unit-type-count villager-hunter > 0)
+	(unit-type-count villager-hunter < BOAR-HUNTERS)
+	(strategic-number sn-minimum-number-hunters >= BOAR-HUNTERS)
+=>
+	;(up-retask-gatherers food c:< 1); retasks one food gatherer
+	(up-drop-resources food c:< 9)
+	;(up-retask-gatherers FORAGE-FOOD c:< 1); retasks one food gatherer; use it only once
+	;(up-retask-gatherers farm c:< 1); retasks one food gatherer; use it only once
+	;(up-retask-gatherers SHORE-FISH-GROUP c:< 1); retasks one food gatherer; use it only once
+	;(up-retask-gatherers food c:< 2); retasks one food gatherer; use it only once
+	;(up-retask-gatherers food c:< BOAR-HUNTERS); retasks one food gatherer; use it only once
+	;(up-retask-gatherers food c:< BOAR-HUNTERS); retasks one food gatherer; use it only once
+	;(enable-timer T-BOAR-HUNTING TV-BOAR-HUNTING)
+	(chat-to-player my-player-number "Sending more boar hunters.")
+	;(disable-self)
+)
+
+(defrule
+	(strategic-number SN-ENABLE-BOAR-HUNTING >= 1)
+	(dropsite-min-distance boar-hunting < 7)
+	(unit-type-count villager-hunter >= BOAR-HUNTERS)
+	(strategic-number sn-minimum-number-hunters > 1)
+=>
+	(set-strategic-number sn-minimum-number-hunters 1)
+)
+
+(defrule
+	(strategic-number SN-ENABLE-BOAR-HUNTING >= 1)
+	(not(research-completed ri-wheel-barrow))
+	(food-amount < 50)
+	(unit-type-count villager-hunter >= BOAR-HUNTERS)
+=>
+	(up-drop-resources food c:< 11)
+)
+#end-if

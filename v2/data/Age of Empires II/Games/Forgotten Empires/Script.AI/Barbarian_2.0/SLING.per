@@ -1,0 +1,1727 @@
+#load-if-defined DARK-AGE-START
+#load-if-not-defined DEFEND-WONDER
+
+#load-if-not-defined DEATH-MATCH
+#load-if-not-defined UP-MICHI-STYLE
+
+(defrule
+	(or	(up-compare-goal gl-current-age >= gv-dark-up)
+		(or	(difficulty >= easy)
+			(or	(map-type migration)
+				(or	(up-compare-const gv-imperial-age-end == 0)
+					(population-cap < 170)))))
+=>
+	(up-jump-rule 22)
+)
+
+(defrule
+	(player-in-game any-ally)
+	(nor	(civ-selected aztec)
+		(civ-selected mayan))
+	(nor	(players-civ any-ally aztec)
+		(players-civ any-ally mayan))
+	(not	(player-valid any-human-ally))
+	(nand	(map-type black-forest)
+		(player-valid any-human-enemy))
+=>
+	(generate-random-number 3)
+	(set-goal gl-refused-from-sling NO)
+	(disable-self)
+)
+
+(defrule
+	(player-in-game any-ally)
+	(or	(and	(civ-selected aztec)
+			(players-civ any-ally aztec))
+		(and	(civ-selected mayan)
+			(players-civ any-ally mayan)))
+	(not	(player-valid any-human-ally))
+	(nand	(map-type black-forest)
+		(player-valid any-human-enemy))
+=>
+	(generate-random-number 3)
+	(set-goal gl-refused-from-sling NO)
+	(disable-self)
+)
+
+(defrule
+	(up-allied-sn any-ally sn-minimum-water-body-size-for-dock == 999)
+	(or	(players-civ any-ally aztec)
+		(players-civ any-ally mayan))
+	(goal SLING 0)
+	(game-time > 70)
+	(nor	(civ-selected aztec)
+		(civ-selected mayan))
+	(nand	(map-type black-forest)
+		(player-valid any-human-enemy))
+	(up-compare-goal gl-refused-from-sling != NO)
+=>
+	(generate-random-number 3)
+	(set-goal gl-refused-from-sling NO)
+	(disable-self)
+)
+
+(defrule
+	(or	(and	(up-compare-const gv-2-player-team == 0)
+			(goal POSITION FLANK))
+		(or	(and	(civ-selected gothic)
+				(goal gl-strategy castle-drop))
+			(or	(goal gl-strategy knight-boom)
+				(or	(goal gl-strategy mongol-boom)
+					(up-compare-goal gl-rush-suitability-on-map <= LOW)))))
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(game-time > 70)
+	(game-time < 100)
+	(random-number == 1)
+	(or	(and	(or	(players-civ any-ally aztec)
+				(players-civ any-ally mayan))
+			(up-allied-sn any-ally sn-minimum-water-body-size-for-dock == 999))
+		(up-allied-goal any-ally 6 == 6)); Horde with aggressive rush
+=>
+	(chat-to-player this-any-ally "237")
+	(set-goal gl-sling-horde MAYBE)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-current-age gv-dark)
+	(goal gl-sling-horde MAYBE)
+	(goal SLING 0)
+	(game-time > 70)
+	(game-time < 100)
+	(random-number == 1)
+	(taunt-detected any-computer-ally 38)
+=>
+	(set-goal gl-sling-horde YES)
+	(set-goal gl-strategy sling)
+	(set-goal gl-strategy-type basic-flush)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal SLING 6)
+	(chat-to-allies "I'll sling you")
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(goal gl-rush-suitability-on-map GOOD)
+	(or	(goal gl-strategy eew-strategy)
+		(and	(goal gl-strategy knight-rush)
+			(goal POSITION FLANK)))
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(up-allied-sn any-ally sn-minimum-water-body-size-for-dock == 999)
+	(goal SLING 0)
+	(game-time > 120)
+	(goal gl-current-age gv-dark)
+	(random-number == 2)
+=>
+	(set-goal 6 6)
+	(chat-to-player my-player-number "Asking if Horde could sling")
+	(disable-self)
+)
+
+(defrule
+	(nor	(civ-selected aztec)
+		(civ-selected mayan))
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(up-allied-sn any-ally sn-minimum-water-body-size-for-dock == 999)
+	(goal SLING 0)
+	(goal 6 6)
+	(game-time > 120)
+	(taunt-detected any-computer-ally 237)
+	(random-number == 2)
+=>
+	(set-goal 6 7)
+	(chat-to-player this-any-computer-ally "38")
+	(acknowledge-taunt this-any-computer-ally 237)
+	(chat-to-allies "I'm aiming for fast EEW")
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-eew-strategy-type boom)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal SLING 1)
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(up-allied-sn any-ally sn-minimum-water-body-size-for-dock == 999)
+	(goal 6 6)
+	(goal SLING 0)
+	(game-time > 120)
+	(goal gl-strategy knight-rush)
+	(taunt-detected any-computer-ally 237)
+	(random-number == 2)
+=>
+	(set-goal 6 7)
+	(chat-to-player this-any-computer-ally "38")
+	(acknowledge-taunt this-any-computer-ally 237)
+	(set-goal SLING 3)
+	(set-goal gl-strategy knight-rush)
+	(set-goal gl-strategy-type FC2)
+	(chat-to-allies "I'm going heavy knights")
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(player-in-game any-ally)
+	(civ-selected aztec)
+	(not	(players-civ any-ally aztec))
+	(nand	(map-type black-forest)
+		(player-valid any-human-enemy))
+=>
+	(generate-random-number 3)
+	(set-strategic-number sn-sling-control 1)
+	(set-goal gl-refused-from-sling NO)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(civ-selected aztec)
+	(game-time > 35)
+	(goal gl-current-age gv-dark)
+	(taunt-detected any-ally 254); Make sure an ally is also Barbarian
+	(random-number == 2)
+	(nor	(players-civ any-ally aztec)
+		(goal POSITION UNKNOWN))
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+=>
+	(chat-to-allies "104Can you sling me?")
+	(chat-to-player my-player-number "111"); Asking for sling
+	(do-nothing)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(player-in-game any-ally)
+	(civ-selected mayan)
+	(nor	(players-civ any-ally aztec)
+		(players-civ any-ally mayan))
+	(nand	(map-type black-forest)
+		(player-valid any-human-enemy))
+=>
+	(generate-random-number 3)
+	(set-strategic-number sn-sling-control 1)
+	(set-goal gl-refused-from-sling NO)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(civ-selected mayan)
+	(game-time > 35)
+	(goal gl-current-age gv-dark)
+	(taunt-detected any-ally 254)
+	(random-number == 2)
+	(nor	(players-civ any-ally aztec)
+		(goal POSITION UNKNOWN))
+	(not	(players-civ any-ally mayan))
+	(strategic-number sn-minimum-water-body-size-for-dock != 2001)
+=>
+	(chat-to-allies "104Can you sling me?")
+	(chat-to-player my-player-number "111"); Asking for sling
+	(disable-self)
+)
+
+(defrule
+	(game-time > 35)
+	(game-time < 50)
+	(goal gl-current-age gv-dark)
+	(nand	(up-compare-const gv-2-player-team == 0)
+		(goal POSITION FLANK))
+	(random-number <= 5)
+	(taunt-detected any-ally 104)
+	(nand	(civ-selected gothic)
+		(goal gl-strategy castle-drop))
+=>
+	(chat-to-player this-any-ally "1")
+	(chat-to-allies "Sure")
+	(chat-to-player my-player-number "114"); Being asked for sling
+	(acknowledge-taunt this-any-ally 104)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 35)
+	(game-time < 50)
+	(goal gl-current-age gv-dark)
+	(taunt-detected my-player-number 111)
+	(taunt-detected any-ally 1)
+=>
+	(chat-to-allies "Send resources for fast imp + eagles")
+	(disable-self)
+)
+
+(defrule
+	(game-time > 35)
+	(goal gl-current-age gv-dark)
+	(taunt-detected my-player-number 111)
+	(taunt-detected any-ally 1)
+=>
+	(chat-to-player this-any-ally "121")
+	(acknowledge-taunt this-any-ally 1)
+	(set-goal gl-strategy eew-strategy)
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-eew-strategy-type boom)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal SLING 1)
+)
+
+(defrule
+	(game-time > 35)
+	(goal gl-current-age gv-dark)
+	(or	(and	(taunt-detected my-player-number 114)
+			(and	(taunt-detected any-ally 121)
+				(game-time < 45)))
+		(taunt-detected any-human-ally 38))
+=>
+	(chat-to-allies-using-id 22072)
+	(acknowledge-taunt my-player-number 114)
+	(set-goal gl-strategy sling)
+	(set-goal gl-strategy-type basic-flush)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal SLING 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy sling)
+=>
+	(set-goal gl-feudal-archery 0)
+	(set-goal gl-feudal-infantry 0)
+	(set-goal gl-feudal-trash 0)
+	(set-strategic-number sn-sling-control 0)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(nor	(goal gl-strategy sling)
+		(taunt-detected any-ally 109))
+	(not	(taunt-detected my-player-number 109))
+	(goal gl-current-age gv-dark)
+	(game-time > 35)
+	(game-time < 55)
+	(taunt-detected any-ally 254)
+	(random-number == 1)
+	(strategic-number sn-sling-control == 0)
+=>
+	(chat-to-allies "101")
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-nothing-style-map != YES)
+	(nor	(goal gl-strategy sling)
+		(taunt-detected any-ally 109))
+	(not	(taunt-detected my-player-number 109))
+	(goal gl-current-age gv-dark)
+	(game-time > 35)
+	(game-time < 55)
+	(taunt-detected any-ally 254)
+	(random-number == 2)
+	(strategic-number sn-sling-control == 0)
+=>
+	(chat-to-allies "102")
+	(disable-self)
+)
+
+(defrule
+	(game-time < 50)
+	(or	(and	(nand	(up-compare-const gv-2-player-team == 0)
+				(goal POSITION FLANK))
+			(taunt-detected my-player-number 101))
+		(taunt-detected any-ally 109))
+	(taunt-detected any-ally 102)
+	(not	(taunt-detected my-player-number 102))
+=>
+	(chat-to-player this-any-ally "103")
+	(chat-to-player my-player-number "103")
+	(chat-to-allies "Should I feed you with resources?")
+	(acknowledge-taunt this-any-ally 102)
+	(disable-self)
+)
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(goal gl-refused-from-sling NO)
+	(goal gl-current-age gv-dark)
+	(taunt-detected my-player-number 102)
+	(taunt-detected any-ally 103)
+	(nor	(goal gl-strategy sling)
+		(taunt-detected any-ally 102))
+=>
+	(chat-to-player this-any-ally "1")
+	(chat-to-allies "Sure")
+	(chat-to-player this-any-ally "121")
+	(chat-to-player my-player-number "114")
+	(acknowledge-taunt this-any-ally 103)
+	(set-goal gl-strategy eew-strategy)
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-eew-strategy-type boom)
+	(set-goal SLING 1)
+)
+#end-if
+
+#load-if-defined MAYAN-CIV
+(defrule
+	(goal gl-refused-from-sling NO)
+	(goal gl-current-age gv-dark)
+	(taunt-detected my-player-number 102)
+	(taunt-detected any-ally 103)
+	(nor	(goal gl-strategy sling)
+		(taunt-detected any-ally 102))
+=>
+	(chat-to-player this-any-ally "1")
+	(chat-to-allies "Sure")
+	(chat-to-player this-any-ally "121")
+	(chat-to-player my-player-number "114")
+	(acknowledge-taunt this-any-ally 103)
+	(set-goal gl-strategy eew-strategy)
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-eew-strategy-type boom)
+	(set-goal SLING 1)
+)
+#end-if
+
+
+#load-if-not-defined TURKISH-CIV
+(defrule
+	(game-time > 35)
+	(goal gl-current-age gv-dark)
+	(taunt-detected any-ally 103)
+	(or	(up-compare-goal gl-strategy-type <= controlled-flush)
+		(or	(goal gl-strategy scorpion-rush)
+			(or	(taunt-detected any-ally 102)
+				(or	(goal gl-strategy-aggressiveness-level VERY-LOW)
+					(goal gl-strategy castle-push)))))
+=>
+	(chat-to-allies "Don't do that")
+	(chat-to-player this-any-ally "2")
+	(acknowledge-taunt every-ally 103)
+	(set-goal gl-refused-from-sling YES) 
+)
+#else
+(defrule
+	(game-time > 35)
+	(goal gl-current-age gv-dark)
+	(taunt-detected any-ally 103)
+	(up-compare-goal gl-strategy != turkish-fast-imp)
+	(or	(up-compare-goal gl-strategy-type <= controlled-flush)
+		(or	(taunt-detected any-ally 102)
+			(or	(goal gl-strategy-aggressiveness-level VERY-LOW)
+				(goal gl-strategy castle-push))))
+=>
+	(chat-to-allies "Don't do that")
+	(chat-to-player this-any-ally "2")
+	(acknowledge-taunt every-ally 103)
+	(set-goal gl-refused-from-sling YES) 
+)
+#end-if
+
+(defrule
+	(game-time > 35)
+	(goal gl-current-age gv-dark)
+	(taunt-detected my-player-number 103)
+	(taunt-detected any-ally 2)
+=>
+	(chat-to-allies "Ok")
+	(acknowledge-taunt this-any-ally 2)
+	(acknowledge-taunt my-player-number 103)
+	(disable-self)
+)
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined MAYAN-CIV
+(defrule
+	(goal gl-refused-from-sling NO)
+	(game-time > 35)
+	(goal gl-current-age gv-dark)
+	(taunt-detected any-ally 103)
+=>
+	(chat-to-allies "Sure")
+	(chat-to-player this-any-ally "1")
+	(chat-to-player this-any-ally "123")
+	(acknowledge-taunt this-any-ally 103)
+	(set-goal SLING 3)
+	(set-goal TC 1)
+	(set-strategic-number sn-allow-new-build-order 1)
+)
+
+(defrule
+	(or	(players-civ any-ally aztec)
+		(players-civ any-ally mayan))
+=>
+	(generate-random-number 10)
+	(disable-self)
+)
+#end-if
+#end-if
+
+#load-if-defined TURKISH-CIV
+#load-if-not-defined UP-POCKET-POSITION
+(defrule
+	(goal SLING 3)
+	(goal gl-current-age gv-dark)
+	(not	(goal gl-slung-knights 1))
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(civ-selected turkish)
+=>
+	(set-goal gl-strategy turkish-fast-imp)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC2)
+	(chat-to-allies "I'm going hand cannoneers")
+	(disable-self)
+)
+#end-if
+#end-if
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined KOREAN-CIV
+(defrule
+	(goal gl-current-age gv-dark)
+	(taunt-detected every-ally 254)
+	(goal POSITION FLANK)
+	(taunt-detected any-ally 176)
+	(up-allied-goal every-ally gl-castle-sling-order > castle-sling-priority); We have the highest rated krush
+	(up-compare-goal gl-castle-sling-order <= 13)
+	(goal SLING 0)
+=>
+	(acknowledge-taunt this-any-ally 176)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy krush)
+	(set-goal gl-strategy-type FC2)
+	(chat-to-allies "I do")
+	(chat-to-player my-player-number "175")
+	(chat-to-player this-any-ally "1")
+	(set-goal SLING 2)
+)
+
+(defrule
+	(goal SLING 2)
+	(up-allied-goal any-ally SLING == 5)
+=>
+	(set-goal SLING 3)
+	(chat-to-player every-ally "123")
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(taunt-detected any-ally 96)
+	(taunt-detected any-ally 176)
+	(game-time > 2100)
+	(game-time < 3300)
+	(population > 80)
+	(not	(taunt-detected my-player-number 175))
+	(or	(population < 180)
+		(strategic-number sn-allow-resource-spending < 6))
+	(goal SLING 0)
+	(current-age >= castle-age)
+=>
+	(acknowledge-taunt every-ally 96)
+	(chat-to-allies "I do")
+	(chat-to-player my-player-number "175")
+	(chat-to-player this-any-ally "175")
+)
+
+(defrule
+	(not	(taunt-detected my-player-number 97))
+	(taunt-detected any-ally 173)
+	(taunt-detected any-ally 176)
+	(game-time > 2100)
+	(game-time < 3300)
+	(taunt-detected my-player-number 175)
+	(current-age >= castle-age)
+=>
+	(acknowledge-taunt every-ally 173)
+	(set-goal gl-strategy default)
+	(chat-to-player this-any-ally "123")
+	(set-goal SLING 3)
+)
+
+(defrule
+	(taunt-detected any-ally 96)
+	(taunt-detected any-ally 176)
+	(not	(taunt-detected my-player-number 175))
+=>
+	(acknowledge-taunt every-ally 96)
+	(acknowledge-taunt every-ally 176)
+)
+
+(defrule
+	(goal SLING 3)
+	(or	(goal gl-slung-knights 1)
+		(or	(goal gl-strategy xbow-boom)
+			(goal gl-strategy knight-archer)))
+	(up-compare-goal gl-strategy != krush)
+	(up-compare-goal gl-strategy != knight-rush)
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+=>
+	(set-goal gl-strategy krush)
+	(set-goal gl-strategy-type FC2)
+	(chat-to-allies "I'm going heavy knights")
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+
+#end-if
+
+(defrule
+	(nor	(goal gl-strategy grush)
+		(goal gl-strategy landing))
+	(goal SLING 3)
+	(goal gl-current-age gv-dark)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+=>
+	(set-goal gl-strategy watermap-fc)
+	(set-goal gl-strategy-type FC)
+	(disable-self)
+)
+
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined VIKING-CIV
+(defrule
+	(goal SLING 3)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal gl-strategy watermap-fc)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+=>
+	(set-goal DOCK 4)
+	(disable-self)
+)
+#end-if
+#end-if
+
+#load-if-defined SARACEN-CIV
+(defrule
+	(goal SLING 3)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal gl-strategy watermap-fc)
+	(civ-selected saracen)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+=>
+	(set-goal DOCK 3)
+	(disable-self)
+)
+#end-if
+#load-if-defined VIKING-CIV
+(defrule
+	(goal SLING 3)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal gl-strategy watermap-fc)
+	(civ-selected viking)
+	(strategic-number sn-minimum-water-body-size-for-dock == 2001)
+=>
+	(set-goal DOCK 3)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(game-time > 30)
+	(game-time < 45)
+	(goal gl-current-age gv-dark)
+	(taunt-detected my-player-number 103)
+	(taunt-detected any-ally 1)
+=>
+	(chat-to-allies-using-id 22072)
+;	(chat-to-allies "Ok")
+	(acknowledge-taunt my-player-number 103)
+	(acknowledge-taunt this-any-ally 1)
+	(set-goal gl-strategy sling)
+	(set-goal gl-strategy-type basic-flush)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal SLING 6)
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(up-compare-goal gl-wonder-build-attempt-stage != saving-resources)
+	(game-time > 2400)
+	(current-age-time > 400)
+	(current-age >= castle-age)
+	(player-in-game any-ally)
+	(or	(taunt-detected any-ally 4)
+		(or	(taunt-detected any-ally 6)
+			(and	(current-age == imperial-age)
+				(or	(food-amount > 2000)
+					(gold-amount > 1300)))))
+	(can-research ri-coinage)
+=>
+	(research ri-coinage)
+)
+
+(defrule
+	(up-compare-goal gl-wonder-build-attempt-stage != saving-resources)
+	(game-time > 2500)
+	(current-age-time > 500)
+	(current-age >= castle-age)
+	(or	(taunt-detected any-ally 4)
+		(or	(taunt-detected any-ally 6)
+			(and	(current-age == imperial-age)
+				(or	(food-amount > 2000)
+					(gold-amount > 1300)))))
+	(can-research ri-banking)
+=>
+	(research ri-banking)
+	(enable-timer 4 34)
+)
+
+(defrule
+	(up-compare-goal gl-strategy != sling)
+	(up-compare-goal gl-strategy != castle-sling)
+=>
+	(up-jump-rule 20)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(or	(taunt-detected any-ally 121)
+		(or	(taunt-detected any-ally 123)
+			(or	(taunt-detected any-human-ally 38)
+				(and	(taunt-detected any-computer-ally 38)
+					(goal gl-sling-horde YES)))))
+	(can-research ri-coinage)
+=>
+	(research ri-coinage)
+	(chat-to-allies "Getting coinage")
+	(enable-timer 6 0)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(research-completed ri-coinage)
+	(or	(building-type-count-total mining-camp < 2)
+		(or	(building-type-count-total watch-tower > 1)
+			(up-compare-goal gl-sling-towers g:>= gl-sling-camp-total))); This should ensure camps even on maps with rush-suitability != GOOD
+	(or	(building-type-count-total mining-camp < 3)
+		(game-time > 1600))
+	(building-type-count-total mining-camp < 5)
+	(resource-found gold)
+	(can-build mining-camp)
+=>
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(up-compare-goal gl-current-age == gv-dark-up)
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1000)
+	(or	(strategic-number sn-food-gatherer-percentage != 16)
+		(strategic-number sn-wood-gatherer-percentage != 74))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 16)
+	(set-strategic-number sn-wood-gatherer-percentage 74)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(up-compare-goal gl-current-age >= gv-feudal)
+	(goal SLING 4)
+	(building-type-count-total market > 0)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 32)
+	(set-strategic-number sn-wood-gatherer-percentage 44)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(up-compare-goal gl-current-age >= gv-feudal)
+	(goal SLING 4)
+	(building-type-count-total market > 0)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 31)
+	(set-strategic-number sn-wood-gatherer-percentage 48)
+	(set-strategic-number sn-gold-gatherer-percentage 17)
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(up-compare-goal gl-current-age >= gv-feudal)
+	(goal SLING 6)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(building-type-count-total market > 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 43)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(up-compare-goal gl-current-age >= gv-feudal)
+	(or	(goal SLING 4)
+		(and	(goal SLING 6)
+			(current-age-time > 600)))
+	(current-age-time > 300)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(building-type-count-total market > 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 44)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(set-strategic-number sn-gold-gatherer-percentage 14)
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(up-compare-goal gl-current-age >= gv-feudal)
+	(current-age-time > 150)
+	(or	(goal SLING 6)
+		(goal SLING 4))
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(building-type-count-total market > 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 23)
+	(set-strategic-number sn-wood-gatherer-percentage 52)
+	(set-strategic-number sn-gold-gatherer-percentage 21)
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(up-compare-goal gl-current-age >= gv-feudal)
+	(current-age-time > 550)
+	(or	(goal SLING 6)
+		(goal SLING 4))
+	(unit-type-count-total fishing-ship < 6)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(building-type-count-total market > 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 33)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(up-compare-goal gl-current-age >= gv-feudal)
+	(goal SLING 6)
+	(current-age-time > 5)
+	(or	(current-age-time > 90)
+		(food-amount > 150))
+	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+	(or	(strategic-number sn-food-gatherer-percentage != 10)
+		(strategic-number sn-wood-gatherer-percentage != 64))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 10)
+	(set-strategic-number sn-wood-gatherer-percentage 64)
+	(set-strategic-number sn-gold-gatherer-percentage 23)
+	(set-strategic-number sn-stone-gatherer-percentage 3)
+)
+
+(defrule
+	(or	(and	(goal gl-strategy sling)
+			(research-completed ri-coinage))
+		(goal SLING 5))
+	(timer-triggered 6)
+	(food-amount > 80)
+	(or	(taunt-detected any-ally 121)
+		(or	(taunt-detected any-ally 123)
+			(taunt-detected any-human-ally 38)))
+=>
+	(tribute-to-player this-any-human-ally food 10000)
+	(tribute-to-player this-any-ally food 10000)
+)
+
+(defrule
+	(or	(and	(goal gl-strategy sling)
+			(research-completed ri-coinage))
+		(goal SLING 5))
+	(timer-triggered 6)
+	(wood-amount > 110); Have some resources for camps etc
+	(or	(taunt-detected any-ally 121)
+		(or	(taunt-detected any-ally 123)
+			(taunt-detected any-human-ally 38)))
+=>
+	(tribute-to-player this-any-human-ally wood 10000)
+	(tribute-to-player this-any-ally wood 10000)
+)
+
+(defrule
+	(or	(and	(goal gl-strategy sling)
+			(and	(up-compare-goal gl-sling-towers g:>= gl-sling-camp-total)
+				(research-completed ri-coinage)))
+		(goal SLING 5))
+	(timer-triggered 6)
+	(or	(taunt-detected any-ally 121)
+		(or	(taunt-detected any-ally 123)
+			(taunt-detected any-human-ally 38)))
+=>
+	(tribute-to-player this-any-human-ally stone 10000)
+	(tribute-to-player this-any-ally stone 10000)
+)
+
+(defrule
+	(or	(and	(goal gl-strategy sling)
+			(research-completed ri-coinage))
+		(goal SLING 5))
+	(timer-triggered 6)
+	(or	(taunt-detected any-ally 121)
+		(or	(taunt-detected any-ally 123)
+			(taunt-detected any-human-ally 38)))
+=>
+	(tribute-to-player this-any-human-ally gold 10000)
+	(tribute-to-player this-any-ally gold 10000)
+	(enable-timer 6 34)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(goal gl-sling-horde YES)
+	(research-completed ri-coinage)
+	(timer-triggered 6)
+	(taunt-detected any-computer-ally 38)
+	(food-amount > 80)
+=>
+	(tribute-to-player this-any-computer-ally food 10000)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(goal gl-sling-horde YES)
+	(research-completed ri-coinage)
+	(timer-triggered 6)
+	(taunt-detected any-computer-ally 38)
+	(wood-amount > 110)
+=>
+	(tribute-to-player this-any-computer-ally wood 10000)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(goal gl-sling-horde YES)
+	(research-completed ri-coinage)
+	(timer-triggered 6)
+	(taunt-detected any-computer-ally 38)
+=>
+	(tribute-to-player this-any-computer-ally gold 10000)
+	(tribute-to-player this-any-computer-ally stone 10000)
+	(enable-timer 6 34)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(game-time > 1200)
+	(or	(game-time > 3000)
+		(or	(and	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+				(game-time > 2200))
+			(or	(taunt-detected any-ally 97)
+				(taunt-detected any-human-ally 33))))
+=>
+	(chat-to-allies "I stop slinging now")
+	(chat-to-allies "96")
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-type default)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(game-time > 60)
+	(game-time <= 1200)
+	(goal gl-sling-horde YES)
+	(up-allied-goal every-ally 6 != 7)
+=>
+	(chat-to-player my-player-number "Badly hurt ally - I stop slinging now")
+	(chat-to-allies-using-id 22074)
+	(chat-to-player my-player-number "96")
+	(set-goal gl-strategy regicide-strategy)
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal SLING 0)
+)
+
+(defrule
+	(goal gl-strategy sling)
+	(game-time > 1200)
+	(goal gl-sling-horde YES)
+	(up-allied-goal every-ally 6 != 7)
+=>
+	(chat-to-allies "I stop slinging now")
+	(chat-to-player my-player-number "96")
+	(set-goal gl-strategy default)
+	(set-goal gl-strategy-type default)
+)
+
+(defrule
+	(building-type-count-total market == 0)
+=>
+	(up-jump-rule 9)
+)
+
+(defrule
+	(or	(wood-amount > 300)
+		(building-type-count-total town-center > 2))
+	(wood-amount > 100)
+	(taunt-detected any-ally 4)
+	(taunt-detected any-ally 99)
+=>
+	(tribute-to-player this-any-ally wood 275)
+	(acknowledge-taunt every-ally 99)
+	(acknowledge-taunt every-ally 4)
+)
+
+(defrule
+	(stone-amount > 120)
+	(taunt-detected any-ally 6)
+	(taunt-detected any-ally 99)
+=>
+	(tribute-to-player this-any-ally stone 100)
+	(acknowledge-taunt every-ally 99)
+	(acknowledge-taunt every-ally 6)
+)
+
+(defrule
+	(up-compare-goal gl-wonder-build-attempt-stage != saving-resources)
+	(current-age == imperial-age)
+	(game-time > 1800)
+	(players-building-type-count every-ally town-center > 0)
+	(strategic-number sn-allow-resource-spending > 5)
+	(food-amount > 1500)
+	(wood-amount > 1000)
+	(gold-amount > 1200)
+	(goal MILITARY 1)
+	(research-completed ri-banking)
+	(up-timer-status 4 != timer-running)
+=>
+	(chat-to-allies "130Do you need resources?")
+	(enable-timer 4 68)
+	(acknowledge-taunt every-ally 1)
+	(acknowledge-taunt every-ally 2)
+)
+
+(defrule
+	(up-compare-goal gl-strategy != sling)
+	(up-compare-goal gl-strategy != castle-sling)
+	(nand	(up-enemy-units-in-town > 14)
+		(population < 45))
+	(taunt-detected any-ally 130)
+	(or	(food-amount < 1000)
+		(or	(wood-amount < 800)
+			(gold-amount < 700)))
+	(building-type-count-total town-center > 0)
+=>
+	(chat-to-player this-any-ally "1")
+	(chat-to-allies "Yeah I do")
+	(acknowledge-taunt this-any-ally 130)
+	(acknowledge-taunt my-player-number 1)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(strategic-number sn-allow-resource-spending > 5)
+	(food-amount > 1000)
+	(gold-amount > 1000)
+	(wood-amount > 800)
+	(goal MILITARY 1)
+	(research-completed ri-banking)
+	(timer-triggered 4)
+	(player-in-game every-ally)
+	(players-building-type-count every-ally town-center > 0)
+	(not	(taunt-detected my-player-number 130))
+	(players-current-age any-ally <= castle-age)
+=>
+	(tribute-to-player this-any-ally wood 500)
+	(chat-to-player my-player-number "Give 500 wood to ally")
+)
+
+(defrule
+	(current-age == imperial-age)
+	(strategic-number sn-allow-resource-spending > 5)
+	(food-amount > 1000)
+	(gold-amount > 1000)
+	(goal MILITARY 1)
+	(research-completed ri-banking)
+	(timer-triggered 4)
+	(player-in-game every-ally)
+	(players-building-type-count every-ally town-center > 0)
+	(not	(taunt-detected my-player-number 130))
+	(players-current-age any-ally <= castle-age)
+=>
+	(tribute-to-player this-any-ally food 500)
+	(tribute-to-player this-any-ally gold 500)
+	(chat-to-player my-player-number "Give 500 food and 500 gold to ally")
+	(enable-timer 4 34)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(strategic-number sn-allow-resource-spending > 5)
+	(food-amount > 1000)
+	(goal MILITARY 1)
+	(research-completed ri-banking)
+	(timer-triggered 4)
+	(player-in-game every-ally)
+	(players-building-type-count every-ally town-center > 0)
+	(not	(taunt-detected my-player-number 130))
+	(players-current-age any-ally <= castle-age)
+=>
+	(tribute-to-player this-any-ally food 500)
+	(chat-to-player my-player-number "Give 500 food to ally")
+	(enable-timer 4 34)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(strategic-number sn-allow-resource-spending > 5)
+	(gold-amount > 1000)
+	(goal MILITARY 1)
+	(research-completed ri-banking)
+	(timer-triggered 4)
+	(player-in-game every-ally)
+	(players-building-type-count every-ally town-center > 0)
+	(not	(taunt-detected my-player-number 130))
+	(players-current-age any-ally <= castle-age)
+=>
+	(tribute-to-player this-any-ally gold 500)
+	(chat-to-player my-player-number "Give 500 gold to ally")
+	(enable-timer 4 34)
+)
+
+(defrule
+	(taunt-detected any-ally 1)
+	(taunt-detected my-player-number 130)
+=>
+	(chat-to-player my-player-number "Give 500 each resources to ally")
+	(tribute-to-player this-any-ally food 500)
+	(tribute-to-player this-any-ally wood 500)
+	(tribute-to-player this-any-ally gold 500)
+	(acknowledge-taunt my-player-number 130)
+	(acknowledge-taunt every-ally 2)
+	(acknowledge-taunt every-ally 1)
+	(enable-timer 4 34)
+)
+
+(defrule
+	(taunt-detected any-human-ally 2)
+	(taunt-detected my-player-number 130)
+=>
+	(chat-to-player my-player-number "Block excess tributing for 5 minutes")
+	(acknowledge-taunt my-player-number 130)
+	(acknowledge-taunt every-ally 2)
+	(acknowledge-taunt every-ally 1)
+	(enable-timer 4 300)
+)
+
+(defrule
+	(taunt-detected any-ally 98)
+=>
+	(acknowledge-taunt this-any-ally 99)
+	(acknowledge-taunt this-any-ally 98)
+)
+
+(defrule
+	(or	(goal SLING 1)
+		(or	(goal SLING 2)
+			(goal SLING 3)))
+	(population >= 195)
+	(nand	(current-age == imperial-age)
+		(and	(civ-selected gothic)
+			(population < 205)))
+	(not	(taunt-detected any-ally 96))
+=>
+	(enable-timer 4 200)
+	(chat-to-player my-player-number "95")
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal SLING >= 1)
+	(up-compare-goal SLING <= 3)
+	(or	(taunt-detected any-ally 96)
+		(and	(game-time > 2400)
+			(goal 6 7)))
+=>
+	(set-goal SLING 0)
+	(set-goal 6 0)
+	(acknowledge-taunt every-ally 96)
+)
+
+(defrule
+	(game-time > 1200)
+	(up-compare-goal SLING >= 1)
+	(up-compare-goal SLING <= 3)
+	(or	(and	(timer-triggered 4)
+			(taunt-detected my-player-number 95))
+		(or	(civilian-population < 25)
+			(building-type-count-total town-center == 0)))
+=>
+	(chat-to-allies "97")
+	(set-goal 6 0)
+	(acknowledge-taunt my-player-number 95)
+	(disable-self)
+)
+
+(defrule
+	(or	(goal SLING 4)
+		(goal SLING 6))
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(strategic-number sn-target-evaluation-ally-proximity != 9999)
+=>
+	(set-strategic-number sn-target-evaluation-ally-proximity 9999)
+)
+
+(defrule
+	(nor	(goal SLING 4)
+		(or	(goal SLING 5)
+			(goal SLING 6)))
+	(not	(taunt-detected my-player-number 94))
+	(strategic-number sn-target-evaluation-ally-proximity == 9999)
+=>
+	(set-strategic-number sn-target-evaluation-ally-proximity 20)
+)
+
+(defrule
+	(research-completed ri-caravan)
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(player-in-game any-ally)
+	(or	(nand	(not	(goal MILITARY 1))
+			(and	(up-compare-goal gl-current-age <= gv-castle)
+				(game-time < 2520)))
+		(strategic-number sn-maximum-town-size == 255))
+	(game-time > 2520)
+	(can-research ri-cartography)
+=>
+	(research ri-cartography)
+	(set-strategic-number sn-target-evaluation-ally-proximity 10000)
+)
+
+(defrule
+	(or	(goal gl-aofe-detected YES)
+		(and	(game-time > 1800)
+			(map-type migration)))
+	(nor	(goal gl-strategy sling)
+		(goal gl-strategy castle-sling))
+	(can-research ri-cartography)
+=>
+	(research ri-cartography)
+	(set-strategic-number sn-target-evaluation-ally-proximity 10000)
+)
+
+(defrule
+	(or	(unit-type-count-total trade-cart > 3)
+		(or	(and	(up-compare-goal gl-current-age >= gv-castle-up)
+				(unit-type-count-total trade-cart > 0))
+			(or	(unit-type-count-total trade-cog > 3)
+				(goal gl-trade-sling YES))))
+	(can-research ri-caravan)
+=>
+	(research ri-caravan)
+)
+
+(defrule
+	(or	(and	(game-time >= 2400)
+			(and	(up-timer-status 50 == timer-disabled)
+				(up-compare-goal gl-ally-threat-player <= 0)))
+		(difficulty >= moderate))
+=>
+	(up-jump-rule 16)
+)
+
+(defrule
+	(or	(goal MILITARY 0)
+		(goal gl-strategy sling))
+	(players-current-age any-ally >= castle-age)
+	(town-under-attack)
+	(timer-triggered 9)
+	(up-timer-status 4 != timer-running)
+	(game-time < 2400)
+	(building-type-count town-center > 0)
+	(up-enemy-units-in-town > 15)
+	(soldier-count < 20)
+	(not	(up-projectile-detected projectile-fortification < 30000))
+=>
+	(chat-to-allies-using-id 22115)
+	(chat-to-allies "222")
+	(enable-timer 4 240)
+)
+
+(defrule
+	(taunt-detected my-player-number 222)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number g:= threat-player)
+	(up-get-point position-self gl-point-x)
+	(up-set-target-point gl-point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-filter-distance c: -1 s: sn-maximum-town-size)
+	(up-find-remote c: all-units-class c: 1)
+	(up-set-target-object search-remote c: 0)
+	(up-get-point position-object gl-object-point-x)
+	(up-send-flare gl-object-point-x)
+	(acknowledge-taunt my-player-number 222)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+)
+
+(defrule
+	(goal MILITARY 1)
+	(up-compare-goal gl-strategy != fi-monk-rush)
+	(taunt-detected any-computer-ally 222)
+	(goal gl-fixed-target-player NO)
+	(up-compare-goal SLING != 0)
+	(goal gl-rush-suitability-on-map GOOD)
+=>
+	(up-get-player-fact this-any-computer-ally allied-goal gl-enemy-attacker temporary-goal)
+	(up-modify-goal temporary-goal2 s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(up-jump-rule 1)
+)
+
+(defrule
+	(true)
+=>
+	(up-jump-rule 2)
+)
+
+(defrule
+	(stance-toward focus-player enemy)
+	(up-compare-goal temporary-goal >= 1)
+	(up-compare-goal temporary-goal <= 8)
+=>
+	(enable-timer 23 300)
+	(set-strategic-number sn-safe-town-size 45)
+	(set-strategic-number sn-maximum-town-size 20)
+	(set-goal gl-fixed-target-player YES)
+	(up-modify-sn sn-target-player-number g:= temporary-goal)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal2)
+	(enable-timer 1 150)
+	(enable-timer 46 150)
+	(acknowledge-taunt every-ally 222)
+	(chat-to-allies "1I'll try to help you")
+)
+
+(defrule
+	(goal MILITARY 1)
+	(up-compare-goal gl-strategy != fi-monk-rush)
+	(taunt-detected any-computer-ally 222)
+	(goal gl-fixed-target-player NO)
+	(up-compare-goal SLING != 0)
+	(goal gl-rush-suitability-on-map GOOD)
+=>
+	(up-modify-sn sn-focus-player-number g:= temporary-goal2)
+)
+
+; Archon's ally helping code
+
+(defrule
+	(goal POSITION position-required-to-help)
+	(goal gl-rush-suitability-on-map GOOD)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(up-timer-status 7 == timer-running)
+	(up-timer-status 50 != timer-running)
+	(game-time < 2400)
+	(soldier-count > 20)
+	(taunt-detected any-computer-ally 222)
+	(up-enemy-units-in-town < 20)
+=>
+	(up-get-player-fact this-any-computer-ally allied-goal gl-position-self-x gl-point-x)
+	(up-get-player-fact this-any-computer-ally allied-goal gl-position-self-y gl-point-y)
+	(up-get-player-fact this-any-computer-ally allied-goal threat-player gl-ally-threat-player)
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number g:= gl-ally-threat-player)
+	(set-goal split-rule-goal 1)
+)
+
+(defrule
+	(goal split-rule-goal 1)
+	(up-compare-goal gl-point-x != -1)
+	(up-compare-goal gl-point-y != -1)
+	(stance-toward focus-player enemy)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(set-goal split-rule-goal 2)
+	(up-filter-include cmdid-military -1 -1 -1)
+	(up-find-local c: all-units-class c: 240)
+	(up-jump-rule 1)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+	(up-copy-point gl-candidate1-point-x gl-point-x)
+)
+
+(defrule
+	(goal split-rule-goal 1)
+=>
+	(set-goal split-rule-goal -1)
+	(acknowledge-taunt every-ally 222)
+	(set-goal gl-ally-threat-player -1)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+)
+
+(defrule
+	(taunt-detected any-computer-ally 222)
+	(goal split-rule-goal 2)
+=>
+	(enable-timer 38 0)
+	(enable-timer 40 180)
+	(up-filter-include cmdid-monk -1 -1 -1)
+	(up-find-local c: all-units-class c: 240)
+	(up-target-point gl-point-x action-patrol -1 -1)
+	(up-get-player-fact this-any-computer-ally allied-goal threat-player gl-ally-threat-player)
+	(enable-timer 50 180)
+	(up-chat-data-to-player my-player-number "Helping ally against player %d " g: gl-ally-threat-player)
+	(up-chat-data-to-player every-ally "Helping ally against player %d " g: gl-ally-threat-player)
+	(acknowledge-taunt every-ally 222)
+	(set-goal MILITARY 0)
+	(enable-timer 7 180)
+	(set-strategic-number sn-retreating 0)
+	(set-strategic-number sn-unit-spreading2 0)
+)
+
+(defrule
+	(up-compare-goal gl-ally-threat-player >= 1)
+	(up-timer-status 7 == timer-running)
+	(up-timer-status 38 != timer-running)
+	(up-compare-goal threat-time > 5000)
+	(up-allied-goal any-ally gl-town-under-attack == 1)
+=>
+	(set-goal split-rule-goal 3)
+)
+
+(defrule
+	(or	(not	(goal split-rule-goal 3))
+		(up-timer-status 38 == timer-running))
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(goal split-rule-goal 3)
+=>
+	(up-set-target-point gl-candidate1-point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-filter-range -1 -1 -1 15)
+)
+
+(defrule
+;	(goal split-rule-goal 3)
+	(up-find-local c: all-units-class c: 4)
+=>
+	(up-set-target-point gl-candidate1-point-x)
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number g:= gl-ally-threat-player)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-filter-range -1 -1 -1 28)
+	(up-find-remote c: all-units-class c: 7)
+	(up-filter-include cmdid-military -1 -1 -1)
+	(up-find-local c: all-units-class c: 240)
+	(up-filter-include cmdid-monk -1 -1 -1)
+	(up-find-local c: all-units-class c: 240)
+	(up-target-objects -1 action-patrol -1 -1)
+	(enable-timer 38 35)
+	(up-jump-rule 1)
+;	(up-chat-data-to-all "Target enemy (%d) units" s: sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+)
+
+(defrule
+	(goal split-rule-goal 3)
+=>
+	(up-modify-goal temporary-goal s:= sn-focus-player-number)
+	(up-modify-sn sn-focus-player-number g:= gl-ally-threat-player)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-filter-include cmdid-military -1 -1 -1)
+	(up-find-local c: all-units-class c: 240)
+	(up-filter-include cmdid-monk -1 -1 -1)
+	(up-find-local c: all-units-class c: 240)
+	(up-target-point gl-candidate1-point-x action-patrol -1 -1)
+	(enable-timer 38 35)
+	(up-modify-sn sn-focus-player-number g:= temporary-goal)
+;	(chat-to-all "Send more units")
+)
+
+(defrule
+	(up-timer-status 50 != timer-disabled)
+	(or	(and	(up-compare-goal gl-ally-threat-player >= 0)
+			(timer-triggered 50))
+		(soldier-count < 10))
+=>
+	(set-goal gl-ally-threat-player -1)
+	(set-goal gl-candidate1-point-x -1)
+	(set-goal gl-candidate1-point-y -1)
+	(set-goal split-rule-goal -1)
+	(up-set-attack-stance all-units-class c: aggressive)
+	(up-reset-unit c: all-units-class)
+	(disable-timer 50)
+)
+
+(defrule
+	(up-compare-goal gl-current-age <= gv-castle)
+	(goal SLING 3)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock == 1999)
+		(strategic-number sn-minimum-water-body-size-for-dock == 2001))
+	(current-age == castle-age)
+	(building-type-count-total university < 1)
+	(can-build university)
+=>
+	(build university)
+)
+
+(defrule
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(and	(building-type-count-total barracks < 2)
+			(goal gl-eagles flush-counter-eagles)))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal SLING 1)
+	(building-type-count-total barracks < 5)
+	(can-build barracks)
+=>
+	(build barracks)
+)
+
+#load-if-not-defined SPANISH-CIV
+(defrule
+	(goal SLING 3)
+	(goal gl-strategy xbow-rush)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+	(building-type-count-total archery-range < 5)
+	(can-build archery-range)
+=>
+	(build archery-range)
+)
+#end-if
+
+(defrule
+	(or	(unit-type-count-total dead-cart1 >= 3)
+		(or	(unit-type-count-total dead-cart2 >= 3)
+			(or	(game-time < 1400); 1600
+				(or	(unit-type-count-total trade-cart >= max-carts)
+					(or	(and	(goal gl-strategy castle-sling)
+							(up-research-status c: ri-banking < research-pending))
+						(or	(map-type archipelago)
+							(goal gl-nothing-style-map YES)))))))
+=>
+	(up-jump-rule 2)
+)
+
+(defrule
+	(players-building-type-count any-ally market > 0)
+	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+	(or	(up-compare-goal threat-time > 25000)
+		(up-compare-goal MILITARY != 0))
+	(or	(and	(building-type-count-total town-center > 2)
+			(up-compare-goal gl-current-age >= gv-feudal-up))
+		(goal gl-strategy sling))
+	(unit-type-count-total trade-cart < max-carts)
+	(unit-type-count-total trade-cart < difficulty-cart-cap)
+	(can-train trade-cart)
+=>
+	(train trade-cart)
+)
+
+(defrule
+	(map-type team-islands)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(players-building-type-count any-ally market > 0)
+	(or	(game-time > 2000)
+		(building-type-count-total town-center > 3))
+	(or	(unit-type-count-total trade-cart < 10)
+		(research-completed ri-caravan))
+	(unit-type-count-total trade-cart < max-ti-carts)
+	(unit-type-count-total trade-cart < difficulty-cart-cap)
+	(can-train trade-cart)
+=>
+	(train trade-cart)
+)
+
+(defrule
+	(unit-type-count-total dead-cart1 < 3)
+	(unit-type-count-total dead-cart2 < 3)
+	(or	(and	(unit-type-count-total dead-cart1 < 2)
+			(unit-type-count-total dead-cart2 < 1))
+		(and	(unit-type-count-total dead-cart2 < 2)
+			(unit-type-count-total dead-cart1 < 1)))
+	(strategic-number sn-preferred-trade-distance != gv-preferred-trade-distance)
+=>
+	(set-strategic-number sn-preferred-trade-distance gv-preferred-trade-distance)
+)
+
+(defrule
+	(or	(unit-type-count-total dead-cart1 >= 3)
+		(or	(unit-type-count-total dead-cart2 >= 3)
+			(or	(and	(unit-type-count-total dead-cart1 >= 1)
+					(unit-type-count-total dead-cart2 >= 2))
+				(and	(unit-type-count-total dead-cart1 >= 2)
+					(unit-type-count-total dead-cart2 >= 1)))))
+	(strategic-number sn-preferred-trade-distance != 60)
+=>
+	(set-strategic-number sn-preferred-trade-distance 60)
+	(chat-to-player my-player-number "Dead carts - use lower trade distance")
+)
+
+(defrule
+	(up-compare-goal SLING >= 1)
+	(up-compare-goal SLING <= 3)
+	(current-age == castle-age)
+	(unit-type-count-total villager < 130)
+	(nand	(can-research-with-escrow ri-hand-cart)
+		(unit-type-count-total villager > 50))
+	(not	(can-research-with-escrow imperial-age))
+	(can-train-with-escrow villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(up-compare-goal gl-trade-sling != YES)
+=>
+	(up-jump-rule 7)
+)
+
+(defrule
+	(up-research-status c: ri-banking <= research-available)
+	(or	(can-research ri-banking)
+		(can-research ri-coinage))
+=>
+	(research ri-coinage)
+	(research ri-banking)
+	(chat-to-allies "Taking coinage/banking")
+	(enable-timer 4 34)
+)
+
+(defrule
+	(up-pending-objects c: trade-cart < 1)
+	(up-pending-objects c: trade-cog < 1)
+	(commodity-buying-price wood <= 140)
+	(unit-type-count-total trade-cog < max-ti-carts)
+	(unit-type-count-total trade-cog < 15)
+	(unit-type-count-total trade-cart < max-carts)
+	(wood-amount < 100)
+	(housing-headroom > 0)
+	(can-buy-commodity wood)
+=>
+	(buy-commodity wood)
+)
+
+(defrule
+	(not	(map-type team-islands))
+	(players-building-type-count any-ally dock > 0)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock >= 1999)
+		(map-type archipelago))
+	(unit-type-count-total trade-cog < max-ti-carts)
+	(unit-type-count-total trade-cog < 15)
+	(can-train-with-escrow trade-cog)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train trade-cog)
+)
+
+(defrule
+	(unit-type-count-total dead-cart1 < 3)
+	(unit-type-count-total dead-cart2 < 3)
+	(players-building-type-count any-ally market > 0)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock <= 1000)
+		(map-type team-islands))
+	(unit-type-count-total trade-cart < max-carts)
+	(can-train-with-escrow trade-cart)
+=>
+	(release-escrow wood)
+	(release-escrow gold)
+	(train trade-cart)
+)
+
+(defrule
+	(gold-amount >= 150)
+	(up-research-status c: ri-coinage != research-pending)
+	(up-research-status c: ri-banking != research-pending)
+	(nand	(research-available ri-caravan)
+		(food-amount >= 200))
+	(nand	(research-available ri-coinage)
+		(food-amount >= 150))
+	(nand	(research-available ri-banking)
+		(food-amount >= 200))
+	(player-in-game any-ally)
+=>
+	(tribute-to-player this-any-ally stone 5000)
+	(tribute-to-player this-any-ally food 5000)
+	(tribute-to-player this-any-ally gold 50)
+)
+
+(defrule
+	(wood-amount >= 1500)
+	(up-research-status c: ri-coinage != research-pending)
+	(up-research-status c: ri-banking != research-pending)
+	(nand	(research-available ri-coinage)
+		(food-amount >= 150))
+	(nand	(research-available ri-banking)
+		(food-amount >= 200))
+	(player-in-game any-ally)
+=>
+	(tribute-to-player this-any-ally wood 200)
+)
+
+(defrule
+	(or	(unit-type-count-total villager > 0)
+		(or	(building-type-count town-center > 0)
+			(or	(not	(player-in-game any-ally))
+				(building-type-count market == 0))))
+=>
+	(set-goal gl-trade-sling -1)
+	(chat-to-allies "I'll stop the sling now.")
+)

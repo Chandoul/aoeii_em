@@ -1,0 +1,53 @@
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-feudal-archery archer-skirm)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type basic-flush)
+	(set-goal gl-strategy flush)
+	(disable-self)
+)
+
+#load-if-not-defined CUSTOM-MAP
+#load-if-not-defined ARCHIPELAGO-MAP
+#load-if-not-defined BALTIC-MAP
+#load-if-not-defined COASTAL-MAP
+#load-if-not-defined CONTINENTAL-MAP
+#load-if-not-defined CRATER-LAKE-MAP
+#load-if-not-defined HIGHLAND-MAP
+#load-if-not-defined ISLANDS-MAP
+#load-if-not-defined MEDITERRANEAN-MAP
+#load-if-not-defined MIGRATION-MAP
+#load-if-not-defined NOMAD-MAP
+#load-if-not-defined RIVERS-MAP
+#load-if-not-defined SALT-MARSH-MAP
+#load-if-not-defined SCANDANAVIA-MAP
+#load-if-not-defined TEAM-ISLANDS-MAP
+#load-if-not-defined YUCATAN-MAP
+(defrule
+	(game-time > 20)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+=>
+	(set-goal gl-strategy heavy-ranged-flush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(disable-self)
+)
+
+(load "Barbarian_2.0\HeavySkirms")
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if

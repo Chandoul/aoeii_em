@@ -1,0 +1,754 @@
+#load-if-not-defined CUSTOM-MAP
+#load-if-not-defined ARCHIPELAGO-MAP
+#load-if-not-defined BALTIC-MAP
+#load-if-not-defined COASTAL-MAP
+#load-if-not-defined CONTINENTAL-MAP
+#load-if-not-defined CRATER-LAKE-MAP
+#load-if-not-defined HIGHLAND-MAP
+#load-if-not-defined ISLANDS-MAP
+#load-if-not-defined MEDITERRANEAN-MAP
+#load-if-not-defined MIGRATION-MAP
+#load-if-not-defined NOMAD-MAP
+#load-if-not-defined RIVERS-MAP
+#load-if-not-defined SALT-MARSH-MAP
+#load-if-not-defined SCANDANAVIA-MAP
+#load-if-not-defined TEAM-ISLANDS-MAP
+#load-if-not-defined YUCATAN-MAP
+
+(defrule
+	(up-compare-goal gl-strategy != fi-archer-flush)
+	(game-time > 1200)
+=>
+	(up-jump-rule 4)
+)
+
+(defrule
+	(game-time > 20)
+=>
+	(set-goal gl-strategy fi-archer-flush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(disable-self)
+)
+
+; ================= ECO
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(current-age == dark-age)
+	(strategic-number sn-wood-gatherer-percentage != 65)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 24)
+	(set-strategic-number sn-wood-gatherer-percentage 65)
+	(set-strategic-number sn-gold-gatherer-percentage 11)
+	(set-strategic-number sn-add-rams-in-attack 0)
+	(set-strategic-number sn-stone-dropsite-distance 255)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(building-type-count-total archery-range == 1)
+	(strategic-number sn-wood-gatherer-percentage != 60)
+	(strategic-number sn-wood-gatherer-percentage != 30)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 20)
+	(set-strategic-number sn-wood-gatherer-percentage 60)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(or	(building-type-count-total archery-range > 1)
+		(wood-amount > 300))
+	(or	(strategic-number sn-wood-gatherer-percentage != 30)
+		(strategic-number sn-gold-gatherer-percentage != 28))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 42)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 28)
+)
+
+#load-if-not-defined SARACEN-CIV
+(defrule
+	(up-compare-goal gl-strategy != fi-archer-flush)
+	(game-time > 1200)
+=>
+	(up-jump-rule 6)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 33)
+	(set-strategic-number sn-wood-gatherer-percentage 42)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+	(set-strategic-number sn-maximum-town-size 15)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == castle-age)
+	(building-type-count-total monastery > 0)
+	(building-type-count-total university > 0)
+	(strategic-number sn-low-eco-push != 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 47)
+	(set-strategic-number sn-wood-gatherer-percentage 23)
+	(set-strategic-number sn-gold-gatherer-percentage 30)
+	(set-strategic-number sn-maximum-town-size 17)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == castle-age)
+	(strategic-number sn-low-eco-push == 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 17)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(set-strategic-number sn-gold-gatherer-percentage 45)
+	(set-strategic-number sn-maximum-town-size 17)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == castle-age)
+	(game-time > 1860)
+	(strategic-number sn-low-eco-push == 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 12)
+	(set-strategic-number sn-wood-gatherer-percentage 41)
+	(set-strategic-number sn-gold-gatherer-percentage 47)
+	(set-strategic-number sn-maximum-town-size 17)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 33)
+	(set-strategic-number sn-gold-gatherer-percentage 37)
+	(set-strategic-number sn-maximum-town-size 20)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == imperial-age)
+	(nor	(research-available ri-arbalest)
+		(research-available ri-bracer))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 17)
+	(set-strategic-number sn-wood-gatherer-percentage 42)
+	(set-strategic-number sn-gold-gatherer-percentage 41)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(disable-self)
+)
+#else
+(defrule
+	(up-compare-goal gl-strategy != fi-archer-flush)
+	(game-time > 1200)
+=>
+	(up-jump-rule 6)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == feudal-age)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 35)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(set-strategic-number sn-gold-gatherer-percentage 15)
+	(set-strategic-number sn-maximum-town-size 15)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == castle-age)
+	(building-type-count-total university > 0)
+	(strategic-number sn-low-eco-push != 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 47)
+	(set-strategic-number sn-wood-gatherer-percentage 23)
+	(set-strategic-number sn-gold-gatherer-percentage 20)
+	(set-strategic-number sn-maximum-town-size 17)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == castle-age)
+	(strategic-number sn-low-eco-push == 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 17)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(set-strategic-number sn-gold-gatherer-percentage 35)
+	(set-strategic-number sn-maximum-town-size 17)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == castle-age)
+	(game-time > 1860)
+	(strategic-number sn-low-eco-push == 1)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 12)
+	(set-strategic-number sn-wood-gatherer-percentage 41)
+	(set-strategic-number sn-gold-gatherer-percentage 37)
+	(set-strategic-number sn-maximum-town-size 17)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == castle-age)
+	(up-compare-goal gl-current-age >= gv-castle-up)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 33)
+	(set-strategic-number sn-gold-gatherer-percentage 27)
+	(set-strategic-number sn-maximum-town-size 20)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == imperial-age)
+	(nor	(research-available ri-arbalest)
+		(research-available ri-bracer))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 17)
+	(set-strategic-number sn-wood-gatherer-percentage 42)
+	(set-strategic-number sn-gold-gatherer-percentage 31)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+	(disable-self)
+)
+#end-if
+
+; ================= AGE UP
+
+(defrule
+	(up-compare-goal gl-strategy != fi-archer-flush)
+	(game-time > 1200)
+=>
+	(up-jump-rule 36)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == feudal-age)
+	(or	(and	(or	(unit-type-count-total villager < 38)
+				(game-time < 1100))
+			(food-amount < 710))
+		(food-amount < 620))
+	(nor	(can-research-with-escrow ri-wheel-barrow)
+		(or	(can-research-with-escrow ri-loom)
+			(can-research-with-escrow castle-age)))
+	(can-train villager)
+=>
+	(train villager)
+)
+
+; ================= RESEARCHES, RESOURCE SPENDING & ATTACKING
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(not	(can-research-with-escrow ri-wheel-barrow))
+	(can-research ri-double-bit-axe)
+=>
+	(research ri-double-bit-axe)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(or	(can-research-with-escrow ri-bodkin-arrow)
+		(can-research-with-escrow ri-thumb-ring))
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(research ri-bodkin-arrow)
+	(research ri-thumb-ring)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == castle-age)
+	(or	(town-under-attack)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(research-completed ri-bodkin-arrow)
+	(research-completed ri-crossbow)
+	(strategic-number sn-allow-resource-spending < 2)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 2)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == imperial-age)
+	(or	(research-available ri-arbalest)
+		(research-available ri-bracer))
+	(or	(strategic-number sn-allow-resource-spending > 1)
+		(strategic-number sn-allow-resource-spending == 0))
+=>
+	(set-strategic-number sn-allow-resource-spending 1)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == imperial-age)
+	(research-completed ri-bracer)
+	(research-completed ri-arbalest)
+	(strategic-number sn-allow-resource-spending < 6)
+=>
+	(set-strategic-number sn-allow-resource-spending 6)
+)
+
+(defrule
+
+	(current-age >= castle-age)
+	(goal gl-strategy fi-archer-flush)
+	(research-completed ri-bodkin-arrow)
+	(research-completed ri-crossbow)
+	(nand	(player-valid 5)
+		(current-age < imperial-age))
+=>
+	(enable-timer 1 0)
+	(enable-timer 7 0)
+	(set-strategic-number sn-percent-attack-soldiers 1)
+	(attack-now)
+	(disable-self)
+)
+
+(defrule
+	(players-current-age focus-player < imperial-age)
+	(current-age == castle-age)
+	(goal gl-strategy fi-archer-flush)
+	(up-compare-goal gl-assisting-ally != YES)
+	(strategic-number sn-threat-level < -1)
+=>
+	(set-strategic-number sn-threat-level -1)
+)
+
+(defrule
+	(players-current-age focus-player < imperial-age)
+	(current-age == castle-age)
+	(goal gl-strategy fi-archer-flush)
+	(soldier-count >= 30)
+	(or	(players-unit-type-count focus-player elite-skirmisher < 5)
+		(or	(unit-type-count-total mangonel-line > 0)
+			(or	(unit-type-count-total scorpion-line > 1)
+				(unit-type-count-total eagle-warrior-line > 4))))
+	(or	(players-unit-type-count focus-player knight-line < 4)
+		(unit-type-count-total monk > 4))
+	(strategic-number sn-threat-level > 0); -1
+=>
+	(set-strategic-number sn-threat-level 0)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(players-current-age focus-player < imperial-age)
+	(current-age == imperial-age)
+	(nor	(research-available ri-bracer)
+		(research-available ri-arbalest))
+	(strategic-number sn-threat-level > -4)
+	(research-completed ri-bodkin-arrow)
+	(research-completed ri-crossbow)
+=>
+	(set-strategic-number sn-threat-level -4)
+)
+
+; ================= BUILDINGS
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(game-time > 1200)
+	(or	(building-type-count-total mining-camp < 3)
+		(game-time > 1700))
+	(building-type-count-total mining-camp < 5)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(building-type-count-total barracks < 1)
+	(not	(building-available archery-range))
+	(can-build barracks)
+=>
+	(build barracks)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(or	(civ-selected saracen)
+		(up-compare-goal gl-current-age >= gv-castle-up))
+	(building-type-count-total market < 1)
+	(building-type-count-total archery-range > 1)
+	(can-build market)
+=>
+	(build market)
+	(set-strategic-number sn-stone-gatherer-percentage 10)
+	(set-strategic-number sn-stone-dropsite-distance 3)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(goal TC 0)
+	(civ-selected saracen)
+	(can-sell-commodity stone)
+=>
+	(sell-commodity stone)
+	(sell-commodity stone)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(building-type-count-total monastery < 1)
+	(can-build monastery)
+=>
+	(build monastery)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(or	(strategic-number sn-low-eco-push != 1)
+		(soldier-count > 55))
+	(building-type-count-total monastery > 0)
+	(building-type-count-total university < 1)
+	(can-build university)
+=>
+	(set-strategic-number sn-maximum-town-size 20)
+	(build university)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(or	(building-type-count-total archery-range < 2)
+		(or	(and	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+					(strategic-number sn-low-eco-push == 1))
+				(building-type-count-total archery-range < 4))
+			(unit-type-count-total villager > 50)))
+	(building-type-count-total archery-range < 6)
+	(can-build archery-range)
+=>
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(unit-type-count-total villager > 55)
+	(not	(research-available ri-ballistics))
+	(or	(building-type-count-total archery-range < 7)
+		(unit-type-count-total villager > 60))
+	(or	(building-type-count-total archery-range < 8)
+		(unit-type-count-total villager > 65))
+	(or	(building-type-count-total archery-range < 9)
+		(unit-type-count-total villager > 70))
+	(building-type-count-total archery-range < 10)
+	(can-build archery-range)
+=>
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(unit-type-count-total villager > 75)
+	(or	(building-type-count-total archery-range < 11)
+		(or	(and	(unit-type-count-total villager > 80)
+				(building-type-count-total archery-range < 12))
+			(or	(and	(unit-type-count-total villager > 85)
+					(building-type-count-total archery-range < 13))
+				(unit-type-count-total villager > 90))))
+	(building-type-count-total archery-range < 15)
+	(can-build archery-range)
+=>
+	(build archery-range)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == feudal-age)
+	(nand	(building-type-count-total blacksmith < 1)
+		(up-compare-goal gl-current-age >= gv-feudal-up))
+	(or	(building-type-count-total blacksmith > 0)
+		(building-type-count-total market > 0))
+	(or	(building-type-count-total archery-range > 1)
+		(wood-amount > 235))
+	(building-type-count-total farm < 16)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(building-type-count-total blacksmith > 0)
+	(current-age >= castle-age)
+	(or	(and	(current-age == castle-age)
+			(and	(building-type-count-total farm < 19)
+				(and	(building-type-count-total university > 0)
+					(strategic-number sn-low-eco-push != 1))))
+		(idle-farm-count <= 1))
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(building-type-count-total blacksmith < 1)
+	(building-type-count-total archery-range > 1)
+	(can-build blacksmith)
+=>
+	(build blacksmith)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(not	(goal MILITARY 1))
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 0)
+=>
+	(set-strategic-number sn-add-rams-in-attack 1)
+	(disable-timer 2)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(goal MILITARY 1)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-add-rams-in-attack == 1)
+=>
+	(enable-timer 2 70)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(goal MILITARY 1)
+	(timer-triggered 2)
+	(building-type-count-total farm > 7)
+	(strategic-number sn-add-rams-in-attack == 0)
+	(building-type-count-total siege-workshop < 1)
+	(wood-amount < 200)
+=>
+	(set-escrow-percentage wood 100)
+	(set-strategic-number sn-add-rams-in-attack 2)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(strategic-number sn-add-rams-in-attack == 2)
+	(or	(building-type-count-total siege-workshop > 0)
+		(or	(wood-amount >= 200)
+			(or	(goal MILITARY 0)
+				(building-type-count-total farm <= 7))))
+=>
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(set-strategic-number sn-add-rams-in-attack 0)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(goal MILITARY 1)
+	(timer-triggered 2)
+	(building-type-count-total siege-workshop < 1)
+	(can-build-with-escrow siege-workshop)
+=>
+	(release-escrow wood)
+	(set-escrow-percentage wood 0)
+	(build siege-workshop)
+)
+
+; ================= UNITS
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age >= castle-age)
+	(players-unit-type-count focus-player skirmisher-line > 2)
+	(or	(players-unit-type-count focus-player skirmisher-line > 6)
+		(unit-type-count-total eagle-warrior-line < 4))
+	(unit-type-count-total eagle-warrior-line < 10)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(or	(current-age == feudal-age)
+		(unit-type-count-total archer-line < 7))
+	(or	(nand	(up-compare-goal gl-current-age <= gv-feudal)
+			(and	(food-amount > 600)
+				(gold-amount < 245)))
+		(or	(town-under-attack)
+			(unit-type-count-total archer-line < 7)))
+	(unit-type-count-total archer-line < 140)
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == castle-age)
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(or	(food-amount < high-castle-food)
+			(town-under-attack)))
+	(nand	(research-available ri-bodkin-arrow)
+		(gold-amount < 145))
+	(nand	(research-available ri-crossbow)
+		(food-amount >= 125))
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(current-age == imperial-age)
+	(nand	(research-available ri-bracer)
+		(gold-amount < 245))
+	(nand	(research-available ri-arbalest)
+		(food-amount >= 350))
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+; ================= STRATEGY
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(game-time > 2700)
+=>
+	(set-goal gl-strategy default)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(player-valid 3)
+=>
+	(up-jump-rule 4)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(game-time > 1740)
+	(strategic-number sn-low-eco-push == 1)
+=>
+	(set-goal gl-strategy xbow-rush)
+	(set-goal TC 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(strategic-number sn-low-eco-push != 1)
+	(food-amount < 500)
+	(or	(and	(goal MILITARY 1)
+			(game-time < 1500))
+		(and	(commodity-selling-price stone < 91)
+			(game-time < 1400)))
+=>
+	(set-strategic-number sn-low-eco-push 1)
+	(chat-to-player my-player-number "1Fight at castle age")
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(strategic-number sn-low-eco-push != 1)
+	(players-current-age every-enemy >= castle-age)
+	(food-amount < 500)
+	(players-unit-type-count every-enemy skirmisher-line < 10)
+	(players-military-population any-enemy > 35)
+	(or	(soldier-count < 25); +2
+		(players-military-population any-enemy > 40))
+	(or	(soldier-count < 30)
+		(players-military-population any-enemy > 45))
+	(soldier-count < 35)
+=>
+	(set-strategic-number sn-low-eco-push 1)
+	(chat-to-player my-player-number "1Fight at castle age")
+)
+
+(defrule
+	(goal gl-strategy fi-archer-flush)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(strategic-number sn-low-eco-push != 1)
+	(players-current-age every-enemy >= castle-age)
+	(food-amount < 500)
+	(players-unit-type-count every-enemy skirmisher-line < 13)
+	(players-military-population any-enemy > 50)
+	(or	(soldier-count < 39); 42
+		(players-military-population any-enemy > 55))
+	(or	(soldier-count < 44); 47
+		(players-military-population any-enemy > 60))
+	(soldier-count < 48); 52
+=>
+	(set-strategic-number sn-low-eco-push 1)
+	(chat-to-player my-player-number "1Fight at castle age")
+)
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(game-time > 10)
+=>
+	(set-goal gl-strategy xbow-rush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type FC2)
+	(disable-self)
+)
+
+

@@ -1,0 +1,24 @@
+(defrule
+	(or	(hold-relics)
+		(or	(building-type-count-total wonder > 0)
+			(players-building-type-count wonder any-ally > 0)))
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(or	(population > 150)
+		(population > almost-full-pop))
+	(nor	(player-in-game every-enemy)
+		(taunt-detected every-enemy 254))
+	(not	(taunt-detected every-ally 254))
+	(player-in-game every-ally)
+	(player-in-game any-human-ally)
+	(taunt-detected any-computer-ally 254)
+	(taunt-detected any-computer-enemy 254)
+=>
+	(chat-to-player every-ally "189")
+	(chat-to-player every-enemy "189")
+	(set-goal gl-identity 4651)
+	(disable-self)
+)

@@ -1,0 +1,121 @@
+(defconst super-traitor-chat-id 22024); Now we must be foes!
+(defconst traitor-chat-id 22075); In fact, I'm switching sides! Fare thee well, losers.
+(defconst betrayed-chat-id 22103); We shall annihilate your civilization.
+(defconst wonder-game-time 3333)
+(defconst camp-raid-time-variance 1144)
+(defconst nomad-tc-up-chat "My TC")
+(defconst gg-chat "gg, re?")
+(defconst boar-stealing-nature 1)
+(defconst villager-laming-nature 1)
+
+#load-if-not-defined UP-SCENARIO-GAME
+
+#load-if-not-defined DEATH-MATCH
+#load-if-defined HUN-CIV
+(defrule
+	(game-time > 35)
+	(game-time < 45)
+	(building-type-count-total town-center == 0)
+	(unit-type-count transport-ship == 0)
+=>
+	(chat-to-all "Yeah, the best civ...")
+	(disable-self)
+)
+#end-if
+#end-if
+
+#load-if-defined UP-MULTIPLAYER-GAME
+(defrule
+	(difficulty <= hard)
+	(players-score any-enemy < 4000)
+	(players-score any-enemy > 7500)
+	(current-score < 4000)
+	(players-score every-ally < 4000)
+	(goal SLING 0)
+=>
+	(up-get-player-fact this-any-enemy player-number 0 temporary-goal)
+	(up-chat-data-to-all "p%d uses hax" g: temporary-goal)
+	(disable-self)
+)
+
+(defrule
+	(goal MILITARY 1)
+	(player-human target-player)
+	(goal gl-strategy turkish-bombardment)
+	(unit-type-count bombard-cannon > 5)
+	(players-building-count target-player > 0)
+=>
+	(chat-to-all "This is the Turkish Bombardment.")
+	(disable-self)
+)
+#end-if
+
+#load-if-not-defined WONDER-RACE
+#load-if-not-defined KING-OF-THE-HILL
+#load-if-not-defined TURBO-RANDOM-MAP
+#load-if-defined DARK-AGE-START
+#load-if-defined DIFFICULTY-HARD
+(defrule
+	(goal MILITARY 1)
+	(or	(goal gl-strategy eew-strategy)
+		(or	(goal gl-strategy CA-rush)
+			(or	(goal gl-strategy xbow-rush)
+				(or	(goal gl-strategy scorpion-rush)
+					(goal gl-strategy turkish-fast-imp)))))
+	(game-time > 1600)
+	(game-time < 2400)
+	(soldier-count > 50)
+	(players-military-population focus-player < 5)
+=>
+	(chat-to-all-using-id 22104); Your cities we shall burn to ashes.
+	(disable-self)
+)
+
+#load-if-defined VICTORY-STANDARD
+(defrule
+	(up-compare-goal victory-time > 0)
+	(up-compare-goal victory-time < 20)
+	(not	(hold-relics))
+	(players-building-type-count every-ally wonder == 0)
+	(players-building-type-count my-player-number wonder == 0)
+	(players-building-type-count any-enemy wonder > 0)
+=>
+	(chat-to-all "26 26")
+	(disable-self)
+)
+#end-if
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(up-compare-goal gl-TC-garrisoning >= 1)
+	(difficulty <= hard)
+	(not	(player-computer any-enemy))
+=>
+	(chat-to-all "You may want to control your units better.")
+	(disable-self)
+)
+
+(defrule
+	(goal gl-boar-stealing 2)
+	(nor	(map-type islands)
+		(map-type fortress))
+=>
+	(chat-to-all "I think I have more boars than usually.")
+	(disable-self)
+)
+
+(defrule
+	(or	(players-tribute-memory any-ally food >= 1000)
+		(or	(players-tribute-memory any-ally wood >= 1000)
+			(or	(players-tribute-memory any-ally gold >= 1000)
+				(players-tribute-memory any-ally stone >= 500))))
+=>
+	(chat-to-allies-using-id 22016); The goods we have obtained from thee are glorious!
+	(disable-self)
+)
+#end-if

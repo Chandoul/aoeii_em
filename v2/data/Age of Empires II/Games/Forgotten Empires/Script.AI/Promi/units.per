@@ -1,0 +1,5679 @@
+;=========================================================
+; Civilian units
+;=========================================================
+;=========================================================
+; Transport ships
+;=========================================================
+(defrule
+	(goal islands yes)
+(or	(population >= max-civ-pop)
+	(goal attacking yes))
+(or	(population >= max-civ-pop)
+	(and	(soldier-count >= 25)
+		(or	(warboat-count >= 11)
+			(goal enemy-boats no))))
+	(unit-type-count-total transport-ship < 6)
+	(can-train transport-ship)
+=>
+	(train transport-ship))
+;=========================================================
+; Important - Siege
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal underattack no)
+(or	(military-population > 40)
+(or	(strategic-number my-sn-military-superiority >= 2)
+(or	(goal attacking yes)
+	(goal researchplan yes))))
+	(unit-type-count-total trebuchet-set < 3)
+	(can-train trebuchet)
+=>
+	(train trebuchet))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number sn-current-age >= imperial)
+(or	(military-population > 20)
+(or	(strategic-number my-sn-military-superiority >= 1)
+(or	(goal attacking yes)
+	(goal researchplan yes))))
+(or	(goal underattack no)
+	(strategic-number my-sn-military-superiority >= 0))
+	(unit-type-count-total battering-ram-line < 6)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+;=========================================================
+; Villagers
+;=========================================================
+(defrule
+	(up-compare-goal strategy == r-flush)
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+(or	(unit-type-count-total villager < 22)
+	(and	(food-amount <= 420)
+		(unit-type-count-total villager < 25)))
+	(strategic-number sn-current-age == dark)
+	(can-train villager)
+=>
+	(disable-timer FDrop)
+	(enable-timer FDrop 21)
+	(train villager))
+(defrule
+	(up-compare-goal strategy == r-flush)
+=>
+	(up-jump-rule 3))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < darkvils);31/28
+	(food-amount < 800)
+(or	(goal enemy-goal 0)
+	(goal strategy drush))
+	(strategic-number sn-current-age == dark)
+	(can-train villager)
+=>
+	(disable-timer FDrop)
+	(enable-timer FDrop 21)
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 27)
+	(strategic-number sn-current-age == dark)
+(or	(up-compare-goal enemy-goal != 0)
+	(food-amount <= 420))
+	(can-train villager)
+=>
+	(disable-timer FDrop)
+	(enable-timer FDrop 21)
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 24)
+	(strategic-number sn-current-age == dark)
+	(can-train villager)
+=>
+	(disable-timer FDrop)
+	(enable-timer FDrop 21)
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+(or	(goal enemy-goal 0)
+	(goal strategy drush))
+	(building-type-count town-center >= 2)
+	(unit-type-count-total villager < 40)
+	(food-amount < 450)
+	(strategic-number sn-current-age <= dfeudal)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 23); for >=normal resources starts or sth else
+	(strategic-number sn-current-age == feudal)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+	(food-amount >= 830)
+	(gold-amount <= 170)
+(not	(can-research-with-escrow castle-age))
+	(dropsite-min-distance wood >= 0)
+	(dropsite-min-distance wood < 255)
+	(strategic-number sn-current-age == feudal)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+	(goal enemy-goal flush)
+(or	(game-time <= 1350)
+	(and	(game-time <= 1440)
+		(food-amount <= 650)))
+	(food-amount <= 720)
+	(goal woodavailable yes)
+(or	(strategic-number sn-current-age == feudal)
+	(strategic-number sn-current-age == dfeudal))
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+	(food-amount <= 600)
+	(goal woodavailable yes)
+(or	(strategic-number sn-current-age == feudal)
+	(strategic-number sn-current-age == dfeudal))
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+	(food-amount >= 750)
+	(building-type-count blacksmith == 0)
+	(building-type-count stable == 0)
+	(building-type-count market == 0)
+	(goal woodavailable yes)
+	(strategic-number sn-current-age == feudal)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+	(food-amount >= 850)
+(or	(building-type-count blacksmith == 0)
+	(gold-amount <= 170))
+;(not	(can-research-with-escrow castle-age)) ^ stops CA research delay with the new queuesys
+	(goal woodavailable yes)
+	(strategic-number sn-current-age == feudal)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+#load-if-defined WONDER-RACE
+(defrule
+;	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 50)
+	(strategic-number sn-current-age >= fcastlea)
+	(can-train villager)
+=>
+	(train villager))
+#else
+(defrule
+(or	(population < max-civ-pop)
+	(and	(unit-type-count-total villager < 50)
+		(population < del-civ-pop)))
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 60)
+	(strategic-number sn-current-age >= fcastlea)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(civilian-population < up-max-civ)
+	(goal strategy r-flush)
+	(strategic-number sn-current-age >= dfeudal)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(goal Multiplayer no)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 90)
+	(dropsite-min-distance wood < 20)
+	(goal woodavailable yes)
+	(strategic-number sn-current-age >= fcastlea)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(goal Multiplayer yes)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 60)
+	(dropsite-min-distance wood < 20)
+	(goal woodavailable yes)
+	(strategic-number sn-current-age >= fcastlea)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(goal Multiplayer yes)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 90)
+	(dropsite-min-distance wood < 20)
+	(unit-type-count-total trade-cart < 35)
+	(unit-type-count-total trade-cog < 35)
+(or	(wood-amount < 3200)
+(or	(food-amount < 3200)
+	(gold-amount < 3200)))
+	(goal woodavailable yes)
+	(strategic-number sn-current-age >= fcastlea)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(goal Multiplayer no)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 110)
+	(dropsite-min-distance wood < 20)
+(or	(wood-amount < 3200)
+(or	(food-amount < 3200)
+	(gold-amount < 3200)))
+	(goal woodavailable yes)
+	(strategic-number sn-current-age >= fcastlea)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(goal Multiplayer yes)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 100)
+	(dropsite-min-distance wood < 20)
+	(unit-type-count-total trade-cart < 35)
+	(unit-type-count-total trade-cog < 35)
+(or	(wood-amount < 2400)
+(or	(food-amount < 2400)
+	(gold-amount < 2400)))
+	(goal woodavailable yes)
+	(strategic-number sn-current-age >= fcastlea)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(goal Multiplayer no)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 115)
+	(dropsite-min-distance wood < 20)
+(or	(wood-amount < 2400)
+(or	(food-amount < 2400)
+	(gold-amount < 2400)))
+	(goal woodavailable yes)
+	(strategic-number sn-current-age >= fcastlea)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(goal Multiplayer yes)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 110)
+	(dropsite-min-distance wood < 20)
+	(unit-type-count-total trade-cart < 35)
+	(unit-type-count-total trade-cog < 35)
+(or	(wood-amount < 1600)
+(or	(food-amount < 1600)
+	(gold-amount < 1600)))
+	(goal woodavailable yes)
+	(strategic-number sn-current-age >= fcastlea)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(goal Multiplayer no)
+	(civilian-population < up-max-civ)
+	(unit-type-count-total villager < 120)
+	(dropsite-min-distance wood < 20)
+(or	(wood-amount < 1600)
+(or	(food-amount < 1600)
+	(gold-amount < 1600)))
+	(goal woodavailable yes)
+	(strategic-number sn-current-age >= fcastlea)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(goal Multiplayer yes)
+	(civilian-population < up-max-civ)
+; ?	(unit-type-count-total villager < 120)
+	(strategic-number sn-current-age >= fcastlea)
+	(dropsite-min-distance wood < 20)
+	(unit-type-count-total trade-cart < 35)
+	(unit-type-count-total trade-cog < 35)
+(or	(wood-amount < 800)
+(or	(food-amount < 800)
+	(gold-amount < 800)))
+	(goal woodavailable yes)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+(defrule
+	(population < del-civ-pop)
+	(goal Multiplayer no)
+	(civilian-population < up-max-civ)
+; ?	(unit-type-count-total villager < 125)
+	(strategic-number sn-current-age >= fcastlea)
+	(dropsite-min-distance wood < 20)
+(or	(wood-amount < 800)
+(or	(food-amount < 800)
+	(gold-amount < 800)))
+	(goal woodavailable yes)
+	(can-train villager)
+=>
+	(train villager))
+;=========================================================
+; Trade Carts
+;=========================================================
+(defrule
+	(goal islands no)
+; test	(strategic-number my-sn-military-superiority >= 0)
+	(players-building-type-count any-ally market > 0)
+(or	(wood-amount > 725)
+	(goal dreitc yes))
+(or	(building-type-count-total stable >= 1)
+	(building-type-count-total archery-range >= 2))
+	(unit-type-count-total 178 <= 1); Dead trade cart (empty)
+	(unit-type-count-total 205 <= 2); Dead trade cart (full)
+	(unit-type-count-total trade-cart < 5)
+	(can-train trade-cart)
+=>
+	(train trade-cart))
+;=========================================================
+#load-if-not-defined POPULATION-CAP-25
+#load-if-not-defined POPULATION-CAP-50
+(defrule
+	(goal islands no)
+(or	(strategic-number my-sn-military-superiority >= 0)
+(or	(goal defend no)
+	(population >= del-civ-pop)))
+	(players-building-type-count any-ally market > 0)
+(or	(wood-amount > 725)
+	(goal dreitc yes))
+	(unit-type-count-total 178 <= 1); Dead trade cart (empty)
+	(unit-type-count-total 205 <= 2); Dead trade cart (full)
+	(unit-type-count-total trade-cart < 20)
+	(can-train trade-cart)
+=>
+	(train trade-cart))
+#end-if
+#end-if
+;=========================================================
+#load-if-not-defined POPULATION-CAP-25
+#load-if-not-defined POPULATION-CAP-50
+#load-if-not-defined POPULATION-CAP-75
+#load-if-not-defined POPULATION-CAP-100
+#load-if-not-defined POPULATION-CAP-125
+
+#load-if-not-defined TINY-MAP
+
+(defrule
+	(goal islands no)
+; test	(military-population > 22)
+(or	(strategic-number my-sn-military-superiority >= 0)
+(or	(goal defend no)
+(or	(population >= max-civ-pop)
+	(military-population > 30))))
+	(players-building-type-count any-ally market > 0)
+	(strategic-number sn-current-age >= imperial)
+	(unit-type-count-total 178 <= 2); Dead trade cart (empty)
+	(unit-type-count-total 205 <= 3); Dead trade cart (full)
+	(unit-type-count-total trade-cart < 45)
+	(can-train trade-cart)
+=>
+	(train trade-cart))
+(defrule
+	(goal islands no)
+(or	(strategic-number my-sn-military-superiority >= 0)
+(or	(goal underattack no)
+	(military-population > 30)))
+	(players-building-type-count any-ally market > 0)
+(or	(dropsite-min-distance wood >= 255)
+	(dropsite-min-distance wood == -1))
+	(unit-type-count-total 178 <= 2); Dead trade cart (empty)
+	(unit-type-count-total 205 <= 3); Dead trade cart (full)
+	(unit-type-count-total trade-cart < 60)
+	(can-train trade-cart)
+=>
+	(train trade-cart))
+#end-if
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-not-defined POPULATION-CAP-25
+#load-if-not-defined POPULATION-CAP-50
+#load-if-not-defined POPULATION-CAP-75
+#load-if-not-defined POPULATION-CAP-100
+#load-if-not-defined POPULATION-CAP-125
+#load-if-not-defined TEAM-ISLANDS-MAP
+#load-if-defined TINY-MAP
+(defrule
+	(goal islands yes)
+(not	(town-under-attack))
+(or	(goal enemy-boats no)
+	(warboat-count >= 10))
+	(goal defend no)
+	(population >= del-civ-pop)
+	(players-building-type-count any-ally dock > 0)
+	(strategic-number sn-current-age >= imperial)
+	(unit-type-count-total trade-cog < 40)
+	(can-train trade-cog)
+=>
+	(train trade-cog))
+#else
+(defrule
+	(goal islands yes)
+(not	(town-under-attack))
+(or	(goal enemy-boats no)
+	(warboat-count >= 10))
+	(goal defend no)
+	(population >= del-civ-pop)
+	(players-building-type-count any-ally dock > 0)
+	(strategic-number sn-current-age >= imperial)
+	(unit-type-count-total trade-cog < 50)
+	(can-train trade-cog)
+=>
+	(train trade-cog))
+#end-if
+#else ; Team-islands
+(defrule
+;TI	(goal islands no)
+;	(civilian-population < max-civ-pop)
+(or	(strategic-number my-sn-military-superiority >= 0)
+(or	(goal defend no)
+	(population >= del-civ-pop)))
+	(players-building-type-count any-ally market > 0)
+	(goal dreitc yes)
+	(unit-type-count-total 178 <= 2); Dead trade cart (empty)
+	(unit-type-count-total 205 <= 3); Dead trade cart (full)
+	(unit-type-count-total trade-cart < 45)
+	(can-train trade-cart)
+=>
+	(train trade-cart))
+(defrule
+;TI	(goal islands no)
+;	(civilian-population < max-civ-pop)
+(or	(strategic-number my-sn-military-superiority >= 0)
+	(goal defend no))
+	(players-building-type-count any-ally market > 0)
+(or	(dropsite-min-distance wood >= 255)
+	(dropsite-min-distance wood == -1))
+	(unit-type-count-total 178 <= 2); Dead trade cart (empty)
+	(unit-type-count-total 205 <= 3); Dead trade cart (full)
+	(unit-type-count-total trade-cart < 60)
+	(can-train trade-cart)
+=>
+	(train trade-cart))
+#end-if
+(defrule
+	(goal islands no)
+;	(civilian-population < max-civ-pop)
+(or	(strategic-number my-sn-military-superiority >= 0)
+(or	(goal defend no)
+(or	(population >= del-civ-pop)
+	(military-population > 30))))
+	(players-building-type-count any-ally market > 0)
+	(goal dreitc yes)
+	(unit-type-count-total 178 <= 2); Dead trade cart (empty)
+	(unit-type-count-total 205 <= 3); Dead trade cart (full)
+	(unit-type-count-total trade-cart < 40)
+	(can-train trade-cart)
+=>
+	(train trade-cart))
+(defrule
+	(goal islands no)
+;	(civilian-population < max-civ-pop)
+(or	(strategic-number my-sn-military-superiority >= 0)
+	(goal defend no))
+	(players-building-type-count any-ally market > 0)
+(or	(dropsite-min-distance wood >= 255)
+	(dropsite-min-distance wood == -1))
+	(unit-type-count-total 178 <= 2); Dead trade cart (empty)
+	(unit-type-count-total 205 <= 3); Dead trade cart (full)
+	(unit-type-count-total trade-cart < 50)
+	(can-train trade-cart)
+=>
+	(train trade-cart))
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+(defrule
+	(goal islands no)
+	(population < del-civ-pop)
+;	(civilian-population < max-civ-pop)
+	(unit-type-count-total villager <= 0)
+	(building-type-count town-center <= 0)
+	(players-building-type-count any-ally market > 0)
+	(unit-type-count-total 178 <= 1); Dead trade cart (empty)
+	(unit-type-count-total 205 <= 2); Dead trade cart (full)
+	(unit-type-count-total trade-cart < 65)
+	(can-train trade-cart)
+=>
+	(train trade-cart))
+(defrule
+	(goal islands yes)
+	(population < del-civ-pop)
+;	(civilian-population < max-civ-pop)
+	(unit-type-count-total villager <= 0)
+	(building-type-count town-center <= 0)
+	(players-building-type-count any-ally dock > 0)
+	(unit-type-count-total trade-cog < 111)
+	(can-train trade-cog)
+=>
+	(train trade-cog))
+;=========================================================
+; Military units
+;=========================================================
+;=========================================================
+; Important - Unique Units
+;=========================================================
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined SLAVIC-CIV
+
+#load-if-defined BYZANTINE-CIV
+
+(defrule
+	(goal milunits yes)
+	(goal e-cata yes)
+	(strategic-number moenche < 15)
+;(not	(players-unit-type-count focus-player spearman-line > 59))
+	(goal siegereq yes)
+;	(unit-type-count-total my-unique-unit-line < 80)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+#end-if
+
+#load-if-defined FRANKISH-CIV
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+	(strategic-number cavalry >= 40))
+	(strategic-number moenche < 15)
+	(strategic-number cavalry >= 25)
+	(strategic-number infantry <= 15)
+	(strategic-number archers <= 10)
+	(strategic-number gunpowder <= 10)
+	(players-unit-type-count focus-player jaguar-man-line <= 15)
+	(players-unit-type-count focus-player cataphract-line <= 15)
+	(players-unit-type-count focus-player samurai-line <= 15)
+	(goal siegereq yes)
+	(unit-type-count-total my-unique-unit-line < 70)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+#end-if
+
+#load-if-defined SARACEN-CIV
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+	(strategic-number cavalry >= 25))
+	(strategic-number moenche < 15)
+; test	(strategic-number cavalry >= 10)
+;	(strategic-number infantry <= 25)
+	(strategic-number archers <= 10)
+	(players-unit-type-count focus-player spearman-line <= 65)
+	(players-unit-type-count focus-player skirmisher-line <= 50)
+	(players-unit-type-count focus-player cataphract-line <= 15)
+	(goal siegereq yes)
+;	(unit-type-count-total my-unique-unit-line < 70)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+#end-if
+
+#load-if-defined TEUTONIC-CIV
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+	(strategic-number my-sn-military-superiority <= -1))
+	(strategic-number moenche < 10)
+(nor	(players-unit-type-count focus-player cataphract-line >= 22)
+(or	(players-unit-type-count focus-player war-elephant-line >= 14)
+	(strategic-number archers >= 25)))
+	(goal siegereq yes)
+	(unit-type-count-total my-unique-unit-line < 80)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+#end-if
+
+#load-if-defined PERSIAN-CIV
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+	(strategic-number my-sn-military-superiority <= -1))
+	(strategic-number moenche < 10)
+	(players-unit-type-count focus-player spearman-line < 60)
+;	(goal siegereq yes)
+;	(unit-type-count-total my-unique-unit-line < 90)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+#end-if
+
+#load-if-defined JAPANESE-CIV
+
+;(defrule
+;	(goal milunits yes)
+;	(goal e-cata yes)
+;	(strategic-number moenche < 15)
+;(nor	(strategic-number archers > 10)
+;	(strategic-number cavalry > 10)))
+;	(goal siegereq yes)
+;	(unit-type-count-total my-unique-unit-line < 25)
+;	(can-train my-unique-unit-line)
+;=>
+;	(train my-unique-unit-line))
+
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 15)
+(nor	(strategic-number archers > 15)
+	(strategic-number cavalry > 15))
+(or	(players-unit-type-count focus-player huskarl-line >= 10)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 10)
+	(players-unit-type-count focus-player woad-raider-line >= 10)))
+	(population < del-civ-pop)
+	(unit-type-count-total my-unique-unit-line < 55)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 15)
+(nor	(strategic-number archers > 15)
+	(strategic-number cavalry > 15))
+(or	(players-unit-type-count focus-player throwing-axeman-line >= 10)
+	(players-unit-type-count focus-player berserk-line >= 10))
+	(population < del-civ-pop)
+	(unit-type-count-total my-unique-unit-line < 55)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 15)
+(nor	(strategic-number archers > 15)
+	(strategic-number cavalry > 15))
+(or	(players-unit-type-count focus-player huskarl-line >= 10)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 10)
+	(players-unit-type-count focus-player woad-raider-line >= 10)))
+	(goal siegereq yes)
+	(unit-type-count-total my-unique-unit-line < 55)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 15)
+(nor	(strategic-number archers > 15)
+	(strategic-number cavalry > 15))
+(or	(players-unit-type-count focus-player throwing-axeman-line >= 10)
+	(players-unit-type-count focus-player berserk-line >= 10))
+	(goal siegereq yes)
+	(unit-type-count-total my-unique-unit-line < 55)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+#end-if
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV ; Celts, Vikings
+
+(defrule
+	(goal milunits yes)
+	(goal e-cata yes)
+(nor	(players-unit-type-count focus-player jaguar-man-line >= 18)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 18)
+(or	(players-unit-type-count focus-player samurai-line >= 18)
+(or	(players-unit-type-count focus-player knight-line >= 30)
+	(strategic-number archers >= 25)))))
+	(goal siegereq yes)
+	(unit-type-count-total my-unique-unit-line < 90)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV
+#load-if-not-defined VIKING-CIV ; Britons, Chinese, Mayan, Mongols
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+	(strategic-number infantry >= 25))
+(nor	(strategic-number siege >= 10)
+(or	(players-unit-type-count focus-player skirmisher-line >= 65)
+(or	(players-unit-type-count focus-player huskarl-line >= 25)
+	(strategic-number cavalry >= 25))))
+	(goal siegereq yes)
+;	(unit-type-count-total my-unique-unit-line < 90)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+	(strategic-number infantry >= 25))
+(nor	(strategic-number siege >= 10)
+(or	(players-unit-type-count focus-player skirmisher-line >= 65)
+(or	(players-unit-type-count focus-player huskarl-line >= 25)
+	(strategic-number cavalry >= 25))))
+	(goal siegereq yes)
+	(building-type-count castle >= 3)
+	(goal disablearb no)
+=>
+	(set-goal disablearb yes))
+
+(defrule
+	(goal milunits yes)
+(nor	(goal e-cata yes)
+	(strategic-number infantry >= 25))
+(or	(strategic-number siege >= 10)
+(or	(players-unit-type-count focus-player skirmisher-line >= 65)
+(or	(players-unit-type-count focus-player huskarl-line >= 25)
+	(strategic-number cavalry >= 25))))
+(or	(goal siegereq no)
+	(building-type-count castle < 3))
+	(goal disablearb yes)
+=>
+	(set-goal disablearb no))
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-defined KOREAN-CIV
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+(or	(strategic-number infantry >= 25)
+	(strategic-number archers >= 15)))
+	(strategic-number siege < 10)
+	(players-unit-type-count focus-player skirmisher-line < 65)
+	(players-unit-type-count focus-player huskarl-line < 25)
+	(players-unit-type-count focus-player mameluke-line < 25)
+	(strategic-number cavalry < 25)
+	(goal siegereq yes)
+;	(unit-type-count-total my-unique-unit-line < 90)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+(or	(strategic-number infantry >= 25)
+	(strategic-number archers >= 15)))
+	(strategic-number siege < 10)
+	(players-unit-type-count focus-player skirmisher-line < 65)
+	(players-unit-type-count focus-player huskarl-line < 25)
+	(players-unit-type-count focus-player mameluke-line < 25)
+	(strategic-number cavalry < 25)
+	(goal siegereq yes)
+	(building-type-count castle >= 3)
+	(goal disablearb no)
+=>
+	(set-goal disablearb yes))
+(defrule
+(or	(goal siegereq no)
+	(building-type-count castle < 3))
+=>
+	(up-jump-rule 1))
+(defrule
+	(goal milunits yes)
+	(goal e-cata no)
+	(strategic-number infantry < 25)
+	(strategic-number archers < 15)
+(or	(strategic-number siege >= 10)
+(or	(players-unit-type-count focus-player skirmisher-line >= 65)
+(or	(players-unit-type-count focus-player huskarl-line >= 25)
+(or	(players-unit-type-count focus-player mameluke-line >= 25)
+	(strategic-number cavalry >= 25)))))
+	(goal disablearb yes)
+=>
+	(set-goal disablearb no))
+
+#end-if
+
+#load-if-defined TURKISH-CIV
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 15)
+	(strategic-number infantry >= 15)))
+;	(strategic-number moenche < 25)
+(nor	(strategic-number siege >= 10)
+(or	(strategic-number cavalry >= 25)
+	(strategic-number archers >= 40)))
+	(goal siegereq yes)
+;	(unit-type-count-total my-unique-unit-line < 80)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+#end-if
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined VIKING-CIV ; Turks, Spanish
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+	(strategic-number infantry >= 15))
+;	(strategic-number moenche < 25)
+(nor	(strategic-number siege >= 10)
+(or	(strategic-number cavalry >= 25)
+	(strategic-number archers >= 40)))
+	(goal siegereq yes)
+;	(unit-type-count-total my-unique-unit-line < 80)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+	(strategic-number infantry >= 15))
+;	(strategic-number moenche < 25)
+(nor	(strategic-number siege >= 10)
+(or	(strategic-number cavalry >= 25)
+	(strategic-number archers >= 40)))
+	(goal siegereq yes)
+	(building-type-count castle >= 3)
+	(goal disablecannon no)
+=>
+	(set-goal disablecannon yes))
+
+(defrule
+	(goal milunits yes)
+(nor	(goal e-cata yes)
+	(strategic-number infantry >= 15))
+;	(strategic-number moenche < 25)
+(or	(strategic-number siege >= 10)
+(or	(strategic-number cavalry >= 25)
+	(strategic-number archers >= 40)))
+(or	(goal siegereq no)
+	(building-type-count castle < 3))
+	(goal disablecannon yes)
+=>
+	(set-goal disablecannon no))
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(goal milunits yes)
+	(strategic-number infantry >= 15)
+	(strategic-number cavalry < 10)
+	(strategic-number archers < 10)
+	(strategic-number moenche < 15)
+	(goal siegereq yes)
+	(unit-type-count-total my-unique-unit-line < 60)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+#end-if
+#load-if-defined GOTHIC-CIV
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+	(strategic-number archers >= 15))
+	(strategic-number moenche < 15)
+(nor	(players-unit-type-count focus-player militiaman-line >= 30)
+(or	(players-unit-type-count focus-player jaguar-man-line >= 20)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 20)
+(or	(players-unit-type-count focus-player samurai-line >= 20)
+	(strategic-number cavalry > 25)))))
+;	(unit-type-count-total huskarl-set < 70)
+	(can-train b-husk-line)
+=>
+	(train b-husk-line))
+(defrule
+	(goal milunits yes)
+(or	(goal e-cata yes)
+	(strategic-number archers >= 15))
+	(strategic-number moenche < 15)
+(nor	(players-unit-type-count focus-player militiaman-line >= 30)
+(or	(players-unit-type-count focus-player jaguar-man-line >= 20)
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 20)
+(or	(players-unit-type-count focus-player samurai-line >= 20)
+	(strategic-number cavalry > 25)))))
+;	(unit-type-count-total huskarl-set < 70)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+#end-if
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+;=========================================================
+; Siege
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(unit-type-count-total trebuchet-set < 5)
+	(goal underattack no)
+	(population > max-civ-pop)
+(or	(goal attacking yes)
+	(strategic-number my-sn-military-superiority >= 0))
+(or	(players-building-type-count focus-player castle > 0)
+	(players-building-type-count focus-player watch-tower > 1))
+	(can-train trebuchet)
+=>
+	(train trebuchet))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal underattack no)
+	(strategic-number sn-current-age == castlea)
+	(military-population > 20)
+	(strategic-number my-sn-military-superiority >= 0)
+	(unit-type-count-total battering-ram-line < 1)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+;=========================================================
+(defrule
+	(up-compare-goal milunits != no)
+	(goal underattack no)
+	(strategic-number sn-current-age >= castlea)
+(or	(strategic-number my-sn-military-superiority >= 1)
+	(goal attacking yes))
+	(unit-type-count-total battering-ram-line < 3)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal underattack no)
+	(strategic-number sn-current-age == castlea)
+(or	(strategic-number my-sn-military-superiority >= 2)
+	(goal attacking yes))
+	(unit-type-count-total battering-ram-line < 5)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal underattack no)
+	(strategic-number sn-current-age == castlea)
+	(strategic-number my-sn-military-superiority >= 3)
+	(unit-type-count-total battering-ram-line < 7)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number sn-current-age >= imperial)
+(or	(military-population > 30)
+(or	(strategic-number my-sn-military-superiority >= 2)
+(or	(goal attacking yes)
+	(goal researchplan yes))))
+(or	(goal underattack no)
+	(strategic-number my-sn-military-superiority >= 0))
+	(unit-type-count-total battering-ram-line < 10)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(unit-type-count-total battering-ram-line == 0)
+	(enemy-buildings-in-town)
+(or	(players-building-type-count focus-player castle > 0)
+(or	(players-building-type-count focus-player bombard-tower > 0)
+	(players-building-type-count focus-player watch-tower > 1)))
+	(unit-type-count-total trebuchet-set < 3)
+	(can-train trebuchet)
+=>
+	(train trebuchet))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(strategic-number sn-current-age == castlea)
+	(and	(strategic-number sn-current-age >= imperial)
+		(unit-type-count-total trebuchet-set <= 2)))
+(or	(players-building-type-count focus-player castle > 1)
+(or	(players-building-type-count focus-player bombard-tower > 1)
+	(players-building-type-count focus-player watch-tower > 3)))
+	(unit-type-count-total battering-ram-line < 4)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(strategic-number sn-current-age == castlea)
+	(and	(strategic-number sn-current-age >= imperial)
+		(unit-type-count-total trebuchet-set <= 2)))
+	(players-building-type-count focus-player castle > 0)
+	(players-building-type-count focus-player watch-tower > 0)
+	(strategic-number my-sn-military-superiority >= 1)
+	(unit-type-count-total battering-ram-line < 4)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(strategic-number sn-current-age == castlea)
+	(and	(strategic-number sn-current-age >= imperial)
+		(unit-type-count-total trebuchet-set <= 1)))
+	(enemy-buildings-in-town)
+(or	(players-building-type-count focus-player castle > 0)
+(or	(players-building-type-count focus-player bombard-tower > 0)
+	(players-building-type-count focus-player watch-tower > 1)))
+	(unit-type-count-total battering-ram-line < 6)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+;=========================================================
+(defrule
+	(goal milunits no)
+	(enemy-buildings-in-town)
+	(unit-type-count-total battering-ram-line < 2)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined VIKING-CIV ; Turks, Spanish
+
+(defrule
+	(goal milunits yes)
+	(military-population > 15)
+(nor	(players-unit-type-count focus-player scout-cavalry-line > 15)
+(or	(players-unit-type-count focus-player huskarl-line > 18)
+(or	(strategic-number cavalry >= 15)
+(or	(players-unit-type-count focus-player eagle-warrior-line > 18)
+	(players-unit-type-count focus-player woad-raider-line > 18)))))
+	(strategic-number my-sn-military-superiority >= -1)
+	(unit-type-count-total bombard-cannon < 8)
+	(can-train bombard-cannon)
+=>
+	(train bombard-cannon))
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+;=========================================================
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV
+#load-if-not-defined VIKING-CIV ; Koreans;, Celts
+
+#load-if-not-defined CELTIC-CIV
+
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player scout-cavalry-line > 15)
+(or	(players-unit-type-count focus-player huskarl-line > 18)
+(or	(strategic-number cavalry >= 15)
+(or	(players-unit-type-count focus-player eagle-warrior-line > 18)
+	(players-unit-type-count focus-player woad-raider-line > 18)))))
+(or	(strategic-number sn-current-age >= imperial)
+	(gold-amount >= 935))
+	(unit-type-count-total mangonel-line < 25)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line))
+
+#end-if
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-defined CELTIC-CIV
+
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player scout-cavalry-line > 15)
+(or	(players-unit-type-count focus-player huskarl-line > 18)
+(or	(strategic-number cavalry >= 15)
+(or	(players-unit-type-count focus-player eagle-warrior-line > 20)
+	(players-unit-type-count focus-player woad-raider-line > 20)))))
+(or	(strategic-number sn-current-age >= imperial)
+	(strategic-number my-sn-military-superiority <= -1))
+;	(unit-type-count-total scorpion-line < 60)
+	(can-train scorpion-line)
+=>
+	(train scorpion-line))
+
+#end-if
+
+#load-if-defined CHINESE-CIV
+
+(defrule
+	(goal milunits yes)
+	(players-unit-type-count focus-player skirmisher-line >= 26)
+	(players-unit-type-count focus-player scout-cavalry-line <= 15)
+	(players-unit-type-count focus-player huskarl-line <= 18)
+	(strategic-number cavalry <= 15)
+	(players-unit-type-count focus-player eagle-warrior-line <= 20)
+	(players-unit-type-count focus-player woad-raider-line <= 20)
+(or	(strategic-number my-sn-military-superiority <= -1)
+	(strategic-number sn-current-age >= imperial))
+	(unit-type-count-total scorpion-line < 40)
+	(can-train scorpion-line)
+=>
+	(train scorpion-line))
+
+#end-if
+
+#load-if-defined BRITON-CIV
+
+(defrule
+	(goal milunits yes)
+	(players-unit-type-count focus-player skirmisher-line >= 30)
+	(players-unit-type-count focus-player scout-cavalry-line <= 12)
+	(players-unit-type-count focus-player huskarl-line <= 16)
+	(strategic-number cavalry <= 15)
+	(players-unit-type-count focus-player eagle-warrior-line <= 16)
+	(players-unit-type-count focus-player woad-raider-line <= 16)
+(or	(strategic-number my-sn-military-superiority <= 0)
+	(strategic-number sn-current-age >= imperial))
+	(unit-type-count-total mangonel-line < 15)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line))
+
+#end-if
+
+(defrule
+	(goal milunits yes)
+(or	(strategic-number archers >= 10)
+	(players-unit-type-count focus-player skirmisher-line >= 20))
+	(players-unit-type-count focus-player scout-cavalry-line <= 5)
+	(strategic-number cavalry <= 5)
+	(players-unit-type-count focus-player huskarl-line <= 5)
+	(players-unit-type-count focus-player eagle-warrior-line <= 5)
+	(players-unit-type-count focus-player woad-raider-line <= 5)
+	(strategic-number my-sn-military-superiority <= 1)
+	(unit-type-count-total mangonel-line < 2)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line))
+
+(defrule
+	(goal milunits yes)
+(or	(strategic-number archers >= 25)
+	(players-unit-type-count focus-player skirmisher-line >= 40))
+	(players-unit-type-count focus-player scout-cavalry-line <= 10)
+	(strategic-number cavalry <= 10)
+	(players-unit-type-count focus-player huskarl-line <= 13)
+	(players-unit-type-count focus-player eagle-warrior-line <= 10)
+	(players-unit-type-count focus-player woad-raider-line <= 10)
+	(strategic-number my-sn-military-superiority <= 1)
+	(unit-type-count-total mangonel-line < 6)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line))
+
+(defrule
+(or	(goal milunits r-flush)
+	(goal milunits yes))
+(or	(and	(players-unit-type-count focus-player scorpion-line >= 4)
+		(unit-type-count-total mangonel-line < 2))
+(or	(and	(players-unit-type-count focus-player scorpion-line >= 8)
+		(unit-type-count-total mangonel-line < 5))
+	(and	(players-unit-type-count focus-player scorpion-line >= 12)
+		(unit-type-count-total mangonel-line < 8))))
+	(can-train mangonel-line)
+=>
+	(train mangonel-line))
+(defrule
+(or	(goal milunits r-flush)
+	(goal milunits yes))
+(or	(and	(players-unit-type-count focus-player scorpion-line >= 16)
+		(unit-type-count-total mangonel-line < 11))
+(or	(and	(players-unit-type-count focus-player scorpion-line >= 20)
+		(unit-type-count-total mangonel-line < 14))
+	(and	(players-unit-type-count focus-player scorpion-line >= 24)
+		(unit-type-count-total mangonel-line < 17))))
+	(can-train mangonel-line)
+=>
+	(train mangonel-line))
+(defrule
+(or	(goal milunits r-flush)
+	(goal milunits yes))
+(or	(and	(players-unit-type-count focus-player scorpion-line >= 28)
+		(unit-type-count-total mangonel-line < 20))
+(or	(and	(players-unit-type-count focus-player scorpion-line >= 32)
+		(unit-type-count-total mangonel-line < 23))
+	(and	(players-unit-type-count focus-player scorpion-line >= 36)
+		(unit-type-count-total mangonel-line < 26))))
+	(can-train mangonel-line)
+=>
+	(train mangonel-line))
+
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined BRITON-CIV
+
+(defrule
+	(goal milunits yes)
+(not	(goal enemy-goal 0))
+(or	(players-building-type-count focus-player archery-range >= 3)
+(or	(players-unit-type-count focus-player skirmisher-line >= 15)
+	(strategic-number archers >= 10)))
+	(strategic-number cavalry <= 5)
+	(strategic-number my-sn-military-superiority <= 0)
+	(unit-type-count-total scorpion-line < 4)
+	(can-train scorpion-line)
+=>
+	(train scorpion-line))
+
+(defrule
+	(goal milunits yes)
+(or	(players-unit-type-count focus-player skirmisher-line >= 25)
+	(strategic-number archers >= 15))
+	(strategic-number cavalry <= 5)
+(or	(strategic-number my-sn-military-superiority <= 0)
+	(strategic-number cavalry < 5))
+	(unit-type-count-total scorpion-line < 4)
+	(can-train scorpion-line)
+=>
+	(train scorpion-line))
+
+#end-if
+#end-if
+
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TURKISH-CIV ; Siege Onagers
+#load-if-not-defined VIKING-CIV ; Aztecs, Celts, Koreans, Mongols, Saracens, Slavs, Teutons
+#load-if-defined UP-MICHI-STYLE
+(defrule
+	(goal milunits yes)
+(or	(unit-type-count-total mangonel-line < 2)
+(or	(strategic-number archers >= 25)
+	(players-unit-type-count focus-player skirmisher-line >= 40)))
+	(players-unit-type-count focus-player scout-cavalry-line <= 17)
+	(strategic-number cavalry <= 25)
+	(players-unit-type-count focus-player huskarl-line <= 22)
+	(players-unit-type-count focus-player eagle-warrior-line <= 20)
+	(players-unit-type-count focus-player woad-raider-line <= 20)
+	(strategic-number my-sn-military-superiority <= 1)
+	(unit-type-count-total mangonel-line < 20)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line))
+#else
+(defrule
+	(goal milunits yes)
+(or	(strategic-number archers >= 25)
+	(players-unit-type-count focus-player skirmisher-line >= 60))
+	(players-unit-type-count focus-player scout-cavalry-line <= 14)
+	(strategic-number cavalry <= 15)
+	(players-unit-type-count focus-player huskarl-line <= 18)
+	(players-unit-type-count focus-player eagle-warrior-line <= 14)
+	(players-unit-type-count focus-player woad-raider-line <= 14)
+	(strategic-number my-sn-military-superiority <= -1)
+	(unit-type-count-total mangonel-line < 12)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line))
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+;=========================================================
+; Cataphracts
+;=========================================================
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV
+#load-if-not-defined VIKING-CIV ; Britons, Chinese, Mayan, Mongols
+
+(defrule
+	(goal milunits yes)
+(nor	(strategic-number siege >= 7)
+(or	(players-unit-type-count focus-player skirmisher-line >= 35)
+(or	(players-unit-type-count focus-player huskarl-line >= 25)
+	(strategic-number cavalry >= 25))))
+(or	(strategic-number infantry >= 15)
+	(strategic-number my-sn-military-superiority <= -1))
+	(goal siegereq yes)
+	(unit-type-count-total my-unique-unit-line < 40)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined VIKING-CIV ; Turks, Spanish
+
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+;	(strategic-number moenche < 25)
+	(strategic-number siege < 10)
+	(strategic-number cavalry < 15)
+	(strategic-number archers < 25)
+(or	(strategic-number infantry >= 15)
+	(strategic-number my-sn-military-superiority <= -1))
+	(goal siegereq yes)
+	(unit-type-count-total my-unique-unit-line < 40)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined SLAVIC-CIV
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV ; Celts
+#load-if-not-defined VIKING-CIV
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+	(players-unit-type-count focus-player jaguar-man-line < 20)
+	(players-unit-type-count focus-player teutonic-knight-line < 20)
+	(players-unit-type-count focus-player samurai-line < 20)
+	(strategic-number archers < 25)
+	(strategic-number my-sn-military-superiority <= -2)
+	(unit-type-count-total my-unique-unit-line < 20)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+	(players-unit-type-count focus-player jaguar-man-line < 20)
+	(players-unit-type-count focus-player teutonic-knight-line < 20)
+	(players-unit-type-count focus-player samurai-line < 20)
+	(strategic-number archers < 25)
+	(strategic-number my-sn-military-superiority <= -3)
+	(unit-type-count-total my-unique-unit-line < 30)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -1)
+	(gold-amount > 200)
+	(players-unit-type-count focus-player jaguar-man-line < 20)
+	(players-unit-type-count focus-player teutonic-knight-line < 20)
+	(players-unit-type-count focus-player samurai-line < 20)
+	(strategic-number archers < 25)
+	(unit-type-count-total my-unique-unit-line < 30)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+	(strategic-number sn-maximum-town-size > 40)
+	(military-population < 30)
+	(players-unit-type-count focus-player jaguar-man-line < 20)
+	(players-unit-type-count focus-player teutonic-knight-line < 20)
+	(players-unit-type-count focus-player samurai-line < 20)
+	(strategic-number archers < 25)
+	(unit-type-count-total my-unique-unit-line < 40)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+#else; Vikings
+#load-if-defined UP-GAME-AGE2-X2; on AoFE
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+	(strategic-number archers < 25)
+	(strategic-number cavalry >= 10)
+	(gold-amount > 200)
+	(players-unit-type-count focus-player jaguar-man-line < 20)
+	(players-unit-type-count focus-player teutonic-knight-line < 20)
+	(players-unit-type-count focus-player samurai-line < 20)
+	(unit-type-count-total my-unique-unit-line < 30)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+#end-if
+#end-if
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV
+#load-if-not-defined VIKING-CIV ; Byzantines, Slavs
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+	(strategic-number sn-current-age >= imperial)
+;(not	(players-unit-type-count focus-player spearman-line > 54))
+	(strategic-number my-sn-military-superiority <= -1)
+	(unit-type-count-total my-unique-unit-line < 20)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+;(not	(players-unit-type-count focus-player spearman-line > 54))
+	(strategic-number my-sn-military-superiority <= -2)
+	(unit-type-count-total my-unique-unit-line < 30)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+;(not	(players-unit-type-count focus-player spearman-line > 54))
+	(strategic-number my-sn-military-superiority <= -3)
+	(unit-type-count-total my-unique-unit-line < 30)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -1)
+	(gold-amount > 200)
+;(not	(players-unit-type-count focus-player spearman-line > 54))
+	(unit-type-count-total my-unique-unit-line < 30)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+	(strategic-number sn-maximum-town-size > 40)
+	(military-population < 25)
+;(not	(players-unit-type-count focus-player spearman-line > 54))
+	(unit-type-count-total my-unique-unit-line < 40)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined KOREAN-CIV
+(defrule
+	(goal milunits yes)
+(or	(food-amount >= unique-unit-food)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number moenche < 15)
+;(not	(players-unit-type-count focus-player spearman-line > 54))
+	(players-unit-type-count focus-player huskarl-line > 8)
+	(unit-type-count-total my-unique-unit-line < 30)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-defined AZTEC-CIV
+(defrule
+	(goal milunits yes)
+	(goal e-cata yes)
+	(strategic-number moenche < 15)
+	(strategic-number infantry >= 15)
+	(strategic-number cavalry < 25)
+	(strategic-number archers < 25)
+	(goal siegereq yes)
+	(unit-type-count-total my-unique-unit-line < 70)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+#end-if
+
+#load-if-defined POPULATION-CAP-EXTENDED
+#load-if-not-defined POPULATION-CAP-225
+#load-if-not-defined POPULATION-CAP-250
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined HUN-CIV
+(defrule
+	(goal milunits yes)
+	(strategic-number sn-current-age >= imperial)
+(or	(population > 200)
+	(gold-amount > 5000))
+	(goal researchplan yes)
+	(unit-type-count-total my-unique-unit-line < 850)
+	(can-train my-unique-unit-line)
+=>
+	(train my-unique-unit-line))
+#else ; Huns
+(defrule
+	(goal milunits yes)
+	(strategic-number sn-current-age >= imperial)
+(or	(population > 200)
+	(gold-amount > 5000))
+	(goal researchplan yes)
+	(unit-type-count-total knight-line < 850)
+	(can-train knight-line)
+=>
+	(train knight-line))
+#end-if
+#else ; Aztecs
+(defrule
+	(goal milunits yes)
+	(strategic-number sn-current-age >= imperial)
+(or	(population > 200)
+	(gold-amount > 5000))
+	(goal researchplan yes)
+	(unit-type-count-total monk-set < 850)
+	(can-train monk)
+=>
+	(train monk))
+#end-if
+#end-if
+#end-if
+#end-if
+
+
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined SLAVIC-CIV
+
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SARACEN-CIV
+;#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV
+#load-if-not-defined VIKING-CIV ; Huns, Franks, Spanish
+
+(defrule
+	(goal palagoal no)
+=>
+	(set-goal palagoal yes))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number sn-current-age >= imperial)
+(nor	(strategic-number moenche >= 15)
+(or	(players-unit-type-count focus-player camel-line >= 60)
+	(players-unit-type-count focus-player spearman-line >= 60)))
+	(goal siegereq yes)
+;	(unit-type-count-total knight-line < 90)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(strategic-number moenche >= 15)
+(or	(players-unit-type-count focus-player camel-line >= 45)
+	(players-unit-type-count focus-player spearman-line >= 45)))
+(or	(up-research-status c: ri-paladin >= research-pending)
+(or	(gold-amount >= 1200)
+	(and	(strategic-number sn-current-age >= imperial)
+		(gold-amount >= 800))))
+	(can-train knight-line)
+;	(unit-type-count-total knight-line < 50)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 15)
+	(players-unit-type-count focus-player camel-line < 45)
+	(players-unit-type-count focus-player spearman-line < 45)
+(or	(food-amount >= 110)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+(or	(players-unit-type-count focus-player huskarl-line > 6)
+	(players-unit-type-count focus-player cataphract-line > 9))
+	(unit-type-count-total knight-line < 25)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 15)
+	(players-unit-type-count focus-player camel-line < 45)
+	(players-unit-type-count focus-player spearman-line < 45)
+(or	(food-amount >= 110)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number sn-current-age == castlea)
+	(gold-amount > 100)
+	(strategic-number my-sn-military-superiority <= -1)
+	(unit-type-count-total knight-line < 25)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 15)
+	(players-unit-type-count focus-player camel-line < 45)
+	(players-unit-type-count focus-player spearman-line < 45)
+(or	(food-amount >= 110)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number sn-current-age >= imperial)
+	(strategic-number my-sn-military-superiority <= -1)
+	(unit-type-count-total knight-line < 30)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 15)
+	(players-unit-type-count focus-player camel-line < 45)
+	(players-unit-type-count focus-player spearman-line < 45)
+(or	(food-amount >= 110)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number my-sn-military-superiority <= 0)
+	(unit-type-count-total knight-line < 10)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 15)
+	(players-unit-type-count focus-player camel-line < 45)
+	(players-unit-type-count focus-player spearman-line < 45)
+(or	(food-amount >= 110)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number my-sn-military-superiority <= 0)
+	(gold-amount > 100)
+	(unit-type-count-total knight-line < 20)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 15)
+	(players-unit-type-count focus-player camel-line < 45)
+	(players-unit-type-count focus-player spearman-line < 45)
+(or	(food-amount >= 110)
+(or	(unit-type-count-total villager >= up-max-civ)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(strategic-number sn-maximum-town-size > 40)
+	(military-population < 30)
+	(unit-type-count-total knight-line < 30)
+	(can-train knight-line)
+=>
+	(train knight-line))
+
+;#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+(defrule
+	(goal milunits yes)
+	(up-research-status c: ri-paladin >= research-pending)
+	(strategic-number sn-current-age >= imperial)
+(nor	(strategic-number moenche >= 15)
+(or	(players-unit-type-count focus-player camel-line >= 60)
+	(players-unit-type-count focus-player spearman-line >= 60)))
+	(goal siegereq yes)
+;	(unit-type-count-total knight-line < 90)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+; Priests
+;=========================================================
+(defrule
+(or	(and	(goal Multiplayer no)
+		(unit-type-count-total monk-units < 2))
+		(goal Multiplayer yes))
+(or	(and	(unit-type-count-total monk-units < 3)
+		(game-time <= 1740))
+	(unit-type-count-total monk-units < 1))
+	(can-train monk)
+=>
+	(train monk))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(players-unit-type-count focus-player eagle-warrior-line < 16)
+	(players-unit-type-count focus-player scout-cavalry-line < 12)
+	(strategic-number archers <= 15)
+	(food-amount < 200)
+	(wood-amount < 100)
+	(population < max-civ-pop)
+(or	(gold-amount > 600)
+	(up-compare-goal gl-relics >= 10))
+	(strategic-number my-sn-military-superiority <= 0)
+	(unit-type-count-total monk-units < 16)
+	(can-train monk)
+=>
+	(train monk))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(players-unit-type-count focus-player eagle-warrior-line < 20)
+	(players-unit-type-count focus-player scout-cavalry-line < 16)
+(or	(players-unit-type-count focus-player war-elephant-line >= 3)
+(or	(players-unit-type-count focus-player knight-line >= 10)
+(or	(players-unit-type-count focus-player boyar >= 10)
+(or	(players-unit-type-count focus-player elephant-archer >= 5)
+	(players-unit-type-count focus-player teutonic-knight-line >= 6)))))
+	(unit-type-count-total monk-units < 20)
+	(gold-amount > 200)
+	(can-train monk)
+=>
+	(train monk))
+;=========================================================
+#load-if-defined AZTEC-CIV
+(defrule
+	(goal milunits yes)
+	(players-unit-type-count focus-player eagle-warrior-line < 20)
+	(players-unit-type-count focus-player scout-cavalry-line < 16)
+(or	(strategic-number my-sn-military-superiority <= -2)
+	(gold-amount > 1000))
+	(unit-type-count-total monk-units < 70)
+	(gold-amount > 200)
+	(can-train monk)
+=>
+	(train monk))
+#load-if-defined POPULATION-CAP-1000
+(defrule
+	(goal milunits yes)
+	(players-unit-type-count focus-player eagle-warrior-line < 20)
+	(players-unit-type-count focus-player scout-cavalry-line < 16)
+(or	(strategic-number my-sn-military-superiority <= -2)
+	(gold-amount > 1000))
+	(gold-amount > 200)
+	(can-train monk)
+=>
+	(train monk))
+#end-if
+#end-if
+;=========================================================
+; Knights
+;=========================================================
+;(defrule
+;	(goal milunits yes)
+;	(strategic-number moenche < 10)
+;(or	(strategic-number siege >= 3)
+;(or	(players-unit-type-count focus-player battering-ram-line >= 3)
+;(or	(players-unit-type-count focus-player archer-line >= 7)
+;	(players-unit-type-count focus-player skirmisher-line >= 7))))
+;	(food-amount >= 160)
+;	(gold-amount >= 210)
+;	(can-train knight-line)
+;	(unit-type-count-total knight-line <= 17)
+;=>
+;	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 10)
+	(enemy-buildings-in-town)
+	(players-building-type-count focus-player watch-tower-line > 0)
+	(can-train knight-line)
+	(unit-type-count-total knight-line < 6)
+	(building-type-count castle == 0)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 10)
+	(strategic-number sn-current-age <= castlea)
+	(players-unit-type-count focus-player spearman-line < 30)
+	(players-unit-type-count focus-player camel-line < 25)
+(or	(players-unit-type-count focus-player scorpion-line >= 8)
+	(players-unit-type-count focus-player mangonel-line >= 8))
+	(unit-type-count-total knight-line < 8)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 10)
+	(strategic-number sn-current-age <= castlea)
+	(players-unit-type-count focus-player spearman-line < 40)
+	(players-unit-type-count focus-player camel-line < 35)
+(or	(players-unit-type-count focus-player scorpion-line >= 14)
+	(players-unit-type-count focus-player mangonel-line >= 14))
+	(unit-type-count-total knight-line < 14)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 10)
+	(players-unit-type-count focus-player spearman-line < 30)
+	(players-unit-type-count focus-player camel-line < 25)
+	(goal enemy-goal rush)
+	(building-type-count castle == 0)
+	(strategic-number my-sn-military-superiority <= -1)
+(or	(food-amount >= 110)
+(or	(strategic-number my-sn-military-superiority <= -2)
+	(goal defend yes)))
+	(can-train knight-line)
+	(unit-type-count-total knight-line < 15)
+=>
+	(train knight-line))
+;=========================================================
+;(defrule
+;	(goal milunits yes)
+;(nor	(strategic-number moenche >= 10)
+;(or	(players-unit-type-count focus-player spearman-line >= 30)
+;	(players-unit-type-count focus-player camel-line >= 25)))
+;(or	(research-available ri-cavalier)
+;(or	(research-available ri-paladin)
+;	(up-research-status c: ri-paladin >= research-pending)))
+;	(players-unit-type-count focus-player cataphract-line > 11)
+;	(can-train knight-line)
+;	(unit-type-count-total knight-line <= 30)
+;=>
+;	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 10)
+	(players-unit-type-count focus-player spearman-line < 25)
+	(players-unit-type-count focus-player camel-line < 20)
+	(food-amount >= 110)
+	(building-type-count castle == 0)
+(or	(strategic-number my-sn-military-superiority <= -1)
+	(goal defend yes))
+	(unit-type-count-total knight-line < 15)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(gold-amount >= 100)
+	(strategic-number moenche < 10)
+	(players-unit-type-count focus-player spearman-line < 20)
+	(players-unit-type-count focus-player camel-line < 15)
+	(goal enemy-goal flush)
+	(building-type-count castle == 0)
+	(food-amount >= 110)
+	(strategic-number my-sn-military-superiority <= -1)
+	(unit-type-count-total knight-line < 11)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 10)
+(or	(players-unit-type-count focus-player militiaman-line > 5)
+(or	(players-unit-type-count focus-player archer-line > 7)
+(or	(players-unit-type-count focus-player eagle-warrior-line > 5)
+	(players-unit-type-count focus-player skirmisher-line > 10))))
+	(building-type-count castle == 0)
+;tl	(food-amount >= 110)
+	(players-unit-type-count focus-player spearman-line < 25)
+	(players-unit-type-count focus-player camel-line < 22)
+	(strategic-number my-sn-military-superiority <= -1)
+	(unit-type-count-total knight-line < 18)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(strategic-number moenche >= 10)
+(or	(players-unit-type-count focus-player spearman-line >= 26)
+	(players-unit-type-count focus-player camel-line >= 22)))
+	(building-type-count castle == 0)
+	(strategic-number my-sn-military-superiority <= -2)
+	(unit-type-count-total knight-line < 12)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche < 10)
+	(building-type-count castle == 0)
+(or	(goal enemy-goal rush)
+	(players-unit-type-count focus-player eagle-warrior-line > 15))
+	(players-unit-type-count focus-player eagle-warrior-line > 5)
+	(strategic-number my-sn-military-superiority <= -2)
+	(unit-type-count-total knight-line < 12)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+;(defrule
+;	(goal milunits yes)
+;(nor	(strategic-number moenche >= 10)
+;(or	(players-unit-type-count focus-player spearman-line >= 30)
+;	(players-unit-type-count focus-player camel-line >= 25)))
+;	(research-completed ri-cavalier)
+;	(players-unit-type-count focus-player knight-line > 34)
+;	(unit-type-count-total knight-line < 18)
+;	(can-train knight-line)
+;=>
+;	(train knight-line))
+;=========================================================
+(defrule
+;	(goal milunits yes)
+	(strategic-number my-sn-military-superiority <= 3)
+(nor	(strategic-number moenche >= 10)
+(or	(players-unit-type-count focus-player spearman-line >= 45)
+	(players-unit-type-count focus-player camel-line >= 35)))
+(or	(strategic-number my-sn-military-superiority <= -3)
+(or	(goal underattack yes)
+	(goal attacking yes)))
+	(building-type-count castle == 0)
+	(unit-type-count-total knight-line < 14)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+; Pikes
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(unit-type-count-total knight-line == 0)	
+	(building-type-count castle == 0)
+	(unit-type-count-total battering-ram <= 0)
+	(players-building-type-count focus-player watch-tower-line > 0)
+	(unit-type-count-total spearman-line < 4)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+;	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number sn-current-age == feudal)
+	(up-building-type-in-town c: watch-tower >= 1)
+	(goal attacking no)
+	(unit-type-count-total spearman-line < 8)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -1)
+(or	(strategic-number sn-current-age == fcastlea)
+	(strategic-number sn-current-age == castlea))
+	(food-amount >= 85)
+	(wood-amount > 59)
+	(players-building-type-count focus-player stable > 0)
+	(strategic-number archers < 15)
+	(unit-type-count-total spearman-line < 8)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -1)
+(or	(strategic-number sn-current-age == fcastlea)
+	(strategic-number sn-current-age == castlea))
+(or	(players-building-type-count focus-player stable > 0)
+	(up-compare-goal enemy-goal != 0))
+	(strategic-number archers < 15)
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 6)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+(or	(players-building-type-count focus-player stable > 1)
+	(up-compare-goal enemy-goal != 0))
+	(strategic-number my-sn-military-superiority <= -1)
+(or	(strategic-number sn-current-age == fcastlea)
+	(strategic-number sn-current-age == castlea))
+	(strategic-number archers < 15)
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 8)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(goal enemy-goal rush)
+	(strategic-number moenche < 7)
+	(strategic-number infantry < 7)
+	(strategic-number cavalry < 7)
+	(strategic-number archers < 7)
+	(strategic-number gunpowder < 7)
+	(strategic-number siege < 7)
+	(players-unit-type-count focus-player b-husk-line < 7)
+	(strategic-number my-sn-military-superiority <= 0)
+	(unit-type-count-total spearman-line < 10)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+
+#load-if-not-defined TURKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined BYZANTINE-CIV
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number cavalry >= 3)
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 8)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number cavalry >= 5)
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 11)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(town-under-attack)
+	(strategic-number my-sn-military-superiority <= -1)
+	(strategic-number cavalry >= 5)
+	(unit-type-count-total spearman-line < 13)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -2)
+	(strategic-number cavalry >= 5)
+	(unit-type-count-total spearman-line < 15)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 7)
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 16)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 10)
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 21)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 15)
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 32)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 25)
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 48)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 40)
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 60)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+
+#end-if
+#end-if
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined VIKING-CIV ; Goths, Byz
+
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number cavalry >= 3)
+	(food-amount >= 76)
+	(unit-type-count-total spearman-line < 10)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number cavalry >= 5)
+	(food-amount >= 76)
+	(unit-type-count-total spearman-line < 14)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(town-under-attack)
+	(strategic-number my-sn-military-superiority <= -1)
+	(strategic-number cavalry >= 5)
+	(unit-type-count-total spearman-line < 16)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -2)
+	(strategic-number cavalry >= 5)
+	(unit-type-count-total spearman-line < 18)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 7)
+	(food-amount >= 76)
+	(unit-type-count-total spearman-line < 21)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 10)
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total spearman-line < 28)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 15)
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total spearman-line < 38)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 25)
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total spearman-line < 50)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 40)
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total spearman-line < 65)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+#load-if-defined POPULATION-CAP-1000
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 40)
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total spearman-line < 100)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+#end-if
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#else ; Turks
+
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number cavalry >= 3)
+(or	(building-type-count stable < 1)
+	(goal enemy-goal rush))
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 10)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number cavalry >= 5)
+(or	(building-type-count stable < 1)
+	(goal enemy-goal rush))
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 14)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(town-under-attack)
+	(strategic-number my-sn-military-superiority <= -1)
+	(strategic-number cavalry >= 5)
+(or	(building-type-count stable < 1)
+	(goal enemy-goal rush))
+	(unit-type-count-total spearman-line < 16)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -2)
+	(strategic-number cavalry >= 5)
+(or	(building-type-count stable < 1)
+	(goal enemy-goal rush))
+	(unit-type-count-total spearman-line < 18)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 7)
+	(building-type-count stable < 1)
+	(food-amount >= 85)
+	(unit-type-count-total spearman-line < 21)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 10)
+	(building-type-count stable < 1)
+	(food-amount >= 85)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total spearman-line < 28)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 15)
+	(building-type-count stable < 1)
+	(food-amount >= 85)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total spearman-line < 38)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 25)
+	(building-type-count stable < 1)
+	(food-amount >= 85)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total spearman-line < 50)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number cavalry >= 40)
+	(building-type-count stable < 1)
+	(food-amount >= 85)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total spearman-line < 65)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+(or	(strategic-number cavalry >= 3)
+	(players-unit-type-count focus-player conquistador-line >= 3))
+	(food-amount >= 105)
+	(unit-type-count-total camel-line < 5)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+(or	(strategic-number cavalry >= 5)
+	(players-unit-type-count focus-player conquistador-line >= 5))
+	(food-amount >= 105)
+	(unit-type-count-total camel-line < 8)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+	(town-under-attack)
+	(strategic-number my-sn-military-superiority <= -1)
+(or	(strategic-number cavalry >= 5)
+	(players-unit-type-count focus-player conquistador-line >= 5))
+	(unit-type-count-total camel-line < 9)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -2)
+(or	(strategic-number cavalry >= 5)
+	(players-unit-type-count focus-player conquistador-line >= 5))
+	(unit-type-count-total camel-line < 10)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+(or	(strategic-number cavalry >= 7)
+	(players-unit-type-count focus-player conquistador-line >= 7))
+	(food-amount >= 105)
+	(unit-type-count-total camel-line < 12)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(strategic-number cavalry >= 10)
+	(players-unit-type-count focus-player conquistador-line >= 10))
+	(food-amount >= 105)
+	(unit-type-count-total camel-line < 18)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(strategic-number cavalry >= 15)
+	(players-unit-type-count focus-player conquistador-line >= 15))
+	(food-amount >= 105)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total camel-line < 27)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(strategic-number cavalry >= 25)
+	(players-unit-type-count focus-player conquistador-line >= 25))
+	(food-amount >= 105)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total camel-line < 42)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(strategic-number cavalry >= 40)
+	(players-unit-type-count focus-player conquistador-line >= 40))
+	(food-amount >= 105)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total camel-line < 60)
+	(can-train camel-line)
+=>
+	(train camel-line))
+
+#end-if
+
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(goal enemy-goal flush)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 1))
+	(players-current-age focus-player == feudal-age)
+	(players-unit-type-count focus-player militiaman-line < 5)
+	(unit-type-count-total spearman-line < 4)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(goal enemy-goal flush)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 1))
+(or	(players-unit-type-count focus-player militiaman-line < 10)
+	(players-unit-type-count focus-player scout-cavalry-line > 1))
+	(players-current-age focus-player == feudal-age)
+	(unit-type-count-total spearman-line < 6)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+(or	(players-building-type-count focus-player stable > 0)
+	(players-unit-type-count focus-player scout-cavalry-line > 1))
+	(goal enemy-goal flush)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 1))
+	(strategic-number my-sn-military-superiority < 0)
+	(players-current-age focus-player == feudal-age)
+	(unit-type-count-total spearman-line < 9)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+(or	(players-building-type-count focus-player stable >= 2)
+	(strategic-number cavalry >= 3))
+	(goal enemy-goal rush)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 1))
+	(strategic-number my-sn-military-superiority <= 0)
+	(unit-type-count-total spearman-line < 15)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+#load-if-not-defined TURKISH-CIV
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -1)
+	(commodity-selling-price wood < 60)
+	(commodity-selling-price food < 60)
+	(unit-type-count-total spearman-line < 12)
+	(strategic-number cavalry >= 5)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+#end-if
+
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined SLAVIC-CIV
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined TURKISH-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined VIKING-CIV ; Byzantines, Goths
+
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+(nor	(players-civ focus-player byzantine)
+	(players-civ focus-player gothic))
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+	(strategic-number my-sn-military-superiority <= -1))
+	(players-unit-type-count focus-player spearman-line >= 6)
+	(unit-type-count-total spearman-line < 8)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+(nor	(players-civ focus-player byzantine)
+	(players-civ focus-player gothic))
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+	(strategic-number my-sn-military-superiority <= -1))
+	(players-unit-type-count focus-player spearman-line >= 12)
+	(unit-type-count-total spearman-line < 14)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+(nor	(players-civ focus-player byzantine)
+	(players-civ focus-player gothic))
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+	(strategic-number my-sn-military-superiority <= -1))
+	(players-unit-type-count focus-player spearman-line >= 18)
+	(unit-type-count-total spearman-line < 21)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+(nor	(players-civ focus-player byzantine)
+	(players-civ focus-player gothic))
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+	(strategic-number my-sn-military-superiority <= -1))
+	(players-unit-type-count focus-player spearman-line >= 24)
+	(unit-type-count-total spearman-line < 27)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+(nor	(players-civ focus-player byzantine)
+	(players-civ focus-player gothic))
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+	(strategic-number my-sn-military-superiority <= -1))
+	(players-unit-type-count focus-player spearman-line >= 30)
+	(unit-type-count-total spearman-line < 33)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+(nor	(players-civ focus-player byzantine)
+	(players-civ focus-player gothic))
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+	(strategic-number my-sn-military-superiority <= -1))
+	(players-unit-type-count focus-player spearman-line >= 36)
+	(unit-type-count-total spearman-line < 39)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+(nor	(players-civ focus-player byzantine)
+	(players-civ focus-player gothic))
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+	(strategic-number my-sn-military-superiority <= -1))
+	(players-unit-type-count focus-player spearman-line >= 42)
+	(unit-type-count-total spearman-line < 45)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal spears yes)
+	(strategic-number moenche < 15)
+(nor	(players-civ focus-player byzantine)
+	(players-civ focus-player gothic))
+	(food-amount >= 76)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+	(strategic-number my-sn-military-superiority <= -1))
+	(players-unit-type-count focus-player spearman-line >= 48)
+	(unit-type-count-total spearman-line < 52)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+;=========================================================
+; Skirmishers
+;=========================================================
+;#load-if-not-defined TURKISH-CIV
+#load-if-not-defined BYZANTINE-CIV
+
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+(not	(players-unit-type-count focus-player militiaman-line > 19))
+(or	(players-unit-type-count focus-player mameluke-line >= 3)
+	(strategic-number archers >= 3))
+	(food-amount >= 75)
+	(unit-type-count-total skirmisher-line < 8)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+(or	(players-unit-type-count focus-player mameluke-line >= 5)
+	(strategic-number archers >= 5))
+	(food-amount >= 75)
+	(unit-type-count-total skirmisher-line < 11)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+	(town-under-attack)
+	(strategic-number my-sn-military-superiority <= -1)
+(or	(players-unit-type-count focus-player mameluke-line >= 3)
+	(strategic-number archers >= 3))
+	(unit-type-count-total skirmisher-line < 11)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -2)
+(or	(players-unit-type-count focus-player mameluke-line >= 5)
+	(strategic-number archers >= 5))
+	(unit-type-count-total skirmisher-line < 13)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+(or	(players-unit-type-count focus-player mameluke-line >= 7)
+	(strategic-number archers >= 7))
+	(food-amount >= 75)
+	(unit-type-count-total skirmisher-line < 16)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 7)
+	(strategic-number archers >= 7))
+	(strategic-number my-sn-military-superiority <= -2)
+	(unit-type-count-total skirmisher-line < 18)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 10)
+	(strategic-number archers >= 10))
+	(food-amount >= 75)
+	(unit-type-count-total skirmisher-line < 21)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 15)
+	(strategic-number archers >= 15))
+	(food-amount >= 75)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total skirmisher-line < 32)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 25)
+	(strategic-number archers >= 25))
+	(food-amount >= 75)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total skirmisher-line < 48)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 40)
+	(strategic-number archers >= 40))
+	(food-amount >= 75)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total skirmisher-line < 60)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+#load-if-defined POPULATION-CAP-1000
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 40)
+	(strategic-number archers >= 40))
+	(food-amount >= 75)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total skirmisher-line < 200)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+#end-if
+
+#else ; byzantine
+
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+(not	(players-unit-type-count focus-player militiaman-line > 19))
+(or	(players-unit-type-count focus-player mameluke-line >= 3)
+	(strategic-number archers >= 3))
+	(food-amount >= 69)
+	(can-train skirmisher-line)
+	(unit-type-count-total skirmisher-line < 11)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+	(town-under-attack)
+	(strategic-number my-sn-military-superiority <= -1)
+(or	(players-unit-type-count focus-player mameluke-line >= 3)
+	(strategic-number archers >= 3))
+	(can-train skirmisher-line)
+	(unit-type-count-total skirmisher-line < 16)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+(or	(players-unit-type-count focus-player mameluke-line >= 5)
+	(strategic-number archers >= 5))
+	(food-amount >= 69)
+	(can-train skirmisher-line)
+	(unit-type-count-total skirmisher-line < 16)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -2)
+(or	(players-unit-type-count focus-player mameluke-line >= 5)
+	(strategic-number archers >= 5))
+	(can-train skirmisher-line)
+	(unit-type-count-total skirmisher-line < 19)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 7)
+	(strategic-number archers >= 7))
+	(food-amount >= 69)
+	(can-train skirmisher-line)
+	(unit-type-count-total skirmisher-line < 22)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 7)
+	(strategic-number archers >= 7))
+	(strategic-number my-sn-military-superiority <= -2)
+	(can-train skirmisher-line)
+	(unit-type-count-total skirmisher-line < 23)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 10)
+	(strategic-number archers >= 10))
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(can-train skirmisher-line)
+	(unit-type-count-total skirmisher-line < 28)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 15)
+	(strategic-number archers >= 15))
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(can-train skirmisher-line)
+	(unit-type-count-total skirmisher-line < 36)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 25)
+	(strategic-number archers >= 25))
+	(can-train skirmisher-line)
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total skirmisher-line < 50)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 40)
+	(strategic-number archers >= 40))
+	(can-train skirmisher-line)
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total skirmisher-line < 65)
+=>
+	(train skirmisher-line))
+#load-if-defined POPULATION-CAP-1000
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-unit-type-count focus-player mameluke-line >= 40)
+	(strategic-number archers >= 40))
+	(can-train skirmisher-line)
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(unit-type-count-total skirmisher-line < 250)
+=>
+	(train skirmisher-line))
+#end-if
+
+#end-if
+
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+	(food-amount >= 75)
+	(strategic-number infantry <= 5)
+	(strategic-number cavalry < 3)
+(or	(strategic-number my-sn-military-superiority <= -2)
+	(goal kloster yes))
+(or	(strategic-number my-sn-military-superiority <= -1)
+	(goal underattack yes))
+	(building-type-count stable == 0)
+	(building-type-count castle <= 0)
+	(unit-type-count-total skirmisher-line < 16)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal enemy-goal flush)
+(or	(players-unit-type-count focus-player militiaman-line < 5)
+	(players-unit-type-count focus-player archer-line >= 5))
+	(strategic-number my-sn-military-superiority <= 0)
+	(unit-type-count-total skirmisher-line < 12)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal enemy-goal flush)
+	(strategic-number sn-current-age == fcastlea)
+	(players-unit-type-count focus-player militiaman-line < 7)
+	(players-unit-type-count focus-player scout-cavalry-line < 7)
+(or	(strategic-number my-sn-military-superiority <= 0)
+	(and	(research-completed axe-1)
+		(research-completed farm-1)))
+	(unit-type-count-total skirmisher-line < 18)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(goal enemy-goal rush)
+	(players-unit-type-count focus-player militiaman-line < 10)
+	(players-unit-type-count focus-player eagle-warrior-line < 7)
+	(players-unit-type-count focus-player knight-line < 7)
+	(players-unit-type-count focus-player scout-cavalry-line < 7)
+	(strategic-number my-sn-military-superiority <= 0)
+	(unit-type-count-total skirmisher-line < 20)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(or	(players-building-type-count focus-player archery-range > 1)
+	(strategic-number archers >= 3))
+(or	(players-unit-type-count focus-player militiaman-line < 7)
+	(players-unit-type-count focus-player archer-line >= 7))
+	(goal enemy-goal flush)
+	(strategic-number my-sn-military-superiority <= -1)
+	(players-current-age focus-player == feudal-age)
+	(unit-type-count-total skirmisher-line < 13)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+	(strategic-number my-sn-military-superiority <= -1)
+	(commodity-selling-price wood < 60)
+	(commodity-selling-price food < 60)
+(or	(players-unit-type-count focus-player militiaman-line < 10)
+	(players-unit-type-count focus-player archer-line >= 10))
+	(unit-type-count-total skirmisher-line < 16)
+	(strategic-number archers >= 5)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+#load-if-defined BYZANTINE-CIV
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+	(strategic-number moenche < 15)
+(not	(players-civ focus-player byzantine))
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(players-unit-type-count focus-player skirmisher-line >= 6)
+	(unit-type-count-total skirmisher-line < 10)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(not	(players-civ focus-player byzantine))
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(players-unit-type-count focus-player skirmisher-line >= 12)
+	(unit-type-count-total skirmisher-line < 17)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(not	(players-civ focus-player byzantine))
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(players-unit-type-count focus-player skirmisher-line >= 18)
+	(unit-type-count-total skirmisher-line < 24)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(not	(players-civ focus-player byzantine))
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(players-unit-type-count focus-player skirmisher-line >= 24)
+	(unit-type-count-total skirmisher-line < 30)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(not	(players-civ focus-player byzantine))
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(players-unit-type-count focus-player skirmisher-line >= 30)
+	(unit-type-count-total skirmisher-line < 36)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(not	(players-civ focus-player byzantine))
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(players-unit-type-count focus-player skirmisher-line >= 36)
+	(unit-type-count-total skirmisher-line < 43)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(not	(players-civ focus-player byzantine))
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(players-unit-type-count focus-player skirmisher-line >= 42)
+	(unit-type-count-total skirmisher-line < 50)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal siegereq yes)
+(not	(players-civ focus-player byzantine))
+	(food-amount >= 69)
+(or	(up-research-status c: ri-hand-cart >= research-pending)
+(or	(goal defend yes)
+	(strategic-number my-sn-military-superiority <= 0)))
+	(players-unit-type-count focus-player skirmisher-line >= 50)
+	(unit-type-count-total skirmisher-line < 60)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+#end-if
+;=========================================================
+; Archers
+;=========================================================
+#load-if-not-defined SPANISH-CIV
+
+;#load-if-not-defined CELTIC-CIV
+#load-if-not-defined SLAVIC-CIV
+#load-if-not-defined INDIAN-CIV ; exception
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV
+#load-if-not-defined FRANKISH-CIV ; arbalest civs
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 8))
+	(strategic-number infantry >= 3)
+	(unit-type-count-total archer-line < 10)
+(or	(goal e-skirmgold yes)
+(or	(goal e-skirm yes)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 10))
+	(strategic-number infantry >= 5)
+	(unit-type-count-total archer-line < 15)
+(or	(goal e-skirmgold yes)
+(or	(goal e-skirm yes)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 12))
+	(strategic-number infantry >= 10)
+	(unit-type-count-total archer-line < 22)
+(or	(goal e-skirmgold yes)
+(or	(goal e-skirm yes)
+	(strategic-number my-sn-military-superiority <= -1)))
+	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 15))
+	(strategic-number infantry >= 15)
+	(unit-type-count-total archer-line < 30)
+	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 23))
+	(strategic-number infantry >= 25)
+	(goal siegereq yes)
+	(unit-type-count-total archer-line < 44)
+	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 30))
+	(strategic-number infantry >= 40)
+	(goal siegereq yes)
+	(unit-type-count-total archer-line < 60)
+	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number sn-current-age >= fcastlea)
+	(players-unit-type-count focus-player huskarl-line < 5)
+	(players-unit-type-count focus-player skirmisher-line < 15)
+	(strategic-number siege < 7)
+	(players-unit-type-count focus-player eagle-warrior-line < 15)
+	(strategic-number my-sn-military-superiority <= -1)
+(or	(players-building-type-count focus-player barracks >= 2)
+	(players-unit-type-count focus-player militiaman-line >= 2))
+	(goal enemy-goal rush)
+	(current-age <= castle-age)
+	(unit-type-count-total archer-line < 20)
+	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line >= 10)
+	(players-unit-type-count focus-player scout-cavalry >= 6))
+(or	(players-building-type-count focus-player barracks >= 2)
+(or	(players-unit-type-count focus-player spearman-line >= 6)
+	(players-unit-type-count focus-player militiaman-line >= 2)))
+	(goal enemy-goal flush)
+	(strategic-number my-sn-military-superiority <= -1)
+	(players-current-age focus-player == feudal-age)
+	(unit-type-count-total archer-line < 10)
+	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line > 29)
+	(strategic-number cavalry >= 25))
+(or	(civ-selected aztec)
+	(civ-selected mayan))
+	(strategic-number my-sn-military-superiority <= -2)
+	(unit-type-count-total archer-line < 25)
+	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#end-if
+
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined SLAVIC-CIV
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined VIKING-CIV ; Goths, Turks, Teutons, Persians, Franks
+
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 8))
+	(strategic-number infantry >= 3)
+(or	(not	(research-completed ri-chemistry))
+	(current-age != imperial-age))
+	(unit-type-count-total archer-line < 10)
+(or	(goal e-skirmgold yes)
+(or	(goal e-skirm yes)
+	(strategic-number my-sn-military-superiority <= -1)))
+;	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 10))
+	(strategic-number infantry >= 5)
+(or	(not	(research-completed ri-chemistry))
+	(current-age != imperial-age))
+	(unit-type-count-total archer-line < 15)
+(or	(goal e-skirmgold yes)
+(or	(goal e-skirm yes)
+	(strategic-number my-sn-military-superiority <= -1)))
+;	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 12))
+	(strategic-number infantry >= 10)
+(or	(not	(research-completed ri-chemistry))
+	(current-age != imperial-age))
+	(unit-type-count-total archer-line < 22)
+(or	(goal e-skirmgold yes)
+(or	(goal e-skirm yes)
+	(strategic-number my-sn-military-superiority <= -1)))
+;	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 15))
+	(strategic-number infantry >= 15)
+(or	(not	(research-completed ri-chemistry))
+	(current-age != imperial-age))
+	(unit-type-count-total archer-line < 30)
+;	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 23))
+	(strategic-number infantry >= 25)
+(or	(not	(research-completed ri-chemistry))
+	(current-age != imperial-age))
+	(goal siegereq yes)
+	(unit-type-count-total archer-line < 44)
+;	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 30))
+	(strategic-number infantry >= 40)
+(or	(not	(research-completed ri-chemistry))
+	(current-age != imperial-age))
+	(goal siegereq yes)
+	(unit-type-count-total archer-line < 60)
+;	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(players-unit-type-count focus-player huskarl-line < 5)
+	(players-unit-type-count focus-player skirmisher-line < 15)
+	(strategic-number siege < 7)
+	(players-unit-type-count focus-player eagle-warrior-line < 10)
+	(strategic-number my-sn-military-superiority <= -1)
+(or	(players-building-type-count focus-player barracks >= 2)
+	(players-unit-type-count focus-player militiaman-line >= 2))
+	(goal enemy-goal rush)
+(or	(strategic-number sn-current-age == fcastlea)
+	(strategic-number sn-current-age == castlea))
+	(unit-type-count-total archer-line < 15)
+;	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(current-age != imperial-age)
+(nor	(players-unit-type-count focus-player skirmisher-line >= 10)
+	(players-unit-type-count focus-player scout-cavalry >= 6))
+(or	(players-building-type-count focus-player barracks >= 2)
+(or	(players-unit-type-count focus-player spearman-line >= 6)
+	(players-unit-type-count focus-player militiaman-line >= 2)))
+	(goal enemy-goal flush)
+	(strategic-number my-sn-military-superiority <= -1)
+	(players-current-age focus-player == feudal-age)
+	(unit-type-count-total archer-line < 10)
+;	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number infantry >= 3)
+	(strategic-number sn-current-age >= imperial)
+	(goal siegereq yes)
+	(unit-type-count-total hand-cannoneer < 10)
+	(goal disablecannon no)
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number infantry >= 5)
+	(strategic-number sn-current-age >= imperial)
+	(goal siegereq yes)
+	(unit-type-count-total hand-cannoneer < 15)
+	(goal disablecannon no)
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number infantry >= 10)
+	(strategic-number sn-current-age >= imperial)
+	(goal siegereq yes)
+	(unit-type-count-total hand-cannoneer < 22)
+	(goal disablecannon no)
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number infantry >= 15)
+	(strategic-number sn-current-age >= imperial)
+	(goal siegereq yes)
+	(unit-type-count-total hand-cannoneer < 30)
+	(goal disablecannon no)
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number infantry >= 25)
+	(strategic-number sn-current-age >= imperial)
+	(goal siegereq yes)
+	(goal siegereq yes)
+	(unit-type-count-total hand-cannoneer < 44)
+	(goal disablecannon no)
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number infantry >= 40)
+	(strategic-number sn-current-age >= imperial)
+	(goal siegereq yes)
+	(goal siegereq yes)
+	(unit-type-count-total hand-cannoneer < 60)
+	(goal disablecannon no)
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer))
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-defined SARACEN-CIV
+
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line > 34)
+	(strategic-number cavalry >= 25))
+(or	(strategic-number sn-current-age >= imperial)
+	(strategic-number my-sn-military-superiority <= -2))
+	(strategic-number my-sn-military-superiority <= 0)
+	(goal siegereq yes)
+	(unit-type-count-total archer-line < 80)
+	(goal disablearb no)
+	(can-train archer-line)
+=>
+	(train archer-line))
+
+#end-if
+
+#load-if-defined HUN-CIV ; Huns
+
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line > 34)
+(or	(players-unit-type-count focus-player camel-line > 24)
+(or	(players-unit-type-count focus-player huskarl-line >= 20)
+	(strategic-number archers >= 25))))
+(or	(players-unit-type-count focus-player teutonic-knight-line >= 10)
+	(players-unit-type-count focus-player war-elephant-line >= 6))
+	(goal siegereq yes)
+	(unit-type-count-total cavalry-archer-line < 40)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line > 24)
+(or	(players-unit-type-count focus-player camel-line > 14)
+(or	(players-unit-type-count focus-player huskarl-line >= 8)
+	(strategic-number archers >= 10))))
+	(goal siegereq yes)
+	(strategic-number infantry >= 3)
+	(unit-type-count-total cavalry-archer-line < 8)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line > 32)
+(or	(players-unit-type-count focus-player camel-line > 19)
+(or	(players-unit-type-count focus-player huskarl-line >= 11)
+	(strategic-number archers >= 15))))
+	(goal siegereq yes)
+	(strategic-number infantry >= 5)
+	(unit-type-count-total cavalry-archer-line < 12)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line > 40)
+(or	(players-unit-type-count focus-player huskarl-line >= 14)
+(or	(players-unit-type-count focus-player camel-line > 24)
+	(strategic-number archers >= 15))))
+	(goal siegereq yes)
+	(strategic-number infantry >= 7)
+	(unit-type-count-total cavalry-archer-line < 16)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line > 48)
+(or	(players-unit-type-count focus-player huskarl-line >= 17)
+(or	(players-unit-type-count focus-player camel-line > 29)
+	(strategic-number archers >= 25))))
+	(goal siegereq yes)
+	(strategic-number infantry >= 10)
+	(unit-type-count-total cavalry-archer-line < 20)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line > 56)
+(or	(players-unit-type-count focus-player huskarl-line >= 20)
+(or	(players-unit-type-count focus-player camel-line > 34)
+	(strategic-number archers >= 25))))
+	(goal siegereq yes)
+	(strategic-number infantry >= 15)
+	(unit-type-count-total cavalry-archer-line < 30)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line > 64)
+(or	(players-unit-type-count focus-player huskarl-line >= 20)
+(or	(players-unit-type-count focus-player camel-line > 39)
+	(strategic-number archers >= 40))))
+	(goal siegereq yes)
+	(strategic-number infantry >= 25)
+	(unit-type-count-total cavalry-archer-line < 43)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(not	(players-unit-type-count focus-player huskarl-line >= 30))
+	(strategic-number infantry >= 40)
+	(goal siegereq yes)
+	(unit-type-count-total cavalry-archer-line < 66)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player skirmisher-line > 39)
+(or	(players-unit-type-count focus-player huskarl-line >= 30)
+(or	(players-unit-type-count focus-player camel-line > 29)
+	(strategic-number archers >= 40))))
+	(gold-amount > 800)
+	(goal siegereq yes)
+	(unit-type-count-total cavalry-archer-line < 80)
+	(can-train cavalry-archer-line)
+=>
+	(train cavalry-archer-line))
+;=========================================================
+;(defrule
+;	(goal milunits yes)
+;(nor	(players-unit-type-count focus-player skirmisher-line > 29)
+;(or	(players-unit-type-count focus-player camel-line > 24)
+;	(strategic-number archers >= 25)))
+;(or	(players-unit-type-count focus-player cavalry-archer-line >= 6)
+;	(gold-amount > 200))
+;	(gold-amount > 100)
+;	(unit-type-count-total cavalry-archer-line < 20)
+;	(can-train cavalry-archer-line)
+;=>
+;	(train cavalry-archer-line))
+#end-if
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(strategic-number my-sn-military-superiority <= -1)
+	(goal defend yes))
+	(players-unit-type-count focus-player huskarl-line >= 12)
+	(goal e-cata no)
+(or	(strategic-number my-sn-military-superiority <= -2)
+	(gold-amount > 100))
+	(goal siegereq yes)
+	(unit-type-count-total hand-cannoneer < 80)
+	(goal disablecannon no)
+	(can-train hand-cannoneer)
+=>
+	(train hand-cannoneer))
+;=========================================================
+; Light Cavalry
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player spearman-line >= 50)
+	(players-unit-type-count focus-player camel-line >= 50))
+	(strategic-number moenche >= 10)
+	(unit-type-count-total scout-cavalry-line < 30)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player spearman-line >= 55)
+	(players-unit-type-count focus-player camel-line >= 55))
+(or	(players-unit-type-count any-enemy monk >= 21)
+	(players-unit-type-count any-enemy missionary >= 21))
+	(unit-type-count-total scout-cavalry-line < 45)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player spearman-line >= 60)
+	(players-unit-type-count focus-player camel-line >= 60))
+(or	(players-unit-type-count any-enemy monk >= 31)
+	(players-unit-type-count any-enemy missionary >= 31))
+	(unit-type-count-total scout-cavalry-line < 65)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player spearman-line >= 70)
+	(players-unit-type-count focus-player camel-line >= 70))
+(or	(players-unit-type-count any-enemy monk >= 51)
+	(players-unit-type-count any-enemy missionary >= 51))
+	(unit-type-count-total scout-cavalry-line < 100)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined SLAVIC-CIV
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined PERSIAN-CIV
+;#load-if-not-defined SARACEN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined VIKING-CIV ; Mongol, Turks, Saracens
+
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player spearman-line >= 55)
+	(players-unit-type-count focus-player camel-line >= 50))
+(or	(players-unit-type-count any-enemy monk >= 11)
+	(players-unit-type-count any-enemy missionary >= 11))
+	(unit-type-count-total scout-cavalry-line < 33)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+;=========================================================
+
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player spearman-line >= 58)
+	(players-unit-type-count focus-player camel-line >= 56))
+(or	(players-unit-type-count any-enemy monk >= 21)
+	(players-unit-type-count any-enemy missionary >= 21))
+	(unit-type-count-total scout-cavalry-line < 55)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player spearman-line >= 65)
+	(players-unit-type-count focus-player camel-line >= 65))
+(or	(players-unit-type-count any-enemy monk >= 31)
+	(players-unit-type-count any-enemy missionary >= 31))
+	(unit-type-count-total scout-cavalry-line < 80)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player spearman-line >= 75)
+	(players-unit-type-count focus-player camel-line >= 75))
+(or	(players-unit-type-count any-enemy monk >= 51)
+	(players-unit-type-count any-enemy missionary >= 51))
+	(unit-type-count-total scout-cavalry-line < 120)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(players-unit-type-count focus-player spearman-line < 28)
+	(players-unit-type-count focus-player camel-line < 20)
+(or	(strategic-number sn-maximum-town-size > 40)
+(or	(goal defend yes)
+(or	(food-amount >= 1200)
+	(strategic-number my-sn-military-superiority <= -1))))
+(or	(food-amount >= 130)
+	(strategic-number my-sn-military-superiority <= -1))
+	(unit-type-count-total scout-cavalry-line < 15)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(players-unit-type-count focus-player spearman-line < 42)
+	(players-unit-type-count focus-player camel-line < 30)
+(or	(food-amount >= 1200)
+(or	(strategic-number archers >= 10)
+(or	(players-unit-type-count focus-player skirmisher-line >= 11)
+	(strategic-number my-sn-military-superiority <= -2))))
+(or	(food-amount >= 130)
+	(strategic-number my-sn-military-superiority <= -1))
+	(unit-type-count-total scout-cavalry-line < 30)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(players-unit-type-count focus-player spearman-line < 50)
+	(players-unit-type-count focus-player camel-line < 40)
+(or	(food-amount >= 4200)
+(or	(strategic-number archers >= 25)
+(or	(players-unit-type-count focus-player skirmisher-line >= 16)
+	(strategic-number my-sn-military-superiority <= -2))))
+(or	(food-amount >= 130)
+	(strategic-number my-sn-military-superiority <= -1))
+	(unit-type-count-total scout-cavalry-line < 50)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line))
+
+;#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(enemy-buildings-in-town)
+	(players-building-type-count focus-player watch-tower-line > 0)
+	(unit-type-count-total militiaman-line < 4)
+	(unit-type-count-total eagle-warrior-line < 5)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal enemy-goal rush)
+	(strategic-number my-sn-military-superiority <= -1)
+	(unit-type-count-total militiaman-line < 11)
+	(unit-type-count-total eagle-warrior-line < 16)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(food-amount > 70)
+(or	(strategic-number my-sn-military-superiority <= -1)
+(or	(goal defend yes)
+	(and	(town-under-attack)
+		(military-population < 20))))
+	(unit-type-count-total eagle-warrior-line < 13)
+	(unit-type-count-total militiaman-line < 9)
+	(strategic-number sn-current-age == castlea)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(goal enemy-goal flush)
+	(strategic-number my-sn-military-superiority <= -1)
+	(unit-type-count-total eagle-warrior-line < 8)
+	(unit-type-count-total militiaman-line < 8)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(players-unit-type-count focus-player spearman-line > 6)
+(or	(players-unit-type-count focus-player archer-line > 7)
+(or	(players-unit-type-count focus-player eagle-warrior-line > 5)
+	(players-unit-type-count focus-player skirmisher-line > 8))))
+	(food-amount > 70)
+(or	(goal enemy-goal rush)
+	(strategic-number my-sn-military-superiority <= -2))
+	(unit-type-count-total militiaman-line < 12)
+	(unit-type-count-total eagle-warrior-line < 15)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(nor	(players-unit-type-count focus-player militiaman-line > 25)
+(or	(players-unit-type-count focus-player cataphract-line > 25)
+(or	(players-unit-type-count focus-player knight-line > 25)
+(or	(players-unit-type-count focus-player war-elephant-line > 25)
+	(players-unit-type-count focus-player mameluke-line > 25)))))
+	(strategic-number my-sn-military-superiority <= -2)
+	(unit-type-count-total militiaman-line < 11)
+	(unit-type-count-total eagle-warrior-line < 16)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(goal enemy-goal rush)
+	(players-unit-type-count focus-player eagle-warrior-line > 15))
+	(players-unit-type-count focus-player eagle-warrior-line > 5)
+	(strategic-number my-sn-military-superiority <= -2)
+	(unit-type-count-total eagle-warrior-line < 12)
+	(unit-type-count-total militiaman-line < 10)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+;	(goal milunits yes)
+	(strategic-number my-sn-military-superiority <= 3)
+(or	(goal underattack yes)
+	(goal attacking yes))
+	(players-unit-type-count focus-player militiaman-line < 30)
+	(players-unit-type-count focus-player cataphract-line < 30)
+	(players-unit-type-count focus-player knight-line < 30)
+	(players-unit-type-count focus-player war-elephant-line < 30)
+	(players-unit-type-count focus-player mameluke-line < 30)
+	(unit-type-count-total militiaman-line < 10)
+	(unit-type-count-total eagle-warrior-line < 20)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number moenche >= 10)
+	(unit-type-count-total eagle-warrior-line < 30)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(players-unit-type-count any-enemy monk >= 21)
+	(players-unit-type-count any-enemy missionary >= 21))
+	(unit-type-count-total eagle-warrior-line < 50)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(players-unit-type-count any-enemy monk >= 31)
+	(players-unit-type-count any-enemy missionary >= 31))
+	(unit-type-count-total eagle-warrior-line < 75)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(players-unit-type-count any-enemy monk >= 51)
+	(players-unit-type-count any-enemy missionary >= 51))
+	(unit-type-count-total eagle-warrior-line < 100)
+	(can-train eagle-warrior-line)
+=>
+	(train eagle-warrior-line))
+;=========================================================
+;#load-if-defined AZTEC-CIV
+;(defrule
+;	(goal milunits yes)
+;	(goal researchplan yes)
+;	(strategic-number my-sn-military-superiority >= 0)
+;	(strategic-number archers == 0)
+;	(strategic-number cavalry == 0)
+;	(strategic-number infantry == 0)
+;	(unit-type-count-total militiaman-line < 20)
+;	(unit-type-count-total eagle-warrior-line < 60)
+;	(can-train eagle-warrior-line)
+;=>
+;	(train eagle-warrior-line))
+;#end-if
+;=========================================================
+; Camels
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number my-sn-military-superiority <= -2)
+(nor	(players-unit-type-count focus-player spearman-line >= 10)
+	(strategic-number moenche >= 10))
+	(current-age != imperial-age)
+(or	(players-unit-type-count focus-player war-wagon-line >= 10)
+(or	(players-unit-type-count focus-player mangudai-line >= 10)
+(or	(players-unit-type-count focus-player conquistador-line >= 10)
+	(players-unit-type-count focus-player cavalry-archer-line >= 10))))
+	(unit-type-count-total camel-line < 15)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number my-sn-military-superiority <= -2)
+(nor	(players-unit-type-count focus-player spearman-line >= 17)
+	(strategic-number moenche >= 10))
+	(current-age != imperial-age)
+(or	(players-unit-type-count focus-player war-wagon-line >= 15)
+(or	(players-unit-type-count focus-player conquistador-line >= 15)
+(or	(players-unit-type-count focus-player mangudai-line >= 15)
+	(players-unit-type-count focus-player cavalry-archer-line >= 15))))
+	(unit-type-count-total camel-line < 20)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number my-sn-military-superiority <= -2)
+(nor	(players-unit-type-count focus-player spearman-line >= 28)
+	(strategic-number moenche >= 10))
+	(current-age != imperial-age)
+(or	(players-unit-type-count focus-player war-wagon-line >= 25)
+(or	(players-unit-type-count focus-player conquistador-line >= 25)
+(or	(players-unit-type-count focus-player mangudai-line >= 25)
+	(players-unit-type-count focus-player cavalry-archer-line >= 25))))
+	(unit-type-count-total camel-line < 30)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number my-sn-military-superiority <= -2)
+(nor	(players-unit-type-count focus-player spearman-line >= 40)
+	(strategic-number moenche >= 10))
+	(current-age != imperial-age)
+(or	(players-unit-type-count focus-player war-wagon-line >= 35)
+(or	(players-unit-type-count focus-player conquistador-line >= 35)
+(or	(players-unit-type-count focus-player mangudai-line >= 35)
+	(players-unit-type-count focus-player cavalry-archer-line >= 35))))
+	(unit-type-count-total camel-line < 40)
+	(can-train camel-line)
+=>
+	(train camel-line))
+
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined SLAVIC-CIV
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV
+#load-if-not-defined VIKING-CIV ; Saracens, Indians
+
+(defrule
+	(goal milunits yes)
+	(strategic-number infantry < 25)
+	(strategic-number archers < 25)
+	(players-unit-type-count focus-player spearman-line < 20)
+	(strategic-number moenche < 10)
+(or	(strategic-number cavalry >= 3)
+(or	(players-unit-type-count focus-player mangudai-line >= 3)
+(or	(players-unit-type-count focus-player conquistador-line >= 3)
+	(players-unit-type-count focus-player cavalry-archer-line >= 3))))
+	(unit-type-count-total camel-line < 10)
+	(unit-type-count-total imperial-camel < 10)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number infantry < 40)
+	(strategic-number archers < 40)
+	(players-unit-type-count focus-player spearman-line < 30)
+	(strategic-number moenche < 10)
+(or	(strategic-number cavalry >= 7)
+(or	(players-unit-type-count focus-player mangudai-line >= 7)
+(or	(players-unit-type-count focus-player conquistador-line >= 7)
+	(players-unit-type-count focus-player cavalry-archer-line >= 7))))
+	(unit-type-count-total camel-line < 20)
+	(unit-type-count-total imperial-camel < 20)
+	(can-train camel-line)
+=>
+	(train camel-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+	(strategic-number infantry < 40)
+	(strategic-number archers < 40)
+	(players-unit-type-count focus-player spearman-line < 40)
+	(strategic-number moenche < 10)
+(or	(strategic-number cavalry >= 15)
+(or	(players-unit-type-count focus-player mangudai-line >= 15)
+(or	(players-unit-type-count focus-player conquistador-line >= 15)
+	(players-unit-type-count focus-player cavalry-archer-line >= 15))))
+	(unit-type-count-total camel-line < 40)
+	(unit-type-count-total imperial-camel < 40)
+	(can-train camel-line)
+=>
+	(train camel-line))
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+;=========================================================
+; Champs
+;=========================================================
+(defrule
+;test	(goal milunits yes)
+	(goal strategy drush)
+	(food-amount >= 110)
+	(players-current-age focus-player <= dark-age)
+	(strategic-number sn-current-age < feudal)
+	(unit-type-count-total 152 < 1); dead militias
+	(unit-type-count-total militiaman-line < drush-militias)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line))
+#load-if-defined DARK-AGE-END
+(defrule
+	(goal milunits yes)
+(nor	(strategic-number archers >= 25)
+(or	(strategic-number cavalry >= 40)
+(or	(strategic-number moenche >= 10)
+(or	(strategic-number gunpowder >= 25)
+	(players-unit-type-count focus-player teutonic-knight-line > 13)))))
+	(strategic-number sn-current-age >= imperial)
+	(unit-type-count-total my-unique-unit-line < 30)
+;	(unit-type-count-total militiaman-line < 90)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line))
+#end-if
+#load-if-defined FEUDAL-AGE-END
+(defrule
+	(goal milunits yes)
+(nor	(strategic-number archers >= 25)
+(or	(strategic-number cavalry >= 40)
+(or	(strategic-number moenche >= 10)
+(or	(strategic-number gunpowder >= 25)
+	(players-unit-type-count focus-player teutonic-knight-line > 13)))))
+	(strategic-number sn-current-age >= imperial)
+	(unit-type-count-total my-unique-unit-line < 30)
+;	(unit-type-count-total militiaman-line < 90)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line))
+#end-if
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined SLAVIC-CIV
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV ; Aztecs, Goths, Japanese, Vikings
+
+(defrule
+(or	(players-unit-type-count focus-player jaguar-man-line >= 18)
+(or	(strategic-number sn-current-age < imperial)
+	(and	(unit-type-count-total militiaman-line >= 6)
+		(up-research-status c: ri-champion < research-pending))))
+=>
+	(up-jump-rule 1))
+
+(defrule
+	(goal milunits yes)
+	(goal disablemilit no)
+	(strategic-number archers <= 25)
+	(strategic-number cavalry <= 40)
+	(strategic-number moenche <= 10)
+	(strategic-number gunpowder <= 25)
+	(players-unit-type-count focus-player teutonic-knight-line < 13)
+	(goal siegereq yes)
+;	(strategic-number sn-current-age >= imperial)
+;	(unit-type-count-total my-unique-unit-line < 30)
+;	(unit-type-count-total militiaman-line < 90)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line))
+;=========================================================
+;(defrule
+;	(goal milunits yes)
+;;feud	(goal disablemilit no)
+;(nor	(strategic-number archers >= 15)
+;(or	(strategic-number cavalry >= 25)
+;(or	(strategic-number moenche >= 10)
+;(or	(strategic-number gunpowder >= 15)
+;	(players-unit-type-count focus-player teutonic-knight-line > 5)))))
+;	(goal enemy-goal flush)
+;	(game-time < 1110)
+;	(strategic-number my-sn-military-superiority <= 0)
+;	(unit-type-count-total militiaman-line < 18)
+;	(can-train militiaman-line)
+;=>
+;	(train militiaman-line))
+
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(goal milunits yes)
+	(goal enemy-goal drush)
+	(strategic-number sn-current-age == dark)
+	(players-military-population focus-player >= 3)
+(or	(food-amount >= 110)
+	(strategic-number my-sn-military-superiority <= -2))
+	(strategic-number my-sn-military-superiority <= -1)
+	(unit-type-count-total militiaman-line < 6)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line))
+;=========================================================
+(defrule
+	(goal milunits yes)
+(or	(can-research ri-two-handed-swordsman)
+	(research-completed ri-two-handed-swordsman))
+(or	(gold-amount < 100)
+	(strategic-number my-sn-military-superiority <= -2))
+(or	(players-unit-type-count focus-player spearman-line > 39)
+	(players-unit-type-count focus-player skirmisher-line > 39))
+	(strategic-number archers <= 25)
+	(cc-players-unit-type-count 0 gold-mine < 3)
+;	(unit-type-count-total militiaman-line < 80)
+	(can-train militiaman-line)
+=>
+	(train militiaman-line))
+;=========================================================
+(defrule; early nomad scout
+(or	(up-compare-goal nomad != no)
+	(up-compare-goal landnomad != no))
+	(goal underattack no)
+	(goal defend no)
+	(military-population <= 0)
+(or	(food-amount >= 560)
+	(strategic-number sn-current-age >= dfeudal))
+	(can-train militiaman-line)
+=>
+	(train militiaman-line)
+	(disable-self))
+;=========================================================
+; Ships
+;=========================================================
+(defrule
+	(dropsite-min-distance wood >= 7)
+	(wood-amount < 110)
+=>
+	(up-jump-rule 8))
+(defrule
+	(goal fleet yes)
+	(goal enemy-boats yes)
+	(strategic-number sn-current-age == feudal)
+	(warboat-count < up-max-civ)
+	(building-type-count-total blacksmith >= 1)
+(or	(gold-amount >= 230)
+	(strategic-number sn-current-age > feudal))
+	(warboat-count < 10)
+	(can-train galley-line)
+=>
+	(train galley-line))
+(defrule
+	(goal fleet yes)
+	(goal enemy-boats yes)
+(or	(warboat-count < 25)
+(or	(players-unit-type-count any-enemy galley-line >= 20)
+	(players-unit-type-count any-enemy fire-ship-line >= 11)))
+	(warboat-count < up-max-civ) ; leaves some room for villagers, will be changed later
+(or	(goal dreitc yes)
+(or	(wood-amount >= 295)
+	(unit-type-count-total turtle-ship-line < 4)))
+	(can-train turtle-ship-line)
+=>
+	(train turtle-ship-line))
+(defrule
+	(goal fleet yes)
+	(goal enemy-boats yes); test
+	(warboat-count < 15)
+	(strategic-number sn-current-age >= fcastlea)
+	(gold-amount >= 130)
+	(can-train galley-line)
+=>
+	(train galley-line))
+(defrule
+	(goal fleet yes)
+	(goal enemy-boats yes)
+	(warboat-count < 25)
+(or	(players-unit-type-count any-enemy galley-line >= 10)
+(or	(players-unit-type-count any-enemy longboat-line >= 10)
+	(players-unit-type-count any-enemy fire-ship-line >= 8)))
+(or	(goal dreitc yes)
+(or	(wood-amount >= 295)
+	(unit-type-count-total galley-line < 13)))
+	(strategic-number sn-current-age >= castlea)
+	(can-train galley-line)
+=>
+	(train galley-line))
+(defrule
+	(goal fleet yes)
+	(goal enemy-boats yes)
+	(warboat-count < 35)
+(or	(players-unit-type-count any-enemy galley-line >= 20)
+(or	(players-unit-type-count any-enemy longboat-line >= 20)
+	(players-unit-type-count any-enemy fire-ship-line >= 15)))
+(or	(goal dreitc yes)
+(or	(wood-amount >= 295)
+	(unit-type-count-total galley-line < 25)))
+	(strategic-number sn-current-age >= castlea)
+	(can-train galley-line)
+=>
+	(train galley-line))
+(defrule
+	(goal fleet yes)
+	(goal enemy-boats yes)
+	(warboat-count < 50)
+(or	(players-unit-type-count any-enemy galley-line >= 28)
+(or	(players-unit-type-count any-enemy longboat-line >= 28)
+	(players-unit-type-count any-enemy fire-ship-line >= 22)))
+(or	(goal dreitc yes)
+(or	(wood-amount >= 295)
+	(unit-type-count-total galley-line < 35)))
+	(strategic-number sn-current-age >= castlea)
+	(can-train galley-line)
+=>
+	(train galley-line))
+(defrule
+	(goal fleet yes)
+	(goal enemy-boats yes)
+	(warboat-count < 75)
+(or	(players-unit-type-count any-enemy galley-line >= 40)
+(or	(players-unit-type-count any-enemy longboat-line >= 40)
+	(players-unit-type-count any-enemy fire-ship-line >= 35)))
+(or	(goal dreitc yes)
+(or	(wood-amount >= 295)
+	(unit-type-count-total galley-line < 50)))
+	(strategic-number sn-current-age >= castlea)
+	(can-train galley-line)
+=>
+	(train galley-line))
+(defrule
+	(goal fleet yes)
+	(goal enemy-boats yes)
+	(warboat-count < 100)
+(or	(players-unit-type-count any-enemy galley-line >= 60)
+(or	(players-unit-type-count any-enemy longboat-line >= 60)
+	(players-unit-type-count any-enemy fire-ship-line >= 55)))
+(or	(goal dreitc yes)
+(or	(wood-amount >= 295)
+	(unit-type-count-total galley-line < 70)))
+	(strategic-number sn-current-age >= castlea)
+	(can-train galley-line)
+=>
+	(train galley-line))
+(defrule
+	(goal fleet yes)
+	(goal enemy-boats yes)
+	(warboat-count < up-max-civ)
+	(unit-type-count-total cannon-galleon-line < 6)
+	(can-train cannon-galleon-line)
+=>
+	(train cannon-galleon-line))
+(defrule
+	(goal fleet yes)
+	(strategic-number sn-current-age == dark)
+(or	(dropsite-min-distance wood < 8)
+	(wood-amount >= 110))
+(or	(cc-players-unit-type-count 0 933 >= 1)
+	(cc-players-unit-type-count 0 deep-fish >= 1))
+	(unit-type-count-total fishing-ship < 16)
+	(civilian-population < up-max-civ)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship))
+(defrule
+	(goal fleet yes)
+	(goal researchplan no)
+	(strategic-number sn-current-age <= feudal)
+(or	(dropsite-min-distance wood < 8)
+	(wood-amount >= 110))
+(or	(cc-players-unit-type-count 0 933 >= 1)
+	(cc-players-unit-type-count 0 deep-fish >= 1))
+	(civilian-population < up-max-civ)
+(or	(building-type-count-total blacksmith >= 1)
+	(wood-amount >= 475))
+	(unit-type-count-total fishing-ship < 8)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship))
+(defrule
+	(goal fleet yes)
+	(strategic-number sn-current-age == fcastlea)
+(or	(cc-players-unit-type-count 0 933 >= 1)
+	(cc-players-unit-type-count 0 deep-fish >= 1))
+	(players-unit-type-count focus-player galley-line <= 0)
+	(players-unit-type-count focus-player fire-ship-line <= 0)
+	(players-unit-type-count focus-player longboat-line <= 0)
+	(players-unit-type-count focus-player turtle-ship-line <= 0)
+	(players-unit-type-count focus-player cannon-galleon-line <= 0)
+	(unit-type-count-total fishing-ship <= 0)
+	(wood-amount >= 250)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship)
+	(disable-self))
+(defrule
+	(goal fleet yes)
+	(goal researchplan no)
+(or	(goal enemy-boats no)
+	(warboat-count >= 40))
+(or	(cc-players-unit-type-count 0 933 >= 1)
+	(cc-players-unit-type-count 0 deep-fish >= 1))
+	(food-amount < 600)
+	(wood-amount > 600)
+(or	(goal islands no)
+	(unit-type-count-total transport-ship >= 1))
+	(unit-type-count-total fishing-ship < 4)
+	(can-train fishing-ship)
+=>
+	(train fishing-ship))
+;=========================================================
+; No gold left ; Trash war
+;=========================================================
+;(defrule
+;	(goal milunits yes)
+;	(cc-players-unit-type-count 0 gold-mine < 3)
+;	(gold-amount < 200)
+;(or	(research-completed ri-champion)
+;	(food-amount > 750))
+;(or	(food-amount > 500)
+;(or	(strategic-number my-sn-military-superiority <= -2)
+;(not	(players-unit-type-count focus-player spearman-line > 34))))
+;=>
+;	(train scout-cavalry-line))
+;(defrule
+;	(goal milunits yes)
+;	(cc-players-unit-type-count 0 gold-mine < 3)
+;	(gold-amount < 200)
+;	(wood-amount < 200)
+;	(food-amount > 1000)
+;(not	(players-unit-type-count focus-player spearman-line > 54))
+;=>
+;	(train scout-cavalry-line))
+(defrule
+	(goal milunits yes)
+(or	(cc-players-unit-type-count 0 gold-mine < 4)
+	(cc-players-unit-type-count 0 trees < 100))
+	(gold-amount < 150)
+	(wood-amount < 100)
+	(food-amount >= 130)
+	(players-unit-type-count focus-player spearman-line < 60)
+=>
+	(train scout-cavalry-line))
+(defrule
+	(goal milunits yes)
+	(cc-players-unit-type-count 0 gold-mine < 4)
+	(wood-amount > 100)
+	(food-amount >= 69)
+	(gold-amount < 200)
+=>
+	(train skirmisher-line))
+(defrule
+	(goal milunits yes)
+	(cc-players-unit-type-count 0 gold-mine < 4)
+	(wood-amount > 100)
+	(food-amount >= 85)
+	(gold-amount < 200)
+=>
+	(train spearman-line))
+(defrule
+	(cc-players-unit-type-count 0 trees < 100)
+	(players-unit-type-count focus-player scout-cavalry-line < 16)
+	(players-unit-type-count focus-player eagle-warrior-line < 16)
+	(gold-amount > 200)
+	(can-train monk)
+=>
+	(train monk))
+;=========================================================
+; Teamgames ; test
+;=========================================================
+(defrule
+(or	(goal Multiplayer no)
+(or	(goal position-goal pocket)
+(or	(up-compare-goal milunits != yes)
+(or	(building-type-count castle >= 1)
+(or	(strategic-number sn-current-age < fcastlea)
+	(strategic-number sn-current-age >= imperial))))))
+=>
+	(up-jump-rule 4))
+
+(defrule
+(or	(strategic-number my-sn-military-superiority <= -1)
+(or	(up-enemy-units-in-town > 2)
+(or	(enemy-buildings-in-town)
+	(and	(strategic-number sn-current-age == fcastlea)
+		(strategic-number my-sn-military-superiority <= -1)))))
+	(strategic-number moenche < 15)
+	(strategic-number archers < 10)
+	(players-unit-type-count focus-player militiaman-line < 5)
+	(players-unit-type-count focus-player eagle-warrior-line < 5)
+	(unit-type-count-total spearman-line < 16)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+(defrule
+(or	(strategic-number my-sn-military-superiority <= -1)
+(or	(up-enemy-units-in-town > 2)
+	(and	(strategic-number sn-current-age == fcastlea)
+		(strategic-number my-sn-military-superiority <= -1))))
+	(strategic-number moenche < 15)
+	(strategic-number cavalry < 10)
+	(players-unit-type-count focus-player militiaman-line < 6)
+	(players-unit-type-count focus-player eagle-warrior-line < 5)
+	(unit-type-count-total skirmisher-line < 16)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+#load-if-not-defined HUN-CIV
+#load-if-not-defined SPANISH-CIV
+(defrule
+(or	(strategic-number my-sn-military-superiority <= -1)
+(or	(up-enemy-units-in-town > 2)
+	(and	(strategic-number sn-current-age == fcastlea)
+		(strategic-number my-sn-military-superiority <= -1))))
+	(players-unit-type-count focus-player skirmisher-line < 16)
+	(strategic-number cavalry < 10)
+	(players-unit-type-count focus-player militiaman-line > 3)
+	(unit-type-count-total archer-line < 16)
+	(can-train archer-line)
+=>
+	(train archer-line))
+#end-if
+#end-if
+(defrule
+(or	(enemy-buildings-in-town)
+(or	(goal underattack yes)
+	(strategic-number my-sn-military-superiority <= -2)))
+	(strategic-number moenche < 10)
+	(players-unit-type-count focus-player spearman-line < 16)
+	(can-train knight-line)
+	(unit-type-count-total knight-line < 10)
+=>
+	(train knight-line))
+(defrule
+(or	(enemy-buildings-in-town)
+(or	(goal underattack yes)
+	(strategic-number my-sn-military-superiority <= -2)))
+	(players-unit-type-count focus-player militiaman-line < 8)
+	(players-unit-type-count focus-player knight-line < 9)
+	(can-train eagle-warrior-line)
+	(unit-type-count-total eagle-warrior-line < 16)
+=>
+	(train eagle-warrior-line))
+;(defrule
+;	(building-type-count-total castle <= 0)
+;(or	(strategic-number my-sn-military-superiority <= -2)
+;(or	(up-enemy-units-in-town > 2)
+;(or	(enemy-buildings-in-town)
+;	(and	(strategic-number sn-current-age == fcastlea)
+;		(strategic-number my-sn-military-superiority <= -1)))))
+;	(building-type-count-total watch-tower < 1)
+;	(can-build watch-tower)
+;=>
+;	(set-strategic-number sn-ignore-tower-elevation 1)
+;	(up-set-placement-data my-player-number -1 c: 6)
+;	(up-build place-control 0 c: watch-tower)
+;	(disable-self))
+;=========================================================
+; R-Flush.
+;=========================================================
+(defrule
+(or	(up-compare-goal milunits != r-flush)
+(or	(goal siegereq no)
+(or	(and	(and	(idle-farm-count <= 0)
+			(strategic-number my-sn-military-superiority >= 2))
+		(wood-amount < 60))
+	(and	(dropsite-min-distance wood > 5)
+		(wood-amount < 100)))))
+=>
+	(up-jump-rule 11))
+(defrule
+	(and	(current-age >= castle-age)
+		(and	(wood-amount < 200)
+			(building-type-count-total siege-workshop <= 0)))
+=>
+	(up-jump-rule 10))
+;=========================================================
+(defrule
+;	(goal milunits r-flush)
+(or	(military-population > 20)
+(or	(strategic-number my-sn-military-superiority >= 1)
+(or	(goal attacking yes)
+	(goal researchplan yes))))
+(or	(goal underattack no)
+	(strategic-number my-sn-military-superiority >= 0))
+	(unit-type-count-total battering-ram-line < 2)
+	(can-train battering-ram-line)
+=>
+	(train battering-ram-line))
+;=========================================================
+(defrule
+;	(goal milunits r-flush)
+(or	(food-amount >= 135)
+	(up-research-status c: arc-att-1 >= research-pending))
+(or	(food-amount >= 70) ; 85
+	(up-pending-objects c: villager >= 2))
+(or	(and	(strategic-number cavalry >= 10)
+		(unit-type-count-total spearman-line < 15))
+	(and	(strategic-number cavalry >= 7)
+		(unit-type-count-total spearman-line < 12)))
+;	(goal siegereq yes)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+(defrule
+;	(goal milunits r-flush)
+(or	(food-amount >= 135)
+	(up-research-status c: arc-att-1 >= research-pending))
+(or	(food-amount >= 70) ; 85
+	(up-pending-objects c: villager >= 2))
+(or	(and	(strategic-number cavalry >= 3)
+		(unit-type-count-total spearman-line < 6))
+	(and	(strategic-number cavalry >= 5)
+		(unit-type-count-total spearman-line < 9)))
+;	(goal siegereq yes)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+(defrule
+;	(goal milunits r-flush)
+	(up-building-type-in-town c: watch-tower >= 1)
+	(strategic-number sn-maximum-town-size <= 36)
+	(unit-type-count-total spearman-line < 8)
+;	(goal siegereq yes)
+	(can-train spearman-line)
+=>
+	(train spearman-line))
+;=========================================================
+(defrule
+;	(goal milunits r-flush)
+(or	(gold-amount >= 95)
+	(up-research-status c: arc-att-1 >= research-pending))
+(or	(current-age < castle-age)
+	(strategic-number my-sn-military-superiority <= 2))
+;	(goal siegereq yes)
+	(can-train archer-line)
+=>
+	(train archer-line))
+(defrule
+	(building-type-count monastery >= 1)
+	(strategic-number my-sn-military-superiority >= 2)
+	(unit-type-count-total monk <= 0)
+	(unit-type-count 134 <= 0); dead monk
+	(gold-amount < 100)
+	(housing-headroom >= 1)
+=>
+	(up-jump-rule 1))
+(defrule
+;	(goal milunits r-flush)
+(or	(wood-amount >= 225)
+	(building-type-count-total siege-workshop >= 1))
+(or	(and	(wood-amount >= 180)
+		(gold-amount >= 120))
+	(unit-type-count-total battering-ram-line >= 2))
+(or	(gold-amount >= 145)
+	(up-research-status c: arc-att-2 >= research-pending))
+	(current-age >= castle-age)
+;	(goal siegereq yes)
+	(can-train archer-line)
+=>
+	(train archer-line))
+;=========================================================
+(defrule
+;	(goal milunits r-flush)
+(or	(food-amount >= 125)
+	(up-research-status c: arc-att-1 >= research-pending))
+;	(up-research-status c: ri-padded-archer-armor >= research-pending))
+(or	(food-amount >= 75)
+	(up-pending-objects c: villager >= 2))
+	(gold-amount < 45)
+(or	(current-age < castle-age)
+	(strategic-number my-sn-military-superiority <= 2))
+;	(goal siegereq yes)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+(defrule
+;	(goal milunits r-flush)
+	(up-research-status c: arc-att-1 < research-pending)
+	(gold-amount < 95)
+	(food-amount >= 125)
+	(building-type-count-total blacksmith >= 1)
+;	(up-research-status c: ri-padded-archer-armor >= research-pending)
+(or	(food-amount >= 75)
+	(up-pending-objects c: villager >= 2))
+(or	(current-age < castle-age)
+	(strategic-number my-sn-military-superiority <= 2))
+;	(goal siegereq yes)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+(defrule
+;	(goal milunits r-flush)
+(or	(wood-amount >= 235)
+	(building-type-count-total siege-workshop >= 1))
+(or	(food-amount >= 75)
+	(up-pending-objects c: villager >= 2))
+(or	(unit-type-count-total battering-ram-line >= 2)
+	(wood-amount >= 195))
+(or	(food-amount >= 225)
+	(up-research-status c: arc-att-2 >= research-pending))
+	(current-age >= castle-age)
+;	(goal siegereq yes)
+	(can-train skirmisher-line)
+=>
+	(train skirmisher-line))
+;=========================================================
+; Krush.
+;=========================================================
+(defrule
+	(goal strategy krush)
+	(can-train knight-line)
+=>
+	(train knight-line))
+;=========================================================
+; Deleting units.
+;=========================================================
+(defrule
+	(unit-type-count-total villager > up-max-civ)
+	(population >= del-civ-pop)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(game-time > 3600)
+	(unit-type-count-total villager > 60)
+(or	(dropsite-min-distance wood >= 255)
+	(dropsite-min-distance wood == -1))
+	(population >= del-civ-pop)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 70)
+	(population >= del-civ-pop)
+	(dropsite-min-distance wood > 20)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 60)
+	(goal Multiplayer yes)
+	(population >= del-civ-pop)
+(or	(unit-type-count-total trade-cart >= 40)
+	(unit-type-count-total trade-cog >= 40))
+	(wood-amount >= 4000)
+	(food-amount >= 4000)
+	(gold-amount >= 4000)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 70)
+	(goal Multiplayer yes)
+	(population >= del-civ-pop)
+(or	(unit-type-count-total trade-cart >= 40)
+	(unit-type-count-total trade-cog >= 40))
+	(strategic-number sn-current-age >= imperial)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 70)
+	(goal Multiplayer yes)
+	(population >= del-civ-pop)
+	(wood-amount >= 4000)
+	(food-amount >= 4000)
+	(gold-amount >= 4000)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 90)
+	(goal Multiplayer no)
+	(population >= del-civ-pop)
+	(wood-amount >= 4000)
+	(food-amount >= 4000)
+	(gold-amount >= 4000)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 90)
+	(goal Multiplayer yes)
+	(population >= del-civ-pop)
+	(wood-amount >= 3000)
+	(food-amount >= 3000)
+	(gold-amount >= 3000)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 110)
+	(goal Multiplayer no)
+	(population >= del-civ-pop)
+	(wood-amount >= 3000)
+	(food-amount >= 3000)
+	(gold-amount >= 3000)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 100)
+	(goal Multiplayer yes)
+	(population >= del-civ-pop)
+	(wood-amount >= 2000)
+	(food-amount >= 2000)
+	(gold-amount >= 2000)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 110)
+	(goal Multiplayer no)
+	(population >= del-civ-pop)
+	(wood-amount >= 2000)
+	(food-amount >= 2000)
+	(gold-amount >= 2000)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 110)
+	(goal Multiplayer yes)
+	(population >= del-civ-pop)
+	(wood-amount >= 1300)
+	(food-amount >= 1300)
+	(gold-amount >= 1300)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(unit-type-count-total villager > 120)
+	(goal Multiplayer no)
+	(population >= del-civ-pop)
+	(wood-amount >= 1300)
+	(food-amount >= 1300)
+	(gold-amount >= 1300)
+=>
+	(delete-unit villager))
+;=========================================================
+(defrule
+	(goal siegereq no)
+	(goal attacking no)
+	(goal underattack no)
+	(player-in-game any-ally)
+	(players-population any-ally < max-civ-pop)
+	(population >= max-pop)
+(or	(building-type-count castle >= 1)
+	(building-type-count siege-workshop >= 1))
+	(goal researchplan yes)
+	(wood-amount >= 200)
+	(food-amount >= 200)
+	(gold-amount >= 200)
+=>
+	(delete-unit villager)
+	(chat-local-to-self "Deleting villager for siege."))
+;=========================================================
+(defrule
+	(goal siegereq no)
+	(goal attacking no)
+	(goal underattack no)
+	(population >= max-pop)
+(or	(building-type-count castle >= 1)
+	(building-type-count siege-workshop >= 1))
+	(goal researchplan yes)
+	(wood-amount >= 4200)
+	(food-amount >= 4200)
+	(gold-amount >= 4200)
+=>
+	(delete-unit villager)
+	(chat-local-to-self "Deleting villager for siege."))
+;=========================================================
+(defrule
+	(players-building-type-count every-ally market == 0)
+	(players-population every-ally < up-max-civ)
+(or	(and	(population >= del-civ-pop)
+		(gold-amount > 1200))
+	(population >= max-pop))
+(or	(unit-type-count-total villager >= 1)
+	(building-type-count-total town-center >= 1))
+	(unit-type-count-total trade-cart > 0)
+=>
+	(delete-unit trade-cart))
+;=========================================================
+(defrule
+	(gold-amount > 200)
+	(population >= del-civ-pop)
+(or	(unit-type-count-total villager >= 1)
+	(building-type-count-total town-center >= 1))
+	(unit-type-count-total trade-cart > 60)
+=>
+	(delete-unit trade-cart))
+;=========================================================
+(defrule
+	(players-building-type-count every-ally dock <= 0)
+	(players-population every-ally < up-max-civ)
+(or	(and	(population >= del-civ-pop)
+		(gold-amount > 1200))
+	(population >= max-pop))
+(or	(unit-type-count-total villager >= 1)
+	(building-type-count-total town-center >= 1))
+	(unit-type-count-total trade-cog > 0)
+=>
+	(delete-unit trade-cog))
+;=========================================================
+(defrule
+	(gold-amount > 200)
+	(population >= del-civ-pop)
+(or	(unit-type-count-total villager >= 1)
+	(building-type-count-total town-center >= 1))
+	(unit-type-count-total trade-cog > 60)
+=>
+	(delete-unit trade-cog))
+;=========================================================
+(defrule
+	(game-time >= 3600)
+	(goal enemy-boats no)
+	(building-type-count any-enemy >= 1)
+	(players-building-type-count every-enemy dock <= 0)
+	(population >= max-pop)
+	(wood-amount >= 4000)
+	(food-amount >= 4000)
+	(gold-amount >= 4200)
+	(unit-type-count-total galley-line >= 1)
+=>
+	(delete-unit galley-line))
+;=========================================================
+(defrule
+	(game-time >= 4800)
+	(goal enemy-boats no)
+	(building-type-count any-enemy >= 1)
+	(players-building-type-count focus-player dock <= 0)
+	(population >= max-pop)
+(or	(unit-type-count-total trade-cart >= 40)
+	(unit-type-count-total trade-cog >= 40))
+	(goal researchplan yes)
+	(unit-type-count-total galley-line >= 1)
+=>
+	(delete-unit galley-line))
+;=========================================================
+(defrule
+	(wood-amount >= 4000)
+	(food-amount >= 4000)
+	(gold-amount >= 4000)
+	(goal researchplan yes)
+	(population >= del-civ-pop)
+	(unit-type-count-total fishing-ship > 0)
+=>
+	(delete-unit fishing-ship))
+;=========================================================
+(defrule
+(or	(unit-type-count-total trade-cart >= 25)
+	(unit-type-count-total trade-cog >= 25))
+	(goal researchplan yes)
+	(population >= del-civ-pop)
+	(unit-type-count-total fishing-ship > 0)
+=>
+	(delete-unit fishing-ship))
+;=========================================================
+(defrule
+	(goal attacking yes)
+	(goal islands yes)
+	(unit-type-count-total fishing-ship > 1)
+	(unit-type-count-total transport-ship < 1)
+	(population >= del-civ-pop)
+	(can-train transport-ship)
+=>
+	(delete-unit fishing-ship))
+;=========================================================
+(defrule
+	(cc-players-unit-type-count 0 933 <= 0)
+	(cc-players-unit-type-count 0 deep-fish <= 0)
+	(population >= del-civ-pop)
+	(unit-type-count-total fishing-ship > 0)
+=>
+	(delete-unit fishing-ship))
+;=========================================================
+(defrule
+	(timer-triggered MSuperiority)
+	(goal islands yes)
+	(goal attacking yes)
+	(food-amount > 1400)
+	(unit-type-count-total fishing-ship < 2)
+	(unit-type-count-total transport-ship < 1)
+	(population >= del-civ-pop)
+	(can-train transport-ship)
+=>
+	(delete-unit villager))
+#end-if

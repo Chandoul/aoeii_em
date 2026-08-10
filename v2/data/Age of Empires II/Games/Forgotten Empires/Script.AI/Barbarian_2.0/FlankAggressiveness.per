@@ -1,0 +1,160 @@
+#load-if-not-defined TINY-MAP
+
+#load-if-defined UP-ALLY-IN-GAME
+#load-if-not-defined UP-POCKET-POSITION
+#load-if-not-defined UP-HUMAN-IN-GAME
+(defrule
+	(game-time > 50)
+	(game-time < 60)
+	(strategic-number sn-nomad-style-start == 0)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(up-compare-goal gl-nothing-style-map != YES)
+	(up-compare-goal gl-strategy-aggressiveness-level <= LOW)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(goal POSITION FLANK)
+	(goal gl-rush-suitability-on-map GOOD)
+=>
+	(set-goal gl-strategy flush)
+	(set-goal gl-strategy-type basic-flush)
+	(set-goal gl-feudal-infantry FLUSH-DEFENCE-MAA)
+	(set-goal gl-feudal-archery FLUSH-DEFENCE-ARCHER)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(chat-to-allies "I'm a flank - switch to flush")
+)
+#end-if
+#end-if
+#load-if-defined UP-HUMAN-IN-GAME
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined INCAN-CIV
+(defrule
+	(game-time > 55)
+	(game-time < 65)
+	(goal gl-strategy krush)
+	(up-compare-goal gl-strategy != castle-sling)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(goal gl-rush-suitability-on-map GOOD)
+	(or	(taunt-detected every-ally 254)
+		(and	(up-allied-goal any-ally 6 == 6); Hopefully Horde with aggressive rush
+			(up-allied-sn any-ally sn-minimum-water-body-size-for-dock == 999)))
+=>
+	(up-find-player ally find-closest gl-ally-player)
+	(up-modify-sn sn-focus-player-number g:= gl-ally-player)
+	(up-chat-data-to-player every-ally "The nearest ally is %d" s: sn-focus-player-number)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 55)
+	(game-time < 65)
+	(goal gl-strategy krush)
+	(up-compare-goal gl-strategy != castle-sling)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(up-compare-goal gl-ally-player > 0)
+	(up-allied-goal focus-player POSITION == POCKET)
+=>
+	(up-find-player ally find-closest gl-ally-player)
+	(up-find-next-player ally find-closest gl-ally-player)
+	(up-modify-sn sn-focus-player-number g:= gl-ally-player)
+	(up-chat-data-to-player every-ally "The nearest flank is %d" s: sn-focus-player-number)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 55)
+	(game-time < 65)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(up-compare-goal gl-nothing-style-map != YES)
+	(or	(up-allied-goal focus-player gl-strategy-aggressiveness-level == HIGH)
+		(and	(up-allied-goal focus-player 6 == 6)
+			(up-allied-sn focus-player sn-minimum-water-body-size-for-dock == 999)))
+	(up-compare-goal gl-ally-player > 0)
+=>
+	(set-goal gl-strategy knight-rush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type FC2)
+	(up-modify-sn sn-focus-player-number g:= gl-target-player)
+	(set-goal gl-ally-player -2)
+	(chat-to-allies "My flank has an aggressive strategy - switch to more aggressive krush")
+)
+#end-if
+#end-if
+#end-if
+#end-if
+
+#end-if
+
+#end-if
+
+#end-if
+
+#load-if-not-defined BLACK-FOREST-MAP
+#load-if-not-defined OASIS-MAP
+#load-if-not-defined GOTHIC-CIV
+(defrule
+	(or	(goal gl-strategy krush)
+		(goal gl-strategy knight-rush))
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(goal gl-current-age gv-dark)
+	(game-time > 65)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(goal gl-rush-suitability-on-map GOOD)
+	(goal POSITION POCKET)
+=>
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-strategy scrush)
+	(set-goal gl-anti-cysion YES)
+)
+#end-if
+#end-if
+#end-if
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined ITALIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SLAVIC-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV
+(defrule
+	(or	(goal gl-strategy CA-boom)
+		(goal gl-strategy xbow-boom))
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(goal gl-current-age gv-dark)
+	(game-time > 65)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(goal POSITION POCKET)
+=>
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy-type FC2)
+	(set-goal gl-strategy archery-boom)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+

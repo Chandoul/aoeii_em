@@ -1,0 +1,272 @@
+;===== sheep-count =====
+
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(unit-type-count-total LIVESTOCK-GROUP > 6)
+	(or	(strategic-number G-SHEEP-TOTAL ==  0)
+		(goal G-SHEEP 6))
+	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 7)
+	(chat-to-player my-player-number "46") ; Taunt TA-SHEEP-FLAG
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(unit-type-count-total LIVESTOCK-GROUP > 5)
+	(or	(strategic-number G-SHEEP-TOTAL ==  0)
+		(goal G-SHEEP 5))
+	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 6)
+	(chat-to-player my-player-number "46") ; Taunt TA-SHEEP-FLAG
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(unit-type-count-total LIVESTOCK-GROUP > 4)
+	(or	(strategic-number G-SHEEP-TOTAL ==  0)
+		(goal G-SHEEP 4))
+	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 5)
+	(chat-to-player my-player-number "46") ; Taunt TA-SHEEP-FLAG
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(unit-type-count-total LIVESTOCK-GROUP > 3)
+	(or	(strategic-number G-SHEEP-TOTAL ==  0)
+		(goal G-SHEEP 3))
+	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 4)
+	(chat-to-player my-player-number "46") ; Taunt TA-SHEEP-FLAG
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(unit-type-count-total LIVESTOCK-GROUP > 2)
+	(or	(strategic-number G-SHEEP-TOTAL ==  0)
+		(goal G-SHEEP 2))
+	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 3)
+	(chat-to-player my-player-number "46") ; Taunt TA-SHEEP-FLAG
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(unit-type-count-total LIVESTOCK-GROUP > 1)
+	(or	(strategic-number G-SHEEP-TOTAL ==  0)
+		(goal G-SHEEP 1))
+	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 2)
+	(chat-to-player my-player-number "46") ; Taunt TA-SHEEP-FLAG
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(unit-type-count-total LIVESTOCK-GROUP > 0)
+	(or	(strategic-number G-SHEEP-TOTAL ==  0)
+		(goal G-SHEEP 0))
+	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 1)
+	(chat-to-player my-player-number "46") ; Taunt TA-SHEEP-FLAG
+)
+
+
+;sheep-countå∏è≠
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(goal G-SHEEP 7)
+	(unit-type-count-total LIVESTOCK-GROUP < 7)
+;	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 6)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(goal G-SHEEP 6)
+	(unit-type-count-total LIVESTOCK-GROUP < 6)
+;	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 5)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(goal G-SHEEP 5)
+	(unit-type-count-total LIVESTOCK-GROUP < 5)
+;	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 4)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(goal G-SHEEP 4)
+	(unit-type-count-total LIVESTOCK-GROUP < 4)
+;	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 3)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(goal G-SHEEP 3)
+	(unit-type-count-total LIVESTOCK-GROUP < 3)
+;	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 2)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(goal G-SHEEP 2)
+	(unit-type-count-total LIVESTOCK-GROUP < 2)
+;	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 1)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(goal G-SHEEP 1)
+	(unit-type-count-total LIVESTOCK-GROUP < 1)
+;	(not(taunt-detected my-player-number TA-SHEEP-FLAG))
+=>
+	(set-goal G-SHEEP 0)
+	(chat-to-all "No sheep now")
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time <= 660)
+	(or	(and(strategic-number G-SHEEP-TOTAL ==  7)
+			(taunt-detected my-player-number TA-SHEEP-FLAG))
+			(unit-type-count-total LIVESTOCK-GROUP >= 8))
+	(not(strategic-number G-SHEEP-TOTAL ==  8))
+	;(taunt-detected my-player-number TA-SHEEP-FLAG)
+=>
+	(set-goal G-SHEEP 8)
+	(acknowledge-taunt my-player-number TA-SHEEP-FLAG)
+	(set-strategic-number G-SHEEP-TOTAL 8)
+	(chat-to-all "Enough sheep (VIII)")
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(or	(and(strategic-number G-SHEEP-TOTAL ==  6)
+			(taunt-detected my-player-number TA-SHEEP-FLAG))
+		(and(strategic-number G-SHEEP-TOTAL ==  0)
+			(unit-type-count-total LIVESTOCK-GROUP == 7)))
+=>
+	(set-strategic-number G-SHEEP-TOTAL 7)
+	(acknowledge-taunt my-player-number TA-SHEEP-FLAG)
+	(chat-to-all "sheep VII")
+	(disable-self)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(or	(and(strategic-number G-SHEEP-TOTAL ==  5)
+			(taunt-detected my-player-number TA-SHEEP-FLAG))
+		(and(strategic-number G-SHEEP-TOTAL ==  0)
+			(unit-type-count-total LIVESTOCK-GROUP == 6)))
+=>
+	(set-strategic-number G-SHEEP-TOTAL 6)
+	(acknowledge-taunt my-player-number TA-SHEEP-FLAG)
+	(chat-to-all "sheep VI")
+	(disable-self)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(or	(and(strategic-number G-SHEEP-TOTAL ==  4)
+			(taunt-detected my-player-number TA-SHEEP-FLAG))
+		(and(strategic-number G-SHEEP-TOTAL ==  0)
+			(unit-type-count-total LIVESTOCK-GROUP == 5)))
+=>
+	(set-strategic-number G-SHEEP-TOTAL 5)
+	(acknowledge-taunt my-player-number TA-SHEEP-FLAG)
+	(chat-to-all "sheep V")
+	(disable-self)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(or	(and(strategic-number G-SHEEP-TOTAL ==  3)
+			(taunt-detected my-player-number TA-SHEEP-FLAG))
+		(and(strategic-number G-SHEEP-TOTAL ==  0)
+			(unit-type-count-total LIVESTOCK-GROUP == 4)))
+=>
+	(set-strategic-number G-SHEEP-TOTAL 4)
+	(acknowledge-taunt my-player-number TA-SHEEP-FLAG)
+	(chat-to-all "sheep IV")
+	(disable-self)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(or	(and(strategic-number G-SHEEP-TOTAL ==  2)
+			(taunt-detected my-player-number TA-SHEEP-FLAG))
+		(and(strategic-number G-SHEEP-TOTAL ==  0)
+			(unit-type-count-total LIVESTOCK-GROUP == 3)))
+=>
+	(set-strategic-number G-SHEEP-TOTAL 3)
+	(acknowledge-taunt my-player-number TA-SHEEP-FLAG)
+	(chat-to-all "sheep III")
+	(disable-self)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(or	(and(strategic-number G-SHEEP-TOTAL ==  1)
+			(taunt-detected my-player-number TA-SHEEP-FLAG))
+		(and(strategic-number G-SHEEP-TOTAL ==  0)
+			(unit-type-count-total LIVESTOCK-GROUP == 2)))
+=>
+	(set-strategic-number G-SHEEP-TOTAL 2)
+	(acknowledge-taunt my-player-number TA-SHEEP-FLAG)
+	(chat-to-all "sheep II")
+	(disable-self)
+)
+
+(defrule
+	(current-age == dark-age)
+	;(game-time < 660)
+	(or	(and(strategic-number G-SHEEP-TOTAL ==  0)
+			(taunt-detected my-player-number TA-SHEEP-FLAG))
+		(and(strategic-number G-SHEEP-TOTAL ==  0)
+			(unit-type-count-total LIVESTOCK-GROUP == 1)))
+=>
+	(set-strategic-number G-SHEEP-TOTAL 1)
+	(acknowledge-taunt my-player-number TA-SHEEP-FLAG)
+	(chat-to-all "sheep I")
+	(disable-self)
+)

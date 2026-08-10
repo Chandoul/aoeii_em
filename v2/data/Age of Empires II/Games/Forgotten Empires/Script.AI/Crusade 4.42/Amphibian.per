@@ -1,0 +1,81 @@
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(strategic-number G-AGE-STATUS < GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	(taunt-detected my-player-number TA-INITIAL-AGE-FINISHED)
+=>
+	(set-goal G-JOLLYGOAL GV-AMPHIBIAN)
+)
+
+; Warning about strategy to allies
+(defrule
+	(goal G-JOLLYGOAL GV-AMPHIBIAN)
+=>
+	(chat-to-allies "I'm going to combine a flush with swords+archers with a grush")
+	(chat-to-allies "Possible changes with unit selection to counter")
+	(disable-self)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-AMPHIBIAN)
+	(dropsite-min-distance gold > IDEAL-DROP-DISTANCE)
+	(or	(strategic-number sn-food-gatherer-percentage != 25)
+		(strategic-number sn-wood-gatherer-percentage != 75)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 25)
+	(set-strategic-number sn-wood-gatherer-percentage 75)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-AMPHIBIAN)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(building-type-count-total dock < 2)
+	(building-type-count-total archery-range == 0)
+	(or	(strategic-number sn-food-gatherer-percentage != 25)
+		(strategic-number sn-wood-gatherer-percentage != 69)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 25)
+	(set-strategic-number sn-wood-gatherer-percentage 69)
+	(set-strategic-number sn-gold-gatherer-percentage  6)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-AMPHIBIAN)
+	(strategic-number sn-minimum-water-body-size-for-dock < WATER-MAP)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(or	(building-type-count-total dock >= 2)
+		(building-type-count-total archery-range >= 1)
+	)
+	(or	(strategic-number sn-food-gatherer-percentage != 18)
+		(strategic-number sn-wood-gatherer-percentage != 62)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 18)
+	(set-strategic-number sn-wood-gatherer-percentage 62)
+	(set-strategic-number sn-gold-gatherer-percentage 14)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-goal G-JOLLYGOAL GV-LATE-FEUDAL-0)
+)
+
+(defrule
+	(goal G-JOLLYGOAL GV-AMPHIBIAN)
+	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+	(dropsite-min-distance gold <= IDEAL-DROP-DISTANCE)
+	(or	(building-type-count-total dock >= 2)
+		(building-type-count-total archery-range >= 1)
+	)
+	(or	(strategic-number sn-food-gatherer-percentage != 22)
+		(strategic-number sn-wood-gatherer-percentage != 62)
+	)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 22)
+	(set-strategic-number sn-wood-gatherer-percentage 62)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-goal G-JOLLYGOAL GV-LATE-FEUDAL-0)
+)

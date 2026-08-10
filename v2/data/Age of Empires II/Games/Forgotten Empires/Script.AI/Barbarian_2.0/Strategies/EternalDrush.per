@@ -1,0 +1,132 @@
+#load-if-defined TINY-MAP
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined INDIAN-CIV
+(defrule
+	(goal gl-DRUSH YES)
+	(current-age == dark-age)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(players-building-count any-enemy > 0)
+	(game-time > 120)
+	(game-time < 640)
+	(goal SLING 0)
+=>
+	(set-goal gl-strategy eternal-drush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-eternal-drush YES)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-DRUSH YES)
+	(current-age == dark-age)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(goal gl-strategy eternal-drush)
+	(game-time < 640)
+	(building-type-count-total barracks < 2)
+	(unit-type-count-total militiaman-line < 6)
+	(dropsite-min-distance deer-hunting >= 27)
+	(building-type-count-total mill < 2)
+=>
+	(set-goal gl-disable-eternal-drush YES)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+	(disable-self)
+)
+#end-if
+#end-if
+#else
+(defrule
+	(true)
+=>
+	(set-goal gl-slung-knights 1); When slung, make knights
+	(disable-self)
+)
+
+#load-if-defined UP-ALLY-IN-GAME
+#load-if-not-defined UP-MULTIPLE-ENEMIES
+(defrule
+	(goal gl-DRUSH YES)
+	(current-age == dark-age)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(players-building-count any-enemy > 0)
+	(game-time > 120)
+	(game-time < 640)
+	(goal SLING 0)
+=>
+	(set-goal gl-strategy eternal-drush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-eternal-drush YES)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+	(disable-self)
+)
+#end-if
+#end-if
+(defrule
+	(goal gl-DRUSH YES)
+	(goal gl-ENEMY-DISTANCE NEAR)
+	(up-compare-goal gl-distance-to-enemy c:<= 20)
+	(current-age == dark-age)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(players-building-count any-enemy > 0)
+	(game-time > 120)
+	(game-time < 640)
+	(goal SLING 0)
+=>
+	(set-goal gl-strategy eternal-drush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-eternal-drush YES)
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+	(chat-to-allies "I'm going to do something funny")
+	(disable-self)
+)
+#end-if
+
+#load-if-not-defined NOMAD-MAP
+#load-if-not-defined SCANDANAVIA-MAP
+#load-if-not-defined YUCATAN-MAP
+(defrule
+	(game-time < 45)
+	(up-compare-goal FFA != YES)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(not	(regicide-game))
+	(building-type-count town-center < 2)
+	(starting-age == dark-age)
+	(goal gl-heavy-water-map YES)
+=>
+	(set-strategic-number sn-allow-new-build-order -2)
+	(set-goal gl-strategy grush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type controlled-flush)
+	(set-goal gl-islands-style YES); False, but allows retargeting to pocket fish if flank has nothing
+	(set-goal DOCK 11)
+)
+
+(defrule
+	(goal gl-islands-style YES)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(strategic-number sn-minimum-water-body-size-for-dock == 1000)
+	(goal gl-heavy-water-map YES)
+=>
+	(set-goal gl-islands-style NO)
+)
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(goal gl-strategy eternal-drush)
+	(current-age == dark-age)
+	(goal gl-current-age gv-dark-up)
+	(game-time < 1100)
+=>
+	(set-goal gl-strategy flush)
+	(set-goal gl-feudal-infantry FLUSH-DEFENCE-MAA)
+	(set-goal gl-feudal-archery FLUSH-DEFENCE-ARCHER)
+	(set-goal gl-eternal-drush NO)
+	(set-goal gl-strategy-type basic-flush)
+	(disable-self)
+)
+

@@ -1,0 +1,533 @@
+; 230 - Mush
+; 33 - Boom
+; 32 - Rush
+
+(defrule
+	(game-time > 600)
+=>
+	(up-jump-rule 3)
+)
+
+(defrule
+	(game-time > 30)
+	(game-time <= 600)
+	(goal gl-current-age gv-dark)
+	(up-compare-const gv-michi-style != 1)
+	(taunt-detected any-human-ally 230)
+=>
+	(acknowledge-taunt every-ally 230)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(set-goal gl-strategy fi-monk-rush)
+	(set-goal gl-strategy-type FC2)
+	(chat-to-allies "I'll go monks.")
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+)
+
+(defrule
+	(game-time > 30)
+	(game-time <= 600)
+	(goal gl-current-age gv-dark)
+	(up-compare-const gv-michi-style != 1)
+	(taunt-detected any-human-ally 33)
+=>
+	(acknowledge-taunt every-ally 33)
+	(set-goal gl-strategy-aggressiveness-level LOW)
+	(set-goal gl-strategy boom-strategy)
+	(set-goal gl-strategy-type FC2)
+	(chat-to-allies "I'll boom.")
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+)
+
+(defrule
+	(game-time > 30)
+	(game-time <= 600)
+	(goal gl-current-age gv-dark)
+	(up-compare-const gv-michi-style != 1)
+	(taunt-detected any-human-ally 32)
+=>
+	(acknowledge-taunt every-ally 32)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy aggressive-strategy)
+	(set-goal gl-strategy-type FC2)
+	(chat-to-allies "I'll rush.")
+	(set-strategic-number sn-target-evaluation-hitpoints 1)
+)
+
+(defrule
+	(nor	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+=>
+	(up-jump-rule 50)
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(current-age <= feudal-age)
+	(goal gl-strategy default)
+=>
+	(chat-to-player this-any-computer "I'm flushing.")
+	(chat-to-player this-any-human-ally "I'm flushing.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(or	(up-compare-goal gl-current-age >= gv-feudal-up)
+		(current-age > feudal-age))
+	(or	(goal gl-strategy default)
+		(or	(goal gl-strategy wonder-race-blocked-vills)
+			(goal gl-strategy watermap-fc)))
+=>
+	(chat-to-player this-any-computer "I'm not using any specific strategy.")
+	(chat-to-player this-any-human-ally "I'm not using any specific strategy.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy knight-archer)
+=>
+	(chat-to-player this-any-computer "I'm going knights+archers (altered with Indians/Huns/Spanish).")
+	(chat-to-player this-any-human-ally "I'm going knights+archers (altered with Indians/Huns/Spanish).")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-eew-strategy-type boom)
+=>
+	(chat-to-player this-any-computer "I'm booming with eagle warriors.")
+	(chat-to-player this-any-human-ally "I'm booming with eagle warriors.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-eew-strategy-type fast-imp)
+=>
+	(chat-to-player this-any-computer "I'm fast imping with eagle warriors.")
+	(chat-to-player this-any-human-ally "I'm fast imping with eagle warriors.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy heavy-krush)
+=>
+	(chat-to-player this-any-computer "I'm doing a heavy krush.")
+	(chat-to-player this-any-human-ally "I'm doing a heavy krush.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy CA-boom)
+=>
+	(chat-to-player this-any-computer "I'm booming with cavalry archers.")
+	(chat-to-player this-any-human-ally "I'm booming with cavalry archers.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy UU-boom)
+=>
+	(chat-to-player this-any-computer "I'm booming with unique units.")
+	(chat-to-player this-any-human-ally "I'm booming with unique units.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy korean-boom)
+=>
+	(chat-to-player this-any-computer "I'm booming with towers.")
+	(chat-to-player this-any-human-ally "I'm booming with towers.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy xbow-rush)
+=>
+	(chat-to-player this-any-computer "I'm rushing with crossbowmen.")
+	(chat-to-player this-any-human-ally "I'm rushing with crossbowmen.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy turkish-fast-imp)
+=>
+	(chat-to-player this-any-computer "I'm fast imping to use hand cannoneers.")
+	(chat-to-player this-any-human-ally "I'm fast imping to use hand cannoneers.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy castle-drop)
+=>
+	(chat-to-player this-any-computer "I'm going unique units.")
+	(chat-to-player this-any-human-ally "I'm going unique units.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy xbow-boom)
+=>
+	(chat-to-player this-any-computer "I'm booming with crossbowmen.")
+	(chat-to-player this-any-human-ally "I'm booming with crossbowmen.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy scorpion-rush)
+=>
+	(chat-to-player this-any-computer "I'm rushing with scorpions.")
+	(chat-to-player this-any-human-ally "I'm rushing with scorpions.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy CA-rush)
+=>
+	(chat-to-player this-any-computer "I'm rushing with cavalry archers.")
+	(chat-to-player this-any-human-ally "I'm rushing with cavalry archers.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy eagle-rush)
+=>
+	(chat-to-player this-any-computer "I'm rushing with eagle warriors and possibly monks.")
+	(chat-to-player this-any-human-ally "I'm rushing with eagle warriors and possibly monks.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy monk-scorpion-boom)
+=>
+	(chat-to-player this-any-computer "I'm booming with monks and scorpions.")
+	(chat-to-player this-any-human-ally "I'm booming with monks and scorpions.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy fi-archer-flush)
+=>
+	(chat-to-player this-any-computer "I'm flushing with archers and then fast imping.")
+	(chat-to-player this-any-human-ally "I'm flushing with archers and then fast imping.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy monk-scorpion-rush)
+=>
+	(chat-to-player this-any-computer "I'm rushing with monks and scorpions.")
+	(chat-to-player this-any-human-ally "I'm rushing with monks and scorpions.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy scout-skirm-flush)
+=>
+	(chat-to-player this-any-computer "I'm going scouts+skirmishers.")
+	(chat-to-player this-any-human-ally "I'm going scouts+skirmishers.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy super-scouts)
+=>
+	(chat-to-player this-any-computer "I'm doing mostly scouts.")
+	(chat-to-player this-any-human-ally "I'm doing mostly scouts.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy mayan-fi-counter)
+=>
+	(chat-to-player this-any-computer "I'm altering my fast imp to counter enemy fast imp.")
+	(chat-to-player this-any-human-ally "I'm altering my fast imp to counter enemy fast imp.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy gothic-boom)
+=>
+	(chat-to-player this-any-computer "I'm going to use infantry.")
+	(chat-to-player this-any-human-ally "I'm going to use infantry.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy scrush)
+=>
+	(chat-to-player this-any-computer "I'm doing a scout rush.")
+	(chat-to-player this-any-human-ally "I'm doing a scout rush.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy spanish-vill-rush)
+=>
+	(chat-to-player this-any-computer "I'm going to rush with villagers.")
+	(chat-to-player this-any-human-ally "I'm going to rush with villagers.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy wall-boom)
+=>
+	(chat-to-player this-any-computer "I'm going to wall and boom.")
+	(chat-to-player this-any-human-ally "I'm going to wall and boom.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy fi-monk-rush)
+=>
+	(chat-to-player this-any-computer "I'm going to do a fast imp with monks.")
+	(chat-to-player this-any-human-ally "I'm going to do a fast imp with monks.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy grush)
+=>
+	(chat-to-player this-any-computer "I'm doing a galley rush.")
+	(chat-to-player this-any-human-ally "I'm doing a galley rush.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy landing)
+=>
+	(chat-to-player this-any-computer "I'm going to land on enemy.")
+	(chat-to-player this-any-human-ally "I'm going to land on enemy.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(not	(civ-selected indian))
+	(or	(goal gl-strategy krush)
+		(goal gl-strategy knight-rush))
+=>
+	(chat-to-player this-any-computer "I'm doing knights.")
+	(chat-to-player this-any-human-ally "I'm doing knights.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(civ-selected indian)
+	(or	(goal gl-strategy krush)
+		(goal gl-strategy knight-rush))
+=>
+	(chat-to-player this-any-computer "I'm doing camels.")
+	(chat-to-player this-any-human-ally "I'm doing camels.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy sling)
+=>
+	(chat-to-player this-any-computer "I'm slinging.")
+	(chat-to-player this-any-human-ally "I'm slinging.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy eternal-drush)
+=>
+	(chat-to-player this-any-computer "I'm doing a heavy drush.")
+	(chat-to-player this-any-human-ally "I'm doing a heavy drush.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy michi-boom)
+=>
+	(chat-to-player this-any-computer "I'm doing a michi boom.")
+	(chat-to-player this-any-human-ally "I'm doing a michi boom.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy monk-boom)
+=>
+	(chat-to-player this-any-computer "I'm doing a monk boom.")
+	(chat-to-player this-any-human-ally "I'm doing a monk boom.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy castle-push)
+=>
+	(chat-to-player this-any-computer "I'm pushing with castles.")
+	(chat-to-player this-any-human-ally "I'm pushing with castles.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy heavy-ranged-flush)
+=>
+	(chat-to-player this-any-computer "I'm doing a heavy flush.")
+	(chat-to-player this-any-human-ally "I'm doing a heavy flush.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy skirm-boom)
+=>
+	(chat-to-player this-any-computer "I'm booming with skirmishers.")
+	(chat-to-player this-any-human-ally "I'm booming with skirmishers.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy castle-sling)
+=>
+	(chat-to-player this-any-computer "I'm going to sling at castle age.")
+	(chat-to-player this-any-human-ally "I'm going to sling at castle age.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy fast-eagles)
+=>
+	(chat-to-player this-any-computer "I'm going to do a fast eagle rush.")
+	(chat-to-player this-any-human-ally "I'm going to do a fast eagle rush.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(not	(civ-selected indian))
+	(goal gl-strategy knight-boom)
+=>
+	(chat-to-player this-any-computer "I'm booming with knights.")
+	(chat-to-player this-any-human-ally "I'm booming with knights.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(civ-selected indian)
+	(goal gl-strategy knight-boom)
+=>
+	(chat-to-player this-any-computer "I'm booming with camels.")
+	(chat-to-player this-any-human-ally "I'm booming with camels.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy mongol-boom)
+=>
+	(chat-to-player this-any-computer "I'm doing a mangudai boom.")
+	(chat-to-player this-any-human-ally "I'm doing a mangudai boom.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy monk-mango-push)
+=>
+	(chat-to-player this-any-computer "I'm rushing with monks and mangonels.")
+	(chat-to-player this-any-human-ally "I'm rushing with monks and mangonels.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy monk-mango-push)
+=>
+	(chat-to-player this-any-computer "I'm rushing with turtle ships.")
+	(chat-to-player this-any-human-ally "I'm rushing with turtle ships.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy mongol-boom)
+=>
+	(chat-to-player this-any-computer "I'm doing a jaguar boom.")
+	(chat-to-player this-any-human-ally "I'm doing a mangudai boom.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(up-compare-goal gl-strategy >= nothing-FC-boom)
+	(up-compare-goal gl-strategy <= nothing-market-flush)
+=>
+	(chat-to-player this-any-computer "I'm using a nothing map strategy.")
+	(chat-to-player this-any-human-ally "I'm using a nothing map strategy.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy war-galley-rush)
+=>
+	(chat-to-player this-any-computer "I'm rushing with war galleys.")
+	(chat-to-player this-any-human-ally "I'm rushing with war galleys.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy war-galley-rush)
+=>
+	(chat-to-player this-any-computer "I'm rushing with fire ships.")
+	(chat-to-player this-any-human-ally "I'm rushing with fire ships.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy turkish-bombardment)
+=>
+	(chat-to-player this-any-computer "I'll boom and train gunpowder units.")
+	(chat-to-player this-any-human-ally "I'll boom and train gunpowder units.")
+)
+
+(defrule
+	(or	(taunt-detected any-computer 250)
+		(taunt-detected any-human-ally 250))
+	(goal gl-strategy archery-boom)
+=>
+	(chat-to-player this-any-computer "This is the archery boom.")
+	(chat-to-player this-any-human-ally "This is the archery boom.")
+)

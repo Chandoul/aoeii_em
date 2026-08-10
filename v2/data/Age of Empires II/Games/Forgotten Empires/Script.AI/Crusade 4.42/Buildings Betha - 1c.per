@@ -1,0 +1,488 @@
+; Early Castle Buildings
+
+(defrule
+	(current-age >= castle-age)
+	;(or	(strategic-number G-BUILDING-EXPANSION == 0)
+	;	(strategic-number G-BUILDING-EXPANSION == castle)
+	;)
+	(building-type-count-total castle < 10)
+	(nand	(building-type-count-total castle >= 1)
+		(taunt-detected my-player-number TA-WONDER)
+	)		
+	(can-build castle)
+=>
+	(build castle)
+	;(set-strategic-number G-BUILDING-EXPANSION castle)
+)
+
+
+; Once in the Castle Age, we have more villagers and eco techs, so we need more buildings to use those resources.
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(strategic-number G-THREAT-EAGLE >= 1)
+	(players-building-type-count any-enemy barracks >= 2)
+	(not(goal G-BARRACK-UNIT GV-NONE))
+	(or	(building-type-count-total barracks < BARRACKS-LATE-CASTLE)
+		(building-type-count-total barracks < 2)
+	)
+	(can-build barracks)
+=>
+	(build barracks)
+	(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == stable)
+	)
+	(not(goal G-STABLE-UNIT GV-NONE))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+		(building-type-count-total stable < 1)
+	)
+	(building-type-count-total stable < STABLES-EARLY-CASTLE)
+	(can-build stable)
+=>
+	(build stable)
+	(set-strategic-number G-BUILDING-EXPANSION stable)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == archery-range)
+	)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+		(building-type-count-total archery-range < 1)
+	)
+	(building-type-count-total archery-range < ARCHERIES-EARLY-CASTLE)
+	(can-build archery-range)
+=>
+	(build archery-range)
+	(set-strategic-number G-BUILDING-EXPANSION archery-range)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(not(goal G-BARRACK-UNIT GV-NONE))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+		(building-type-count-total barracks < 1)
+	)
+	(building-type-count-total barracks < BARRACKS-EARLY-CASTLE)
+	(can-build barracks)
+=>
+	(build barracks)
+	(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+; I prefer the monastery first and the siege workshop later, generally. But not if enemy masses archers or monks.
+(defrule
+	(current-age >= castle-age)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == siege-workshop)
+	)
+	(or	(strategic-number G-THREAT-ARCHERY-GROUP >= 2)
+		(strategic-number G-THREAT-MONK >= 3)
+	)
+	(building-type-count-total siege-workshop < 1)
+	(can-build siege-workshop)
+=>
+	(build siege-workshop)
+	(set-strategic-number G-BUILDING-EXPANSION siege-workshop)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == monastery)
+	)
+	(building-type-count-total monastery < 1)
+	(can-build monastery)
+=>
+	(build monastery)
+	(set-strategic-number G-BUILDING-EXPANSION monastery)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(nor	(research-available ri-heavy-plow)
+		(research-available ri-bow-saw)
+	)
+	(strategic-number G-FARMING < GV-FARM-IDLE-3)
+=>
+	(set-strategic-number G-FARMING GV-FARM-IDLE-3)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(nor	(research-available ri-heavy-plow)
+		(research-available ri-bow-saw)
+	)
+	(building-type-count-total monastery >= 1)
+	(strategic-number G-FARMING < GV-FARM-IDLE-8)
+=>
+	(set-strategic-number G-FARMING GV-FARM-IDLE-8)
+)
+
+(defrule
+	(current-age >= castle-age)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == siege-workshop)
+	)
+	(or	(or	(players-building-type-count any-enemy castle >= 1)
+			(players-building-type-count any-enemy watch-tower >= 5)
+		)
+		(nand	(building-type-count-total town-center < 3)
+			(stone-amount >= 100)
+		)
+	)
+	(building-type-count-total siege-workshop < 1)
+	(can-build siege-workshop)
+=>
+	(build siege-workshop)
+	(set-strategic-number G-BUILDING-EXPANSION siege-workshop)
+)
+
+; Once we have our important castle buildings we build town centers for a better villager boom.
+(defrule
+	(current-age >= castle-age)
+	(building-type-count-total town-center < 3)
+	(or	(and	(building-type-count town-center == 1)
+			(building-type-count-total town-center == 1)
+		)
+		(building-type-count town-center == 2)
+	)
+	(can-build town-center)
+=>
+	(build town-center)
+	(set-strategic-number G-BUILDING-EXPANSION town-center)
+)
+
+; Market to trade. If there isn't any ally to trade it's better delay market (if not built yet) until other important castle age buildings become finished
+(defrule
+	(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+	(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+	(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total market < 1)
+	(or	(player-in-game any-ally)
+		(players-building-type-count market any-ally >= 1)
+	)
+	(can-build market)
+=>
+	(build market)
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+; LATE CASTLE AGE BUILDINGS
+
+
+
+; Once we have upgraded enough our army, we can make more buildings to increase our army faster.
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	(building-type-count-total dock < 4)
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-FEUDAL)
+	(building-type-count-total mill >= 1)
+	(building-type-count-total lumber-camp >= 1)
+	(or	(goal G-BARRACK-UNIT GV-NONE)
+		(building-type-count-total barracks >= 1)
+	)
+	(or	(goal G-ARCHERY-UNIT GV-NONE)
+		(building-type-count-total archery-range >= 1)
+	)
+	(building-type-count-total blacksmith >= 1)
+	(or	(building-type-count-total dock < 3)
+		(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+	)
+	(can-build dock)
+=>
+	(build dock)
+	;(set-strategic-number G-BUILDING-EXPANSION dock)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(goal G-FEUDAL-STRATEGY GV-AMPHIBIAN)
+	(building-type-count-total dock < 4)
+	(or	(goal G-BARRACK-UNIT GV-NONE)
+		(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+	)
+	(or	(goal G-ARCHERY-UNIT GV-NONE)
+		(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+	)
+	(or	(goal G-STABLE-UNIT GV-NONE)
+		(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+	)
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+	(building-type-count-total university >= 1)
+	(can-build dock)
+=>
+	(build dock)
+	;(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+(defrule
+	;(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(strategic-number sn-minimum-water-body-size-for-dock >= WATER-MAP)
+	(building-type-count-total dock < 5)
+	(or	(goal G-BARRACK-UNIT GV-NONE)
+		(building-type-count-total barracks >= BARRACKS-EARLY-CASTLE)
+	)
+	(or	(goal G-ARCHERY-UNIT GV-NONE)
+		(building-type-count-total archery-range >= ARCHERIES-EARLY-CASTLE)
+	)
+	(or	(goal G-STABLE-UNIT GV-NONE)
+		(building-type-count-total stable >= STABLES-EARLY-CASTLE)
+	)
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+	(building-type-count-total university >= 1)
+	(can-build dock)
+=>
+	(build dock)
+	;(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == stable)
+	)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(wood-amount > 235)
+	(not(goal G-STABLE-UNIT GV-NONE))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+		(wood-amount > 450)
+	)
+	(building-type-count-total stable < STABLES-LATE-CASTLE)
+	(can-build stable)
+=>
+	(build stable)
+	(set-strategic-number G-BUILDING-EXPANSION stable)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == archery-range)
+	)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(wood-amount > 235)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+		(wood-amount > 450)
+	)
+	(building-type-count-total archery-range < ARCHERIES-LATE-CASTLE)
+	(can-build archery-range)
+=>
+	(build archery-range)
+	(set-strategic-number G-BUILDING-EXPANSION archery-range)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(goal G-ARMY-STRONG-PREPARED 1)
+	(wood-amount > 235)
+	(not(goal G-BARRACK-UNIT GV-NONE))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+		(wood-amount > 450)
+	)
+	(building-type-count-total barracks < BARRACKS-LATE-CASTLE)
+	(can-build barracks)
+=>
+	(build barracks)
+	(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+
+; We build the university and the market if we have the essential castle buildings and it isn't a problem
+; to get our desired town centers or the wood costing skirm upgrade if it's needed.
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-CASTLE-AGE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == university)
+	)
+	(building-type-count-total university < 1)
+	;(wood-amount > 235)
+	(or	(building-type-count-total town-center >= 3)
+		(stone-amount < 100)
+	)
+	(nand	(goal G-ARCHERY-UNIT GV-SKIRM)
+		(research-available ri-elite-skirmisher)
+	)
+	(can-build university)
+=>
+	(build university)
+	;(chat-to-player my-player-number "Building university")
+	(set-strategic-number G-BUILDING-EXPANSION university)
+)
+
+(defrule
+	(strategic-number G-AGE-STATUS >= GV-ADVANCING-TO-CASTLE)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == market)
+	)
+	(building-type-count-total market < 1)
+	(wood-amount > 235)
+	;(building-type-count-total monastery >= 1)
+	;(building-type-count-total siege-workshop >= 1)
+	(building-type-count-total university >= 1)
+	(or	(building-type-count-total town-center >= 3)
+		(stone-amount < 100)
+	)
+	(nand	(goal G-ARCHERY-UNIT GV-SKIRM)
+		(research-available ri-elite-skirmisher)
+	)
+	(can-build market)
+=>
+	(build market)
+	;(chat-to-player my-player-number "Building market")
+	(set-strategic-number G-BUILDING-EXPANSION market)
+)
+
+#load-if-not-defined POPULATION-CAP-25
+#load-if-not-defined POPULATION-CAP-50
+; 4th and 5th town centers have a greater priority than extra military buildings if we have upgraded troopsand lesser  if not.
+(defrule
+	(current-age >= castle-age)
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+		(wood-amount > 1000)
+	)
+	(building-type-count-total town-center < 5)
+	(or	(goal G-VILLAGERS-TRAINING GV-VILLAGERS-NEEDED)
+		(building-type-count-total castle >= 1)
+	)
+	(can-build town-center)
+=>
+	(build town-center)
+	(set-strategic-number G-BUILDING-EXPANSION town-center)
+)
+#end-if
+#end-if
+
+(defrule
+	(true)
+=>
+	(set-goal G-JOLLYGOAL 0)
+)
+
+(defrule
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+	(building-type-count-total university >= 1)
+	(building-type-count-total market >= 1)
+	(wood-amount > 235)
+	(nand	(gold-amount > 175)
+		(research-available ri-ballistics)
+	)
+	(or	(wood-amount > 425)
+		(nand	(goal G-ARCHERY-UNIT GV-SKIRM)
+			(and	(unit-type-count-total skirmisher-line >= MAX-SKIRMS-TO-ELITE)
+				(research-available ri-elite-skirmisher)
+			)
+		)
+	)
+=>
+	(set-goal G-JOLLYGOAL 1)
+)
+
+(defrule
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == stable)
+	)
+	(goal G-JOLLYGOAL 1)
+	(not(goal G-STABLE-UNIT GV-NONE))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+		(wood-amount > 450)
+	)
+	(building-type-count-total stable < STABLES-LATE-CASTLE)
+	(can-build stable)
+=>
+	(build stable)
+	(set-strategic-number G-BUILDING-EXPANSION stable)
+)
+
+(defrule
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == archery-range)
+	)
+	(goal G-JOLLYGOAL 1)
+	(not(goal G-ARCHERY-UNIT GV-NONE))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+		(wood-amount > 450)
+	)
+	(building-type-count-total archery-range < ARCHERIES-LATE-CASTLE)
+	(can-build archery-range)
+=>
+	(build archery-range)
+	(set-strategic-number G-BUILDING-EXPANSION archery-range)
+)
+
+(defrule
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == barracks)
+	)
+	(goal G-JOLLYGOAL 1)
+	(not(goal G-BARRACK-UNIT GV-NONE))
+	(or	(strategic-number sn-minimum-water-body-size-for-dock < MIXED-MAP)
+		(wood-amount > 450)
+	)
+	(building-type-count-total barracks < BARRACKS-LATE-CASTLE)
+	(can-build barracks)
+=>
+	(build barracks)
+	(set-strategic-number G-BUILDING-EXPANSION barracks)
+)
+
+#load-if-not-defined POPULATION-CAP-25
+#load-if-not-defined POPULATION-CAP-50
+(defrule
+	(current-age >= castle-age)
+	(or	(strategic-number G-BUILDING-EXPANSION == 0)
+		(strategic-number G-BUILDING-EXPANSION == siege-workshop)
+	)
+	(wood-amount > 450)
+	(building-type-count-total blacksmith >= 1)
+	(building-type-count-total monastery >= 1)
+	(building-type-count-total siege-workshop >= 1)
+	(building-type-count-total university >= 1)
+	(building-type-count-total market >= 1)
+	(building-type-count-total town-center < 5)
+	(can-build town-center)
+=>
+	(build town-center)
+)
+#end-if
+#end-if

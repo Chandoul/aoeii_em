@@ -1,0 +1,700 @@
+(defrule
+	(up-compare-goal gl-strategy != castle-push)
+=>
+	(up-jump-rule 42)
+)
+
+(defrule
+	(goal gl-current-age gv-dark-up)
+	(goal gl-strategy castle-push)
+=>
+	(set-goal gl-FC-type 2-villagers)
+	(set-goal gl-required-current-age-time 45)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal gl-strategy castle-push)
+	(building-type-count-total castle == 0)
+	(building-type-count-total siege-workshop == 0)
+	(not	(up-pending-placement c: castle))
+	(game-time < 1200)
+	(population-cap >= 65)
+	(players-military-population focus-player > 1)
+=>
+	(set-goal gl-strategy castle-drop)
+	(chat-to-player my-player-number "2Too risky to do a castle push")
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-const gv-maximum-age != castle-age)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(goal gl-strategy castle-push)
+	(building-type-count-total castle == 0)
+	(building-type-count-total siege-workshop == 0)
+	(not	(up-pending-placement c: castle))
+	(game-time < 1200)
+	(population-cap < 65)
+	(players-military-population focus-player > 1)
+=>
+	(set-goal gl-strategy fi-monk-rush)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(disable-timer 7)
+	(set-goal MILITARY 0)
+	(up-retreat-to castle c: -1)
+	(set-goal CASTLE 0)
+)
+
+(defrule
+	(up-compare-const gv-maximum-age != castle-age)
+	(or	(up-compare-goal gl-current-age >= gv-castle-up)
+		(goal gl-start-with-castle YES))
+	(population-cap < 65)
+=>
+	(set-goal gl-strategy fi-monk-rush)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(disable-timer 7)
+	(set-goal MILITARY 0)
+	(up-retreat-to castle c: -1)
+	(chat-to-player my-player-number "1Switch to fast imp mush")
+	(set-goal CASTLE 0)
+)
+
+(defrule
+	(up-compare-const gv-maximum-age == castle-age)
+=>
+	(up-jump-rule 1)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(goal gl-strategy castle-push)
+	(building-type-count-total castle > 0)
+	(up-compare-goal gl-x-vs-one-challenge != YES)
+	(players-building-type-count target-player castle > 0)
+	(up-projectile-detected projectile-castle < 6000000)
+	(game-time < 1500)
+	(unit-type-count-total battering-ram-line < 3)
+	(players-military-population focus-player > 1)
+=>
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+	(sell-commodity stone)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(up-compare-goal gl-current-age <= gv-castle)
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-x-vs-one-challenge != YES)
+	(players-building-type-count target-player castle > 0)
+	(up-projectile-detected projectile-castle < 6000000)
+	(game-time < 1500)
+	(unit-type-count-total battering-ram-line < 3)
+	(players-military-population focus-player > 1)
+=>
+	(set-goal gl-strategy fi-monk-rush)
+	(set-goal gl-strategy-aggressiveness-level VERY-LOW)
+	(disable-timer 7)
+	(set-goal MILITARY 0)
+	(up-retreat-to castle c: -1)
+	(chat-to-player my-player-number "1Switch to fast imp mush as the target has a castle")
+	(set-goal CASTLE 0)
+)
+
+#load-if-defined UP-POCKET-POSITION
+(defrule
+	(goal gl-current-age gv-dark)
+	(goal gl-strategy castle-push)
+	(player-valid any-human-enemy)
+=>
+	(set-goal gl-strategy castle-drop)
+	(chat-to-player my-player-number "2No castle push for pockets")
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+#else
+(defrule
+	(goal gl-current-age gv-dark)
+	(goal gl-strategy castle-push)
+	(player-valid any-human-enemy)
+=>
+	(do-nothing)
+	(disable-self)
+)
+#end-if
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-castle)
+	(goal gl-strategy castle-push)
+	(game-time > 2200)
+	(population-cap >= 65)
+=>
+	(set-goal gl-strategy default)
+	(chat-to-player my-player-number "Return to default strategy")
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-castle)
+	(goal gl-strategy castle-push)
+=>
+	(set-goal CASTLE 2)
+	(disable-self)
+)
+
+(defrule
+	(up-compare-goal gl-current-age >= gv-castle)
+	(goal gl-strategy castle-push)
+	(or	(game-time > 1800)
+		(or	(and	(population > 60)
+				(players-population target-player < 40))
+			(and	(population > 70)
+				(players-population target-player < 50))))
+=>
+	(set-goal TC 1)
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(or	(research-completed ri-chain-mail)
+		(or	(research-completed ri-chain-barding)
+			(or	(research-completed ri-bodkin-arrow)
+				(game-time > 1700))))
+	(strategic-number sn-allow-resource-spending < 3)
+	(strategic-number sn-allow-resource-spending >= 0)
+=>
+	(set-strategic-number sn-allow-resource-spending 3)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(current-age == feudal-age)
+	(current-age-time < 45)
+	(can-train villager)
+=>
+	(train villager)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(unit-type-count-total monk-set > 4)
+	(or	(players-unit-type-count focus-player battering-ram-line > 0)
+		(or	(players-unit-type-count focus-player scorpion-line > 0)
+			(or	(players-unit-type-count focus-player mangonel-line > 0)
+				(players-unit-type-count focus-player bombard-cannon > 0))))
+	(research-available ri-redemption)
+=>
+	(set-escrow-percentage gold 80)
+	(set-strategic-number sn-allow-resource-spending -3)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(unit-type-count-total monk-set > 4)
+	(can-research ri-redemption)
+=>
+	(research ri-redemption)
+	(set-escrow-percentage gold 0)
+	(set-strategic-number sn-allow-resource-spending 0)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(or	(research-completed ri-atonement)
+		(or	(research-completed ri-redemption)
+			(building-type-count-total monastery < 1)))
+	(building-type-count-total monastery < 2)
+	(can-build monastery)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build monastery)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-dark-up)
+	(up-compare-goal gl-current-age <= gv-feudal)
+	(building-type-count-total mining-camp < 2)
+	(resource-found stone)
+	(can-build mining-camp)
+=>
+	(set-strategic-number sn-allow-adjacent-dropsites 0)
+	(build mining-camp)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(building-type-count-total market < 1)
+	(can-build market)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build market)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-castle)
+	(research-completed ri-horse-collar)
+	(idle-farm-count < 1)
+	(can-build farm)
+=>
+	(build farm)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(building-type-count-total market > 0)
+	(building-type-count-total blacksmith < 1)
+	(can-build blacksmith)
+=>
+	(set-strategic-number sn-maximum-town-size 10)
+	(build blacksmith)
+)
+
+(defrule
+	(game-time < 1300)
+	(up-player-distance target-player > 0)
+	(building-type-count-total castle < 1)
+	(can-build castle)
+=>
+	(up-get-point position-target gl-point-x)
+	(up-get-point position-self gl-saved-point-x)
+	(up-lerp-tiles gl-point-x gl-saved-point-x c: 3)
+)
+
+(defrule
+	(game-time < 1300)
+	(up-player-distance target-player > 0)
+	(building-type-count-total castle < 1)
+	(up-compare-goal gl-point-x > 0)
+	(can-build castle)
+=>
+	(set-strategic-number sn-placement-zone-size 5)
+	(up-set-target-point gl-point-x)
+	(up-build place-point 0 c: castle)
+	(set-goal gl-arena-forward YES)
+	(set-goal gl-castle-placed placed-forward)
+	(set-goal gl-controlled-forward-castle placed-forward)
+	(set-goal castle-dropped-timer 6)
+	(chat-to-player my-player-number "Forward castle (point)")
+	(disable-self)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(game-time < 1300)
+	(or	(building-type-count-total castle < 1)
+		(population-cap < 65))
+	(nand	(up-player-distance target-player < 30)
+		(players-building-type-count target-player castle > 0))
+	(players-building-count any-enemy > 0)
+	(can-build castle)
+=>
+	(up-build place-forward 0 c: castle)
+	(chat-to-player my-player-number "Forward castle")
+	(set-goal gl-arena-forward YES)
+	(set-goal gl-castle-placed placed-forward)
+	(set-goal gl-controlled-forward-castle placed-forward)
+	(set-goal castle-dropped-timer 60)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(building-type-count-total monastery < 1)
+	(building-type-count-total castle > 0)
+	(can-build monastery)
+=>
+	(up-set-placement-data my-player-number castle c: -1)
+	(up-build place-control 0 c: monastery)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(building-type-count-total siege-workshop < 1)
+	(building-type-count-total castle > 0)
+	(can-build siege-workshop)
+=>
+	(up-set-placement-data my-player-number castle c: -1)
+	(up-build place-control 0 c: siege-workshop)
+	(enable-timer 7 0)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(nand	(or	(unit-type-count-total mangonel-line > 0)
+			(unit-type-count-total battering-ram-line > 0))
+		(population > almost-full-pop))
+	(unit-type-count-total my-unique-unit-line < 150)
+	(or	(can-train my-unique-unit-line)
+		(can-train my-UU))
+=>
+	(train my-unique-unit-line)
+	(train my-unique-unit)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(or	(and	(or	(unit-type-count-total monk-set < 4)
+				(unit-type-count-total mangonel-line > 1))
+			(unit-type-count-total monk-set < 7))
+		(or	(players-unit-type-count focus-player knight-line > 2)
+			(or	(players-unit-type-count focus-player war-wagon-line > 2)
+				(players-unit-type-count focus-player conquistador-line > 2))))
+	(unit-type-count-total monk-set < 13)
+	(can-train monk)
+=>
+	(train monk)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(or	(players-building-type-count target-player castle == 0)
+		(unit-type-count-total battering-ram-line > 3))
+	(unit-type-count-total mangonel-line < 8)
+	(can-train mangonel-line)
+=>
+	(train mangonel-line)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(goal MILITARY 1)
+	(building-type-count castle > 0)
+	(can-build castle)
+=>
+	(up-get-point position-target gl-point-x)
+	(up-get-point position-self gl-saved-point-x)
+	(up-lerp-tiles gl-point-x gl-saved-point-x c: 3)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(goal MILITARY 1)
+	(building-type-count castle > 0)
+	(up-compare-goal gl-point-x > 0)
+	(can-build castle)
+=>
+	(set-strategic-number sn-placement-zone-size 5)
+	(up-set-target-point gl-point-x)
+	(up-build place-point 0 c: castle)
+	(set-goal gl-arena-forward YES)
+	(set-goal gl-castle-placed placed-forward)
+	(set-goal gl-controlled-forward-castle placed-forward)
+	(set-goal castle-dropped-timer 15)
+	(chat-to-player my-player-number "Forward castle (point)")
+	(chat-to-player every-ally "Forward castle (point)")
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-pending-objects c: castle == 0)
+	(strategic-number sn-placement-fail-delta == 0)
+=>
+	(set-strategic-number sn-placement-fail-delta 1)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(building-type-count castle == 1)
+	(strategic-number sn-threat-level > -3)
+=>
+	(set-strategic-number sn-threat-level -3)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(building-type-count castle > 1)
+	(strategic-number sn-threat-level > -4)
+=>
+	(set-strategic-number sn-threat-level -4)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(or	(unit-type-count battering-ram-line < 1)
+		(goal MILITARY 0))
+	(unit-type-count battering-ram-line < 4)
+	(up-projectile-detected projectile-castle < 30000)
+	(strategic-number sn-threat-level < 0)
+=>
+	(set-strategic-number sn-threat-level 0)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(unit-type-count mangonel-line > 0)
+	(goal MILITARY 1)
+	(up-timer-status 19 != timer-running)
+=>
+	(up-guard-unit mangonel-line c: monk)
+	(up-guard-unit mangonel-line c: my-unique-unit-line)
+	(enable-timer 19 32)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(unit-type-count mangonel-line > 0)
+	(goal MILITARY 1)
+	(up-timer-status 18 != timer-running)
+=>
+	(up-retreat-to mangonel-line c: monk)
+	(up-retreat-to mangonel-line c: my-unique-unit-line)
+	(enable-timer 18 62)
+)
+
+; ================ ECO CRAP
+
+(defrule
+	(goal gl-strategy castle-push)
+	(goal gl-current-age gv-dark-up)
+	(or	(strategic-number sn-food-gatherer-percentage != 39)
+		(strategic-number sn-wood-gatherer-percentage != 43))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 39)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(set-strategic-number sn-gold-gatherer-percentage 12)
+	(set-strategic-number sn-stone-gatherer-percentage 7)
+	(set-strategic-number sn-allow-new-build-order 1)
+)
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined BYZANTINE-CIV
+#load-if-not-defined CELTIC-CIV
+#load-if-not-defined FRANKISH-CIV
+#load-if-not-defined GOTHIC-CIV
+#load-if-not-defined HUN-CIV
+#load-if-not-defined JAPANESE-CIV
+#load-if-not-defined PERSIAN-CIV
+#load-if-not-defined SARACEN-CIV
+#load-if-not-defined SPANISH-CIV
+#load-if-not-defined TEUTONIC-CIV
+#load-if-not-defined TURKISH-CIV
+#load-if-not-defined VIKING-CIV
+#load-if-not-defined INCAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined MAGYAR-CIV
+#load-if-not-defined SLAVIC-CIV
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total castle == 0)
+	(stone-amount < castle-stone)
+	(or	(strategic-number sn-food-gatherer-percentage != 30)
+		(strategic-number sn-gold-gatherer-percentage != 13))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 28)
+	(set-strategic-number sn-gold-gatherer-percentage 13)
+	(set-strategic-number sn-stone-gatherer-percentage 29)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(building-type-count-total castle > 0)
+		(stone-amount >= castle-stone))
+	(or	(strategic-number sn-food-gatherer-percentage != 26)
+		(strategic-number sn-gold-gatherer-percentage != 23))
+	(unit-type-count-total villager < 40)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 26)
+	(set-strategic-number sn-wood-gatherer-percentage 39)
+	(set-strategic-number sn-gold-gatherer-percentage 23)
+	(set-strategic-number sn-stone-gatherer-percentage 12)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total castle > 0)
+	(or	(strategic-number sn-food-gatherer-percentage != 24)
+		(strategic-number sn-gold-gatherer-percentage != 26))
+	(unit-type-count-total villager >= 40)
+	(unit-type-count-total villager < 60)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 24)
+	(set-strategic-number sn-wood-gatherer-percentage 41)
+	(set-strategic-number sn-gold-gatherer-percentage 26)
+	(set-strategic-number sn-stone-gatherer-percentage 9)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total castle > 0)
+	(or	(strategic-number sn-food-gatherer-percentage != 23)
+		(strategic-number sn-gold-gatherer-percentage != 27))
+	(unit-type-count-total villager >= 60)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 23)
+	(set-strategic-number sn-wood-gatherer-percentage 43)
+	(set-strategic-number sn-gold-gatherer-percentage 27)
+	(set-strategic-number sn-stone-gatherer-percentage 7)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+#load-if-not-defined BRITON-CIV
+#load-if-not-defined CHINESE-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined MONGOL-CIV
+#load-if-not-defined KOREAN-CIV
+#load-if-not-defined ITALIAN-CIV
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total castle == 0)
+	(stone-amount < castle-stone)
+	(or	(strategic-number sn-food-gatherer-percentage != 30)
+		(strategic-number sn-gold-gatherer-percentage != 10))
+=>
+	(set-strategic-number sn-food-gatherer-percentage 30)
+	(set-strategic-number sn-wood-gatherer-percentage 31)
+	(set-strategic-number sn-gold-gatherer-percentage 10)
+	(set-strategic-number sn-stone-gatherer-percentage 29)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(or	(building-type-count-total castle > 0)
+		(stone-amount >= castle-stone))
+	(or	(strategic-number sn-food-gatherer-percentage != 30)
+		(strategic-number sn-gold-gatherer-percentage != 21))
+	(unit-type-count-total villager < 40)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 31)
+	(set-strategic-number sn-wood-gatherer-percentage 35)
+	(set-strategic-number sn-gold-gatherer-percentage 21)
+	(set-strategic-number sn-stone-gatherer-percentage 12)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total castle > 0)
+	(or	(strategic-number sn-food-gatherer-percentage != 36)
+		(strategic-number sn-gold-gatherer-percentage != 25))
+	(unit-type-count-total villager >= 40)
+	(unit-type-count-total villager < 60)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 36)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 25)
+	(set-strategic-number sn-stone-gatherer-percentage 9)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(building-type-count-total castle > 0)
+	(or	(strategic-number sn-food-gatherer-percentage != 38)
+		(strategic-number sn-gold-gatherer-percentage != 26))
+	(unit-type-count-total villager >= 60)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 38)
+	(set-strategic-number sn-wood-gatherer-percentage 28)
+	(set-strategic-number sn-gold-gatherer-percentage 26)
+	(set-strategic-number sn-stone-gatherer-percentage 7)
+)
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(goal gl-strategy castle-push)
+	(up-compare-goal gl-current-age >= gv-feudal-up)
+	(population-cap < 65)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 19)
+	(set-strategic-number sn-wood-gatherer-percentage 25)
+	(set-strategic-number sn-gold-gatherer-percentage 13)
+	(set-strategic-number sn-stone-gatherer-percentage 43)
+)
+
+#load-if-defined HUN-CIV
+(defrule
+	(goal gl-strategy castle-push)
+	(unit-type-count-total tarkan-line > 12)
+	(strategic-number sn-allow-resource-spending > 1)
+	(building-type-count farm > 17)
+	(unit-type-count-total villager > 50)
+	(or	(research-available ri-scale-barding)
+		(research-available ri-chain-barding))
+=>
+	(set-escrow-percentage food 70)
+	(set-escrow-percentage gold 60)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(unit-type-count-total tarkan-line > 3)
+	(strategic-number sn-allow-resource-spending > 0)
+	(or	(can-research-with-escrow ri-scale-barding)
+		(and	(can-research-with-escrow ri-chain-barding)
+			(strategic-number sn-allow-resource-spending > 1)))
+=>
+	(release-escrow food)
+	(release-escrow gold)
+	(set-escrow-percentage food 0)
+	(set-escrow-percentage gold 0)
+	(research ri-scale-barding)
+	(research ri-chain-barding)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(strategic-number sn-allow-resource-spending > 2)
+	(unit-type-count-total tarkan-line > 5)
+	(or	(can-research ri-forging)
+		(and	(or	(strategic-number sn-allow-resource-spending > 3)
+				(and	(up-compare-goal gl-current-age <= gv-castle)
+					(town-under-attack)))
+			(can-research ri-iron-casting)))
+=>
+	(research ri-forging)
+	(research ri-iron-casting)
+)
+
+(defrule
+	(goal gl-strategy castle-push)
+	(strategic-number sn-allow-resource-spending > 2)
+	(or	(strategic-number sn-allow-resource-spending > 3)
+		(and	(goal MILITARY 1)
+			(and	(up-compare-goal gl-current-age <= gv-castle)
+				(research-completed ri-forging))))
+	(research-completed ri-chain-barding)
+	(unit-type-count-total tarkan-line > 5)
+	(can-research ri-husbandry)
+=>
+	(research ri-husbandry)
+)
+#end-if

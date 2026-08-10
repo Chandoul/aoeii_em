@@ -1,0 +1,2072 @@
+(defrule
+	(strategic-number sn-current-age == dark)
+	(building-type-count-total town-center >= 1)
+	(unit-type-count villager <= 10)
+	(up-pending-objects c: house <= 0)
+	(housing-headroom < 3)
+	(wood-amount < 30)
+	(population < up-max-civ)
+	(strategic-number sn-wood-gatherer-percentage < 33)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 66)
+	(set-strategic-number sn-wood-gatherer-percentage 	 33)
+	(set-strategic-number sn-gold-gatherer-percentage 	  0)
+	(set-strategic-number sn-stone-gatherer-percentage 	  0)
+	(set-strategic-number sn-cap-civilian-gatherers 1000))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(building-type-count-total town-center >= 1)
+	(unit-type-count villager <= 8)
+(or	(up-pending-objects c: house >= 1)
+(or	(housing-headroom >= 3)
+(or	(wood-amount >= 30)
+	(population >= up-max-civ))))
+	(strategic-number sn-food-gatherer-percentage != 96)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 96)
+	(set-strategic-number sn-wood-gatherer-percentage 	  4)
+	(set-strategic-number sn-gold-gatherer-percentage 	  0)
+	(set-strategic-number sn-stone-gatherer-percentage 	  0)
+	(set-strategic-number sn-cap-civilian-gatherers 1000))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 9)
+(or	(up-pending-objects c: house >= 1)
+(or	(housing-headroom >= 3)
+(or	(wood-amount >= 30)
+	(population >= up-max-civ))))
+	(strategic-number sn-food-gatherer-percentage != 89)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 89)
+	(set-strategic-number sn-wood-gatherer-percentage 	 11)
+	(set-strategic-number sn-gold-gatherer-percentage 	  0)
+	(set-strategic-number sn-stone-gatherer-percentage 	  0))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 10)
+(or	(up-pending-objects c: house >= 1)
+(or	(housing-headroom >= 3)
+(or	(wood-amount >= 30)
+	(population >= up-max-civ))))
+	(strategic-number sn-food-gatherer-percentage != 80)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 80)
+	(set-strategic-number sn-wood-gatherer-percentage 	 20)
+	(set-strategic-number sn-gold-gatherer-percentage 	  0)
+	(set-strategic-number sn-stone-gatherer-percentage 	  0))
+
+(defrule
+(or	(up-compare-goal strategy != drush)
+	(building-type-count-total barracks >= 1))
+=>
+	(up-jump-rule 19))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 11)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 73)
+	(set-strategic-number sn-wood-gatherer-percentage 27)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 12)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 67)
+	(set-strategic-number sn-wood-gatherer-percentage 33)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 13)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 69)
+	(set-strategic-number sn-wood-gatherer-percentage 31)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 14)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 64)
+	(set-strategic-number sn-wood-gatherer-percentage 36)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 15)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 60)
+	(set-strategic-number sn-wood-gatherer-percentage 40)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 16)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 62)
+	(set-strategic-number sn-wood-gatherer-percentage 38)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 17)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 59)
+	(set-strategic-number sn-wood-gatherer-percentage 41)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 18)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 56)
+	(set-strategic-number sn-wood-gatherer-percentage 44)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 19)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 53)
+	(set-strategic-number sn-wood-gatherer-percentage 47)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 20)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 55)
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 21)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 52)
+	(set-strategic-number sn-wood-gatherer-percentage 48)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 22)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 55)
+	(set-strategic-number sn-wood-gatherer-percentage 45)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 23)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 56)
+	(set-strategic-number sn-wood-gatherer-percentage 44)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 24)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 54)
+	(set-strategic-number sn-wood-gatherer-percentage 46)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 25)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 52)
+	(set-strategic-number sn-wood-gatherer-percentage 48)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 26)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 27)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 48)
+	(set-strategic-number sn-wood-gatherer-percentage 52)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 28)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 50)
+	(set-strategic-number sn-wood-gatherer-percentage 50)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(unit-type-count villager == 29)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 52)
+	(set-strategic-number sn-wood-gatherer-percentage 48)
+	(disable-self))
+
+#load-if-defined LOW-RESOURCES-START
+#load-if-not-defined AZTEC-CIV
+(defrule
+	(goal strategy drush)
+	(strategic-number sn-current-age <= dark)
+(or	(unit-type-count militiaman-line < drush-militias)
+	(gold-amount < 60))
+	(building-type-count-total barracks >= 1)
+	(strategic-number sn-gold-gatherer-percentage != 5)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 67)
+	(set-strategic-number sn-wood-gatherer-percentage 28)
+	(set-strategic-number sn-gold-gatherer-percentage 5)
+	(set-strategic-number sn-maximum-gold-drop-distance 24))
+
+(defrule
+	(goal strategy drush)
+	(strategic-number sn-current-age <= dark)
+(or	(unit-type-count militiaman-line >= drush-militias)
+	(gold-amount >= 60))
+	(building-type-count-total barracks >= 1)
+	(strategic-number sn-gold-gatherer-percentage != 0)
+=>
+	(set-strategic-number sn-food-gatherer-percentage 70)
+	(set-strategic-number sn-wood-gatherer-percentage 30)
+	(set-strategic-number sn-gold-gatherer-percentage 0)
+	(set-strategic-number sn-maximum-gold-drop-distance 16))
+#end-if
+#end-if
+
+(defrule
+	(up-compare-goal strategy != r-flush)
+=>
+	(up-jump-rule 20))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 11)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 73)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 73)
+	(set-strategic-number sn-wood-gatherer-percentage 	 27))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 12)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 67)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 67)
+	(set-strategic-number sn-wood-gatherer-percentage 	 33))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 13)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 62)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 62)
+	(set-strategic-number sn-wood-gatherer-percentage 	 38))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 14)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 64)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 64)
+	(set-strategic-number sn-wood-gatherer-percentage 	 36))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 15)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 67)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 67)
+	(set-strategic-number sn-wood-gatherer-percentage 	 33))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 16)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 69)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 69)
+	(set-strategic-number sn-wood-gatherer-percentage 	 31))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 17)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 71)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 71)
+	(set-strategic-number sn-wood-gatherer-percentage 	 29))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 18)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 67)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 67)
+	(set-strategic-number sn-wood-gatherer-percentage 	 33))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 19)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 63)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 63)
+	(set-strategic-number sn-wood-gatherer-percentage 	 37))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 20)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 65)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 65)
+	(set-strategic-number sn-wood-gatherer-percentage 	 35))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 21)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 67)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 67)
+	(set-strategic-number sn-wood-gatherer-percentage 	 33))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 22)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 68)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 68)
+	(set-strategic-number sn-wood-gatherer-percentage 	 32))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 23)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 70)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 70)
+	(set-strategic-number sn-wood-gatherer-percentage 	 30))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 24)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 71)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 71)
+	(set-strategic-number sn-wood-gatherer-percentage 	 29))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 25)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 72)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 72)
+	(set-strategic-number sn-wood-gatherer-percentage 	 28))
+
+
+(defrule
+	(current-age == dark-age)
+(or	(strategic-number sn-current-age > dark)
+	(and	(unit-type-count-total villager >= 22)
+		(food-amount >= 500)))
+	(strategic-number sn-food-gatherer-percentage != 30)
+=>
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage	 30)
+	(set-strategic-number sn-gold-gatherer-percentage 	 10)
+	(set-strategic-number sn-stone-gatherer-percentage 	  0)
+	(set-strategic-number sn-wood-gatherer-percentage 	 60))
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number sn-current-age == feudal)
+	(up-compare-goal escrowing != castlea)
+	(strategic-number sn-food-gatherer-percentage != 36)
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance 18)
+	(set-strategic-number sn-maximum-food-drop-distance 14)
+	(set-strategic-number sn-camp-max-distance 30)
+	(set-strategic-number sn-food-gatherer-percentage  36)
+	(set-strategic-number sn-gold-gatherer-percentage  17)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  47))
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number sn-current-age == feudal)
+	(up-compare-goal escrowing == castlea)
+	(strategic-number sn-food-gatherer-percentage != 43)
+=>
+	(set-strategic-number sn-food-gatherer-percentage  43)
+	(set-strategic-number sn-gold-gatherer-percentage  17)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  40))
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number sn-current-age == fcastlea)
+(or	(strategic-number sn-food-gatherer-percentage != 35)
+	(strategic-number sn-stone-gatherer-percentage != 0))
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  35)
+	(set-strategic-number sn-gold-gatherer-percentage  17)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  48)
+; !=	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-current-age == castlea)
+(or	(strategic-number sn-food-gatherer-percentage != 35)
+	(strategic-number sn-stone-gatherer-percentage != 2))
+=>
+	(set-strategic-number sn-food-gatherer-percentage  35)
+	(set-strategic-number sn-gold-gatherer-percentage  17)
+	(set-strategic-number sn-stone-gatherer-percentage  2)
+	(set-strategic-number sn-wood-gatherer-percentage  46)
+; !=	(disable-self)
+)
+
+(defrule
+	(up-compare-goal strategy != krush)
+=>
+	(up-jump-rule 3))
+
+(defrule
+	(strategic-number sn-current-age == fcastlea)
+	(building-type-count-total stable < 2)
+	(strategic-number sn-food-gatherer-percentage != 44)
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance 15)
+	(set-strategic-number sn-maximum-food-drop-distance 13)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  44)
+	(set-strategic-number sn-gold-gatherer-percentage  21)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  35))
+
+(defrule
+(or	(strategic-number sn-current-age == castlea)
+	(building-type-count-total stable >= 2))
+	(strategic-number sn-food-gatherer-percentage != 47)
+	(building-type-count-total town-center < 3)
+=>
+	(set-strategic-number sn-camp-max-distance 30)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  47)
+	(set-strategic-number sn-gold-gatherer-percentage  21)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  32))
+
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(strategic-number sn-food-gatherer-percentage != 48)
+	(building-type-count-total town-center >= 3)
+=>
+	(set-strategic-number sn-food-gatherer-percentage  48)
+	(set-strategic-number sn-gold-gatherer-percentage  23)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  29))
+
+(defrule
+	(goal strategy r-flush)
+=>
+	(up-jump-rule 24))
+
+(defrule
+	(goal strategy drush)
+(or	(building-type-count-total barracks <= 0)
+	(and	(strategic-number sn-current-age <= dark)
+		(and	(not	(civ-selected aztec))
+			(or	(unit-type-count militiaman-line >= drush-militias)
+				(gold-amount >= 60)))))
+=>
+	(up-jump-rule 17))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 11)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 73)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 73)
+	(set-strategic-number sn-wood-gatherer-percentage 	 27))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 12)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 67)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 67)
+	(set-strategic-number sn-wood-gatherer-percentage 	 33))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(unit-type-count villager == 13)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 62)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 62)
+	(set-strategic-number sn-wood-gatherer-percentage 	 38))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map water); more wood gatherers
+	(unit-type-count villager == 14)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 57)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 57)
+	(set-strategic-number sn-wood-gatherer-percentage 	 43))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map water); more wood gatherers
+	(unit-type-count villager == 15)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 53)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 53)
+	(set-strategic-number sn-wood-gatherer-percentage 	 47))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 14)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 64)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 64)
+	(set-strategic-number sn-wood-gatherer-percentage 	 36))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 15)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 67)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 67)
+	(set-strategic-number sn-wood-gatherer-percentage 	 33))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 16)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 69)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 69)
+	(set-strategic-number sn-wood-gatherer-percentage 	 31))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 17)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 71)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 71)
+	(set-strategic-number sn-wood-gatherer-percentage 	 29))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 18)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 71)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 71)
+	(set-strategic-number sn-wood-gatherer-percentage 	 29))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 19)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 72)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 72)
+	(set-strategic-number sn-wood-gatherer-percentage 	 29))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 20)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 70)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 70)
+	(set-strategic-number sn-wood-gatherer-percentage 	 30))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 21)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 67)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 67)
+	(set-strategic-number sn-wood-gatherer-percentage 	 33))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 22)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 64)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 64)
+	(set-strategic-number sn-wood-gatherer-percentage 	 36))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 23)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 65)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 65)
+	(set-strategic-number sn-wood-gatherer-percentage 	 35))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 24)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 67)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 67)
+	(set-strategic-number sn-wood-gatherer-percentage 	 33))
+
+(defrule
+	(strategic-number sn-current-age == dark)
+	(goal map land); else it should keep more wood gatherers
+	(unit-type-count villager == 25)
+	(strategic-number sn-gold-gatherer-percentage == 0)
+	(strategic-number sn-food-gatherer-percentage != 68)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	 68)
+	(set-strategic-number sn-wood-gatherer-percentage 	 32))
+
+(defrule
+	(current-age == dark-age)
+	(strategic-number sn-current-age > dark)
+	(goal map land)
+	(gold-amount > 0)
+	(strategic-number sn-food-gatherer-percentage != 50)
+=>
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+;	(set-strategic-number sn-total-number-explorers 1)
+;	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-food-gatherer-percentage	 50)
+	(set-strategic-number sn-wood-gatherer-percentage 	 41)
+	(set-strategic-number sn-gold-gatherer-percentage 	  9)
+	(set-strategic-number sn-stone-gatherer-percentage 	  0)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(strategic-number sn-current-age > dark)
+	(goal map water)
+	(gold-amount > 0)
+	(strategic-number sn-food-gatherer-percentage != 46)
+=>
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+;	(set-strategic-number sn-total-number-explorers 1)
+;	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-food-gatherer-percentage	 46)
+	(set-strategic-number sn-wood-gatherer-percentage 	 45)
+	(set-strategic-number sn-gold-gatherer-percentage 	  9)
+	(set-strategic-number sn-stone-gatherer-percentage 	  0)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(strategic-number sn-current-age > dark)
+	(goal map land)
+	(gold-amount <= 0)
+	(strategic-number sn-food-gatherer-percentage != 49)
+=>
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+;	(set-strategic-number sn-total-number-explorers 1)
+;	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-food-gatherer-percentage	 49)
+	(set-strategic-number sn-wood-gatherer-percentage 	 39)
+	(set-strategic-number sn-gold-gatherer-percentage 	 12)
+	(set-strategic-number sn-stone-gatherer-percentage 	  0)
+	(disable-self))
+
+(defrule
+	(current-age == dark-age)
+	(strategic-number sn-current-age > dark)
+	(goal map water)
+	(gold-amount <= 0)
+	(strategic-number sn-food-gatherer-percentage != 43)
+=>
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+;	(set-strategic-number sn-total-number-explorers 1)
+;	(set-strategic-number sn-number-explore-groups 1)
+	(set-strategic-number sn-food-gatherer-percentage	 43)
+	(set-strategic-number sn-wood-gatherer-percentage 	 45)
+	(set-strategic-number sn-gold-gatherer-percentage 	 12)
+	(set-strategic-number sn-stone-gatherer-percentage 	  0)
+	(disable-self))
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number sn-current-age == feudal)
+(or	(up-compare-goal enemy-goal != flush)
+	(gold-amount < 100))
+	(strategic-number sn-food-gatherer-percentage != 48)
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance 18)
+	(set-strategic-number sn-maximum-food-drop-distance 14)
+	(set-strategic-number sn-camp-max-distance 30)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  48)
+	(set-strategic-number sn-gold-gatherer-percentage  12)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  40))
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number sn-current-age == feudal)
+(or	(goal enemy-goal flush)
+	(gold-amount >= 250))
+	(strategic-number sn-food-gatherer-percentage != 53)
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance 14)
+	(set-strategic-number sn-maximum-food-drop-distance 12)
+	(set-strategic-number sn-camp-max-distance 30)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  53)
+	(set-strategic-number sn-gold-gatherer-percentage   5)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  42))
+
+(defrule
+(or	(goal strategy r-flush)
+	(goal strategy krush))
+=>
+	(up-jump-rule 8))
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number sn-current-age == fcastlea)
+(or	(stone-amount >= 100)
+(or	(goal dreitc yes)
+	(dropsite-min-distance stone > 7)))
+	(strategic-number sn-food-gatherer-percentage != 38)
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance 15)
+	(set-strategic-number sn-maximum-food-drop-distance 13)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  38)
+	(set-strategic-number sn-gold-gatherer-percentage  11)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  51)
+; !=	(disable-self)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(strategic-number sn-current-age == fcastlea)
+	(stone-amount < 200)
+	(goal dreitc no)
+	(dropsite-min-distance stone < 8)
+	(strategic-number sn-food-gatherer-percentage != 37)
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance 15)
+	(set-strategic-number sn-maximum-food-drop-distance 13)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  37)
+	(set-strategic-number sn-gold-gatherer-percentage  11)
+	(set-strategic-number sn-stone-gatherer-percentage  3)
+	(set-strategic-number sn-wood-gatherer-percentage  49)
+; !=	(disable-self)
+)
+
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(goal tc no)
+	(stone-amount >= 200)
+;d-able	(strategic-number sn-food-gatherer-percentage != 39)
+=>
+	(set-strategic-number sn-camp-max-distance 30)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  39)
+	(set-strategic-number sn-gold-gatherer-percentage  11)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  50)
+	(disable-self))
+
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(goal tc no)
+	(stone-amount < 200)
+;d-able	(strategic-number sn-food-gatherer-percentage != 39)
+=>
+	(set-strategic-number sn-camp-max-distance 30)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  39)
+	(set-strategic-number sn-gold-gatherer-percentage  11)
+	(set-strategic-number sn-stone-gatherer-percentage  5)
+	(set-strategic-number sn-wood-gatherer-percentage  45)
+	(disable-self))
+
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(goal tc yes)
+	(goal dreitc no)
+	(stone-amount >= 100)
+;d-able	(strategic-number sn-food-gatherer-percentage != 44)
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  44)
+	(set-strategic-number sn-gold-gatherer-percentage   8)
+	(set-strategic-number sn-stone-gatherer-percentage  0)
+	(set-strategic-number sn-wood-gatherer-percentage  48)
+	(disable-self))
+
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(goal tc yes)
+	(goal dreitc no)
+	(stone-amount < 100)
+;d-able	(strategic-number sn-food-gatherer-percentage != 44)
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  44)
+	(set-strategic-number sn-gold-gatherer-percentage   8)
+	(set-strategic-number sn-stone-gatherer-percentage  5)
+	(set-strategic-number sn-wood-gatherer-percentage  43)
+	(disable-self))
+
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(goal dreitc yes)
+	(civilian-population < up-max-civ)
+;d-able	(strategic-number sn-food-gatherer-percentage != 44)
+=>
+	(set-strategic-number sn-food-gatherer-percentage  44)
+	(set-strategic-number sn-gold-gatherer-percentage   9)
+	(set-strategic-number sn-stone-gatherer-percentage  7)
+	(set-strategic-number sn-wood-gatherer-percentage  40)
+	(disable-self))
+
+(defrule
+	(strategic-number sn-current-age == castlea)
+	(goal dreitc yes)
+	(civilian-population >= up-max-civ)
+;d-able	(strategic-number sn-food-gatherer-percentage != 42)
+=>
+	(set-strategic-number sn-food-gatherer-percentage  42)
+	(set-strategic-number sn-gold-gatherer-percentage  10)
+	(set-strategic-number sn-stone-gatherer-percentage 10)
+	(set-strategic-number sn-wood-gatherer-percentage  39)
+	(disable-self))
+
+(defrule
+	(strategic-number sn-current-age >= imperial)
+	(cc-players-unit-type-count 0 gold-mine > 0)
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  ig-food)
+	(set-strategic-number sn-gold-gatherer-percentage  ig-gold)
+	(set-strategic-number sn-stone-gatherer-percentage ig-stone)
+	(set-strategic-number sn-wood-gatherer-percentage  ig-wood)
+	(disable-self))
+
+(defrule
+	(building-type-count town-center >= 1)
+(or	(strategic-number sn-food-gatherer-percentage >= 100)
+(or	(strategic-number sn-gold-gatherer-percentage >= 100)
+(or	(strategic-number sn-stone-gatherer-percentage >= 100)
+	(strategic-number sn-wood-gatherer-percentage >= 100))))
+=>
+	(set-strategic-number sn-food-gatherer-percentage  ig-food)
+	(set-strategic-number sn-gold-gatherer-percentage  ig-gold)
+	(set-strategic-number sn-stone-gatherer-percentage ig-stone)
+	(set-strategic-number sn-wood-gatherer-percentage  ig-wood)
+	(chat-to-player my-player-number "Debugging gatherer percentages."))
+
+
+
+
+
+(defrule
+	(strategic-number sn-current-age >= imperial)
+=>
+	(enable-timer retask-timer 30)
+	(chat-to-player my-player-number "Enabling dynamic gatherer percentages.")
+	(disable-self))
+
+(defrule
+	(timer-triggered retask-timer)
+(or	(and	(wood-amount < 200)
+		(food-amount > 1500))
+	(and	(wood-amount < 500)
+		(food-amount > 3000)))
+	(goal retask yes)
+=>
+	(set-strategic-number sn-wood-modifier-percentage 5)
+	(set-strategic-number sn-food-modifier-percentage -5)
+	(chat-local-to-self "Retasking for 5% more wood and less food gatherers.")
+	(set-goal retask no))
+
+(defrule
+	(timer-triggered retask-timer)
+(or	(and	(food-amount < 200)
+		(wood-amount > 1500))
+	(and	(food-amount < 500)
+		(wood-amount > 3000)))
+	(goal retask yes)
+=>
+	(set-strategic-number sn-food-modifier-percentage 5)
+	(set-strategic-number sn-wood-modifier-percentage -5)
+	(chat-local-to-self "Retasking for 5% more food and less wood gatherers.")
+	(set-goal retask no))
+
+(defrule
+	(timer-triggered retask-timer)
+=>
+	(set-strategic-number sn-food-gatherer-percentage  ig-food); normalize g-percentages
+	(set-strategic-number sn-gold-gatherer-percentage  ig-gold)
+	(set-strategic-number sn-stone-gatherer-percentage ig-stone)
+	(set-strategic-number sn-wood-gatherer-percentage  ig-wood))
+
+(defrule
+	(timer-triggered retask-timer)
+(or	(up-compare-goal threat-time >= 120000)
+(or	(goal attacking yes)
+	(goal defend no))); no killed vills
+=>
+	(up-modify-sn sn-food-gatherer-percentage s:+ sn-food-modifier-percentage)
+	(up-modify-sn sn-gold-gatherer-percentage s:+ sn-gold-modifier-percentage)
+	(up-modify-sn sn-wood-gatherer-percentage s:+ sn-wood-modifier-percentage)
+	(up-modify-sn sn-stone-gatherer-percentage s:+ sn-stone-modifier-percentage)
+	(set-strategic-number sn-food-modifier-percentage 0)
+	(set-strategic-number sn-gold-modifier-percentage 0)
+	(set-strategic-number sn-wood-modifier-percentage 0)
+	(set-strategic-number sn-stone-modifier-percentage 0))
+
+(defrule
+	(timer-triggered retask-timer)
+	(up-compare-goal threat-time < 120000)
+	(goal attacking no)
+	(goal defend yes); either the enemy or the AI himself killed some villagers
+=>
+	(set-strategic-number sn-food-modifier-percentage 0)
+	(set-strategic-number sn-gold-modifier-percentage 0)
+	(set-strategic-number sn-wood-modifier-percentage 0)
+	(set-strategic-number sn-stone-modifier-percentage 0))
+
+(defrule
+	(timer-triggered retask-timer)
+	(goal retask no)
+=>
+	(disable-timer retask-timer)
+	(set-goal retask yes)
+	(enable-timer retask-timer 180))
+
+
+
+
+
+(defrule
+	(strategic-number sn-current-age >= imperial)
+	(cc-players-unit-type-count 0 gold-mine < 1)
+	(cc-players-unit-type-count 0 stone-mine >= 1)
+	(strategic-number sn-food-gatherer-percentage != 56)
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  57)
+	(set-strategic-number sn-gold-gatherer-percentage  0)
+	(set-strategic-number sn-stone-gatherer-percentage 4)
+	(set-strategic-number sn-wood-gatherer-percentage  39))
+
+(defrule
+	(strategic-number sn-current-age >= imperial)
+	(cc-players-unit-type-count 0 gold-mine < 1)
+	(cc-players-unit-type-count 0 stone-mine < 1)
+	(strategic-number sn-food-gatherer-percentage != 58)
+=>
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-food-gatherer-percentage  60)
+	(set-strategic-number sn-gold-gatherer-percentage  0)
+	(set-strategic-number sn-stone-gatherer-percentage 0)
+	(set-strategic-number sn-wood-gatherer-percentage  40))
+
+
+
+
+#load-if-defined WONDER-RACE
+
+(defrule
+	(strategic-number sn-current-age >= imperial)
+	(strategic-number sn-stone-gatherer-percentage < 33)
+=>
+	(set-strategic-number sn-percent-civilian-builders 100)
+	(set-strategic-number sn-percent-civilian-gatherers 100)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-gatherers 100)
+	(set-strategic-number sn-food-gatherer-percentage  0)
+	(set-strategic-number sn-gold-gatherer-percentage  34)
+	(set-strategic-number sn-stone-gatherer-percentage 33)
+	(set-strategic-number sn-wood-gatherer-percentage  33))
+
+#end-if
+
+
+(defrule
+	(building-type-count-total town-center <= 0)
+	(unit-type-count-total villager >= 1)
+	(strategic-number sn-wood-gatherer-percentage < 100)
+	(wood-amount < 275)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	  0)
+	(set-strategic-number sn-wood-gatherer-percentage 	100)
+	(set-strategic-number sn-gold-gatherer-percentage 	  0)
+	(set-strategic-number sn-stone-gatherer-percentage 	  0))
+
+(defrule
+	(building-type-count-total town-center <= 0)
+	(unit-type-count-total villager >= 1)
+	(strategic-number sn-stone-gatherer-percentage < 100)
+	(wood-amount >= 275)
+	(stone-amount < 100)
+=>
+	(set-strategic-number sn-food-gatherer-percentage	  0)
+	(set-strategic-number sn-wood-gatherer-percentage 	  0)
+	(set-strategic-number sn-gold-gatherer-percentage 	  0)
+	(set-strategic-number sn-stone-gatherer-percentage 	100))
+
+
+
+
+
+
+
+;(defrule
+;	(game-time < 60)
+;	(unit-type-count-total villager > 0)
+;	(building-type-count-total town-center == 0)
+;(or	(building-type-count-total lumber-camp == 0)
+;	(and	(wood-amount >= 275)
+;		(stone-amount >= 100)))
+;;d-able	(strategic-number sn-percent-civilian-explorers < 100)
+;=>
+;	(set-strategic-number sn-percent-civilian-explorers 100)
+;	(set-strategic-number sn-cap-civilian-explorers 100)
+;	(set-strategic-number sn-total-number-explorers 101)
+;	(set-strategic-number sn-number-explore-groups 101)
+;	(disable-self))
+
+;(defrule
+;	(building-type-count-total town-center >= 1)
+;=>
+;	(set-strategic-number sn-percent-civilian-explorers 100)
+;	(set-strategic-number sn-cap-civilian-explorers 3)
+;	(set-strategic-number sn-total-number-explorers 4)
+;	(set-strategic-number sn-number-explore-groups 4)
+;	(disable-self))
+
+(defrule
+	(building-type-count-total town-center >= 1)
+(or	(resource-found food)
+	(unit-type-count-total sheep >= 3))
+	(military-population >= 1)
+=>
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-number-explore-groups 1)
+	(chat-local-to-self "Food source found.")
+	(disable-self))
+
+#load-if-not-defined UP-MULTIPLAYER-GAME
+#load-if-not-defined FORTRESS-MAP
+(defrule
+	(unit-type-count-total villager == 6)
+	(unit-type-count-total 120 == 0);m-forager
+	(unit-type-count-total 354 == 0);f-forager
+	(unit-type-count-total 122 == 0);m-hunter
+	(unit-type-count-total 216 == 0);f-hunter
+	(unit-type-count-total 592 == 0);m-shepherd
+	(unit-type-count-total 590 == 0);f-shepherd
+	(building-type-count-total mill == 0)
+(or	(unit-type-count-total 123 > 0);m-lumberjack
+	(unit-type-count-total 218 > 0));f-lumberjack
+=>
+	(set-strategic-number sn-percent-civilian-explorers 100)
+	(set-strategic-number sn-cap-civilian-explorers 1)
+	(set-strategic-number sn-total-number-explorers 2)
+	(set-strategic-number sn-number-explore-groups 2)
+	(disable-self))
+
+(defrule
+	(unit-type-count-total villager > 5)
+(or	(building-type-count-total mill > 0)
+(or	(unit-type-count-total 120 > 0);m-forager
+(or	(unit-type-count-total 354 > 0);f-forager
+(or	(unit-type-count-total 123 == 0);m-lumberjack
+	(unit-type-count-total 218 == 0)))));f-lumberjack
+	(military-population >= 1)
+
+=>
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-number-explore-groups 1)
+	(disable-self))
+
+(defrule
+	(unit-type-count-total villager == 8)
+	(unit-type-count-total 120 == 0);m-forager
+	(unit-type-count-total 354 == 0);f-forager
+	(unit-type-count-total 122 == 0);m-hunter
+	(unit-type-count-total 216 == 0);f-hunter
+	(unit-type-count-total 592 == 0);m-shepherd
+	(unit-type-count-total 590 == 0);f-shepherd
+=>
+	(set-strategic-number sn-percent-civilian-explorers 100)
+	(set-strategic-number sn-cap-civilian-explorers 2)
+	(set-strategic-number sn-total-number-explorers 3)
+	(set-strategic-number sn-number-explore-groups 3)
+	(disable-self))
+#end-if; no fortress-map
+
+(defrule
+(or	(not	(resource-found wood))
+		(dropsite-min-distance wood > 17))
+	(unit-type-count-total villager >= 7)
+	(strategic-number sn-cap-civilian-explorers <= 0)
+	(military-population <= 0)
+=>
+	(set-strategic-number sn-percent-civilian-explorers 100)
+	(set-strategic-number sn-cap-civilian-explorers 100)
+	(set-strategic-number sn-total-number-explorers 2)
+	(set-strategic-number sn-number-explore-groups 2)
+	(set-strategic-number sn-minimum-civilian-explorers 1))
+
+(defrule
+	(unit-type-count-total villager > 7)
+(or	(building-type-count-total mill > 0)
+(or	(unit-type-count-total 120 > 0) ; forager
+	(unit-type-count-total 354 > 0)))
+	(strategic-number sn-cap-civilian-explorers >= 1)
+;	(military-population >= 1)
+=>
+	(set-strategic-number sn-percent-civilian-gatherers 0)
+	(set-strategic-number sn-cap-civilian-gatherers 0)
+	(set-strategic-number sn-minimum-civilian-explorers 0)
+	(set-strategic-number sn-percent-civilian-explorers 0)
+	(set-strategic-number sn-cap-civilian-explorers 0)
+	(set-strategic-number sn-total-number-explorers 1)
+	(set-strategic-number sn-number-explore-groups 1))
+#end-if
+
+
+;(defrule
+;	(true)
+;=>
+;	(up-modify-goal temporary-goal2 s:= sn-focus-player-number)
+;	(set-strategic-number sn-focus-player-number 0)
+;	(up-get-fact dropsite-min-distance boar-hunting gl-boar-1)
+;	(up-get-fact dropsite-min-distance live-boar gl-boar-2))
+
+;(defrule
+;	(up-compare-goal gl-boar-1 g:< gl-boar-2)
+;=>
+;	(set-strategic-number sn-focus-player-number 0)
+;	(up-reset-search 1 1 1 1)
+;	(up-reset-filters)
+;	(up-modify-goal gl-boar-1 c:+ 1)
+;	(up-filter-distance c: -1 g: gl-boar-1)
+;	(up-find-remote c: 910 c: 1))
+
+;(defrule
+;	(up-compare-goal gl-boar-1 g:< gl-boar-2)
+;	(up-set-target-object search-remote c: 0)
+;	(up-object-data object-data-carry < 100)
+;=>
+;	(chat-to-all "test"))
+
+;(defrule
+;	(up-compare-goal gl-boar-1 g:< gl-boar-2)
+;	(up-set-target-object search-remote c: 0)
+;=>
+;	(up-get-object-data object-data-carry gl-data)
+;	(up-chat-data-to-all "boar: %d" g: gl-data))
+
+;(defrule
+;	(true)
+;=>
+;	(up-modify-sn sn-focus-player-number g:= temporary-goal2))
+
+
+(defrule
+	(true)
+=>
+	(up-modify-goal temporary-goal2 s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0))
+(defrule ; Those two rules are based on archons code.
+	(game-time > 1)
+	(up-timer-status sheepscout != timer-running)
+	(game-time < 240)
+	(up-gaia-type-count c: 958 > 0)
+=>
+	(set-strategic-number sn-focus-player-number 0)
+	(up-get-point position-self point-x)
+	(up-set-target-point point-x)
+	(up-reset-search 1 1 1 1)
+	(up-filter-include -1 -1 -1 -1)
+	(up-filter-exclude -1 -1 -1 -1)
+	(up-filter-range -1 -1 -1 24))
+(defrule
+	(up-timer-status sheepscout != timer-running)
+	(game-time > 1)
+	(game-time < 240)
+	(up-find-remote c: 958 c: 1)
+=>
+;	(chat-to-player my-player-number "Come here kitty kitty.")
+	(up-set-target-object search-remote c: 0)
+	(up-find-local c: scout-unit c: 1)
+	(up-get-point position-object point-x)
+	(up-target-point point-x action-move -1 -1)
+	(enable-timer sheepscout 10))
+(defrule
+	(true)
+=>
+	(up-modify-sn sn-focus-player-number g:= temporary-goal2))
+
+#load-if-not-defined DEATH-MATCH ; Heavily inspired by II2N
+(defrule
+(or	(goal deer-luring 3)
+(or	(game-time >= 780); else probably deer hunting anyway
+(or	(game-time < 240)
+(or	(and	(up-compare-goal strategy != usual)
+		(game-time s:>= sn-home-exploration-time))
+	(and	(building-type-count-total dock == 0)
+		(goal map water))))))
+=>
+	(up-jump-rule 11))
+
+(defrule
+(or	(and	(up-gaia-type-count-total c: 48 < 2); wild boar
+		(and	(up-gaia-type-count-total c: 810 < 2); iron boar
+			(and	(up-gaia-type-count-total c: 822 < 2); javelina
+				(game-time < 330))))
+(or	(unit-type-count scout-unit == 0)
+	(building-type-count town-center == 0)))
+=>
+	(up-jump-rule 10))
+
+(defrule
+	(true)
+=>
+	(up-modify-goal temporary-goal2 s:= sn-focus-player-number)
+	(set-strategic-number sn-focus-player-number 0))
+
+(defrule
+(or	(dropsite-min-distance deer-hunting < 32)
+	(goal deer-luring 1))
+=>
+	(up-get-point position-self point-x)
+	(up-set-target-point point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-filter-distance c: -1 c: 31)
+	(up-find-remote c: deer c: 1)
+	(up-get-search-state local-total))
+
+(defrule
+(or	(dropsite-min-distance deer-hunting < 32)
+	(goal deer-luring 1))
+(or	(goal remote-last 0)
+(or	(and	(dropsite-min-distance deer-hunting > 15)
+		(or	(building-type-count wall-class > 0); fortress/arena etc.
+			(building-type-count gate > 0)))
+	(strategic-number sn-preferred-mill-placement == 1))); milling deer anyway
+	(up-compare-goal deer-luring != 3)
+=>
+	(set-goal deer-luring 3)
+	(chat-local-to-self "Deer luring disabled => Scouting.")
+	(up-send-scout group-type-land-explore scouting-type))
+
+(defrule
+(not	(up-set-target-by-id g: stored-id))
+	(up-compare-goal stored-id != 0)
+=>
+	(set-goal stored-id 0))
+
+(defrule
+	(up-compare-goal deer-luring != 3); else it's disabled
+	(dropsite-min-distance deer-hunting < 32)
+	(goal stored-id 0)
+=>
+	(up-get-point position-self point-x)
+	(up-set-target-point point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-filter-distance c: 7 c: 31)
+	(up-find-remote c: deer c: 1)
+	(up-set-target-object search-remote c: 0)
+	(up-get-point position-object object-point-x)
+	(up-get-object-data object-data-id stored-id)
+	(set-goal deer-luring 1))
+
+(defrule
+	(goal deer-luring 1)
+	(up-set-target-by-id g: stored-id)
+=>
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-find-local c: scout-unit c: 1)
+	(up-set-target-object search-local c: 0)
+	(up-get-point position-object saved-point-x)
+	(up-set-target-by-id g: stored-id)
+	(up-get-point position-self point-x)
+	(up-get-point position-object object-point-x)
+	(up-get-point-distance object-point-x point-x temporary-goal)
+	(up-lerp-tiles object-point-x point-x c: -1)
+	(up-target-point object-point-x action-move -1 -1))
+
+(defrule
+	(goal deer-luring 1)
+	(up-set-target-by-id g: stored-id)
+	(up-compare-goal object-point-x != -1)
+	(up-compare-goal object-point-y != -1)
+=>
+	(up-target-point object-point-x action-move -1 -1)
+	(up-get-object-data object-data-hitpoints temporary-goal4))
+
+(defrule
+	(goal deer-luring 1)
+	(up-set-target-by-id g: stored-id)
+	(goal temporary-goal4 0)
+=>
+	(set-goal stored-id 0))
+
+(defrule
+	(goal deer-luring 1)
+	(up-compare-goal temporary-goal < 6); deer near TC
+=>
+;meh	(set-strategic-number sn-enable-boar-hunting 1)
+	(up-get-point position-self point-x)
+	(up-set-target-point point-x)
+	(up-reset-search 1 1 1 1)
+	(up-reset-filters)
+	(up-filter-distance c: -1 c: 12)
+	(up-find-local c: villager-class c: 4); vils on the deer
+	(up-filter-distance c: -1 c: 7)
+	(up-get-point position-self point-x)
+	(up-find-remote c: deer c: 1)
+	(up-set-target-by-id g: stored-id)
+	(up-target-objects 0 action-default -1 -1)
+	(up-get-search-state local-total)
+	(set-goal stored-id 0))
+
+(defrule
+	(true)
+=>
+	(up-modify-sn sn-focus-player-number g:= temporary-goal2))
+#end-if
+
+;(defrule
+;	(timer-triggered FDrop)
+;=>
+;	(chat-local-to-self "pop-pop-pop."))
+
+
+(defrule
+	(game-time >= 76)
+;	(unit-type-count-total villager >= 7);7
+	(up-pending-objects c: villager <= 1)
+	(up-research-status c: ri-loom != research-pending)
+	(timer-triggered FDrop)
+	(strategic-number sn-current-age == dark)
+(or	(and	(food-amount < 50)
+		(housing-headroom > 0))
+	(and	(food-amount < 500)
+		(and	(unit-type-count villager >= 20)
+			(food-amount >= 400))));hopefully boar food too
+=>
+	(chat-to-player my-player-number "123"))
+(defrule
+	(game-time >= 76)
+	(up-pending-objects c: villager == 0)
+	(up-research-status c: ri-loom != research-pending)
+	(up-timer-status FDrop != timer-running)
+	(strategic-number sn-current-age == dark)
+(or	(and	(food-amount < 50)
+		(housing-headroom > 0))
+	(and	(food-amount < 500)
+		(and	(unit-type-count villager >= 20)
+			(food-amount >= 400))));hopefully boar food too
+=>
+	(chat-to-player my-player-number "123"))
+(defrule
+	(taunt-detected my-player-number 123)
+	(up-pending-objects c: villager <= 1)
+	(up-research-status c: ri-loom != research-pending)
+	(strategic-number sn-current-age == dark)
+=>
+	(acknowledge-taunt my-player-number 123)
+	(disable-timer FDrop)
+;	(enable-timer FDrop 4)
+	(chat-local-to-self "Forced drop.")
+	(up-drop-resources forage-food c: 5)
+	(up-drop-resources sheep-food c: 5)
+	(up-drop-resources boar-food c: 5))
+(defrule
+	(taunt-detected my-player-number 123)
+=>
+	(disable-timer FDrop)
+;	(enable-timer FDrop 4)
+;	(chat-local-to-self "Denying forced drop.")
+	(acknowledge-taunt my-player-number 123))
+(defrule
+	(timer-triggered FDrop)
+	(up-pending-objects c: villager >= 2)
+	(building-type-count town-center <= 1)
+=>
+	(disable-timer FDrop)
+;	(chat-local-to-self "Denying forced drop2.")
+)
+
+(defrule
+	(goal enablesmith yes)
+=>
+	(enable-timer FDrop 15)
+	(disable-self))
+
+(defrule
+	(timer-triggered FDrop)
+	(strategic-number sn-current-age == feudal)
+	(food-amount < 800)
+	(food-amount >= 720)
+	(gold-amount >= 170)
+=>
+	(chat-to-player my-player-number "123"))
+(defrule
+	(strategic-number sn-current-age == feudal)
+	(building-type-count-total blacksmith >= 1)
+	(up-research-status c: ri-wheel-barrow != research-pending)
+	(taunt-detected my-player-number 123)
+=>
+	(acknowledge-taunt my-player-number 123)
+	(disable-timer FDrop)
+	(enable-timer FDrop 4)
+	(chat-local-to-self "Forced drop.")
+	(up-drop-resources food c: 5))
+
+(defrule
+	(timer-triggered FDrop)
+	(strategic-number sn-current-age == feudal)
+	(food-amount >= 780)
+	(gold-amount < 200)
+	(gold-amount >= 180)
+=>
+	(chat-to-player my-player-number "124"))
+(defrule
+	(strategic-number sn-current-age == feudal)
+	(building-type-count-total blacksmith >= 1)
+	(up-research-status c: ri-wheel-barrow != research-pending)
+	(taunt-detected my-player-number 124)
+=>
+	(acknowledge-taunt my-player-number 124)
+	(disable-timer FDrop)
+	(enable-timer FDrop 4)
+	(chat-local-to-self "Forced drop.")
+	(up-drop-resources gold c: 5))
+
+(defrule
+	(timer-triggered FDrop)
+	(strategic-number sn-current-age > feudal)
+=>
+	(disable-timer FDrop)
+	(disable-self))
+(defrule
+(or	(taunt-detected my-player-number 123)
+	(taunt-detected my-player-number 124))
+	(strategic-number sn-current-age > feudal)
+=>
+	(acknowledge-taunt my-player-number 123)
+	(acknowledge-taunt my-player-number 124)
+	(disable-self))
+
+
+(defrule
+	(current-age >= feudal-age)
+(or	(town-under-attack)
+(or	(strategic-number my-sn-military-superiority <= -2)
+	(not (goal enemy-goal 0))))
+=>
+	(set-strategic-number sn-maximum-hunt-drop-distance 12))
+
+(defrule
+(or	(game-time > 1640)
+	(goal dreitc yes))
+(or	(game-time > 1200)
+	(and	(goal underattack no)
+		(strategic-number my-sn-military-superiority >= 1)))
+	(strategic-number sn-camp-max-distance < 40)
+=>
+	(set-strategic-number sn-camp-max-distance 40))
+
+(defrule
+(or	(game-time > 3000)
+	(and	(game-time > 2100)
+		(strategic-number my-sn-military-superiority >= 2)))
+	(strategic-number my-sn-military-superiority >= 0)
+	(strategic-number sn-camp-max-distance < 70)
+=>
+	(set-strategic-number sn-camp-max-distance 70))
+
+(defrule
+	(game-time > 3150)
+(or	(strategic-number my-sn-military-superiority >= 2)
+	(goal attacking yes))
+(or	(population >= del-civ-pop)
+	(strategic-number sn-current-age >= imperial))
+	(strategic-number sn-camp-max-distance < 100)
+=>
+	(set-strategic-number sn-camp-max-distance 100))
+
+(defrule
+	(game-time > 3600)
+(or	(strategic-number my-sn-military-superiority >= 3)
+	(goal attacking yes))
+	(population >= del-civ-pop)
+	(strategic-number sn-camp-max-distance < 255)
+=>
+	(set-strategic-number sn-camp-max-distance 255))
+
+(defrule
+(or	(game-time > 1320)
+	(and	(game-time > 1050)
+		(strategic-number my-sn-military-superiority >= 1)))
+	(strategic-number sn-maximum-wood-drop-distance < 21)
+=>
+	;extend walking distances
+	(set-strategic-number sn-maximum-wood-drop-distance 21)
+	(set-strategic-number sn-maximum-food-drop-distance 18)
+	(set-strategic-number sn-maximum-hunt-drop-distance 18)
+	(set-strategic-number sn-maximum-gold-drop-distance 10)
+	(set-strategic-number sn-maximum-stone-drop-distance 10))
+
+(defrule
+(or	(game-time > 3000)
+	(and	(game-time > 2400)
+		(strategic-number my-sn-military-superiority >= 1)))
+	(strategic-number sn-maximum-wood-drop-distance < 22)
+=>
+	(set-strategic-number sn-maximum-wood-drop-distance 22)
+	(set-strategic-number sn-maximum-food-drop-distance 19)
+	(set-strategic-number sn-maximum-hunt-drop-distance 19)
+	(set-strategic-number sn-maximum-gold-drop-distance 11)
+	(set-strategic-number sn-maximum-stone-drop-distance 11))
+
+(defrule
+(or	(game-time > 3900)
+	(and	(game-time > 3300)
+		(strategic-number my-sn-military-superiority >= 1)))
+	(strategic-number sn-maximum-wood-drop-distance < 23)
+=>
+	(set-strategic-number sn-maximum-wood-drop-distance 23)
+	(set-strategic-number sn-maximum-food-drop-distance 21)
+	(set-strategic-number sn-maximum-hunt-drop-distance 23)
+	(set-strategic-number sn-maximum-gold-drop-distance 13)
+	(set-strategic-number sn-maximum-stone-drop-distance 13))
+
+(defrule
+(or	(game-time > 5100)
+	(and	(game-time > 4500)
+		(strategic-number my-sn-military-superiority >= 2)))
+	(strategic-number sn-maximum-wood-drop-distance < 25)
+=>
+	(set-strategic-number sn-maximum-wood-drop-distance  25)
+	(set-strategic-number sn-maximum-food-drop-distance  24)
+	(set-strategic-number sn-maximum-hunt-drop-distance  25)
+	(set-strategic-number sn-maximum-gold-drop-distance  16)
+	(set-strategic-number sn-maximum-stone-drop-distance 16))
+
+(defrule
+(or	(game-time > 7800)
+	(and	(game-time > 7200)
+		(strategic-number my-sn-military-superiority >= 2)))
+	(strategic-number sn-maximum-wood-drop-distance < 27)
+=>
+	(set-strategic-number sn-maximum-wood-drop-distance  27)
+	(set-strategic-number sn-maximum-food-drop-distance  26)
+	(set-strategic-number sn-maximum-hunt-drop-distance  28)
+	(set-strategic-number sn-maximum-gold-drop-distance  18)
+	(set-strategic-number sn-maximum-stone-drop-distance 18))
+
+(defrule
+(or	(game-time > 10200)
+	(and	(game-time > 9600)
+		(strategic-number my-sn-military-superiority >= 2)))
+	(strategic-number sn-maximum-wood-drop-distance < 29)
+=>
+	(set-strategic-number sn-maximum-wood-drop-distance  29)
+	(set-strategic-number sn-maximum-food-drop-distance  28)
+	(set-strategic-number sn-maximum-hunt-drop-distance  30)
+	(set-strategic-number sn-maximum-gold-drop-distance  22)
+	(set-strategic-number sn-maximum-stone-drop-distance 22))
+
+(defrule
+(or	(game-time > 12600)
+	(and	(game-time > 12000)
+		(strategic-number my-sn-military-superiority >= 2)))
+	(strategic-number sn-maximum-wood-drop-distance < 35)
+=>
+	(set-strategic-number sn-maximum-wood-drop-distance  35)
+	(set-strategic-number sn-maximum-food-drop-distance  30)
+	(set-strategic-number sn-maximum-hunt-drop-distance  35)
+	(set-strategic-number sn-maximum-gold-drop-distance  30)
+	(set-strategic-number sn-maximum-stone-drop-distance 30))
+
+(defrule
+(or	(strategic-number sn-current-age == dfeudal)
+	(current-age == feudal-age))
+;	(or
+		(unit-type-count-total 579 < 1) ;Male gold miner
+		(unit-type-count-total 581 < 1) ;female gold miner
+;	)
+;	(building-type-count-total mining-camp < 1)   
+=>
+	(set-strategic-number sn-maximum-gold-drop-distance 20)
+	(disable-self))
+
+(defrule
+	(strategic-number sn-maximum-gold-drop-distance == 20)
+	(dropsite-min-distance gold < 8)
+=>
+	(set-strategic-number sn-maximum-gold-drop-distance 8)
+	(disable-self))
+
+(defrule
+	(current-age <= feudal-age)
+	(unit-type-count-total villager > 10)
+;	(or
+		(unit-type-count-total 123 < 1) ;Male lumberjack
+		(unit-type-count-total 218 < 1) ;female lumberjack
+;	)
+;	(building-type-count-total lumber-camp < 1)
+	(strategic-number sn-maximum-wood-drop-distance < 25)   
+=>
+	(set-strategic-number sn-maximum-wood-drop-distance 25)
+	(disable-self))
+
+(defrule
+	(current-age <= feudal-age)
+	(strategic-number sn-maximum-wood-drop-distance > 18)
+	(dropsite-min-distance wood < 12)
+=>
+	(set-strategic-number sn-maximum-wood-drop-distance 18)
+	(disable-self))
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(game-time > 13)
+(not	(resource-found wood))
+	(cc-players-unit-type-count gaia shore-fish > 0)
+	(map-type arabia)
+=>
+	(chat-local-to-self "Arabia: Desert")
+	(chat-local-to-self "Camp-max-distance 17.")
+	(set-strategic-number sn-camp-max-distance 17)
+	(disable-self))
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(game-time > 13)
+(not	(resource-found wood))
+	(cc-players-unit-type-count gaia shore-fish < 1)
+	(map-type arabia)
+=>
+	(set-strategic-number sn-camp-max-distance 17)
+	(chat-local-to-self "Green Arabia")
+	(chat-local-to-self "Camp-max-distance 17.")
+	(disable-self))
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(game-time > 13)
+(not	(resource-found wood))
+(not	(map-type arabia))
+=>
+	(set-strategic-number sn-camp-max-distance 19)
+	(chat-local-to-self "Camp-max-distance 19.")
+	(disable-self))
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(game-time < 2)
+	(resource-found wood)
+=>
+	(set-strategic-number sn-camp-max-distance 11)
+	(chat-local-to-self "Camp-max-distance 11.")
+	(disable-self))
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(game-time > 1)
+	(game-time < 6)
+	(strategic-number sn-camp-max-distance == 16)
+	(resource-found wood)
+=>
+	(set-strategic-number sn-camp-max-distance 12)
+	(chat-local-to-self "Camp-max-distance 12.")
+	(disable-self))
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(game-time > 5)
+	(game-time < 11)
+	(strategic-number sn-camp-max-distance == 16)
+	(resource-found wood)
+=>
+	(set-strategic-number sn-camp-max-distance 14)
+	(chat-local-to-self "Camp-max-distance 14.")
+	(disable-self))
+
+(defrule
+	(building-type-count-total town-center >= 1)
+	(game-time > 10)
+	(game-time < 14)
+	(strategic-number sn-camp-max-distance == 16)
+	(resource-found wood)
+=>
+	(set-strategic-number sn-camp-max-distance 16)
+	(chat-local-to-self "Camp-max-distance 16.")
+	(disable-self))
+
+(defrule
+	(timer-triggered lc2)
+	(cc-players-unit-type-count gaia shore-fish > 0)
+	(map-type arabia)
+=>
+	(disable-timer lc2)
+	(set-strategic-number sn-camp-max-distance 19)
+	(chat-local-to-self "Camp-max-distance 19.")
+	(disable-self))
+
+(defrule
+	(timer-triggered lc2)
+	(cc-players-unit-type-count gaia shore-fish < 1)
+	(map-type arabia)
+=>
+	(disable-timer lc2)
+	(set-strategic-number sn-camp-max-distance 18)
+	(chat-local-to-self "Camp-max-distance 18.")
+	(disable-self))
+
+(defrule
+	(timer-triggered lc2)
+(not	(map-type arabia))
+(not	(map-type gold-rush))
+=>
+	(disable-timer lc2)
+	(set-strategic-number sn-camp-max-distance 22)
+	(chat-local-to-self "Camp-max-distance 22.")
+	(disable-self))
+
+(defrule
+	(timer-triggered lc2)
+	(map-type gold-rush)
+=>
+	(disable-timer lc2)
+	(set-strategic-number sn-camp-max-distance 14)
+	(chat-local-to-self "Camp-max-distance 14.")
+	(disable-self))
+
+#load-if-not-defined UP-POCKET-POSITION
+#load-if-not-defined UP-MICHI-STYLE
+#load-if-not-defined ARENA-MAP
+#load-if-not-defined FORTRESS-MAP
+#load-if-not-defined ISLANDS-MAP
+#load-if-not-defined TEAM-ISLANDS-MAP
+
+(defrule
+(or	(goal strategy-type aggressive)
+	(strategic-number sn-current-age >= imperial))
+=>
+	(up-jump-rule 9)); stays the same with the #load-if
+
+(defrule
+	(game-time < 780)
+	(current-age == dark-age)
+	(players-current-age focus-player == dark-age)
+	(players-military-population focus-player >= 4)
+;t	(strategic-number my-sn-military-superiority <= -1)
+(not	(goal enemy-goal drush))
+=>
+	(set-goal enemy-goal drush))
+
+
+#load-if-not-defined CHINESE-CIV
+
+(defrule
+	(current-age == dark-age)
+	(players-building-count any-enemy > 0)
+(or	(and	(players-civilian-population focus-player < 18)
+		(unit-type-count villager >= 21))
+	(and	(players-civilian-population focus-player < 19)
+		(unit-type-count villager >= 22)))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+
+(defrule
+	(current-age == dark-age)
+	(players-building-count any-enemy > 0)
+(or	(and	(players-civilian-population focus-player < 20)
+		(unit-type-count villager >= 23))
+	(and	(players-civilian-population focus-player < 21)
+		(unit-type-count villager >= 24)))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+(defrule
+	(current-age == dark-age)
+	(players-building-count any-enemy > 0)
+(or	(and	(players-civilian-population focus-player < 22)
+		(unit-type-count villager >= 25))
+	(and	(players-civilian-population focus-player < 23)
+		(unit-type-count villager >= 26)))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+(defrule
+	(current-age == dark-age)
+	(players-building-count any-enemy > 0)
+(or	(and	(players-civilian-population focus-player < 24)
+		(unit-type-count villager >= 27))
+	(and	(players-civilian-population focus-player < 25)
+		(unit-type-count villager >= 28)))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+
+(defrule
+	(current-age == dark-age)
+	(players-building-count any-enemy > 0)
+(or	(and	(players-civilian-population focus-player < 26)
+		(unit-type-count villager >= 29))
+	(and	(players-civilian-population focus-player < 27)
+		(unit-type-count villager >= 30)))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+
+#else ; Chinese
+
+(defrule
+	(current-age == dark-age)
+	(players-building-count any-enemy > 0)
+(or	(and	(players-civilian-population focus-player < 18)
+		(unit-type-count villager >= 22))
+	(and	(players-civilian-population focus-player < 19)
+		(unit-type-count villager >= 23)))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+
+(defrule
+	(current-age == dark-age)
+	(players-building-count any-enemy > 0)
+(or	(and	(players-civilian-population focus-player < 20)
+		(unit-type-count villager >= 24))
+	(and	(players-civilian-population focus-player < 21)
+		(unit-type-count villager >= 25)))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+(defrule
+	(current-age == dark-age)
+	(players-building-count any-enemy > 0)
+(or	(and	(players-civilian-population focus-player < 22)
+		(unit-type-count villager >= 26))
+	(and	(players-civilian-population focus-player < 23)
+		(unit-type-count villager >= 27)))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+(defrule
+	(current-age == dark-age)
+	(players-building-count any-enemy > 0)
+(or	(and	(players-civilian-population focus-player < 24)
+		(unit-type-count villager >= 28))
+	(and	(players-civilian-population focus-player < 25)
+		(unit-type-count villager >= 29)))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+
+(defrule
+	(current-age == dark-age)
+	(players-building-count any-enemy > 0)
+(or	(and	(players-civilian-population focus-player < 26)
+		(unit-type-count villager >= 30))
+	(and	(players-civilian-population focus-player < 27)
+		(unit-type-count villager >= 31)))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+
+#end-if
+
+
+(defrule
+	(game-time < 840); 14:00
+	(current-age == dark-age)
+	(strategic-number my-sn-military-superiority <= 0)
+	(players-current-age focus-player == feudal-age)
+(or	(and	(players-current-age-time focus-player >= 35)
+		(players-military-population focus-player >= 5))
+		(players-military-population focus-player >= 7))
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+
+(defrule
+	(game-time < 900); 15:00
+	(strategic-number my-sn-military-superiority <= -2)
+	(players-military-population focus-player >= 9)
+	(players-current-age focus-player == feudal-age)
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush))
+
+(defrule
+(not	(goal position-goal pocket))
+(or	(players-military-population focus-player >= 6)
+	(up-enemy-units-in-town >= 3))
+	(strategic-number sn-current-age <= dfeudal)
+(not	(goal enemy-goal flush))
+=>
+	(set-goal enemy-goal flush)
+	(disable-self))
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(goal enemy-goal drush)
+=>
+	(chat-to-player my-player-number "Possible enemy drush detected.")
+	(disable-self))
+
+(defrule
+	(goal enemy-goal flush)
+=>
+	(chat-to-player my-player-number "Possible enemy flush detected.")
+	(disable-self))
+
+(defrule
+	(game-time <= 1050);17:30
+	(players-current-age focus-player >= castle-age)
+(not	(goal enemy-goal rush))
+=>
+	(enable-timer scout 30)
+	(set-goal enemy-goal rush)
+	(chat-to-player my-player-number "Enemy might try to rush us."))
+
+(defrule
+	(game-time <= 1100);18:20
+	(players-military-population focus-player <= 3)
+	(players-current-age focus-player >= castle-age)
+(not	(goal enemy-goal rush))
+=>
+	(enable-timer scout 30)
+	(set-goal enemy-goal rush)
+	(chat-to-player my-player-number "Enemy might try to rush us."))
+
+(defrule
+(or	(game-time >= 900)
+	(and	(current-age >= feudal-age)
+		(building-type-count-total archery-range >= 1)))
+	(goal enemy-goal drush)
+	(goal underattack no)
+	(strategic-number my-sn-military-superiority >= -1)
+=>
+	(set-goal enemy-goal 0))
+
+(defrule
+	(game-time >= 1080)
+	(goal enemy-goal flush)
+	(goal underattack no)
+	(strategic-number my-sn-military-superiority >= 0)
+=>
+	(set-goal enemy-goal 0))
+
+(defrule
+	(game-time >= 1350)
+	(goal enemy-goal rush)
+	(goal underattack no)
+	(strategic-number my-sn-military-superiority >= 0)
+=>
+	(set-goal enemy-goal 0))
+
+(defrule; saving gold for e-skirms when possible
+	(current-age >= castle-age)
+	(building-type-count-total archery-range >= 1)
+	(unit-type-count-total skirmisher-line >= 6); only save up when needed
+	(goal e-skirm no)
+	(goal e-skirmgold yes)
+	(gold-amount < 160)
+=>
+	(set-goal e-skirmgold no))
+
+(defrule
+	(current-age >= castle-age)
+(or	(building-type-count-total archery-range <= 0)
+	(unit-type-count-total skirmisher-line < 6)); only save up when needed
+	(goal e-skirmgold no)
+(or	(goal e-skirm yes)
+	(gold-amount >= 160))
+=>
+	(set-goal e-skirmgold yes))
+
+(defrule
+	(timer-triggered rebuild-camp)
+=>
+	(set-goal rebuildcamp yes)
+	(disable-timer rebuild-camp))

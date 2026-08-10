@@ -1,0 +1,15 @@
+(defrule
+	(game-time > 25)
+	(game-time < 35)
+	(player-in-game any-human-ally)
+	(not	(player-valid any-human-enemy))
+	(taunt-detected any-computer-enemy 254)
+=>
+	(chat-to-player every-enemy "187")
+	(chat-to-allies "186")
+	(chat-to-player-using-id every-ally traitor-chat-id)
+	(chat-to-allies "40")
+	(set-goal gl-identity 4651)
+	(set-stance every-ally enemy)
+	(disable-self)
+)

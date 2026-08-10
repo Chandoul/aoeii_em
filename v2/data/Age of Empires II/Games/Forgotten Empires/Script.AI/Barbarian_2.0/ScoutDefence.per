@@ -1,0 +1,50 @@
+(defrule
+	(or	(goal gl-current-age gv-feudal-up)
+		(and	(goal gl-current-age gv-castle)
+			(current-age-time < 30)))
+	(players-building-type-count focus-player stable < 1)
+	(players-building-type-count focus-player archery-range < 1)
+	(game-time > 930)
+	(strategic-number sn-focus-player-number > 0)
+	(stance-toward focus-player enemy)
+	(player-human focus-player)
+	(players-military-population focus-player < 2)
+	(goal gl-enemy-human-rating GOOD)
+	(unit-type-count-total scout-cavalry-line < 4)
+	(can-train scout-cavalry-line)
+=>
+	(train scout-cavalry-line)
+)
+
+(defrule
+	(or	(goal gl-current-age gv-feudal-up)
+		(and	(goal gl-current-age gv-castle)
+			(and	(current-age-time < 30)
+				(not	(civ-selected hun)))))
+	(strategic-number sn-focus-player-number > 0)
+	(stance-toward focus-player enemy)
+	(player-human focus-player)
+	(players-military-population focus-player < 2)
+	(goal gl-enemy-human-rating GOOD)
+	(unit-type-count-total archer-line < 6)
+	(can-train archer-line)
+=>
+	(train archer-line)
+)
+
+#load-if-not-defined TINY-MAP
+#load-if-not-defined SMALL-MAP
+#load-if-defined UP-POCKET-POSITION
+(defrule
+	(goal gl-current-age gv-dark)
+	(player-valid any-human-enemy)
+	(goal gl-strategy castle-push)
+=>
+	(set-goal gl-strategy castle-drop)
+	(chat-to-player my-player-number "2No castle push today")
+	(set-strategic-number sn-threat-level 0)
+	(disable-self)
+)
+#end-if
+#end-if
+#end-if

@@ -1,0 +1,294 @@
+;start the pass
+
+(defrule
+	(difficulty <= easy)
+	(nor
+		(map-type fortress) 
+		(map-type arena)
+	)
+=>
+	(enable-wall-placement 2)
+	(disable-self)
+)
+
+(defrule
+	(current-age > dark-age)
+=>
+	(set-goal wall-build NOTICE)
+	(enable-timer t-tower 1)
+	(disable-self)
+)
+
+(defrule
+	(goal wall-build NOTICE)
+	(or
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(set-goal wall-build POOR)
+	(disable-self)
+)
+
+(defrule
+	(goal wall-build POOR)
+	(current-age >= castle-age)
+=>
+	(set-goal wall-build NOTICE)
+	(disable-self)
+)
+
+(defrule
+	(goal wall-build NOTICE)
+	(or
+		(or
+			(goal rush-control RUSHING)
+			(goal castle-attempt YES)
+		)
+		(or
+			(or
+				(goal 1 10)
+				(difficulty >= easy)
+			)
+			(map-type fortress)
+		)
+	)
+=>
+	(set-goal wall-build NO)
+	(disable-self)
+)
+
+(defrule
+	(goal wall-build NOTICE)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+
+(defrule
+	(goal wall-build NO)
+	(or
+		(goal personality 1)
+		(goal personality 2)
+	)
+	(not (map-type fortress) )
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+
+(defrule
+	(goal wall-build NO)
+	(current-age == imperial-age)
+	(nor 
+		(map-type fortress)
+		(goal castle-attempt YES)
+	)
+=>
+	(set-goal wall-build YES)
+	(disable-self)
+)
+
+(defrule
+	(goal wall-build YES)
+	(goal wonder-attempt POSSIBLE)
+=>
+	(set-goal wall-build NO)
+	(disable-self)
+)
+
+(defrule
+	(goal wall-build NO)
+	(building-type-count-total wonder > 0)
+	(nor 
+		(map-type fortress) 
+		(or
+			(map-type scandanavia)
+			(map-type ghost-lake)
+		)
+	)
+=>
+	(set-goal wall-build YES)
+)
+
+;*****************************
+;*****************************
+;build walls
+
+(defrule
+	(current-age == feudal-age)
+	(goal wall-build YES)
+	(can-build-wall-with-escrow 2 stone-wall-line)
+	(or
+		(can-afford-complete-wall 2 stone-wall-line)
+		(stone-amount > 125)
+	)
+=>
+	(release-escrow stone)
+	(build-wall 2 stone-wall-line)
+)
+
+(defrule
+	(goal wall-build YES)
+	(can-build-wall-with-escrow 2 stone-wall-line)
+	(or
+		(can-afford-complete-wall 2 stone-wall-line)
+		(stone-amount > 300)
+	)
+=>
+	(release-escrow stone)
+	(build-wall 2 stone-wall-line)
+)
+
+(defrule
+	(goal wall-build NO)
+	(building-type-count-total gate > 0)
+	(wall-completed-percentage 2 >= 75)
+	(wall-completed-percentage 2 < 100)
+	(can-build-wall-with-escrow 2 stone-wall-line)
+=>
+	(release-escrow stone)
+	(build-wall 2 stone-wall-line)
+)
+
+(defrule
+	(goal wall-build YES)
+	(building-type-count-total gate < 4)
+	(can-build-gate-with-escrow 2)
+=>
+	(release-escrow stone)
+	(build-gate 2)
+)
+
+(defrule
+	(goal wall-build YES)
+	(wall-completed-percentage 2 == 100)
+	(building-type-count-total gate == 0)
+=>
+	(delete-building stone-wall-line)
+	(set-goal wall-build NO)
+)
+
+(defrule
+	(goal wall-build YES)
+	(wall-completed-percentage 2 == 100)
+=>
+	(set-goal wall-build NO)
+)
+
+;*****************************
+;bombard towers
+(defrule
+	(can-build bombard-tower)
+	(not (goal wonder-attempt POSSIBLE) )
+	(or
+		(not (goal castle-attempt YES) )
+		(building-type-count-total bombard-tower < 2)
+	)
+	(or
+		(goal wall-build NO)
+		(timer-triggered t-tower)
+	)
+=>
+	(build bombard-tower)
+)
+
+(defrule
+	(current-age == feudal-age)
+	(can-build watch-tower)
+	(or
+		(not (goal castle-attempt YES) )
+		(building-type-count-total watch-tower < 3)
+	)
+	(or
+		(goal wall-build NO)
+		(timer-triggered t-tower)
+	)
+	(nor
+		(goal rush-control CASTLE)
+		(goal rush-control IMPERIAL)
+	)
+=>
+	(build watch-tower)
+)
+
+(defrule
+	(current-age == castle-age)
+	(can-build watch-tower)
+	(or
+		(not (goal castle-attempt YES) )
+		(building-type-count-total watch-tower < 6)
+	)
+	(not (research-available ri-guard-tower) )
+	(or
+		(goal wall-build NO)
+		(timer-triggered t-tower)
+	)
+	(not (goal rush-control IMPERIAL) )
+=>
+	(build watch-tower)
+)
+
+(defrule
+	(current-age == imperial-age)
+	(can-build watch-tower)
+	(nor
+		(can-build bombard-tower)
+		(goal wonder-attempt POSSIBLE)
+	)
+	(or
+		(not (goal castle-attempt YES) )
+		(building-type-count-total watch-tower < 9)
+	)
+	(nor
+		(research-available ri-guard-tower)
+		(research-available ri-keep)
+	)
+	(or
+		(goal wall-build NO)
+		(timer-triggered t-tower)
+	)
+=>
+	(build watch-tower)
+)
+
+; post-wonder watch towers -- go nuts!
+(defrule
+	(building-type-count-total wonder > 0)
+	(can-build-with-escrow bombard-tower)
+=>
+	(release-escrow gold)
+	(release-escrow stone)
+	(build bombard-tower)
+)
+
+(defrule
+	(building-type-count-total wonder > 0)
+	(can-build-with-escrow watch-tower)
+	(nor
+		(research-available ri-guard-tower)
+		(research-available ri-keep)
+	)
+=>
+	(release-escrow wood)
+	(release-escrow stone)
+	(build watch-tower)
+)
+
+(defrule
+	(timer-triggered t-tower)
+	(or
+		(can-afford-complete-wall 2 stone-wall-line)
+		(stone-amount > 500)
+	)
+=>
+	(disable-timer t-tower)
+	(enable-timer t-tower 60)
+)
+
+(defrule
+	(timer-triggered t-tower)
+=>
+	(disable-timer t-tower)
+	(enable-timer t-tower 300)
+)

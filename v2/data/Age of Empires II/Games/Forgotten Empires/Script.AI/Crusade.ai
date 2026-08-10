@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Files>
+	<File Toplevel="True" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\resign - AI Ladder.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Resign - Human.per"/>
+	<File Toplevel="False" HasDefconsts="True" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Constants.per"/>
+	<File Toplevel="False" HasDefconsts="True" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Constants for civs.per"/>
+	<File Toplevel="False" HasDefconsts="True" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Forgotten Empires Constants.per"/>
+	<File Toplevel="False" HasDefconsts="True" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Strategy Default - Flush Swords-Archers.per"/>
+	<File Toplevel="False" HasDefconsts="True" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Strategy Default - Trush Swords-Archers.per"/>
+	<File Toplevel="False" HasDefconsts="True" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Strategy Default - Flush Archery-3.per"/>
+	<File Toplevel="False" HasDefconsts="True" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Strategy Default - Flush Man-at-arms.per"/>
+	<File Toplevel="False" HasDefconsts="True" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Strategy Default - Flush Scouts-Archers.per"/>
+	<File Toplevel="False" HasDefconsts="True" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Strategy Default - Trush Scouts-Archers.per"/>
+	<File Toplevel="False" HasDefconsts="True" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Strategy Default - Flush Market Scouts-Archers.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Initial strategic numbers.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\UP initialization.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Boar Hunting.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Threat Rules.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Trebuchet.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Sheep.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\General Economy.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Gatherer percentages Dark Age.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Amphibian.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\FC Archery.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Flush Archery-3.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Flush Man-at-arms.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Flush Swords-Archers.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Trush Swords-Archers.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Flush Scouts-Archers.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Trush Scouts-Archers.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Flush Market Scouts-Archers.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Gatherer-Dynamic percentages Late Feudal.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Gatherer percentages Late Game.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Strategy selection.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Buildings Alpha.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Army Selection.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Main Upgrades.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Control Upgrades.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Unit Training.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Extra Upgrades.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Buildings Betha.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Buildings Omega.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Market rules.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Tribute.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\TSA.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Military superiority.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Military superiority 2.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Navy superiority.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Battle behavior.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Attack rules.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Attack evolution.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\TSA Defensive.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\TS Building.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Chat.per"/>
+	<File Toplevel="False" HasDefconsts="False" Type="script" Path="C:\Juegos\Age of Empires II\AI\Crusade 4.42\Wonder Race.per"/>
+</Files>

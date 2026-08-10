@@ -1,0 +1,159 @@
+#load-if-not-defined TINY-MAP
+#load-if-defined UP-POCKET-POSITION
+
+#load-if-not-defined UP-HUMAN-IN-GAME
+
+#load-if-not-defined AZTEC-CIV
+#load-if-not-defined MAYAN-CIV
+#load-if-not-defined INDIAN-CIV
+#load-if-not-defined INCAN-CIV
+(defrule
+	(game-time > 55)
+	(game-time < 65)
+	(goal gl-strategy krush)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(goal gl-rush-suitability-on-map GOOD)
+	(or	(taunt-detected every-ally 254)
+		(and	(up-allied-goal any-ally 6 == 6); Hopefully Horde with aggressive rush
+			(up-allied-sn any-ally sn-minimum-water-body-size-for-dock == 999)))
+=>
+	(up-find-player ally find-closest gl-ally-player)
+	(up-modify-sn sn-focus-player-number g:= gl-ally-player)
+	(up-chat-data-to-player every-ally "The nearest ally is %d" s: sn-focus-player-number)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 55)
+	(game-time < 65)
+	(goal gl-strategy krush)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(up-compare-goal gl-ally-player > 0)
+	(up-allied-goal focus-player POSITION == POCKET)
+=>
+	(up-find-player ally find-closest gl-ally-player)
+	(up-find-next-player ally find-closest gl-ally-player)
+	(up-modify-sn sn-focus-player-number g:= gl-ally-player)
+	(up-chat-data-to-player every-ally "The nearest flank is %d" s: sn-focus-player-number)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 55)
+	(game-time < 65)
+	(up-compare-goal gl-nothing-style-map != YES)
+	(or	(up-allied-goal focus-player gl-strategy-aggressiveness-level == HIGH)
+		(and	(up-allied-goal focus-player 6 == 6)
+			(up-allied-sn focus-player sn-minimum-water-body-size-for-dock == 999)))
+	(up-compare-goal gl-ally-player > 0)
+=>
+	(set-goal gl-strategy knight-rush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type FC2)
+	(up-modify-sn sn-focus-player-number g:= gl-target-player)
+	(set-goal gl-ally-player -2)
+	(chat-to-allies "My flank has an aggressive strategy - switch to more aggressive krush")
+)
+#end-if
+#end-if
+#end-if
+#end-if
+
+(defrule
+	(game-time > 55)
+	(game-time < 65)
+	(up-compare-goal gl-strategy != krush)
+	(up-compare-goal gl-strategy-aggressiveness-level <= LOW)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(goal gl-rush-suitability-on-map GOOD)
+	(or	(taunt-detected every-ally 254)
+		(and	(up-allied-goal any-ally 6 == 6)
+			(up-allied-sn any-ally sn-minimum-water-body-size-for-dock == 999)))
+=>
+	(up-find-player ally find-closest gl-ally-player2)
+	(up-modify-sn sn-focus-player-number g:= gl-ally-player2)
+	(up-chat-data-to-player every-ally "The nearest ally is %d" s: sn-focus-player-number)
+	(disable-self)
+)
+
+(defrule
+	(game-time > 55)
+	(game-time < 65)
+	(up-compare-goal gl-strategy != krush)
+	(up-compare-goal gl-strategy-aggressiveness-level <= LOW)
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal SLING 0)
+	(up-compare-goal gl-ally-player2 > 0)
+	(up-allied-goal focus-player POSITION == POCKET)
+=>
+	(up-find-player ally find-closest gl-ally-player2)
+	(up-find-next-player ally find-closest gl-ally-player2)
+	(up-modify-sn sn-focus-player-number g:= gl-ally-player2)
+	(up-chat-data-to-player every-ally "The nearest flank is %d" s: sn-focus-player-number)
+	(disable-self)
+)
+
+(defrule
+;	(game-time > 55)
+	(game-time < 65)
+	(strategic-number sn-target-evaluation-hitpoints == 0)
+	(or	(up-allied-goal focus-player gl-strategy-aggressiveness-level == HIGH)
+		(and	(up-allied-goal focus-player 6 == 6)
+			(up-allied-sn any-ally sn-minimum-water-body-size-for-dock == 999)))
+	(up-compare-goal gl-strategy != castle-sling)
+	(up-compare-const aggressive-strategy != 0)
+	(up-compare-goal gl-ally-player2 > 0)
+=>
+	(set-goal gl-strategy aggressive-strategy)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type FC2)
+	(up-modify-sn sn-focus-player-number g:= gl-target-player)
+	(set-goal gl-ally-player2 -2)
+	(chat-to-allies "My flank has an aggressive strategy - do so too")
+)
+#else
+(defrule
+	(goal gl-x-vs-one-challenge YES)
+	(players-military-population any-enemy > 4)
+	(up-compare-goal gl-current-age <= gv-feudal-up)
+	(goal gl-rush-suitability-on-map GOOD)
+	(goal gl-strategy krush)
+=>
+	(set-goal gl-strategy knight-rush)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+	(set-goal gl-strategy-type FC2)
+	(disable-self)
+)
+#end-if
+
+#end-if
+#end-if
+
+#load-if-defined DARK-AGE-START
+#load-if-not-defined DARK-AGE-END
+#load-if-not-defined UP-POCKET-POSITION
+(defrule
+	(strategic-number sn-minimum-water-body-size-for-dock == 998)
+	(goal gl-current-age gv-dark)
+	(player-human focus-player)
+	(goal SLING 0)
+	(up-compare-goal gl-strategy-type >= FC)
+	(goal gl-rush-suitability-on-map GOOD)
+	(goal gl-enemy-human-rating GOOD)
+	(strategic-number sn-focus-player-number > 0)
+	(game-time > 640)
+	(players-civilian-population focus-player < 25)
+	(players-civilian-population focus-player >= 20)
+=>
+	(set-goal gl-strategy flush)
+	(set-goal gl-strategy-type basic-flush)
+	(set-goal gl-feudal-infantry FLUSH-DEFENCE-MAA)
+	(set-goal gl-feudal-archery FLUSH-DEFENCE-ARCHER)
+	(set-goal gl-strategy-aggressiveness-level HIGH)
+)
+#end-if
+#end-if
+#end-if
