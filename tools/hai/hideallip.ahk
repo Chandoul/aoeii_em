@@ -25,7 +25,7 @@ osVers := Map(
 
 haiGui := GuiEx(, 'Hide All IP Trial Reset')
 haiGui.initiate(, , 0)
-haiGui.addButtonEx('xm w500', 'Reset Trial Period', , resetTrial)
+haiGui.addButtonEx('xm ym+30 w500', 'Reset Trial Period', , resetTrial)
 haiGui.AddText('wp Center BackgroundTrans', 'Manually set a compatibility')
 manualList := haiGui.AddListView('xm Checked r10 wp -Hdr BackgroundFFD4A8', ['options', 'name'])
 manualList.ModifyCol(1, 478)

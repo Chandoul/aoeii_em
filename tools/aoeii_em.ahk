@@ -44,7 +44,6 @@ appUpdate := aoeiiGui.addButtonEx('x+5 w70', 'Update?', , updateCheck)
 gamepicaok := aoeiiGui.AddPictureEx('xm+90 y+5', 'aoklogo.png')
 gamepicaoc := aoeiiGui.AddPictureEx('x+20', 'aoclogo.png')
 gamepichd := aoeiiGui.AddPictureEx('x+20', 'hdlogo.png')
-; gamepicde := aoeiiGui.AddPictureEx('x+20', 'delogo.png')
 
 aoeiiGui.SetFont('Bold s10')
 
@@ -124,16 +123,6 @@ If !FileExist(aoeiiapp.gameLocation '\age2_x1\age2_x2.exe') {
     Gdip_DisposeImage(pBitmap)
 } Else gamepichd.OnEvent('click', (*) => Run(aoeiiapp.gameLocation '\age2_x1\age2_x2.exe', aoeiiapp.gameLocation))
 
-; If !FileExist(aoeiiapp.gameLocation '\age2_x1\age2_x1.exe') {
-;     pBitmap := Gdip_CreateBitmapFromFile(aoeiiapp.workDirectory '\assets\delogo.png')
-;     graphic := Gdip_GraphicsFromImage(pBitmap)
-;     Gdip_DrawImage(graphic, pBitmap, , , , , , , , , MatrixGreyScale)
-;     hBitmap := Gdip_CreateHBITMAPFromBitmap(pBitmap)
-;     gamepicde.value := "HBITMAP:*" hBitmap
-;     Gdip_DeleteGraphics(graphic)
-;     Gdip_DisposeImage(pBitmap)
-; }
-
 ; Update check
 updateCheck(*) {
     appUpdate.TextEx := 'Checking...'
@@ -142,6 +131,7 @@ updateCheck(*) {
 }
 
 performGameAnalyze(*) {
+    static infoGui := 0
     choice := MsgBoxEx(
         Format(
             'Check list:`n`n{}`n{}`n{}`n{}`n{}`n{}`n`n{}',
@@ -152,12 +142,23 @@ performGameAnalyze(*) {
             '5 - The Game Update',
             '6 - The Game Corrupted Files',
             'The app will try to fix these issues, do you wish to continue?'
-        ), 'Check list', 1, 0x40
+        ), 'Check list', 4, 0x40
     ).result
 
-    If choice != 'OK'
+    If choice != 'Yes'
         return
 
+    If !infoGui {
+        infoGui := GuiEx(, 'Package Download')
+        infoGui.initiate(0, , 0)
+        infoGui.OnEvent('Close', (*) => Reload())
+        infoText := infoGui.AddEdit('-E0x200 Border ReadOnly xm ym+20 w350 Center -VScroll BackgroundFFAD59', '...')
+        InfoBar := infoGui.AddProgress('-smooth wp h18 Range1-6')
+    }
+
+    infoGui.ShowEx(, 1)
+
+    infoText.Text := 'Gameux Win7/Vista fix...'
     ; Gameux Win7/Vista auto fix
     GEs := [
         A_WinDir '\System32\gameux.dll',
@@ -173,7 +174,9 @@ performGameAnalyze(*) {
                 }
         }
     }
+    InfoBar.Value += 1
 
+    infoText.Text := 'Checking for corrupted file...'
     ; Check for a corrupted file
     md5 := '7c1ae22e8f9d385d51b4f2eadd2a6d76'
     dlltargets := [aoeiiapp.gameLocation '\dsound.dll', aoeiiapp.gameLocation '\age2_x1\dsound.dll']
@@ -182,7 +185,9 @@ performGameAnalyze(*) {
             FileDelete(target)
         }
     }
+    InfoBar.Value += 1
 
+    infoText.Text := 'Checking for missing files...'
     ; Fix aoc wrong exe location
     aocexe := aoeiiapp.gameLocation '\age2_x1.exe'
     If FileExist(aocexe) {
@@ -190,12 +195,16 @@ performGameAnalyze(*) {
             DirCreate(aoeiiapp.gameLocation '\Age2_x1')
         FileMove(aocexe, aoeiiapp.gameLocation '\Age2_x1\', 1)
     }
+    InfoBar.Value += 1
 
+    infoText.Text := 'Creating Multi folder in SaveGame if not exist...'
     ; Create Multi folder in SaveGame if not exist
     If !DirExist(aoeiiapp.gameLocation '\SaveGame\Multi') {
         DirCreate(aoeiiapp.gameLocation '\SaveGame\Multi')
     }
+    InfoBar.Value += 1
 
+    infoText.Text := 'Checking for existing fixes...'
     ; Check if no fix exists
     fix := ''
     ignoreFiles := Map('wndmode.dll', 1, 'windmode.dll', 1)
@@ -208,7 +217,9 @@ performGameAnalyze(*) {
         RunWait(aoeiiapp.tools['02_fix']['run'] ' "Update v05"')
         aoeiiapp.applyDDrawFix()
     }
+    InfoBar.Value += 1
 
+    infoText.Text := 'Checking for missing files...'
     ; Check for missing files
     gameLink := 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/packages/Age%20of%20Empires%20II.7z'
     files := JSON.LoadFile('gamefiles.json')
@@ -220,7 +231,9 @@ performGameAnalyze(*) {
             RunWait(Format('"{}" x "{}" "{}" -o"{}"', aoeiiapp._7zrCsle, gameapp.gamePackage, file['path'], aoeiiapp.gameLocation))
         }
     }
-
+    InfoBar.Value += 1
+    infoGui.Hide()
+    
     MsgBoxEx(
         'Verification is done, you should be able to play your game normally by now!'
         , aoeiiapp.name, , 0x40

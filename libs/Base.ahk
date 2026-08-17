@@ -6,7 +6,7 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '7.1'
+    version => '7.2'
     author => 'Smile'
     license => 'MIT'
     packageHashLink => 'https://raw.githubusercontent.com/chandoul/aoeii_em/refs/heads/master/tools/package.json'
@@ -78,13 +78,13 @@ Class Base {
             'workdir', This.workDirectory '\tools\ahk\',
             'pid', 0
         ),
-        ;'08_hai', Map(
-        ;    'title', 'Hide ALL IP Reset',
-        ;    'file', This.workDirectory '\tools\hai\hideallip.ahk',
-        ;    'run', cmdJoin(A_AhkPath, This.workDirectory '\tools\hai\hideallip.ahk'),
-        ;    'workdir', This.workDirectory '\tools\hai\',
-        ;    'pid', 0
-        ;),
+        '08_hai', Map(
+            'title', 'HAI Reset',
+            'file', This.workDirectory '\tools\hai\hideallip.ahk',
+            'run', cmdJoin(A_AhkPath, This.workDirectory '\tools\hai\hideallip.ahk'),
+            'workdir', This.workDirectory '\tools\hai\',
+            'pid', 0
+        ),
     )
     ddrawLocation => This.workDirectory '\externals\cnc-ddraw.2'
     ddrawLink => 'https://github.com/chandoul/aoeii_em/raw/refs/heads/master/externals/cnc-ddraw.2.7z'
@@ -228,7 +228,9 @@ Class Base {
     }
 
     downloadPackage(link, file, fileSize := 0, progressText := 0, progressBar := 0, update := 0) {
-        Static infoGui := InfoBar := infoText := 0
+        Static infoGui := 0,
+            InfoBar := 0,
+            infoText := 0
         if !update && FileExist(file) {
             Return 1
         }
@@ -413,6 +415,13 @@ Class Base {
         }
     }
 
+    isCentered() {
+        return (
+            IniRead(This.gameLocation '\ddraw.ini', 'ddraw', 'posX', 0) = -32000 &&
+            IniRead(This.gameLocation '\age2_x1\ddraw.ini', 'ddraw', 'posY', 0) = -32000
+        )
+    }
+
     reviewWindowModeCompatibility(
         locations := [
             This.gameLocation '\',
@@ -570,9 +579,10 @@ Class Base {
     }
 
     packageHashGet() {
-        try return JSON.Load(this.rawTextContent(this.packageHashLink))
-        catch
-            return JSON.LoadFile(This.workDirectory '\tools\package.json')
+        ;  try return JSON.Load(this.rawTextContent(this.packageHashLink))
+        ;  catch
+        ;      return JSON.LoadFile(This.workDirectory '\tools\package.json')
+        return JSON.LoadFile(This.workDirectory '\tools\package.json')
     }
 }
 
@@ -955,7 +965,7 @@ Class MsgBoxEx {
             }
         }
 
-        This.hText := This.msgGui.AddEdit('xm Center ReadOnly BackgroundE1B15A -E0x200 Border', '`n' Text '`n')
+        This.hText := This.msgGui.AddEdit('xm Center ReadOnly BackgroundE1B15A -E0x200 Border -VScroll', '`n' Text '`n')
 
         Switch Function {
             Case 0:
@@ -1111,9 +1121,9 @@ Class Version extends Base {
             || !DirExist(this.versionLocation '\aoc')
             || !DirExist(this.versionLocation '\fe')
             || hashs[this.packageName] != this.hashFile(, This.packagePath) {
-                This.cleanUp(this.versionLocation)
-                This.downloadPackage(This.packageLink, This.packagePath, , , , true)
-                This.extractPackage(This.packagePath, This.versionLocation)
+            This.cleanUp(this.versionLocation)
+            This.downloadPackage(This.packageLink, This.packagePath, , , , true)
+            This.extractPackage(This.packagePath, This.versionLocation)
         }
     }
 
@@ -1185,7 +1195,7 @@ Class Version extends Base {
             If versions['aok'] = '2.0a'
                 && FileExist(This.gameLocation '\on.ini')
                 && FileRead(This.gameLocation '\on.ini') = 'on' {
-                    versions['aok'] := '2.0b'
+                versions['aok'] := '2.0b'
             }
             empires2.Close()
         }
@@ -1207,7 +1217,7 @@ Class Version extends Base {
             If versions['aoc'] = '1.0c'
                 && FileExist(This.gameLocation '\age2_x1\on.ini')
                 && FileRead(This.gameLocation '\age2_x1\on.ini') = 'onon' {
-                    versions['aoc'] := '1.0e'
+                versions['aoc'] := '1.0e'
             }
 
             ; 1.1
@@ -1287,9 +1297,9 @@ Class FixPatch extends Base {
         if !FileExist(This.packagePath)
             || !DirExist(this.fixLocation '\Update v*')
             || hashs[this.packageName] != this.hashFile(, This.packagePath) {
-                This.cleanUp(this.fixLocation)
-                This.downloadPackage(This.packageLink, This.packagePath, , , , true)
-                This.extractPackage(This.packagePath, This.fixLocation)
+            This.cleanUp(this.fixLocation)
+            This.downloadPackage(This.packageLink, This.packagePath, , , , true)
+            This.extractPackage(This.packagePath, This.fixLocation)
         }
     }
     /**
@@ -1355,9 +1365,9 @@ Class VisualMod extends Base {
         if !FileExist(This.packagePath)
             || !DirExist(this.vmLocation '\999 Taunts')
             || hashs[this.packageName] != this.hashFile(, This.packagePath) {
-                This.cleanUp(this.vmLocation)
-                This.downloadPackage(This.packageLink, This.packagePath, , , , true)
-                This.extractPackage(This.packagePath, This.vmLocation)
+            This.cleanUp(this.vmLocation)
+            This.downloadPackage(This.packageLink, This.packagePath, , , , true)
+            This.extractPackage(This.packagePath, This.vmLocation)
         }
     }
 }
@@ -1443,9 +1453,9 @@ Class Language extends Base {
         if !FileExist(This.packagePath)
             || !DirExist(this.lngLocation '\English')
             || hashs[this.packageName] != this.hashFile(, This.packagePath) {
-                This.cleanUp(this.lngLocation)
-                This.downloadPackage(This.packageLink, This.packagePath, , , , true)
-                This.extractPackage(This.packagePath, This.lngLocation)
+            This.cleanUp(this.lngLocation)
+            This.downloadPackage(This.packageLink, This.packagePath, , , , true)
+            This.extractPackage(This.packagePath, This.lngLocation)
         }
     }
     /**
@@ -1487,9 +1497,9 @@ Class Recanalyst extends Base {
         if !FileExist(This.packagePath)
             || !DirExist(this.recLocation '\php')
             || hashs[this.packageName] != this.hashFile(, This.packagePath) {
-                This.cleanUp(this.recLocation)
-                This.downloadPackage(This.packageLink, This.packagePath, , , , true)
-                This.extractPackage(This.packagePath, This.recLocation)
+            This.cleanUp(this.recLocation)
+            This.downloadPackage(This.packageLink, This.packagePath, , , , true)
+            This.extractPackage(This.packagePath, This.recLocation)
         }
     }
 

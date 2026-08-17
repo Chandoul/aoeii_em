@@ -37,10 +37,10 @@ if !fixapp.configurationExists() {
     fixapp.writeConfiguration('ddrAuto', 1)
 }
 ddrAuto := fixGui.addCheckBoxEx('xm', 'Enable direct draw fix', fixDDREnable)
-ddrAuto.Checked := fixapp.readConfiguration('ddrAuto')
+ddrAuto.Checked := FileExist(gameLocation '\ddraw.dll') && FileExist(gameLocation '\age2_x1\ddraw.dll')
 
 center := fixGui.addCheckBoxEx('xm y+15', 'Center the game window', centerGameWindow)
-center.Checked := fixapp.readConfiguration('center')
+center.Checked := fixapp.isCentered()
 
 ;features := fixGui.addButtonEx('xm w200', 'Features list', , showFeatures)
 ;showFeatures(*) => MsgBoxEx(FileRead('features.txt'), 'katsuie`'s patch features', , 64)
@@ -193,6 +193,7 @@ fixDDREnable(Ctrl, *) {
     else fixapp.clearDDrawFix()
     SoundPlay(fixapp.workDirectory '\assets\mp3\30 Wololo.mp3')
 }
+
 centerGameWindow(Ctrl, *) {
     fixapp.writeConfiguration('center', Ctrl.cbValue)
     fixapp.applyDDrawFix(, Ctrl.cbValue ? 1 : 0)

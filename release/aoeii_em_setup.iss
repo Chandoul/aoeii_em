@@ -114,6 +114,9 @@ Name: "Swedish"; MessagesFile: "compiler:Languages\Swedish.isl"
 Name: "Tamil"; MessagesFile: "compiler:Languages\Tamil.isl"
 Name: "Ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
+[UninstallDelete]
+Type: filesandordirs; Name: "{app}\*"
+
 [code]
 function GetTickCount(): Cardinal; external 'GetTickCount@kernel32.dll';
 function GetTickCount64(): Int64; external 'GetTickCount64@kernel32.dll stdcall';

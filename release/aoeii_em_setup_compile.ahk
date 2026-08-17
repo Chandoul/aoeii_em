@@ -5,19 +5,11 @@
 
 app := Base()
 
-; take screenshots
-;RunWait('"' app.workDirectory '\tools\aoeii_em.ahk"')
-;WinWaitActive('Age of Empires II Easy Manager')
-;Msgbox
-
 appver := app.version
 rc := RunWait(A_ComSpec ' /c iscc aoeii_em_setup.iss /DAPP_VERSION=' appver)
 
 If !rc {
-    Size := FileGetSize('aoeii_em_setup_latest.exe')
-    Size /= 1024
-    Size /= 1024
-    Size := Round(Size, 2)
+    Size := FileGetSize('aoeii_em_setup_latest.exe', 'M')
     FileOpen('aoeii_em_setup_size.txt', 'w').Write(Size)
     ; Run setup
     Run('aoeii_em_setup_latest.exe')
