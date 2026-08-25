@@ -6,7 +6,7 @@ Class Base {
     description => (
         'An AutoHotkey application holds several useful tools that helps with the game'
     )
-    version => '7.2'
+    version => '7.3'
     author => 'Smile'
     license => 'MIT'
     packageHashLink => 'https://raw.githubusercontent.com/chandoul/aoeii_em/refs/heads/master/tools/package.json'
